@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.5 · 14/11/2026
+- Franja de valores de la portada rediseñada como un panel de instrumentos: casillas iguales con su nombre arriba, el valor debajo y una marca de color (verde, ámbar o rojo). Ocupa todo el ancho y se reparte en 8, 4 o 2 columnas según la pantalla y el tamaño de letra, siempre con las filas completas. / Top value strip redesigned as an instrument panel.
+- Toda la plataforma aprovecha mejor el espacio en pantallas anchas y televisores: las casillas de valores se reparten en filas iguales (sin media fila vacía), el aviso DX reparte sus tarjetas en todo el ancho, el calendario de concursos y la tabla de balizas ocupan todo el ancho, y el informe de fuentes de «Actualizar» va en su propia línea. / Better use of space on wide screens and TVs across the platform.
+
 ## 2.4.4 · 14/11/2026
 - Menos calor y batería en el móvil: la actualización automática (30 fuentes cada vez) pasa a cada 3 minutos en móviles y tabletas (sigue cada minuto en el ordenador), a cada 10 minutos si nadie toca la pantalla durante 5, y se detiene con la pestaña en segundo plano. «Actualizar» sigue siendo inmediato. / Less heat and battery use: automatic updates every 3 min on phones, every 10 min when idle, none in the background.
 - «Qué hacer»: cada estación recomendada sale en una tarjeta como las del resto de la plataforma: frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y probabilidad de QSO. Si la DXpedición no ha publicado frecuencia para esa banda, se indica la habitual de su modo. / «What to do» now uses the common station cards.
