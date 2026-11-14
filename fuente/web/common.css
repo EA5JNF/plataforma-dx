@@ -615,3 +615,4 @@ html[data-theme="light"],:root[data-theme="light"]{--dim:#56657a;--accent:#9a520
 html[data-theme="dark"],:root[data-theme="dark"]{--dim:#8b9db0}
 .sc.old{opacity:.8}
 html[data-theme="dark"] .hb>i{filter:brightness(1.9) saturate(1.1)}
+.sc-p0{color:var(--dim);font-size:.85em}

@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.2 · 14/11/2026
+- Probabilidad de QSO aún más precisa, como equilibrio entre la previsión VOACAP y la realidad de los clústeres: cada spot de los últimos 45 minutos en esa banda, de esa estación o de otra de su misma zona, cuenta según lo que se parece el trayecto del que lo oye al tuyo (misma zona de rebote en la ionosfera y distancia parecida), su antigüedad y su señal. La tarjeta muestra la cifra final y, al lado, la de VOACAP sola cuando difieren. / QSO chance balances VOACAP and live cluster data, weighting each spot by path similarity, age and signal; the card shows both figures.
+
 ## 2.5.1 · 14/11/2026
 - Probabilidad de QSO de las tarjetas del clúster y de «Qué hacer», más ajustada: el modelo VOACAP con tu estación se calcula ahora para el modo del spot (un spot de FT8 o CW necesita bastante menos señal que la SSB) y se combina con lo que pasa en ese momento: si estaciones a menos de 1.500 km de ti lo están oyendo, pesa según su cercanía, la antigüedad del spot, la señal que dan y cuántas lo oyen; y si a ti te han oído cerca de esa estación en esa banda en los últimos 45 minutos, sube aún más. Las tarjetas lo indican con «lo oyen cerca de ti» o «te oyen por allí». / QSO chance now uses the spot's mode and live evidence: nearby spotters and stations that hear you.
 
