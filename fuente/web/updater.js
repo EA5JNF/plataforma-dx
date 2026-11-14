@@ -385,11 +385,14 @@ const TOUCH=(()=>{try{return matchMedia("(hover:none),(pointer:coarse)").matches
 /* 2.4.8: si el navegador dice si el aparato está enchufado (Chrome, Edge y Android), enchufado = cada minuto y con
    batería = cada 3 minutos, también en portátiles. Si no lo dice (iPhone, iPad, Safari, Firefox): móvil y tableta cada 3, ordenador cada 1. */
 let POWER=null;try{if(navigator.getBattery)navigator.getBattery().then(b=>{const up=()=>{const was=POWER;POWER=b.charging?"ac":"bat";if(was!==POWER){powerTxt();if(vis()&&!BUSY){const g=Date.now()-LASTRUN,e=every();sched(g>=e?800:e-g)}}};up();b.addEventListener("chargingchange",up)}).catch(()=>{})}catch(e){}
-const every=()=>Date.now()-ACT>3e5?6e5:POWER==="ac"?6e4:POWER==="bat"?18e4:TOUCH?18e4:6e4;window.ACRACB_every=()=>every()/6e4;window.ACRACB_lowPower=()=>POWER==="bat"||(POWER==null&&TOUCH);
+const bgOK=()=>{try{return !!(window.ACRACB_notifOn&&ACRACB_notifOn()&&!(window.ACRACB_alMuted&&ACRACB_alMuted()))}catch(e){return false}};
+/* 2.8.3: con notificaciones activadas, en segundo plano se sigue mirando cada 3 minutos para poder avisar */
+const every=()=>!vis()?18e4:Date.now()-ACT>3e5?6e5:POWER==="ac"?6e4:POWER==="bat"?18e4:TOUCH?18e4:6e4;window.ACRACB_every=()=>every()/6e4;window.ACRACB_lowPower=()=>POWER==="bat"||(POWER==null&&TOUCH);
 const powerTxt=()=>{const e=$("updst");if(!e||!/^Datos del /.test(e.textContent))return;e.textContent=e.textContent.replace(/\. Se actualizan solos.*$/,freqTxt())};
 const freqTxt=()=>POWER==="ac"?". Se actualizan solos cada minuto (el aparato está enchufado) y también al pulsar Actualizar.":POWER==="bat"?". Se actualizan solos cada 3 minutos (para ahorrar batería) y al momento al pulsar Actualizar.":TOUCH?". Se actualizan solos cada 3 minutos (para ahorrar batería) y al momento al pulsar Actualizar.":". Se actualizan solos cada minuto y también al pulsar Actualizar.";
-function sched(ms){clearTimeout(TMR);TMR=setTimeout(()=>{if(!vis()||BUSY||(navigator.onLine===false)){sched();return}updateAll(true)},ms==null?every():ms)}
-document.addEventListener("visibilitychange",()=>{if(vis()&&!BUSY){const g=Date.now()-LASTRUN,e=every();sched(g>=e?800:e-g)}else if(!vis())clearTimeout(TMR)});
+function sched(ms){clearTimeout(TMR);TMR=setTimeout(()=>{if((!vis()&&!bgOK())||BUSY||(navigator.onLine===false)){if(vis()||bgOK())sched();return}updateAll(true)},ms==null?every():ms)}
+window.ACRACB_updSched=()=>{if(!BUSY){const g=Date.now()-LASTRUN,e=every();sched(g>=e?800:e-g)}};
+document.addEventListener("visibilitychange",()=>{if(vis()&&!BUSY){const g=Date.now()-LASTRUN,e=every();sched(g>=e?800:e-g)}else if(!vis()){clearTimeout(TMR);if(bgOK())sched()}});
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,50));else setTimeout(boot,50);
 window.ACRACB_update=updateAll;
 })();

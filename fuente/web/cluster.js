@@ -387,7 +387,7 @@ window.ACRACB_alOK=x=>{try{return alOK(x)}catch(e){return true}};
 /* 2.6.6: silenciar los avisos de la portada y las notificaciones: 1 hora, hasta mañana a las 8:00 o hasta reactivarlos */
 const MUTEK="acracb_almute";
 const muteUntil=()=>{try{const v=localStorage.getItem(MUTEK);if(!v)return 0;return v==="inf"?Infinity:+v||0}catch(_){return 0}};
-const alMuted=()=>muteUntil()>Date.now();window.ACRACB_alMuted=alMuted;
+const alMuted=()=>muteUntil()>Date.now();window.ACRACB_alMuted=alMuted;window.ACRACB_muteTxt=()=>{try{return muteTxt()}catch(_){return ""}};
 function setMute(kind){let v="";if(kind==="60")v=String(Date.now()+36e5);else if(kind==="tom"){const d=new Date();d.setDate(d.getDate()+(d.getHours()>=8?1:0));d.setHours(8,0,0,0);v=String(+d)}else if(kind==="inf")v="inf";
   try{v?localStorage.setItem(MUTEK,v):localStorage.removeItem(MUTEK)}catch(_){}alBar();muteBanner()}
 function muteTxt(){const u=muteUntil();if(u===Infinity)return T("hasta que los reactives","until you turn them back on");const d=new Date(u),hm=d.toLocaleTimeString(window.ACRACB_LANG==="en"?"en-US":"es-ES",{hour:"2-digit",minute:"2-digit"});
@@ -491,7 +491,7 @@ function qParse(q){const raw=String(q||"").trim();const Q={bands:new Set(),modes
     Q.calls.push({c:cl});Q.chips.push(QT(cl))}
   return (Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length)?Q:null}
 const kHzOf=f=>{const v=parseFloat(f);return !isFinite(v)?NaN:v>1000?v:v*1000};
-function mOK(Q,mode){if(!Q.modes.size)return true;const M=NOACC(mode);return Q.modes.has(M)||(Q.modes.has("DIGI")&&DIGIS.has(M))||(Q.modes.has("SSB")&&(M==="LSB"||M==="USB"))}
+function mOK(Q,mode){if(!Q.modes.size)return true;const M=NOACC(mode);return Q.modes.has(M)||(Q.modes.has("DIGI")&&DIGIS.has(M))||(Q.modes.has("SSB")&&(M==="LSB"||M==="USB"))||(Q.modes.has("PHONE")&&["SSB","LSB","USB","AM","FM","DV"].includes(M))}
 function cMatch(Q,call,ref,ent){const C=String(call||"").toUpperCase(),base=C.split("/").sort((a,b)=>b.length-a.length)[0]||C;
   const one=x=>x.ref?NOACC(ref)===x.ref:x.rx?x.rx.test(C)||x.rx.test(base):C.includes(x.c)||(x.c.includes("/")?false:base.startsWith(x.c));
   const callsOK=!Q.calls.length||Q.calls.some(one);
@@ -500,20 +500,35 @@ function sMatch(Q,o){if(Q.bands.size&&!Q.bands.has(o.band))return false;if(!mOK(
   if(Q.progs.size&&!Q.progs.has(o.prog||"dx"))return false;if(Q.f){const k=kHzOf(o.f);if(!isFinite(k)||Math.abs(k-Q.f.k)>Q.f.tol)return false}
   return cMatch(Q,o.call,o.ref,o.ent)}
 const CONTS=[["EU","Europa","Europe"],["AF","África","Africa"],["AS","Asia","Asia"],["NA","Norteamérica","North America"],["SA","Sudamérica","South America"],["OC","Oceanía","Oceania"],["AN","Antártida","Antarctica"]];
+const contName=k=>{const n=CONTS.find(x=>x[0]===k);return n?T(n[1],n[2]):k};
 function selQ(){const g=id=>{const e=$(id);return e?e.value:""};const Q=qParse($("srchq")?$("srchq").value:"")||{bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[],cont:null,age:null};
-  const b=g("srb"),m=g("srm"),t=g("srt"),k=g("src"),a=g("sra");
+  const b=g("srb"),m=g("srm"),t=g("srt"),k=g("src"),ks=g("srcs"),a=g("sra");
   if(b!==""){Q.bands=new Set([+b]);Q.chips=Q.chips.filter(x=>!/^(banda|band) /.test(x));Q.chips.push(T("banda ","band ")+BANDS[+b])}
-  if(m){Q.modes=new Set([m]);Q.chips=Q.chips.filter(x=>!/^(modo|mode) /.test(x));Q.chips.push(T("modo ","mode ")+(m==="DIGI"?T("digitales","digital"):m))}
+  if(m){Q.modes=new Set([m]);Q.chips=Q.chips.filter(x=>!/^(modo|mode) /.test(x));Q.chips.push(T("modo ","mode ")+(m==="DIGI"?T("digitales","digital"):m==="PHONE"?T("fonía","phone"):m))}
   if(t){Q.progs=new Set([t]);Q.chips.push(t==="dx"?"DX":t)}
-  if(k){Q.cont=k;const n=CONTS.find(x=>x[0]===k);Q.chips.push(n?T(n[1],n[2]):k)}
+  if(k){Q.cont=k;Q.chips.push(T("DX en ","DX in ")+contName(k))}if(ks){Q.scont=ks;Q.chips.push(T("spotter en ","spotter in ")+contName(ks))}
   if(a){Q.age=+a;Q.chips.push(T(`últimos ${a} min`,`last ${a} min`))}
-  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.age;return any?Q:null}
+  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.scont||Q.age;return any?Q:null}
+/* 2.8.3: continente por posición, con las reglas DXCC habituales (Canarias y Madeira en AF, Azores en EU, Turquía asiática,
+   Chipre y el Cáucaso en AS, Indonesia, Filipinas y el Pacífico en OC, Hawái en OC, Trinidad en SA…). Sirve para el DX y para el spotter. */
+function contLL(p){if(!p||!isFinite(p[0])||!isFinite(p[1]))return null;let [lon,lat]=p;lon=((lon+540)%360)-180;
+  if(lat<-60)return "AN";
+  if(lon>165||lon<-169)return lat>=55?"AS":lat>=48?"NA":"OC";
+  if(lon<=-25){if(lon>-32&&lat>35&&lat<41)return "EU";if(lat>=48&&lon<-130)return "NA";if(lon<-120&&lat<30)return "OC";if(lat<0)return "SA";if(lat<13&&(lat<7.2||lon>-77.5))return "SA";return "NA"}
+  if(lon<60){if(lat<=12)return lat<-50?"AN":"AF";if(lon>=34.9&&lat<42)return "AS";if(lon>=32&&lon<34.9&&lat>=34.4&&lat<=35.8)return "AS";
+    if(lat>=42){if(lon>=46.5&&lat<=51.5&&lon<60&&lat>=40.5&&!(lon<50&&lat>45))return "AS";if(lon>=40&&lat<43.6&&lon<51)return "AS";return "EU"}
+    if(lon>29&&lat>=36)return "AS";if(lat>=36&&lon<-1)return "EU";if(lat>=36&&lon>=12)return "EU";
+    if((lon>=14&&lon<=14.7&&lat>=35.7)||(lon>=23.4&&lon<=29&&lat>=34.8)||(lon>=12.3&&lon<=15.7&&lat>=36.6))return "EU";return "AF"}
+  if(lat<-10&&lon<80)return "AF";
+  if(lon>=95&&lat<=7&&!(lon<104.5&&lat>1))return "OC";if(lon>=116&&lon<=127&&lat>4.5&&lat<=21)return "OC";if(lon>=130&&lat<24)return "OC";return "AS"}
+window.ACRACB_cont=contLL;
 function contOf(call,dx,band){try{const e=spotEval({call,dx:dx||(window.ACRACB_areaPos&&ACRACB_areaPos(call)),band:band!=null?band:3,kind:"dx",from:[]},st.mhour);return e&&e.t?e.t.cont:null}catch(_){return null}}
-function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=selQ();const clr=$("srchx");if(clr)clr.hidden=!Q;if(!Q){box.hidden=true;box.innerHTML="";return}
+function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=selQ();{const n=["srb","srm","src","srcs","srt","sra"].filter(id=>$(id)&&$(id).value).length,fn=$("srfn");if(fn)fn.textContent=n?`(${n} ${n===1?T("activo","active"):T("activos","active")})`:""}const clr=$("srchx");if(clr)clr.hidden=!Q;if(!Q){box.hidden=true;box.innerHTML="";return}
   const lh=st.mhour;const out=[];
   for(const s of (L.spots||[])){const ent=(s.dxcc||"")+" "+(()=>{try{return (callEnt(s.call)||{}).name||""}catch(_){return ""}})();
-    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);if(Q.age&&!(a!=null&&a<=Q.age))continue;const e=spotEval(s,lh);if(Q.cont&&!(e&&e.t&&e.t.cont===Q.cont))continue;out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
-  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;if(Q.age&&!(o.a!=null&&o.a<=Q.age))continue;if(Q.cont&&contOf(o.call,o.dx,o.band)!==Q.cont)continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
+    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);if(Q.age&&!(a!=null&&a<=Q.age))continue;const e=spotEval(s,lh);if(Q.cont&&((e&&e.t&&e.t.cont)||contLL(s.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(s.call))))!==Q.cont)continue;
+    if(Q.scont){const fp=Array.isArray(s.from)&&s.from[0]?s.from[0]:null;const by0=(Array.isArray(s.by)?s.by:[s.by])[0];if(contLL(fp||(by0&&window.ACRACB_areaPos&&ACRACB_areaPos(by0)))!==Q.scont)continue}out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
+  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;if(Q.age&&!(o.a!=null&&o.a<=Q.age))continue;if(Q.cont&&(contOf(o.call,o.dx,o.band)||contLL(o.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(o.call))))!==Q.cont)continue;if(Q.scont)continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
   out.sort((x,y)=>(x.a??1e9)-(y.a??1e9));
   const onlyCall=Q.calls.filter(x=>x.c).map(x=>x.c);
   const by=onlyCall.length?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>onlyCall.some(c=>String(b||"").toUpperCase().includes(c)))):[];
@@ -527,14 +542,15 @@ function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;co
   box.innerHTML=h;box.hidden=false;const pb=box.querySelector("[data-srcall]");if(pb)pb.onclick=()=>{try{openCall(pb.dataset.srcall)}catch(_){}}}
 function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
   w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia o país","Callsign, frequency or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
-    <div class="srsel">
+    <details class="srf" id="srf"><summary>${T("Filtros","Filters")} <span class="srfh">${T("banda, modo, continente…","band, mode, continent…")}</span>${""} <span class="srfn" id="srfn"></span></summary><div class="srsel">
       <label><span>${T("Banda","Band")}</span><select id="srb"><option value="">${T("Todas","All")}</option>${ORD.map(b=>`<option value="${b}">${BANDS[b]}</option>`).join("")}</select></label>
-      <label><span>${T("Modo","Mode")}</span><select id="srm"><option value="">${T("Todos","All")}</option><option value="SSB">SSB</option><option value="CW">CW</option><option value="FT8">FT8</option><option value="FT4">FT4</option><option value="RTTY">RTTY</option><option value="DIGI">${T("Digitales (todos)","Digital (all)")}</option><option value="AM">AM</option><option value="FM">FM</option></select></label>
+      <label><span>${T("Modo","Mode")}</span><select id="srm"><option value="">${T("Todos","All")}</option><option value="CW">CW</option><option value="PHONE">${T("Fonía (todas)","Phone (all)")}</option><option value="DIGI">${T("Digitales (todos)","Digital (all)")}</option><optgroup label="${T("Concretos","Specific")}"><option value="SSB">SSB</option><option value="AM">AM</option><option value="FM">FM</option><option value="FT8">FT8</option><option value="FT4">FT4</option><option value="RTTY">RTTY</option><option value="PSK">PSK</option></optgroup></select></label>
+      <label><span>${T("Continente DX","DX continent")}</span><select id="src"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
+      <label><span>${T("Continente del spotter","Spotter continent")}</span><select id="srcs"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
       <label><span>${T("Tipo","Type")}</span><select id="srt"><option value="">${T("Todos","All")}</option><option value="dx">DX</option>${PROGS.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></label>
-      <label><span>${T("Continente","Continent")}</span><select id="src"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])}</option>`).join("")}</select></label>
-      <label><span>${T("Oído hace","Heard within")}</span><select id="sra"><option value="">${T("Cuando sea","Any time")}</option><option value="15">${T("15 minutos","15 minutes")}</option><option value="30">${T("30 minutos","30 minutes")}</option><option value="60">${T("1 hora","1 hour")}</option></select></label>
-    </div>
-    <div id="srchres" hidden aria-live="polite"></div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. En el texto el asterisco * vale por cualquier cosa (EA8/* o */MM) y puedes escribir también banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p>`;
+      <label><span>${T("Antigüedad","Age")}</span><select id="sra"><option value="">${T("Todas","All")}</option><option value="15">${T("Últimos 15 min","Last 15 min")}</option><option value="30">${T("Últimos 30 min","Last 30 min")}</option><option value="60">${T("Última hora","Last hour")}</option></select></label>
+    </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
+    <div id="srchres" hidden aria-live="polite"></div>`;
   sec.insertBefore(w,sec.firstElementChild);let tm=0;const inp=$("srchq"),x=$("srchx");
   inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};

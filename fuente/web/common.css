@@ -827,3 +827,14 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .srch .srsel span{font:600 .7rem var(--f-m,monospace);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .srch .srsel select{width:100%;min-width:0;font:500 .92rem var(--f-b,inherit);padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--fg)}
 .srch .srsel select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* 2.8.3: notificaciones: alcance, silencio y prueba en el mismo sitio */
+.notifw .nscope{flex-basis:100%;margin:2px 0 0}
+.notifw .nmute{flex-basis:100%;font-size:.88rem;color:var(--muted)}
+.notifw .nmute.on{color:var(--warn,#f0a83a);font-weight:600}
+.notifw .nmute .lnk{font-size:inherit}
+.notifw .nmsg{flex-basis:100%;margin:2px 0 0;color:var(--ok)}
+.srch .srf{margin-top:8px}
+.srch .srf>summary{cursor:pointer;font:600 .82rem var(--f-b,inherit);color:var(--accent);padding:4px 0;list-style-position:inside}
+.srch .srf .srfn{color:var(--fg);font-weight:700}
+.srch .srf[open]>summary{margin-bottom:2px}
+.srch .srf .srfh{color:var(--muted);font-weight:400}
