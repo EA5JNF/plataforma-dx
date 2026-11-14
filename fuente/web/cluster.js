@@ -460,30 +460,67 @@ function dCard(card){if(card.dataset.ohc)return dOf(card);const bt=card.querySel
   const t=stZone(C,P.p,b,P.d);if(!t)return null;if(b==null){try{const r=bestAny(t,localNow());b=r.p>0?r.b:3}catch(_){b=3}}
   let mode=card.dataset.mode||"";if(!mode){try{mode=MD().s}catch(_){}}return {t:t.id,b,call:C,mode,f:card.dataset.f||""}}
 
-/* ---------- 2.8.0: buscador de indicativo o frecuencia en todos los clústeres consultados ---------- */
-function qParse(q){q=String(q||"").trim().toUpperCase().replace(",",".");if(!q)return null;
-  if(/^\d+(\.\d+)?$/.test(q)){const v=parseFloat(q);if(!isFinite(v)||v<=0)return null;let k,tol;
-    if(q.includes(".")){const d=q.split(".")[1].length;k=v*1000;tol=d>=3?1.5:d===2?6:60}else if(v>=1000){k=v;tol=1.5}else{k=v*1000;tol=1000}return {k,tol,txt:q}}
-  const cl=q.replace(/[^A-Z0-9/]/g,"");return cl.length>=2?{c:cl,txt:cl}:null}
+/* ---------- 2.8.1: buscador libre: indicativo, frecuencia, banda, modo, programa, referencia o país, combinables ----------
+   Ejemplos: «EA5RKB», «EA5RKB/P», «VP8/G3ABC», «EA5*», «*-MM» (barra), «14.074», «14074», «20m FT8», «40 CW EA», «POTA», «US-1234», «Japón».
+   Cada palabra se reconoce sola; si hay varias, se combinan (banda Y modo Y indicativo…). */
+const QT=x=>"\u00ab"+x+"\u00bb";
+const NOACC=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase();
+const MODEW={SSB:"SSB",LSB:"SSB",USB:"SSB",FONIA:"SSB",PHONE:"SSB",VOZ:"SSB",VOICE:"SSB",CW:"CW",MORSE:"CW",TELEGRAFIA:"CW",FT8:"FT8",FT4:"FT4",RTTY:"RTTY",PSK:"PSK",PSK31:"PSK",PSK63:"PSK",JS8:"JS8",AM:"AM",FM:"FM",SSTV:"SSTV",MSK144:"MSK144",Q65:"Q65",JT65:"JT65",FST4:"FST4",OLIVIA:"OLIVIA",DIGI:"DIGI",DIGITAL:"DIGI",DIGITALES:"DIGI",DATA:"DIGI",DV:"DV",DMR:"DV",DSTAR:"DV","D-STAR":"DV",C4FM:"DV",FREEDV:"DV"};
+const DIGIS=new Set(["FT8","FT4","RTTY","PSK","JS8","MSK144","Q65","JT65","FST4","OLIVIA","SSTV","DIGI"]);
+const BANDW={"160":0,"80":1,"75":1,"60":8,"40":2,"30":9,"20":3,"17":4,"15":5,"12":6,"10":7,"6":10,"2":11,"70CM":12,"70":12};
+const FREQB=[[1800,2000,0],[3500,4000,1],[5250,5450,8],[7000,7300,2],[10100,10150,9],[14000,14350,3],[18068,18168,4],[21000,21450,5],[24890,24990,6],[28000,29700,7],[50000,54000,10],[144000,148000,11],[430000,440000,12]];
+function bandOfK(k){const r=FREQB.find(x=>k>=x[0]&&k<=x[1]);return r?r[2]:null}
+function qParse(q){const raw=String(q||"").trim();if(!raw)return null;const Q={bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[]};
+  const toks=NOACC(raw).replace(/,/g,".").replace(/(\d)\s+(M|CM|MHZ|KHZ)\b/g,"$1$2").split(/[\s;]+/).filter(Boolean);
+  for(let t of toks){let m;
+    if(MODEW[t]){Q.modes.add(MODEW[t]);Q.chips.push(T("modo ","mode ")+MODEW[t]);continue}
+    if(PROGS.includes(t)){Q.progs.add(t);Q.chips.push(t);continue}
+    if(t==="DX"){Q.progs.add("dx");Q.chips.push("DX");continue}
+    if((m=t.match(/^(\d{1,3})(M|CM)$/))&&BANDW[m[2]==="CM"?m[1]+"CM":m[1]]!=null){const b=BANDW[m[2]==="CM"?m[1]+"CM":m[1]];Q.bands.add(b);Q.chips.push(T("banda ","band ")+BANDS[b]);continue}
+    if((m=t.match(/^(\d+(?:\.\d+)?)(MHZ|KHZ)?$/))){const v=parseFloat(m[1]);if(!(v>0))continue;let k,tol;
+      if(m[2]==="KHZ"||(!m[2]&&!m[1].includes(".")&&v>=1000)){k=v;tol=1.5}
+      else if(m[1].includes(".")){const d=m[1].split(".")[1].length;k=v*1000;tol=d>=3?1.5:d===2?6:60}
+      else if(!m[2]&&BANDW[m[1]]!=null&&!["1","3","5","7","14","18","21","24","28","50","144","430","432"].includes(m[1])){Q.bands.add(BANDW[m[1]]);Q.chips.push(T("banda ","band ")+BANDS[BANDW[m[1]]]);continue}
+      else{k=v*1000;const b=bandOfK(k)??bandOfK(k+1);if(b!=null&&tol==null){Q.bands.add(b);Q.chips.push(T("banda ","band ")+BANDS[b]);continue}tol=1000}
+      Q.f={k,tol};Q.chips.push((k/1000).toFixed(tol>=60?1:3)+" MHz");continue}
+    /* indicativo (con prefijos y sufijos: EA8/DF4UE, EA5RKB/P, /MM, /QRP…), comodines * y ?, o referencia de programa (US-1234, EA5/AT-001, EAFF-0123) */
+    const cl=t.replace(/[^A-Z0-9/*?\-]/g,"");if(!cl)continue;
+    if(/^[A-Z0-9]{1,4}-\d{2,5}$|^[A-Z0-9]{1,3}\/[A-Z]{2}-\d{3}$|^[A-Z]{2,4}FF-\d{3,5}$/.test(cl)){Q.calls.push({ref:cl});Q.chips.push(T("referencia ","reference ")+cl);continue}
+    if(/[*?]/.test(cl)){const rx=new RegExp("^"+cl.replace(/[-/]/g,"\\$&").replace(/\*/g,".*").replace(/\?/g,".")+"$");Q.calls.push({rx});Q.chips.push(QT(cl));continue}
+    if(/^[A-Z]+$/.test(cl)&&cl.length>=3){Q.words.push(cl);Q.chips.push(QT(cl));continue}
+    Q.calls.push({c:cl});Q.chips.push(QT(cl))}
+  return (Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length)?Q:null}
 const kHzOf=f=>{const v=parseFloat(f);return !isFinite(v)?NaN:v>1000?v:v*1000};
-function sMatch(Q,call,f){if(Q.c)return String(call||"").toUpperCase().includes(Q.c);const k=kHzOf(f);return isFinite(k)&&Math.abs(k-Q.k)<=Q.tol}
+function mOK(Q,mode){if(!Q.modes.size)return true;const M=NOACC(mode);return Q.modes.has(M)||(Q.modes.has("DIGI")&&DIGIS.has(M))||(Q.modes.has("SSB")&&(M==="LSB"||M==="USB"))}
+function cMatch(Q,call,ref,ent){const C=String(call||"").toUpperCase(),base=C.split("/").sort((a,b)=>b.length-a.length)[0]||C;
+  const one=x=>x.ref?NOACC(ref)===x.ref:x.rx?x.rx.test(C)||x.rx.test(base):C.includes(x.c)||(x.c.includes("/")?false:base.startsWith(x.c));
+  const callsOK=!Q.calls.length||Q.calls.some(one);
+  const wordsOK=!Q.words.length||Q.words.every(w=>C.includes(w)||NOACC(ent).includes(w));return callsOK&&wordsOK}
+function sMatch(Q,o){if(Q.bands.size&&!Q.bands.has(o.band))return false;if(!mOK(Q,o.mode))return false;
+  if(Q.progs.size&&!Q.progs.has(o.prog||"dx"))return false;if(Q.f){const k=kHzOf(o.f);if(!isFinite(k)||Math.abs(k-Q.f.k)>Q.f.tol)return false}
+  return cMatch(Q,o.call,o.ref,o.ent)}
 function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=qParse(inp.value);if(!Q){box.hidden=true;box.innerHTML="";return}
-  const lh=st.mhour;const out=[];const now=[];
-  for(const s of (L.spots||[])){if(!sMatch(Q,s.call,s.f))continue;const a=spotAge(s);const e=spotEval(s,lh);out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
-  try{for(const o of progAll()){if(!sMatch(Q,o.call,o.f))continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
+  const lh=st.mhour;const out=[];
+  for(const s of (L.spots||[])){const ent=(s.dxcc||"")+" "+(()=>{try{return (callEnt(s.call)||{}).name||""}catch(_){return ""}})();
+    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);const e=spotEval(s,lh);out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
+  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
   out.sort((x,y)=>(x.a??1e9)-(y.a??1e9));
-  const by=Q.c?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>String(b||"").toUpperCase().includes(Q.c))):[];
-  let dxa="";try{const d=(L.dx||[]).filter(d=>Q.c&&String(d.call||"").toUpperCase().includes(Q.c));if(d.length)dxa=`<p class="note srdx">${T("DXpedición anunciada","Announced DXpedition")}: ${d.slice(0,3).map(x=>`<b>${CS(dxTok(x.call)[0]||x.call)}</b>${x.until?` · ${T("hasta","until")} ${e2(x.until)}`:""}${x.qsx?` · QSX ${e2(x.qsx)}`:""}`).join("<br>")}</p>`}catch(_){}
-  const N=40,what=Q.c?`«${e2(Q.txt)}»`:(Q.tol>=1000?`${Math.round(Q.k/1000)} MHz`:`${(Q.k/1000).toFixed(3)} MHz`);
-  let h=`<p class="srh">${out.length?T(`${out.length} ${out.length===1?"spot":"spots"} con ${what} entre los spots recientes`,`${out.length} ${out.length===1?"spot":"spots"} matching ${what} among recent spots`):T(`${what} no aparece entre los spots recientes de los clústeres consultados.`,`${what} does not appear among recent spots on the clusters checked.`)}</p>`+dxa;
-  if(out.length)h+=`<div class="sgrid srgrid">${out.slice(0,N).map(x=>x.h).join("")}</div>`+(out.length>N?`<p class="note">${T(`Y ${out.length-N} más.`,`And ${out.length-N} more.`)}</p>`:"");
-  if(by.length)h+=`<p class="note srby">${T(`${e2(Q.txt)} ha oído a ${by.length} ${by.length===1?"estación":"estaciones"}`,`${e2(Q.txt)} has heard ${by.length} ${by.length===1?"station":"stations"}`)}: ${by.slice(0,12).map(s=>`${CS(s.call)} <span class="nw">${e2(s.f)}</span>`).join(" · ")}${by.length>12?" …":""}</p>`;
-  h+=`<p class="note srsrc">${T("Busca en el clúster DX y el RBN que reúne la plataforma, en POTA, SOTA, WWFF y en las DXpediciones anunciadas.","Searches the DX cluster and RBN spots the platform gathers, POTA, SOTA, WWFF and announced DXpeditions.")}</p>`;
-  box.innerHTML=h;box.hidden=false}
+  const onlyCall=Q.calls.filter(x=>x.c).map(x=>x.c);
+  const by=onlyCall.length?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>onlyCall.some(c=>String(b||"").toUpperCase().includes(c)))):[];
+  let dxa="";try{const d=(L.dx||[]).filter(d=>onlyCall.some(c=>String(d.call||"").toUpperCase().includes(c))||Q.words.some(w=>NOACC(d.name||d.dxcc||"").includes(w)));if(d.length)dxa=`<p class="note srdx">${T("DXpedición anunciada","Announced DXpedition")}: ${d.slice(0,3).map(x=>`<b>${CS(dxTok(x.call)[0]||x.call)}</b>${x.until?` · ${T("hasta","until")} ${e2(x.until)}`:""}${x.qsx?` · QSX ${e2(x.qsx)}`:""}`).join("<br>")}</p>`}catch(_){}
+  /* sin spots, al menos de qué entidad es ese indicativo o prefijo */
+  let pfx="";if(onlyCall.length===1&&/\d/.test(onlyCall[0])){try{const en=callEnt(onlyCall[0]);if(en&&en.name)pfx=`<p class="note srpx">${e2(onlyCall[0])}: <b>${e2(en.name)}</b>. <button type="button" class="lnk" data-srcall="${e2(onlyCall[0])}">${T("Ver su ficha","Open its page")}</button></p>`}catch(_){}}
+  const N=60,chips=`<span class="srchips">${Q.chips.map(x=>`<span class="srchip">${e2(x)}</span>`).join("")}</span>`;
+  let h=`<p class="srh">${out.length?T(`${out.length} ${out.length===1?"spot reciente":"spots recientes"}`,`${out.length} recent ${out.length===1?"spot":"spots"}`):T("Ningún spot reciente coincide","No recent spot matches")} ${chips}</p>`+dxa+pfx;
+  if(out.length)h+=`<div class="sgrid srgrid">${out.slice(0,N).map(x=>x.h).join("")}</div>`+(out.length>N?`<p class="note">${T(`Y ${out.length-N} más: afina la búsqueda con una banda o un modo.`,`And ${out.length-N} more: narrow it down with a band or a mode.`)}</p>`:"");
+  if(by.length)h+=`<p class="note srby">${T(`${e2(onlyCall.join(", "))} ha oído a ${by.length} ${by.length===1?"estación":"estaciones"}`,`${e2(onlyCall.join(", "))} has heard ${by.length} ${by.length===1?"station":"stations"}`)}: ${by.slice(0,12).map(s=>`${CS(s.call)} <span class="nw">${e2(s.f)}</span>`).join(" · ")}${by.length>12?" …":""}</p>`;
+  box.innerHTML=h;box.hidden=false;const pb=box.querySelector("[data-srcall]");if(pb)pb.onclick=()=>{try{openCall(pb.dataset.srcall)}catch(_){}}}
 function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
-  w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20" placeholder="${T("Indicativo o frecuencia: EA5RKB, 14.205…","Callsign or frequency: EA5RKB, 14.205…")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div><div id="srchres" hidden aria-live="polite"></div>`;
+  w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia, banda, modo o país","Callsign, frequency, band, mode or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
+    <p class="note srex">${T("Puedes combinar palabras. Prueba:","You can combine words. Try:")} ${["EA5RKB/P","EA8/*","14.074","20m FT8","40 CW","POTA SSB","*/MM",T("Japón","Japan")].map(x=>`<button type="button" class="srchip srtry" data-srq="${e2(x)}">${e2(x)}</button>`).join("")}</p>
+    <div id="srchres" hidden aria-live="polite"></div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. El asterisco * vale por cualquier cosa.","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. The asterisk * matches anything.")}</p>`;
   sec.insertBefore(w,sec.firstElementChild);let tm=0;const inp=$("srchq"),x=$("srchx");
-  inp.addEventListener("input",()=>{x.hidden=!inp.value;clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";x.hidden=true;srchRun();inp.focus()}}
+  inp.addEventListener("input",()=>{x.hidden=!inp.value;clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";x.hidden=true;srchRun();inp.focus()};w.querySelectorAll("[data-srq]").forEach(b=>b.onclick=()=>{inp.value=b.dataset.srq;x.hidden=false;srchRun()})}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
 function hook(){if(typeof window.renderSide!=="function"||window.renderSide.__cl)return false;const o=window.renderSide;

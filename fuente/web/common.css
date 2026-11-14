@@ -817,3 +817,8 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .srch .srgrid{margin-top:4px}
 .srch .srsrc{margin-top:10px}
 .srch input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.srch .srex{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.srch .srchips{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:6px;vertical-align:middle}
+.srch .srchip{font:500 .76rem var(--f-m,monospace);padding:3px 8px;border-radius:999px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);white-space:nowrap}
+.srch .srtry{cursor:pointer}
+.srch .srtry:hover,.srch .srtry:focus-visible{border-color:var(--accent);color:var(--accent)}
