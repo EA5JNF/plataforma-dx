@@ -862,3 +862,21 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .eztl .ezbest{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:10px;margin:0 -10px;padding:9px 10px;border-top-color:transparent}
 .eztl .ezbest+.ezr{border-top-color:transparent}
 .eztl .ezm{font:700 .66rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
+/* 2.8.9: destinos desplegables en «Ahora» y en cada tramo; cada uno lleva al mapa a esa hora y en esa banda */
+.eztl .ezd{border-top:1px solid var(--line)}
+.eztl .ezt+.ezd{border-top:0;margin-top:4px}
+.eztl .ezd>summary.ezr{border-top:0;cursor:pointer;list-style:none;position:relative;padding-right:22px}
+.eztl .ezd>summary.ezr::-webkit-details-marker{display:none}
+.eztl .ezd>summary.ezr::after{content:"";position:absolute;right:4px;top:1.05em;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.eztl .ezd[open]>summary.ezr::after{transform:rotate(-135deg);top:1.3em}
+.eztl .ezd.ezbest{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:10px;margin:0 -10px;padding:0 10px;border-top-color:transparent}
+.eztl .ezd.ezbest+.ezd{border-top-color:transparent}
+.eztl .ezd.ezbest>summary.ezr{background:none;margin:0;padding-left:0}
+.ez .ezsm{cursor:pointer;color:var(--accent);font-weight:600;margin-top:6px}
+.ez .ezlist{padding:4px 0 12px}
+.ez .ezcg{margin:6px 0 2px}
+.ez .ezdest{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:4px 10px;margin:0 6px 6px 0;font:inherit;font-size:.88rem;cursor:pointer;display:inline-flex;gap:6px;align-items:baseline}
+.ez .ezdest span{color:var(--muted);font:500 .78rem var(--f-m,monospace)}
+.ez .ezdest:hover,.ez .ezdest:focus-visible{border-color:var(--accent);outline:none}
+.ez .ezmapb{margin-top:6px}
+@media (prefers-reduced-motion:reduce){.eztl .ezd>summary.ezr::after{transition:none}}

@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.9 · 15/11/2026
+- Ahora › Resumen: los destinos se pueden ver. En «Ahora», «Ver los N destinos», y en «Próximas 12 horas», al tocar cada tramo, se despliega la lista completa agrupada por continentes con su probabilidad (LP si es por el camino largo). Al tocar un destino se abre el mapa a esa hora y en esa banda con su ventana; «Ver en el mapa» enseña todos. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Destinations can be expanded and open the map at that hour and band.
+
 ## 2.8.8 · 15/11/2026
 - Logo nuevo de la plataforma y de la web app: el globo azimutal en azul, con «DX» y «ACRACB». Se ve en el icono de la pantalla de inicio (iPhone, iPad y Android), en la pestaña del navegador y en el instalador; en Android lleva además una versión con margen para que el recorte en círculo no corte nada. El logo anterior se guarda en las fuentes. / New logo: the azimuthal globe, with an Android-safe version.
 - «Próximas 12 horas» más clara: tramos siempre con el mismo formato («08–09»), la banda y el número de destinos abiertos como dato principal, con un punto de color según la calidad, y debajo, más discreto, la calidad y con quién; «la mejor» marcada. En el móvil con letra grande la fila se parte en dos líneas en vez de salirse. / Clearer «Next 12 hours».
