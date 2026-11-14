@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.10 · 15/11/2026
+- Logo: «ACRACB» se lee ahora en todos los tamaños. Va en grande dentro del globo azimutal, encima de «DX», en vez de en letra pequeña debajo; en la pantalla de inicio del iPhone, iPad y Android, en la pestaña del navegador y en el instalador. La versión anterior del globo se guarda en las fuentes. / Logo: «ACRACB» now readable at every size.
+
 ## 2.8.9 · 15/11/2026
 - Ahora › Resumen: los destinos se pueden ver. En «Ahora», «Ver los N destinos», y en «Próximas 12 horas», al tocar cada tramo, se despliega la lista completa agrupada por continentes con su probabilidad (LP si es por el camino largo). Al tocar un destino se abre el mapa a esa hora y en esa banda con su ventana; «Ver en el mapa» enseña todos. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Destinations can be expanded and open the map at that hour and band.
 
