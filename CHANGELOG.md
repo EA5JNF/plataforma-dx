@@ -5,8 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.2 · 14/11/2026
+- Interruptor «Todos los modos» con exactamente el mismo alto que el selector de modo en todas las versiones y pantallas. / The «All modes» switch now matches the mode selector height everywhere.
+
 ## 2.6.1 · 14/11/2026
-- «Todos los modos» en la configuración de la estación es ahora un interruptor deslizante con el estilo de la plataforma, del mismo alto que el selector de modo y pegado a él, en los dos temas. Antes se veía una casilla enorme en el iPhone. / «All modes» is now a proper toggle switch next to the mode selector.
+- «Todos los modos» en la configuración de la estación es ahora un interruptor deslizante con el estilo de la plataforma, del mismo alto que el selector de modo y pegado a él, en los dos temas, en español e inglés, en la versión web y en el artefacto, y en todas las pantallas. Antes se veía una casilla enorme en el iPhone. / «All modes» is now a proper toggle switch next to the mode selector.
 
 ## 2.6.0 · 14/11/2026
 - Lectura del S-metro al anotar «Lo oigo»: una escala de S1 a S9 y de +10 a +60, en colores de verde a rojo como un S-metro real. La lectura se convierte en nivel de señal (S9 = −73 dBm y 6 dB por punto S), se compara con el ruido típico de la banda en tu entorno y la calibración usa esa relación señal/ruido real además de «lo oigo / no lo oigo», con lo que tus previsiones se ajustan mucho antes. Es opcional: sin lectura se guarda solo que lo oyes. / S-meter reading (S1 to S9+60) when logging «I hear it», used by the calibration.
