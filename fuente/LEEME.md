@@ -7,7 +7,7 @@ No se edita a mano: se cambia aquí y se vuelve a montar.
 
 **Dónde se publica (desde el 14/11/2026):** solo en la web de GitHub Pages (español e inglés) y, para los datos VOACAP, en Cloudflare.
 La versión de artefacto de Claude ya no se mantiene: `build.py` todavía genera `artifact.html`, pero no se publica en ningún sitio.
-Cada cambio debe funcionar en todas las pantallas (móvil, tableta, ordenador, 2K, tele 720p y 4K), con los dos tamaños de letra y en los dos temas.
+Cada cambio debe funcionar en todas las pantallas (móvil 360 y 390, tableta vertical y horizontal, portátil, escritorio, 2K, tele 720p, 4K y 8K), con los dos tamaños de letra y en los dos temas.
 
 ## Qué hay
 
