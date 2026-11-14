@@ -43,11 +43,11 @@ const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","re
 function bar(counts,bcounts){
   const bs=bandsOK(),list=ORD.filter(b=>bs.has(b));[...BSEL].forEach(b=>{if(!bs.has(b))BSEL.delete(b)});
   const tb=[["dx","DX"]].concat(PROGS.map(p=>[p,p]));
-  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
+  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
     (list.length>1?`<div class="seg clseg clbands" role="group" aria-label="${T("Banda del clúster","Cluster band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-clb="" aria-pressed="${!BSEL.size}">${T("Todas","All")}</button>${list.map(b=>`<button type="button" data-clb="${b}" aria-pressed="${BSEL.has(b)}"${bcounts[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bcounts[b]?` <small>${bcounts[b]}</small>`:""}</button>`).join("")}</div>`:"")}
 function wire(box){
   /* cada botón se marca o se desmarca; siempre queda al menos un tipo */
-  box.querySelectorAll("[data-clt]").forEach(b=>b.onclick=()=>{const k=b.dataset.clt;if(TYPES.has(k)){if(TYPES.size>1)TYPES.delete(k)}else TYPES.add(k);S.set("acracb_cltypes",JSON.stringify([...TYPES]));render()});
+  box.querySelectorAll("[data-clt]").forEach(b=>b.onclick=()=>{const k=b.dataset.clt;if(k==="*"){["dx"].concat(PROGS).forEach(x=>TYPES.add(x))}else if(TYPES.has(k)){if(TYPES.size>1)TYPES.delete(k)}else TYPES.add(k);S.set("acracb_cltypes",JSON.stringify([...TYPES]));render()});
   /* «Todas» quita la selección; marcar todas las bandas equivale a «Todas» */
   box.querySelectorAll("[data-clb]").forEach(b=>b.onclick=()=>{const v=b.dataset.clb;if(v==="")BSEL.clear();else{const n=+v;if(BSEL.has(n))BSEL.delete(n);else BSEL.add(n);const all=ORD.filter(x=>bandsOK().has(x));if(all.every(x=>BSEL.has(x)))BSEL.clear()}
     S.set("acracb_clbands",JSON.stringify([...BSEL]));render()})}
@@ -78,15 +78,22 @@ function geoKm(p1,p2){const r=vinc(p1,p2);let m,az;if(r){m=r.m;az=r.az}else{m=di
 window.ACRACB_geoKm=geoKm;
 function geoOf(p){try{if(!p||p.length!==2||p[0]==null||p[1]==null)return null;const g=geoKm(TXP,p);const az=Math.round(g.az)%360;return {az,laz:lp(az),km:Math.round(g.km),lkm:Math.round(g.lkm)}}catch(e){return null}}
 function sec(lbl,val){return val?`<dt>${lbl}</dt><dd>${val}</dd>`:""}
+/* 2.7.0: todas las tarjetas dicen hace cuánto se oyó la estación (último spot de ese indicativo) */
+function lastAge(call){const C=SK(call);let best=null;try{const d=(L.dx||[]).find(d=>dxTok(d.call).includes(C));if(d){const a=dxSpots(d);for(const o of a)if(o.a!=null&&(best==null||o.a<best))best=o.a}}catch(_){}
+  try{for(const s of (L.spots||[])){if(SK(s.call)!==C)continue;const a=spotAge(s);if(a!=null&&isFinite(a)&&(best==null||a<best))best=a}}catch(_){}return best}
+window.ACRACB_lastAge=lastAge;
+const ageTag=(a,t)=>a!=null||t?`<span class="sc-age" title="${t?e2(t)+" UTC":""}">${ago(a)}</span>`:`<span class="sc-age">${T("sin spots recientes","no recent spots")}</span>`;
 function card(o){
-  const h=`<div class="sc-h"><span class="sc-call">${CS(o.call)}</span>${o.a!=null||o.t?`<span class="sc-age" title="${e2(o.t||"")} UTC">${ago(o.a)}</span>`:""}</div>`;
+  if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
+  const h=`<div class="sc-h"><span class="sc-call">${o.call?stBtn(o.call,o.band):""}</span>${o.call||o.a!=null||o.t?ageTag(o.a,o.t):""}</div>`;
   const fl=[o.f?`<b class="sc-fq" style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:"",o.mode?mb(o.mode):"",o.band!=null&&BANDS[o.band]?`<span class="sc-b"${o.f?"":` style="color:${BC[o.band]};font-weight:600"`}>${BANDS[o.band]}</span>`:""].concat(o.tags||[]).filter(Boolean);
   const f=fl.length?`<div class="sc-f">${fl.join("")}</div>`:"";
   const g=o.geo;let rumbo="",dist="";
   if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;
     dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km${o.p!=null?`<span class="sc-sep">·</span>`:""}</span>${o.p!=null?` <span class="nw"><b>${o.p} %</b> ${T("de QSO","QSO chance")}${o.lpb?T(" (paso largo)"," (long path)"):""}</span>`:""}`}
-  const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}" tabindex="0" role="button" aria-label="${e2(o.oh.call)}: ${T("anotar si lo oyes","log whether you hear it")}"`:"";
-  return `<div class="sc${o.old?" old":""}${ohd?" ohc":""}"${ohd}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${o.oh&&window.ACRACB_ohBox?ACRACB_ohBox(o.oh):""}</div>`}
+  const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:"";
+  const acc=o.call?`${ohd?"":` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`} tabindex="0" role="button" aria-label="${e2(o.call)}: ${T("anotar si lo oyes y si te oyen","log whether you hear it and it hears you")}"`:"";
+  return `<div class="sc${o.old?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${o.oh&&window.ACRACB_ohBox?ACRACB_ohBox(o.oh):""}</div>`}
 window.ACRACB_card=o=>card(o);
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
@@ -171,16 +178,16 @@ document.addEventListener("click",ev=>{const tg=ev.target;if(!tg.closest)return;
   const dbb=tg.closest("[data-db]");if(dbb){try{const o=OBS.slice().reverse().find(x=>x.at===dbb.dataset.o);if(o){const v=+dbb.dataset.db;if(o.db===v)delete o.db;else o.db=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
   const rr=tg.closest("[data-rr]");if(rr){try{const o=OBS.slice().reverse().find(x=>x.at===rr.dataset.o);if(o){const v=+rr.dataset.rr;if(o.r===v)delete o.r;else o.r=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
   const q=tg.closest("[data-ohq]");if(q){openDlg(dOf(q));return}
-  const card=tg.closest(".sc[data-ohc]");if(card&&!tg.closest("a,button,input,select,summary,label,.cs,details"))openDlg(dOf(card))});
-document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&DLG){closeDlg();return}if((ev.key==="Enter"||ev.key===" ")&&ev.target.matches&&ev.target.matches(".sc[data-ohc]")){ev.preventDefault();openDlg(dOf(ev.target))}});
+  const card=tg.closest(".sc.ohc");if(card&&!tg.closest("a,button,input,select,summary,label,.cs")){const d=dCard(card);if(d)openDlg(d)}});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&DLG){closeDlg();return}if((ev.key==="Enter"||ev.key===" ")&&ev.target.matches&&ev.target.matches(".sc.ohc")){ev.preventDefault();const d=dCard(ev.target);if(d)openDlg(d)}});
 /* tus escuchas recientes de una zona y banda: la prueba más fuerte (45 minutos) */
 window.ACRACB_own=(tid,dx,b,dir)=>{dir=dir||"rx";try{const lim=Date.now()-45*6e4;let best=null;for(let i=OBS.length-1;i>=0;i--){const o=OBS[i];if(!o.call||o.b!==b||(o.dir||"rx")!==dir)continue;const at=Date.parse(o.at);if(at<lim)break;
     let same=o.t===tid;if(!same&&dx){const t=T0(o.t);same=t&&distJS([t.lon,t.lat],dx)<1200}if(same){best=o;break}}
-  if(!best)return null;const w=Math.exp(-(Date.now()-Date.parse(best.at))/(45*6e4));const fs=best.s!=null?Math.max(.2,Math.min(1,(best.s<=9?best.s:9+(best.s-9)/10)/10.5)):.6;return {h:!!best.h,w,fs}}catch(_){return null}};
+  if(!best)return null;const w=Math.exp(-(Date.now()-Date.parse(best.at))/(45*6e4));const fs=best.s===0?(best.r!=null?.2+.12*best.r:.3):best.s!=null?Math.max(.2,Math.min(1,(best.s<=9?best.s:9+(best.s-9)/10)/10.5)):.6;return {h:!!best.h,w,fs}}catch(_){return null}};
 /* 2.6.0: lectura del S-metro al pulsar «Lo oigo». S9 = −73 dBm y 6 dB por punto S; por encima, S9 + dB.
    La lectura menos el ruido típico de la banda en un entorno rural (más el ruido de tu entorno que hayas puesto en la estación)
    da la relación señal/ruido que de verdad tuviste, y la calibración la usa además de «lo oigo / no lo oigo». */
-const SVAL=[1,2,3,4,5,6,7,8,9,19,29,39,49,69];
+const SVAL=[0,1,2,3,4,5,6,7,8,9,19,29,39,49,69];
 const sTxt=v=>v<=9?"S"+v:"S9+"+(v-9);window.ACRACB_sTxt=sTxt;window.ACRACB_sLbl=v=>T(" con <b>"," at <b>")+sTxt(v)+"</b>";
 const sDbm=v=>v<=9?-73-6*(9-v):-73+(v-9);
 const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];
@@ -189,7 +196,8 @@ const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];
 const RSNR={1:0,2:3,3:6,4:10,5:15};
 /* modos digitales: la relación señal/ruido que da el programa (FT8, FT4, RTTY…), ya en un ancho de unos 2,5 kHz */
 const DBV=[-24,-20,-15,-10,-5,0,5,10,20];
-function obsSnr(o){if(o.dxp)return null;const v=[];if(o.s!=null){const n=NRUR[o.b];if(n!=null){let pen=0;try{if(o.dir!=="tx")pen=localNoisePen(o.b,o.lh)}catch(_){}v.push(Math.max(3,sDbm(o.s)-(n+pen)))}}if(o.r!=null&&RSNR[o.r]!=null)v.push(RSNR[o.r]);if(o.db!=null)v.push(o.db);return v.length?v.reduce((a,b)=>a+b,0)/v.length+33.8:null}
+/* 2.7.0: S0 = la aguja no se mueve: el S-metro no informa y manda la legibilidad R; sin R, señal justa (3 dB) */
+function obsSnr(o){if(o.dxp)return null;const v=[];if(o.s===0&&o.r==null&&o.db==null)v.push(3);if(o.s!=null&&o.s>0){const n=NRUR[o.b];if(n!=null){let pen=0;try{if(o.dir!=="tx")pen=localNoisePen(o.b,o.lh)}catch(_){}v.push(Math.max(3,sDbm(o.s)-(n+pen)))}}if(o.r!=null&&RSNR[o.r]!=null)v.push(RSNR[o.r]);if(o.db!=null)v.push(o.db);return v.length?v.reduce((a,b)=>a+b,0)/v.length+33.8:null}
 window.ACRACB_smeter=last=>{const cur=last.s;return `<div class="smeter" role="group" aria-label="${T("Lectura del S-metro","S-meter reading")}"><span class="smt">${T("¿Con qué señal?","What signal?")}</span><div class="smb">${SVAL.map((v,i)=>`<button type="button" data-smt="${v}" data-o="${e2(last.at)}" aria-pressed="${cur===v}" style="--i:${i}">${v<=9?v:"+"+(v-9)}</button>`).join("")}</div></div>`};
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-smt]");if(!b)return;try{const o=OBS.slice().reverse().find(x=>x.at===b.dataset.o);if(!o)return;const v=+b.dataset.smt;
   if(o.s===v)delete o.s;else o.s=v;{const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}try{redraw()}catch(_){}}catch(e){console.error(e)}});
@@ -409,7 +417,7 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
     let air="";try{air=(window.ACRACB_dxon?ACRACB_dxon(d):"").replace(/<br>$/,"")}catch(x){}
     let gl="";try{gl=window.ACRACB_grey?ACRACB_grey.short(p).replace(/^(Línea gris común|Shared greyline):?\s*/,""):""}catch(x){}
     const sec=(l,v)=>v?`<dt>${l}</dt><dd>${v}</dd>`:"";
-    html.push(`<div class="sc dxc" role="button" tabindex="0" data-dxi="${i}"><div class="sc-h"><span class="sc-call">${nw?"★ ":"✔ "}${CS(d.call)}${cty}</span><span class="pill ${cls(n.p)}">${Math.round(n.p*100)}%</span></div>
+    const c0=dxTok(d.call)[0]||String(d.call||"");html.push(`<div class="sc dxc ohc" role="button" tabindex="0" data-dxi="${i}" aria-label="${e2(c0)}: ${T("anotar si lo oyes y si te oyen","log whether you hear it and it hears you")}"><div class="sc-h"><span class="sc-call">${stBtn(c0,n.p>0?n.b:null,nw?"★ ":"✔ ",d.call)}${cty}</span><span class="dxh-r">${ageTag(lastAge(c0),"")}<span class="pill ${cls(n.p)}">${Math.round(n.p*100)}%</span></span></div>
       ${tags.length?`<div class="sc-f">${tags.join("")}</div>`:""}<dl class="sc-d">${sec(T("Actividad","Activity"),air)}
       ${sec(T("Mejor hora","Best time"),`<span class="nw">${hh(bh.h)}:00 ${T("en","on")} <b style="color:${BC[bh.b]}">${BANDS[bh.b]}</b></span> <span class="nw">(${Math.round(bh.p*100)} %${bh.lp?T(", paso largo",", long path"):""})</span>`)}
       ${sec(T("Rumbo","Bearing"),`<span class="nw">${T("corto","short")} ${az}° ${cab(az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${laz}° ${cab(laz)}</span>`)}
@@ -419,8 +427,24 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
   box.innerHTML=(more?html.slice(0,N):html).join("")+(more?`<button type="button" class="btn llmore" id="dxmore">${T(`Ver ${html.length-N} DXpediciones más`,`Show ${html.length-N} more DXpeditions`)}</button>`:"")+
     (L.dxHidden&&MOD()==="ssb"?`<p class="note" style="margin:4px 0 0">${T(`No se muestran ${L.dxHidden} expediciones activas que no anuncian fonía.`,`${L.dxHidden} active expeditions that do not announce phone are not shown.`)}</p>`:"");
   const mb2=$("dxmore");if(mb2)mb2.onclick=()=>{DXOPEN=true;dxCards()};
-  box.querySelectorAll(".dxc[data-dxi]").forEach(c=>{const o=()=>{openPop({k:"d",i:+c.dataset.dxi});go("mapa")};c.onclick=ev=>{if(ev.target.closest("a,button,.cs"))return;o()};c.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();o()}}})}
+}
 window.ACRACB_dxCards=dxCards;
+
+/* ---------- 2.7.0: el mismo comportamiento en todas las tarjetas de estación ----------
+   Tocar la tarjeta abre «¿Oyes a…?» (Lo oigo / Me oyen) y tocar el indicativo abre la ficha completa del indicativo,
+   en cualquier parte de la plataforma, no solo en la pestaña DX. */
+const SK=c=>String(c||"").toUpperCase().trim();
+function stBtn(call,b,pre,shown){return `<span class="stc" data-stc="${e2(SK(call))}" data-stb="${b!=null&&b<10?b:""}">${pre||""}${CS(shown||call)}</span>`}
+function stPos(C){try{const i=(L.dx||[]).findIndex(d=>dxTok(d.call).includes(C));const d=i>=0?L.dx[i]:null;if(d&&isFinite(d.lon)&&isFinite(d.lat))return {p:[d.lon,d.lat],d,i}}catch(_){}
+  try{const s=(L.spots||[]).find(s=>SK(s.call)===C&&s.dx&&s.dx[0]!=null);if(s)return {p:s.dx}}catch(_){}
+  try{const a=window.ACRACB_areaPos&&ACRACB_areaPos(C);if(a)return {p:a}}catch(_){}return {p:null}}
+function stZone(C,pos,b,d){try{if(d){const t=tFor(d);if(t)return t}}catch(_){}try{if(!pos)return null;const ev=spotEval({call:C,dx:pos,band:b!=null?b:3,kind:"dx",from:[]},localNow());return ev&&ev.t?ev.t:null}catch(_){return null}}
+document.addEventListener("click",ev=>{const cs=ev.target.closest&&ev.target.closest(".cs[data-call]");if(!cs||cs.closest("#cpop,#ohdlg,a"))return;if(typeof openCall!=="function")return;
+  ev.preventDefault();ev.stopPropagation();try{openCall(cs.dataset.call)}catch(e){console.error(e)}},true);
+/* tarjetas sin datos de banda (DXpediciones, objetivos, quién te oye…): la mejor banda de ahora para esa estación */
+function dCard(card){if(card.dataset.ohc)return dOf(card);const bt=card.querySelector("[data-stc]");if(!bt)return null;const C=bt.dataset.stc;const P=stPos(C);let b=bt.dataset.stb===""?null:+bt.dataset.stb;
+  const t=stZone(C,P.p,b,P.d);if(!t)return null;if(b==null){try{const r=bestAny(t,localNow());b=r.p>0?r.b:3}catch(_){b=3}}
+  let mode=card.dataset.mode||"";if(!mode){try{mode=MD().s}catch(_){}}return {t:t.id,b,call:C,mode,f:card.dataset.f||""}}
 /* ---------- enganche ---------- */
 function hook(){if(typeof window.renderSide!=="function"||window.renderSide.__cl)return false;const o=window.renderSide;
   const w=function(){const r=o.apply(this,arguments);try{if(st.page==="dx"){render(st.mhour);renderNear();dxCards()}}catch(e){console.error(e)}return r};w.__cl=1;window.renderSide=w;return true}

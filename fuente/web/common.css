@@ -646,12 +646,12 @@ html[data-theme="dark"] .xtag.dxpt{box-shadow:0 0 0 1px rgba(255,255,255,.12) in
 /* 2.6.0: escala de S-metro al anotar «Lo oigo» */
 .smeter{margin:10px 0 4px}
 .smeter .smt{display:block;font:700 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.smb{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:2px;border-radius:8px;overflow:hidden}
+.smb{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:2px;border-radius:8px;overflow:hidden}
 .smb button{border:0;padding:8px 0 6px;font:700 .78rem var(--f-m,monospace);color:#fff;cursor:pointer;opacity:.55;
-  background:hsl(calc(130 - var(--i) * 9.5) 62% 40%);text-shadow:0 1px 0 rgba(0,0,0,.3);transition:opacity .12s}
+  background:hsl(calc(136 - var(--i) * 9.4) 62% 40%);text-shadow:0 1px 0 rgba(0,0,0,.3);transition:opacity .12s}
 .smb button:hover{opacity:.8}
 .smb button[aria-pressed="true"]{opacity:1;box-shadow:inset 0 -3px 0 rgba(255,255,255,.85)}
-@media (max-width:420px){.smb button{font-size:.66rem;padding:7px 0 5px}}
+@media (max-width:420px){.smb button{font-size:min(.66rem,2.9vw);letter-spacing:-.04em;padding:7px 0 5px}}
 /* 2.6.4: «¿Lo oyes?» en las tarjetas */
 .ohbox{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 .ohr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -713,9 +713,9 @@ html[data-theme="dark"] .ohbig.y:not([aria-pressed="true"]){color:#4ade80}html[d
 /* 2.6.6: «¿Lo oyes?» más discreto: una sola línea pequeña al pie, sin separador */
 .ohbox{margin-top:4px!important;padding-top:0!important;border-top:0!important}
 .ohr{justify-content:flex-end;gap:8px;min-height:0}
-.ohq{font-weight:500!important;color:var(--muted)!important;text-decoration:none!important}
+.ohq{font-weight:600!important;color:var(--accent)!important;text-decoration:none!important}
 .ohq::after{content:" ›"}
-.sc.ohc:hover .ohq{color:var(--accent)!important}
+@media (hover:hover){.sc.ohc:hover .ohq{text-decoration:underline!important;text-underline-offset:3px}}
 .ohs{padding:1px 7px!important}
 /* escala de dB para modos digitales */
 .ohdlg .ohd-db{margin-top:16px}
@@ -730,3 +730,8 @@ html[data-theme="dark"] .ohbig.y:not([aria-pressed="true"]){color:#4ade80}html[d
 .ohd-st{font:600 1rem var(--f-b,inherit);margin-bottom:10px}
 .ohbig.sm{min-height:70px;font-size:.95rem}.ohbig.sm svg{width:24px;height:24px}
 .ohd-n2{margin:12px 0 -6px;font-size:.82rem}
+/* 2.7.0: el indicativo abre su ficha en toda la plataforma, con el mismo aspecto que en la pestaña DX */
+.cs[data-call]{cursor:pointer;text-decoration:underline dotted color-mix(in srgb,var(--accent) 60%,transparent);text-decoration-thickness:1px;text-underline-offset:3px}
+@media (hover:hover){.cs[data-call]:hover{color:var(--accent)}}
+#cpop .cs[data-call]{text-decoration:none}
+.dxh-r{display:inline-flex;align-items:center;gap:8px;flex:none}

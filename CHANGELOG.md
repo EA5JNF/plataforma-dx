@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.0 · 14/11/2026
+- El mismo comportamiento en todas las tarjetas de estación de la plataforma: al tocar la tarjeta se abre «¿Oyes a…?» (Lo oigo / Me oyen) y al tocar el indicativo se abre su ficha completa (entidad, cómo llegarle, tus bandas hacia allí, actividad en el clúster, DXpedición y enlaces), la misma que ya salía en la pestaña DX. Corregido que en el clúster, Avisos y otras listas desplegables la tarjeta no abriera el diálogo. Las DXpediciones también abren el diálogo; el mapa sigue en la ficha. / The same behavior on every station card: tap the card to log what you hear, tap the callsign for its full page.
+- S0 en el S-metro: la aguja no se mueve, algo habitual en fonía con bandas tranquilas. Con S0 manda la legibilidad R, porque con S0 y R3, R4 o R5 el QSO es posible; se aplica a la calibración y a los porcentajes de toda la plataforma. / S0 on the S-meter: readability R decides the signal-to-noise estimate.
+- Todas las tarjetas dicen hace cuánto se oyó la estación por última vez, también las de DXpediciones y «Qué hacer»; si no hay spots recientes, lo indican. / Every card shows how long ago the station was last heard.
+- «¿Lo oyes?» siempre en naranja: antes cambiaba de gris a naranja según dónde hubieras tocado. / «Do you hear it?» is always orange.
+- Botón «Todos» en la fila «Ver» del clúster (DX, POTA, SOTA y WWFF), como en Modos y Banda. / «All» button in the cluster «Show» row.
+- En español e inglés, en la web y en el artefacto, en todas las pantallas, tamaños de letra y en los dos temas. / In Spanish and English, web and artifact, every screen, text size and both themes.
+
 ## 2.6.9 · 14/11/2026
 - En el aviso DX de la portada, «Silenciar» pasa a la izquierda, delante de «Ver en Avisos» y «Cerrar», y su menú se abre alineado con el botón. En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / «Mute» moved to the left of «See in Alerts» and «Close» on the DX alert.
 
