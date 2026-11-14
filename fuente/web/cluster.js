@@ -188,7 +188,7 @@ window.ACRACB_own=(tid,dx,b,dir)=>{dir=dir||"rx";try{const lim=Date.now()-45*6e4
 /* 2.6.0: lectura del S-metro al pulsar «Lo oigo». S9 = −73 dBm y 6 dB por punto S; por encima, S9 + dB.
    La lectura menos el ruido típico de la banda en un entorno rural (más el ruido de tu entorno que hayas puesto en la estación)
    da la relación señal/ruido que de verdad tuviste, y la calibración la usa además de «lo oigo / no lo oigo». */
-const SVAL=[0,1,2,3,4,5,6,7,8,9,19,29,39,49,59,69];
+const SVAL=[0,1,2,3,4,5,6,7,8,9,14,19,29,39,49,59,69];
 const sTxt=v=>v<=9?"S"+v:"S9+"+(v-9);window.ACRACB_sTxt=sTxt;window.ACRACB_sLbl=v=>T(" con <b>"," at <b>")+sTxt(v)+"</b>";
 const sDbm=v=>v<=9?-73-6*(9-v):-73+(v-9);
 const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];

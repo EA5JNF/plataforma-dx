@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.2 · 14/11/2026
+- S-metro con S9+5 entre S9 y S9+10, en «Lo oigo» y en «Me oyen». En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / S9+5 added to the S-meter.
+
 ## 2.7.1 · 14/11/2026
 - La fila «Ver» del clúster funciona como la de bandas: con «Todos» activo no se marcan los demás; al tocar uno se ve solo ese, puedes sumar otros y, al quitar el último, vuelve a «Todos». Ningún botón se queda trabado. / The cluster «Show» row now works like the band row.
 - S-metro de 10 en 10 por encima de S9: +10, +20, +30, +40, +50 y +60, en «Lo oigo» y en «Me oyen». / S-meter in 10 dB steps above S9, up to +60.
