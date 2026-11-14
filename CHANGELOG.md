@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.3 · 14/11/2026
+- Satélites y EEI más fiables: la plataforma guarda su propia copia de las órbitas dos veces al día (tarea «Órbitas de satélites» en GitHub), descargada de CelesTrak o, si no responde, de AMSAT, y la lee desde su propia web. Si esa copia faltara, prueba CelesTrak y AMSAT directamente. Antes dependía solo de CelesTrak y, si no dejaba descargar, la pestaña Satélites y las capas ISS y Satélites del mapa se quedaban vacías. CelesTrak y AMSAT entran también en la vigilancia semanal de fuentes. / Satellites and ISS no longer depend on a single source: the platform keeps its own copy of the orbits, from CelesTrak or AMSAT.
+
 ## 2.7.2 · 14/11/2026
 - S-metro con S9+5 entre S9 y S9+10, en «Lo oigo» y en «Me oyen». En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / S9+5 added to the S-meter.
 

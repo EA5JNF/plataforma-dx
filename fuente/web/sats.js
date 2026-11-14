@@ -17,14 +17,17 @@ const SATS=[
  {id:7530,n:"AO-7",kind:T("lineal","linear"),up:"432.125 – 432.175 LSB/CW",down:"145.975 – 145.925 USB/CW",note:["Modo B; solo con sol, por su batería agotada.","Mode B; sunlight only (dead battery)."]},
  {id:53106,n:"IO-117",kind:"digital",up:"435.310",down:"435.310",note:["Digipeater (GreenCube), órbita media: pases largos.","Digipeater (GreenCube), medium orbit: long passes."]}];
 const TLEURL="https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle",PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=";
+/* 2.7.3: las órbitas se leen primero de la copia que la propia plataforma guarda dos veces al día (datos/tle-amateur.txt,
+   descargada de CelesTrak o, si no responde, de AMSAT); si no está, de CelesTrak y de AMSAT directamente */
+const TLEURL2="https://www.amsat.org/tle/current/nasabare.txt",MIRROR=(()=>{try{return /^https?:$/.test(location.protocol)&&/ea5jnf\.github\.io$/.test(location.hostname)?new URL("datos/tle-amateur.txt",location.href).href:null}catch(e){return null}})();
 let REC=null,PASSES=null,calcAt=0,calcFor="",busy=false,err="",LOW=S.get("acracb_satlow")==="1";
 function parse(txt){const L=String(txt||"").split(/\r?\n/).map(s=>s.trimEnd()).filter(Boolean),out={};
   for(let i=0;i+2<L.length+1;i++){if(L[i].startsWith("1 ")&&L[i+1]&&L[i+1].startsWith("2 ")){const id=+L[i].slice(2,7);out[id]=[L[i],L[i+1]];i++}}return out}
 async function getTLE(){let c=null;try{c=JSON.parse(S.get("acracb_tle")||"null")}catch(e){}
   if(c&&c.t&&Date.now()-c.t<12*36e5&&c.d)return c.d;
   const tryF=async u=>{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),15000);try{const r=await fetch(u,{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);const t=await r.text();if(t.length>2e6)throw new Error("size");return t}finally{clearTimeout(tm)}};
-  let txt=null;try{txt=await tryF(TLEURL)}catch(e){try{txt=await tryF(PROXY+encodeURIComponent(TLEURL))}catch(e2){}}
-  const d=txt?parse(txt):null;if(d&&Object.keys(d).length){S.set("acracb_tle",JSON.stringify({t:Date.now(),d}));return d}
+  let d=null;for(const u of [MIRROR,TLEURL,TLEURL2,PROXY+encodeURIComponent(TLEURL),PROXY+encodeURIComponent(TLEURL2)].filter(Boolean)){try{const x=parse(await tryF(u));if(x[25544]&&Object.keys(x).length>=3){d=x;break}}catch(e){}}
+  if(d){S.set("acracb_tle",JSON.stringify({t:Date.now(),d}));return d}
   if(c&&c.d)return c.d;throw new Error("tle")}
 const deg=r=>r*180/Math.PI;
 function look(rec,date,obs){const pv=satellite.propagate(rec,date);if(!pv||!pv.position)return null;const gmst=satellite.gstime(date);
@@ -59,7 +62,7 @@ function render(){const box=document.getElementById("sats");if(!box)return;
   const head=`<div class="seg clseg"><span class="segl">${T("Pases","Passes")}</span><button type="button" data-satlow="0" aria-pressed="${!LOW}">${T("Desde 10°","From 10°")}</button><button type="button" data-satlow="1" aria-pressed="${LOW}">${T("Todos","All")}</button></div>`;
   box.innerHTML=head+`<p class="note">${T(`Próximos pases sobre tu locator en las próximas 24 h. Cuanto más alta la elevación máxima, mejor se oye. Estado real de cada satélite en <a href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a>.`,`Next passes over your locator in the next 24 h. The higher the maximum elevation, the better. Current status of each satellite at <a href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a>.`)}${err?" "+err:""}</p>`+
    (sh.length?`<div class="satl">${sh.map(card).join("")}</div>`:`<div class="empty">${T("Ningún pase en las próximas 24 h.","No passes in the next 24 h.")}</div>`)+
-   `<details class="srcd"><summary>${T("Fuentes","Sources")}</summary><p class="note">${T("Elementos orbitales","Orbital elements")}: <a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer" data-ext>CelesTrak</a> · ${T("cálculo","calculation")}: satellite.js (MIT) · ${T("frecuencias","frequencies")}: AMSAT · ${T("calculado a las","calculated at")} ${hm(calcAt)} UTC</p></details>`;
+   `<details class="srcd"><summary>${T("Fuentes","Sources")}</summary><p class="note">${T("Elementos orbitales","Orbital elements")}: <a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer" data-ext>CelesTrak</a>${T(" y "," and ")}<a href="https://www.amsat.org/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a> · ${T("cálculo","calculation")}: satellite.js (MIT) · ${T("frecuencias","frequencies")}: AMSAT · ${T("calculado a las","calculated at")} ${hm(calcAt)} UTC</p></details>`;
   box.querySelectorAll("[data-satlow]").forEach(b=>b.onclick=()=>{LOW=b.dataset.satlow==="1";S.set("acracb_satlow",LOW?"1":"0");render()})}
 /* se calcula al abrir la pestaña, cada 6 h o si cambia el locator; la tarjeta se refresca cada 20 s mientras se ve */
 function visible(){const d=document.getElementById("f_sat");return d&&typeof st!=="undefined"&&st.page==="dx"&&!d.classList.contains("toff")}

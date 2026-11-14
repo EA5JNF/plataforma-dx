@@ -37,6 +37,8 @@ const S=[
  ["POTA","https://api.pota.app/spot/activator"],
  ["WWFF","https://spots.wwff.co/static/spots.json"],
  ["SOTA","https://api2.sota.org.uk/api/spots/60/all"],
+ ["CelesTrak satélites","https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle"],
+ ["AMSAT satélites","https://www.amsat.org/tle/current/nasabare.txt"],
  ["VOACAP (Cloudflare)","https://acracb-voacap.pages.dev/hubs/v3/IM98/idx.json"],
  ["VOACAP respaldo (Cloudflare)","https://acracb-voacap-respaldo.pages.dev/hubs/v3/IM98/idx.json"]];
 async function one([n,u]){for(let i=0;i<2;i++){const c=new AbortController(),t=setTimeout(()=>c.abort(),25000);

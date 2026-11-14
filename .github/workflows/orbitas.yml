@@ -1,0 +1,39 @@
+# Copia de las órbitas de los satélites de aficionado (TLE) dos veces al día en datos/tle-amateur.txt.
+# La plataforma la lee de su propia web, así que no depende de que CelesTrak deje descargar a cada navegador.
+# Fuente: CelesTrak (grupo «amateur»); si no responde, AMSAT (nasabare.txt). Datos públicos y gratuitos.
+name: Órbitas de satélites
+on:
+  schedule:
+    - cron: "41 5,17 * * *"   # 05:41 y 17:41 UTC
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency: orbitas
+jobs:
+  orbitas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: datos
+          fetch-depth: 1
+      - name: Descargar las órbitas
+        run: |
+          mkdir -p datos; ok=""
+          for u in "https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle" "https://www.amsat.org/tle/current/nasabare.txt"; do
+            if curl -fsSL --max-time 30 -A "ACRACB-PlataformaDX (+https://ea5jnf.github.io/plataforma-dx/)" "$u" -o t.txt \
+               && grep -q '^1 25544' t.txt && [ "$(grep -c '^1 ' t.txt)" -ge 3 ]; then ok="$u"; break; fi
+            echo "No responde bien: $u"
+          done
+          [ -n "$ok" ] || { echo "Ninguna fuente de órbitas responde"; exit 1; }
+          echo "Fuente: $ok · $(grep -c '^1 ' t.txt) satélites"
+          tr -d '\r' < t.txt > datos/tle-amateur.txt; rm -f t.txt
+      - name: Guardar si ha cambiado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos/tle-amateur.txt
+          git diff --cached --quiet && { echo "Sin cambios"; exit 0; }
+          git commit -qm "Órbitas de satélites al día"
+          git pull -q --rebase && git push -q
