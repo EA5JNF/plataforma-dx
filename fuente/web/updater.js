@@ -286,7 +286,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
     if(g.skim&&[...g.srcs].every(x=>x==="RBN"||x==="PSK Reporter"))note.push(g.srcs.has("RBN")?"oído por skimmer (RBN)":"decodificado (PSK Reporter)");
-    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,c:note.join(" · "),nw,ns,_t:+g.t});
+    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,_t:+g.t});
     if(nw)nn++;if(ns>1)cf++}
   spots.sort((a,b)=>b._t-a._t);const keep=spots.filter(s=>s.nw||s.band>=10);spots=keep.concat(spots.filter(s=>!keep.includes(s))).slice(0,100).sort((a,b)=>b._t-a._t);
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);
