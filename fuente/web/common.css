@@ -838,3 +838,16 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .srch .srf .srfn{color:var(--fg);font-weight:700}
 .srch .srf[open]>summary{margin-bottom:2px}
 .srch .srf .srfh{color:var(--muted);font-weight:400}
+/* 2.8.7: Resumen agrupado: Ahora, Próximas 12 horas y estaciones raras */
+.ez .ezl{display:block;font:600 .7rem var(--f-m,monospace);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ez .ezalt{margin:10px 0 0}
+.ez .ezc{display:inline-flex;gap:5px;align-items:baseline;margin:0 12px 4px 0;white-space:nowrap}
+.ez .ezvh{margin:10px 0 2px;padding-top:10px;border-top:1px solid var(--line)}
+.ez .ezv{display:block;font-size:.95rem}
+.eztl .ezr{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);gap:4px 12px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line)}
+.eztl .ezr:first-of-type{border-top:0}
+.eztl .ezh{font:500 .86rem var(--f-m,monospace);color:var(--muted);white-space:nowrap}
+.eztl .ezb{font:700 1.02rem var(--f-d,inherit);white-space:nowrap}
+.eztl .ezx{min-width:0}
+.eztl .ezbest{background:color-mix(in srgb,var(--accent) 9%,transparent);border-radius:8px;margin:0 -8px;padding:7px 8px}
+.eztl .ezm{font:700 .66rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}

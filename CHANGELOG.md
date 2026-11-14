@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.7 · 15/11/2026
+- Ahora › Resumen agrupado de forma más clara, sin tarjetas repetidas: «Ahora» (la mejor banda con cuántos destinos abre, hacia dónde y con quién, «También abiertas» con las siguientes bandas y sus destinos, y 6 m, 2 m y 70 cm), «Próximas 12 horas» por tramos (qué banda conviene de qué hora a qué hora, con «la mejor» marcada) y «Estaciones raras en el aire». Sustituye a las antiguas «Mejor hora próxima» y «Noche o amanecer», que solían repetir lo mismo. / Summary regrouped: Now, Next 12 hours by time slots, and rare stations.
+- Menú principal en este orden: Ahora, DX, Mapa y el resto como estaba. / Main menu order: Now, DX, Map, then the rest.
+- En español e inglés, en todas las pantallas y en los dos temas.
+
 ## 2.8.6 · 15/11/2026
 - Mapa: al ampliar, alejar o mover el mapa podían desaparecer las costas y fronteras, o verse solo un recuadro de tierra. Pasaba cuando se abría la pestaña Mapa más de minuto y medio después de cargar la web: el mapa ya no se enteraba de los gestos y seguía usando el recorte de la vista anterior. Ahora se engancha al dibujarse, sea cuando sea, y además se recalcula un instante después de cada movimiento. En todas las pantallas, en los dos temas y en español e inglés. / Map: coastlines and borders could vanish or show only a box of land after zooming or panning; fixed.
 

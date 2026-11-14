@@ -82,6 +82,30 @@ R('{const ab=ms.querySelector("[data-mmall]");if(ab)ab.onclick=()=>toggleAllCM()
 # 2.7.7: HamQSL llega ya traducido (Buena/Regular/Mala/Cerrada): el contraste de bandas lo leía solo en inglés y salía «sin datos»
 R('const lvl=s=>({good:2,fair:1,poor:0,"band closed":0,closed:0})[String(s||"").toLowerCase()];','const lvl=s=>({good:2,fair:1,poor:0,"band closed":0,closed:0,buena:2,regular:1,mala:0,cerrada:0,abierta:2})[String(s||"").toLowerCase().replace(/ *[(].*$/,"")];')
 R('const HQG={0:"80m-40m",','const HQG={0:"80m-40m",8:"80m-40m",')
+# 2.8.7: «Resumen» con grupos claros: «Ahora» (mejor banda, también abiertas, 6 m–70 cm), «Próximas 12 horas» por tramos y estaciones raras
+R('if(z)z.insertAdjacentHTML("beforeend",easyVHF());','')
+_i=s.index("function renderEasyS(now,full){");_j=s.index("/* ---------- glosario",_i)
+s=s[:_i]+r"""function ezWord(p){return p>=.7?"muy buena":p>=.5?"buena":"aceptable"}
+function ezAlt(lh,skip){return memo("ezalt|"+lh+"|"+MOD()+"|"+st.mode,()=>{const out=[];const T0=TG().filter(inMode);for(const b of BI()){if(b>=10)continue;let n=0,sc=0;for(const t of T0){const p=Math.max(prob(t,lh,b,false).p,prob(t,lh,b,true).p);if(p>=.3){n++;sc+=p}}if(n)out.push([b,n,sc])}return out.sort((a,c)=>c[2]-a[2])}).filter(x=>x[0]!==skip).slice(0,3)}
+function ezVHF(){return [10,11,12].map(b=>{const [lv,t]=vhfStatus(b);return `<span class="ezv"><b style="color:${BC[b]}">${BANDS[b]}</b> <span class="lv-${lv}" style="background:none;border:0;padding:0">${t}</span></span>`}).join("")}
+function renderEasyS(now,full){const e0=easyAt(now);
+  let card=easyCard("Ahora · "+hh(now)+":00",now,e0);if(e0)card=card.replace(/(<p class="ezbig">[\s\S]*?)<\/p>/,`$1 · ${e0.ts.length} <span>destinos</span></p>`);const alt=e0?ezAlt(now,e0.b):[];
+  const extra=(alt.length?`<p class="ezalt"><span class="ezl">También abiertas</span> ${alt.map(([b,n])=>`<span class="ezc"><b style="color:${BC[b]}">${BANDS[b]}</b> ${n} <span>destinos</span></span>`).join("")}</p>`:"")+`<div class="ezvh"><span class="ezl">6 m, 2 m y 70 cm</span>${ezVHF()}</div>`;
+  card=card.includes('<details class="why">')?card.replace('<details class="why">',extra+'<details class="why">'):card.replace(/<\/div>$/,extra+"</div>");
+  let tl="";
+  if(full){const rows=[];for(let x=now+1;x<=now+12;x++){const h=x%24,e=easyAt(h),b=e?e.b:-1,last=rows[rows.length-1];if(last&&last.b===b){last.to=h;if(e&&e.sc>last.sc){last.sc=e.sc;last.e=e}}else rows.push({from:h,to:h,b,e,sc:e?e.sc:0})}
+    const best=rows.reduce((a,r)=>r.sc>(a?a.sc:0)?r:a,null);
+    tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div>${rows.map(r=>{const span=r.from===r.to?hh(r.from)+":00":hh(r.from)+"–"+hh((r.to+1)%24)+" h";
+      if(!r.e)return `<div class="ezr"><span class="ezh">${span}</span><span class="ezb">—</span><span class="ezx note">Bandas tranquilas: buen momento para escuchar.</span></div>`;
+      const top=r.e.ts.slice(0,2).map(x=>esc(x.t.name.split(" (")[0])).join(", ");
+      return `<div class="ezr${r===best?" ezbest":""}"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx">${ezWord(r.e.ts[0].p)} · ${top}${r===best?' <span class="ezm">la mejor</span>':""}</span></div>`}).join("")}</div>`}
+  else tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div><p class="note">Calculando…</p></div>`;
+  const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,now)}:null}).filter(x=>x&&x.p>=.3).sort((a,b)=>b.p-a.p).slice(0,3);
+  $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<p><b>${CS(x.d.call)}</b> · ${BANDS[x.b]}${x.d.qsx?" · "+esc(x.d.qsx):""} · ${dirTxt(x.lp?x.t.laz:x.t.az)}</p>`).join("")}</div>`:"")+`</div>`+
+   `<details class="why"><summary>Palabras que conviene saber</summary><div class="ez ezg2" id="glos"></div></details>`}
+"""+s[_j:]
+# 2.8.7: menú principal: Ahora, DX, Mapa y el resto como estaba
+R('<button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button>','<button data-pg="dx">DX</button><button data-pg="mapa">Mapa</button>')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
