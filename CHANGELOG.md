@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.7 · 14/11/2026
+- «¿Te ha oído?» en el diálogo de todas las tarjetas de estación, con el mismo diseño que «¿Lo oyes?»: «Me oyen / No me oyen» y el reporte que te han dado según el modo (R y S en fonía y CW; dB del programa en digitales). «Lo oigo» ajusta tu recepción y «Me oyen» tu transmisión; durante 45 minutos «Me oyen» sube mucho la probabilidad de esa zona y «No me oyen» la baja poco, porque puede ser el pile-up. En las DXpediciones solo cuenta que te han oído, porque casi siempre dan 59 o 599. La tarjeta lo indica con «Te oyen · R5 · S9». En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / «Did it hear you?» on every station card, with the report you were given, tuning your transmission side.
+
 ## 2.6.6 · 14/11/2026
 - Botón «Silenciar» en el aviso DX de la portada: 1 hora, hasta mañana a las 8:00 o hasta que lo reactives. Mientras tanto no salen ni el aviso de la portada ni las notificaciones del móvil; en Avisos se indica hasta cuándo, con un botón «Reactivar». En el móvil las opciones salen como hoja inferior y en el ordenador como menú. / «Mute» button on the home-screen DX alert.
 - «¿Lo oyes?» ocupa menos en las tarjetas: una sola línea discreta al pie, a la derecha, sin separador. / More discreet «Do you hear it?» line on cards.
