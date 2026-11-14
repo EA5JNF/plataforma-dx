@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.7 · 14/11/2026
+- Avisos DX: el modo y las bandas que eliges en Avisos mandan en todo. La lista, el aviso flotante de la portada, el resumen del apartado y las notificaciones del móvil solo muestran los avisos de esa elección (por ejemplo, solo SSB en todas las bandas). Al cambiar el filtro se actualiza todo al momento. / Your Alerts mode and band choice now applies everywhere: list, home-screen alert, summary and phone notifications.
+
 ## 2.4.6 · 14/11/2026
 - Menos consumo: con la pestaña en segundo plano o la pantalla apagada se detienen también el giro de balizas, la animación del mapa, el glosario y la línea de 24 h. Más fuentes lentas (previsión de 3 días, flujo solar, manchas, WWV y aurora) se reutilizan unos minutos en lugar de pedirse en cada actualización. / Lower energy use: more timers pause in the background and slow sources are reused for a few minutes.
 - Fiabilidad: cada versión se comprueba automáticamente antes de publicarse y no sale si algún archivo tiene un error. / Every build is syntax-checked before publishing.
