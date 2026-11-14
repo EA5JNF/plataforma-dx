@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.3 · 14/11/2026
+- La probabilidad de QSO sale ahora en todas las tarjetas de estación: el aviso DX de la portada, la lista de Avisos, «Cerca» y las actividades POTA, SOTA y WWFF, con la misma medida que el resto de la plataforma (VOACAP con tu estación, en el modo del spot, equilibrado con los clústeres). En español e inglés, en la web y en el artefacto. / QSO chance now shown on every station card, including the home-screen alert, Alerts, Nearby and POTA/SOTA/WWFF.
+
 ## 2.6.2 · 14/11/2026
 - Interruptor «Todos los modos» con exactamente el mismo alto que el selector de modo en todas las versiones y pantallas. / The «All modes» switch now matches the mode selector height everywhere.
 
