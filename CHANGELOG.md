@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.8 · 14/11/2026
+- Misma medida en toda la plataforma (VOACAP equilibrado con los clústeres), salvo la capa «Predicción VOACAP» del mapa y su ventana de destino, que enseñan la previsión de VOACAP sola. Explicado en Método › Cálculo. / One measure everywhere, except the map's «VOACAP forecast» layer, which shows pure VOACAP.
+- Bandas: «sin datos» en lugar de «sin dato». / Bands table wording.
+
 ## 2.5.7 · 14/11/2026
 - El código de la web se publica compactado: un 13 % menos de peso, el primer texto aparece en 0,24 s (antes 0,28 s), menos trabajo del procesador al abrir (4,1 s frente a 4,4 s en un móvil lento simulado) y menos memoria (22 MB frente a 29 MB). Revisión completa en todas las pantallas, tamaños de letra e idiomas, sin errores. / Minified code: lighter, faster first paint, less CPU and memory at startup.
 

@@ -1,3 +1,13 @@
+/* ---- ACRACB 2.5.8: la capa «Predicción VOACAP» del mapa enseña la previsión pura ----
+   Toda la plataforma usa la misma medida (VOACAP equilibrado con los clústeres), salvo esta capa y su ventana de destino,
+   que muestran solo lo que dice VOACAP. Se engancha por dentro del dibujo diferido del mapa. */
+(function(){
+"use strict";
+const pure=f=>{const w=function(){const on=typeof st!=="undefined"&&st.ly&&st.ly.voa;if(on)window.ACRACB_NOLIVE=true;try{return f.apply(this,arguments)}finally{if(on)window.ACRACB_NOLIVE=false}};w.__pure=1;return w};
+function hook(){let ok=true;for(const n of ["drawMap","renderPop"]){const f=window[n];if(typeof f!=="function"){ok=false;continue}if(!f.__pure&&!f.__fast)window[n]=pure(f)}return ok}
+let n=0;const t=setInterval(()=>{if(hook()||++n>40)clearInterval(t)},50);
+})();
+
 /* ---- ACRACB 2.4.3: botones del mapa sin retardo ----
    Al pulsar un botón del mapa, el botón cambia en el acto y el mapa se redibuja justo después, en el siguiente
    fotograma. Si se pulsan varios seguidos, se redibuja una sola vez con todo. */
