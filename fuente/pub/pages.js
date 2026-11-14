@@ -1,0 +1,4 @@
+const {chromium}=require("playwright");(async()=>{const b=await chromium.launch();const W=+process.argv[2]||1920,H=+process.argv[3]||1080;
+const c=await b.newContext({viewport:{width:W,height:H},deviceScaleFactor:1});await c.addInitScript(()=>{localStorage.setItem("acracb_tour","1")});const p=await c.newPage();await p.route(/^https?:\/\/(?!localhost)/,r=>r.abort());await p.goto("http://localhost:8768/index.html");await p.waitForTimeout(3000);
+await p.evaluate(()=>{const a=document.getElementById("albar");if(a)a.hidden=true});
+for(const pg of (process.argv[4]||"ahora,dx,sol,concursos,balizas").split(",")){await p.evaluate(g=>{go(g);const n=document.querySelector(".nav");n&&n.scrollIntoView()},pg);await p.waitForTimeout(700);await p.screenshot({path:`../pg_${W}_${pg}.png`})}await b.close()})()

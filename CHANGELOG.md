@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.0 · 14/11/2026
+- El código fuente completo de la plataforma se guarda en la carpeta `fuente` del repositorio, con instrucciones y un script para montarla y publicarla (`fuente/LEEME.md`). La web ya no depende de ningún equipo concreto para poder seguir mejorándose. / Full source code now kept in the `fuente` folder, with build instructions.
+- Respaldo de la previsión VOACAP: si `acracb-voacap.pages.dev` no responde, la web usa `acracb-voacap-respaldo.pages.dev`. El respaldo se crea y se pone al día con el flujo «Respaldo VOACAP en Cloudflare». / VOACAP backup on a second Cloudflare Pages project.
+- Vigilancia semanal de las 34 fuentes de datos: cada lunes un flujo automático las prueba y, si alguna falla, abre un aviso en GitHub que llega por correo. / Weekly automatic check of every data source, with an e-mail alert if one fails.
+- Menos consumo en móviles y tabletas: el precálculo de las 24 horas para todas las bandas se hace como mucho cada 15 minutos con batería, en lugar de tras cada actualización. / Less background computation on battery.
+- Accesibilidad: más contraste en textos secundarios, etiquetas y color de acento en los dos temas. / Higher contrast for secondary text and labels.
+- Nota de privacidad en el pie: sin registro, sin cookies y sin seguimiento; ajustes y log ADIF solo en el dispositivo. / Privacy note in the footer.
+
 ## 2.4.9 · 14/11/2026
 - Resumen: «El Sol ahora» enseña a la vista lo esencial (flujo solar, manchas, Kp, índice A, viento solar, Bz, rayos X y apagones con el veredicto); el resto de valores, la previsión, el ciclo solar y las explicaciones van en un desplegable. / «The Sun now» shows the essentials; the rest folds away.
 - «Palabras y expresiones que conviene saber» pasa al final del resumen, con 55 términos (antes 35) y 8 a la vista cada vez, y tres tablas de consulta: el alfabeto fonético internacional, el código Q más usado y el código Morse para CW con sus abreviaturas. / Glossary moved to the end of the summary, with 55 terms, the phonetic alphabet, the Q code and Morse code for CW.

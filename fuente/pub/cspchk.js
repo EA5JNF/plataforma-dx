@@ -1,0 +1,6 @@
+const {chromium}=require("playwright");(async()=>{const b=await chromium.launch();for(const u of [process.argv[2]||"http://localhost:8768/index.html","http://localhost:8768/en.html","file://"+process.cwd()+"/../web/out/index.html"]){const p=await b.newPage({viewport:{width:1280,height:900}});const v=[];p.on("console",m=>{if(/Content Security Policy|Refused/.test(m.text()))v.push(m.text().slice(0,200))});const errs=[];p.on("pageerror",e=>errs.push(e.message));
+await p.route(/^https?:\/\/(?!localhost)/,r=>r.abort());await p.goto(u);await p.waitForTimeout(3000);
+for(const g of ["ahora","mapa","dx","sol","concursos","balizas","fichas","metodo"]){await p.evaluate(x=>{try{go(x)}catch(e){}},g);await p.waitForTimeout(300)}
+await p.evaluate(()=>{go("mapa");document.querySelector('[data-sw="voa"]').click()});await p.waitForTimeout(800);
+const r=await p.evaluate(()=>({font:(document.getElementById("gfont")||{}).media,map:document.querySelectorAll("#map path").length,flags:document.querySelectorAll("img.fl").length,ok:typeof refresh,tg:TG().length}));
+console.log(u.split("/").slice(-1)[0],u.slice(0,5),JSON.stringify(r),"CSP:",v.length,v.slice(0,3),"err:",errs.slice(0,3));await p.close()}await b.close()})()

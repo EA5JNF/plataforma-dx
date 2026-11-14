@@ -15,3 +15,10 @@ Estas herramientas sirven para volver a generarlas desde cero si algún día hic
    «Zonas VOACAP a Cloudflare» (pestaña Actions › Run workflow). Después se puede borrar la rama.
 
 Las rutas de los scripts apuntan a `/tmp/claude-0/vc`: hay que ajustarlas al sitio donde se trabaje.
+
+## Respaldo (desde la versión 2.5.0)
+
+La web lee las zonas de `acracb-voacap.pages.dev` y, si no responde, de `acracb-voacap-respaldo.pages.dev`.
+El respaldo se crea o se pone al día con el flujo «Respaldo VOACAP en Cloudflare» (pestaña Actions > Run workflow):
+descarga del proyecto principal los archivos de `archivos-cloudflare.txt.gz` (11.220) y los sube al de respaldo.
+Hay que lanzarlo cada vez que se vuelvan a subir zonas al proyecto principal.

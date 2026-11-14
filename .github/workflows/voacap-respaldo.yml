@@ -1,0 +1,39 @@
+# Copia de respaldo de las zonas VOACAP en un segundo proyecto de Cloudflare Pages (acracb-voacap-respaldo).
+# Descarga los archivos del proyecto principal (acracb-voacap.pages.dev) y los sube al de respaldo:
+# si el principal no respondiera, la web usa el respaldo sin que nadie note nada.
+# Se ejecuta a mano: pestaña Actions > «Respaldo VOACAP en Cloudflare» > Run workflow.
+# Usa los mismos secretos que el flujo principal: CLOUDFLARE_API_TOKEN y CLOUDFLARE_ACCOUNT_ID.
+name: Respaldo VOACAP en Cloudflare
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: voacap-respaldo
+  cancel-in-progress: false
+jobs:
+  copiar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: herramientas/voacap
+      - name: Descargar las zonas del proyecto principal
+        run: |
+          mkdir -p site
+          zcat herramientas/voacap/archivos-cloudflare.txt.gz > lista.txt
+          echo "Archivos a copiar: $(wc -l < lista.txt)"
+          cd site
+          xargs -P 24 -I{} sh -c 'mkdir -p "$(dirname "{}")" && curl -fsS --retry 4 --retry-delay 3 -o "{}" "https://acracb-voacap.pages.dev/{}"' < ../lista.txt
+          cd ..
+          N=$(find site -type f | wc -l); echo "Descargados: $N"; du -sh site
+          [ "$N" -eq "$(wc -l < lista.txt)" ] || { echo "Faltan archivos: no se sube nada"; exit 1; }
+          printf '/hubs/*\n  Access-Control-Allow-Origin: *\n  Cache-Control: public, max-age=31536000, immutable\n' > site/_headers
+      - name: Crear el proyecto de respaldo si no existe y subir
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4.100.0 pages project create acracb-voacap-respaldo --production-branch=main || true
+          npx --yes wrangler@4.100.0 pages deploy site --project-name=acracb-voacap-respaldo --branch=main --commit-dirty=true

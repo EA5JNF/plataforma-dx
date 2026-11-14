@@ -1,0 +1,32 @@
+name: Vigilancia semanal de fuentes
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # lunes 06:17 UTC
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  issues: write
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: fuente/vigilancia
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Comprobar las fuentes
+        run: node fuente/vigilancia/fuentes.mjs
+      - name: Avisar si alguna falla
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          T="Fuentes de datos con problemas"
+          N=$(gh issue list --state open --search "in:title \"$T\"" --json number -q '.[0].number')
+          if [ "$(cat estado.txt)" = "fallo" ]; then
+            if [ -n "$N" ]; then gh issue comment "$N" --body-file informe.md; else gh issue create --title "$T" --body-file informe.md; fi
+          elif [ -n "$N" ]; then
+            gh issue comment "$N" --body-file informe.md && gh issue close "$N"
+          fi

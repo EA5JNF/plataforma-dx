@@ -1,0 +1,302 @@
+[
+[
+"return m<60\\?`hace \\$\\{m\\} min`:`hace \\$\\{Math\\.floor\\(m/60\\)\\} h \\$\\{m%60\\?String\\(m%60\\)\\.padStart\\(2,\"0\"\\)\\+\" min\":\"\"\\}`",
+"return m<60?`${m} min ago`:`${Math.floor(m/60)} h ${m%60?String(m%60).padStart(2,\"0\")+\" min \":\"\"}ago`"
+],
+[
+" en \\$\\{secs\\} s · \\$\\{okn\\} de \\$\\{tot\\} fuentes respondieron",
+" in ${secs} s · ${okn} of ${tot} sources responded"
+],
+[
+"(</b>|\\)) en (\\$\\{|<b)",
+"\\1 on \\2"
+],
+[
+"\\.join\\(\" en \"\\)",
+".join(\" on \")"
+],
+[
+", con \\$\\{top\\.cnt\\} destination",
+", with ${top.cnt} destination"
+],
+[
+"` \\(hace \\$\\{age<1440",
+"` (${age<1440"
+],
+[
+"` y \\$\\{calls\\.length-4\\} more",
+"` and ${calls.length-4} more"
+],
+[
+"`NOAA forecast \\(ahora \\$\\{",
+"`NOAA forecast (now ${"
+],
+[
+"\\$\\{nm\\} a \\$\\{fk\\(Math\\.round\\(top\\.d\\)\\)\\} km",
+"${nm} at ${fk(Math.round(top.d))} km"
+],
+[
+"\\} a \\$\\{\\$\\(ANT",
+"} at ${$(ANT"
+],
+[
+">noche<",
+">night<"
+],
+[
+"(\\d),(\\d) (a|to) ",
+"\\1.\\2 \\3 "
+],
+[
+"(\\d),(\\d+)(?= dBi)",
+"\\1.\\2"
+],
+[
+"</b> y <b>",
+"</b> and <b>"
+],
+[
+"\\) y <b>",
+") and <b>"
+],
+[
+"\\) e <b>",
+") and <b>"
+],
+[
+"</b> e <b>",
+"</b> and <b>"
+],
+[
+"(\\}|\\)|%|:00) en \\$\\{",
+"\\1 on ${"
+],
+[
+"\" en \"\\+",
+"\" on \"+"
+],
+[
+"\", en \"\\+",
+"\", on \"+"
+],
+[
+"\\} hasta \\$\\{",
+"} until ${"
+],
+[
+"</b> hasta \\$\\{",
+"</b> until ${"
+],
+[
+"`hace \\$\\{a\\} min`",
+"`${a} min ago`"
+],
+[
+"`hace \\$\\{Math.round\\(a/60\\)\\} h`",
+"`${Math.round(a/60)} h ago`"
+],
+[
+" por \\$\\{(\\w)\\.lp\\?",
+" via ${\\1.lp?"
+],
+[
+"\"paso largo\":\"paso corto\"",
+"\"long path\":\"short path\""
+],
+[
+"\" \\(largo\\)\"",
+"\" (long)\""
+],
+[
+"\"largo\":\"corto\"",
+"\"long\":\"short\""
+],
+[
+"\", largo\"",
+"\", long\""
+],
+[
+"\\(corto \\$\\{",
+"(short ${"
+],
+[
+"\" \\(paso largo\\)\"",
+"\" (long path)\""
+],
+[
+"\\(rumbo \\$\\{",
+"(bearing ${"
+],
+[
+"\\$\\{CT\\(\\)\\.n\\} es <b>",
+"${CT().n} is <b>"
+],
+[
+", con \\$\\{top\\.cnt\\} destino\\$\\{top\\.cnt===1\\?\"\":\"s\"\\}",
+", with ${top.cnt} destination${top.cnt===1?\"\":\"s\"}"
+],
+[
+"multiplicador\\$\\{top\\.cnt===1\\?\"\":\"es\"\\} abierto\\$\\{top\\.cnt===1\\?\"\":\"s\"\\}",
+"open multiplier${top.cnt===1?\"\":\"s\"}"
+],
+[
+"\\$\\{x\\.cnt\\} destino\\$\\{x\\.cnt===1\\?\"\":\"s\"\\}",
+"${x.cnt} destination${x.cnt===1?\"\":\"s\"}"
+],
+[
+"d\\.getUTCDate\\(\\)\\+\" de \"\\+MESES\\[d\\.getUTCMonth\\(\\)\\]\\+\" de \"\\+d\\.getUTCFullYear\\(\\)",
+"MESES[d.getUTCMonth()]+\" \"+d.getUTCDate()+\", \"+d.getUTCFullYear()"
+],
+[
+"\"day\":\"noche\"",
+"\"day\":\"night\""
+],
+[
+"\" · \"\\+se\\.polar\\+\" polar\"",
+"\" · polar \"+se.polar"
+],
+[
+"`el \\$\\{Math\\.round\\(df\\*100\\)\\} %",
+"`${Math.round(df*100)} %"
+],
+[
+"`con \\$\\{ANT\\[pk\\.id\\]\\.n\\} a \\$\\{\\$\\(ANT\\[pk\\.id\\]\\.h\\)\\.value\\} m tienes ",
+"`with ${ANT[pk.id].n} at ${$(ANT[pk.id].h).value} m you have "
+],
+[
+"\\$\\{hp\\.n\\} salto\\$\\{hp\\.n>1\\?\"s\":\"\"\\} de \\$\\{fk\\(hp\\.len\\)\\} km, saliendo a ",
+"${hp.n} hop${hp.n>1?\"s\":\"\"} of ${fk(hp.len)} km, leaving at "
+],
+[
+"\\$\\{n\\} escucha\\$\\{n===1\\?\"\":\"s\"\\} tuya\\$\\{n===1\\?\"\":\"s\"\\}",
+"${n} report${n===1?\"\":\"s\"} of yours"
+],
+[
+"\\} de 18</b>",
+"} of 18</b>"
+],
+[
+"\\$\\{r\\.c\\} de \\$\\{NT\\}",
+"${r.c} of ${NT}"
+],
+[
+"\\(unas \\$\\{offPerDay\\}",
+"(about ${offPerDay}"
+],
+[
+"\\(entre \\$\\{mn\\} y \\$\\{mx\\}",
+"(between ${mn} and ${mx}"
+],
+[
+"(\\d\\.\\d{3}) y (\\d)",
+"\\1 and \\2"
+],
+[
+" y σ ",
+" and σ "
+],
+[
+"\\} y (?=[a-z$<])",
+"} and "
+],
+[
+"\" y \"",
+"\" and \""
+],
+[
+"(\\d),(\\d)(?= dBi)",
+"\\1.\\2"
+],
+[
+"(\\d+(?:\\.\\d+)?) a (\\d+(?:\\.\\d+)?) dBi",
+"\\1 to \\2 dBi"
+],
+[
+"\\(116,4\\)",
+"(116.4)"
+],
+[
+"9,8 dBi",
+"9.8 dBi"
+],
+[
+"\\?\"E\":\"O\"",
+"?\"E\":\"W\""
+],
+[
+"const CAB=\\[\"N\",\"NNE\",\"NE\",\"ENE\",\"E\",\"ESE\",\"SE\",\"SSE\",\"S\",\"SSO\",\"SO\",\"OSO\",\"O\",\"ONO\",\"NO\",\"NNO\"\\];",
+"const CAB=[\"N\",\"NNE\",\"NE\",\"ENE\",\"E\",\"ESE\",\"SE\",\"SSE\",\"S\",\"SSW\",\"SW\",\"WSW\",\"W\",\"WNW\",\"NW\",\"NNW\"];"
+],
+[
+"\\[\"norte\",\"nornoreste\",\"noreste\",\"estenoreste\",\"este\",\"estesureste\",\"sureste\",\"sursureste\",\"sur\",\"sursuroeste\",\"suroeste\",\"oestesuroeste\",\"oeste\",\"oestenoroeste\",\"noroeste\",\"nornoroeste\"\\]",
+"[\"north\",\"north-northeast\",\"northeast\",\"east-northeast\",\"east\",\"east-southeast\",\"southeast\",\"south-southeast\",\"south\",\"south-southwest\",\"southwest\",\"west-southwest\",\"west\",\"west-northwest\",\"northwest\",\"north-northwest\"]"
+],
+[
+"\"en \"\\+dd\\+\" days\"",
+"\"in \"+dd+\" days\""
+],
+[
+"\\(ahora \"\\+L\\.kp",
+"(now \"+L.kp"
+],
+[
+"270:\"O\"",
+"270:\"W\""
+],
+[
+"\\), y <b>",
+"), and <b>"
+],
+[
+"\\?\" a \"\\+\\$\\(",
+"?\" at \"+$("
+],
+[
+"class=\"cnt\">HOY<",
+"class=\"cnt\">TODAY<"
+],
+[
+"\\}salida \\$\\{esc\\(fmtUTC\\(c\\.time\\)\\)\\} a \\$\\{",
+"}departure ${esc(fmtUTC(c.time))} at ${"
+],
+[
+"\" largo\"",
+"\" long\""
+],
+[
+"\\$\\{c\\.n\\} escucha\\$\\{c\\.n===1\\?\"\":\"s\"\\}",
+"${c.n} report${c.n===1?\"\":\"s\"}"
+],
+[
+"\\$\\{it\\.length\\} aviso\\$\\{it\\.length===1\\?\"\":\"s\"\\}",
+"${it.length} alert${it.length===1?\"\":\"s\"}"
+],
+[
+"\\$\\{bad\\} aviso\\$\\{bad===1\\?\"\":\"s\"\\} desfavorable\\$\\{bad===1\\?\"\":\"s\"\\}",
+"${bad} unfavorable alert${bad===1?\"\":\"s\"}"
+],
+[
+"`con \\$\\{ANT\\[pk\\.id\\]\\.n\\} at ",
+"`with ${ANT[pk.id].n} at "
+],
+[
+"\\{nn\\} nuevos,",
+"{nn} new,"
+],
+[
+"\\$\\{r\\.src\\.length\\} sources",
+"${r.src.length} sources"
+],
+[
+"\\) a <b>",
+") for <b>"
+],
+[
+"`sale a \\$\\{a\\}° and your horizon",
+"`it takes off at ${a}° and your horizon"
+],
+[
+"<b>Versión ",
+"<b>Version "
+]
+]

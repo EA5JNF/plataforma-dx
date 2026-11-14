@@ -1,0 +1,4 @@
+const {chromium}=require("playwright");(async()=>{const b=await chromium.launch();for(const pg of ["ahora","mapa","dx"]){const p=await b.newPage({viewport:{width:390,height:844}});await p.route(/^https?:\/\/(?!localhost)/,r=>r.abort());await p.goto("http://localhost:8768/index.html");await p.waitForTimeout(3000);
+await p.evaluate(g=>go(g),pg);await p.waitForTimeout(3000);const c=await p.context().newCDPSession(p);await c.send("Performance.enable");
+const m=async()=>Object.fromEntries((await c.send("Performance.getMetrics")).metrics.map(x=>[x.name,x.value]));const a=await m();await p.waitForTimeout(10000);const z=await m();
+console.log(pg,"script ms/s",((z.ScriptDuration-a.ScriptDuration)*100).toFixed(1),"layout",((z.LayoutDuration-a.LayoutDuration)*100).toFixed(1),"style",((z.RecalcStyleDuration-a.RecalcStyleDuration)*100).toFixed(1),"layouts",z.LayoutCount-a.LayoutCount);await p.close()}await b.close()})()

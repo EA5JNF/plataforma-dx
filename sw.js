@@ -56,7 +56,7 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const u = new URL(req.url);
   /* zonas VOACAP en Cloudflare Pages: también se guardan en el dispositivo */
-  if (u.origin === "https://acracb-voacap.pages.dev" && u.pathname.includes("/hubs/")) { e.respondWith(dataFirst(req)); return; }
+  if ((u.origin === "https://acracb-voacap.pages.dev" || u.origin === "https://acracb-voacap-respaldo.pages.dev") && u.pathname.includes("/hubs/")) { e.respondWith(dataFirst(req)); return; }
   if (u.origin !== location.origin) return;
   if (u.pathname.includes("/hubs/") || u.pathname.includes("/lib/")) { e.respondWith(dataFirst(req)); return; }
   if (req.mode === "navigate" || /\.(html|json|png|svg|webmanifest)$/.test(u.pathname) || u.pathname.endsWith("/")) e.respondWith(pageFirst(req));

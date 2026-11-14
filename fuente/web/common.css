@@ -1,0 +1,617 @@
+
+/* ---- botones y enlaces con forma de botón: texto siempre centrado ---- */
+.btn,a.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.2;text-decoration:none;box-sizing:border-box;vertical-align:middle;text-align:center}
+a.btn{color:var(--fg)}
+/* ---- botón de tema ---- */
+.thbtn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;min-height:0!important;padding:0!important;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);cursor:pointer;flex:0 0 auto}
+.thbtn svg{width:18px;height:18px}
+.thbtn .sun{display:none}
+:root[data-theme="light"] .thbtn .sun{display:block}:root[data-theme="light"] .thbtn .moon{display:none}
+/* ---- textos largos: resumen de dos líneas y se despliegan al tocar ---- */
+.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+.clamp.open{display:block;-webkit-line-clamp:unset;-webkit-mask-image:none;mask-image:none;cursor:default}
+.clampx{display:inline-block;font-size:.75rem;color:var(--accent);margin:-2px 0 6px;cursor:pointer;user-select:none}
+/* ---- informe de fuentes de la actualización ---- */
+.srcrep{margin:6px 0 0}.srcrep summary{cursor:pointer;font-size:.8rem;color:var(--muted)}
+.srcg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.srci{display:inline-flex;flex-direction:column;padding:4px 8px;border-radius:6px;border:1px solid var(--line);font-size:.78rem;background:var(--panel2)}
+.srci small{font-size:.68rem;color:var(--dim)}.srci.ok{border-color:rgba(61,220,132,.45)}.srci.ko{border-color:rgba(255,90,79,.45);opacity:.85}
+/* ---- objetivos del log ---- */
+.goal{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:8px 0}
+.goal .sp{margin:0}
+.drop input[type=file]{display:block;margin-top:8px;max-width:100%}
+
+/* =================== MODO CLARO =================== */
+:root[data-theme="light"]{color-scheme:light;
+  --bg:#f3f5f8;--panel:#ffffff;--panel2:#eef2f6;--line:#d7dee7;--border:#c3ceda;--grat:#d9e2ec;
+  --fg:#16202b;--muted:#4a5a6c;--dim:#6b7b8d;--accent:#b8640b;--accent2:#0d7f92;
+  --ocean:#dfeaf4;--land:#f7f4ec;
+  --b160:#4d7c0f;--b80:#047857;--b40:#1d4ed8;--b20:#7e22ce;--b17:#0e7490;--b15:#a16207;--b12:#be185d;--b10:#c2410c;--b60:#15803d;--b30:#4338ca;--b6:#c2410c;--b2:#a21caf;--b70:#334155;
+  --ok:#15803d;--warn:#a16207;--bad:#c62828;
+  --q0:#e7ecf2;--q1:#f6d6dc;--q2:#f4e3b5;--q3:#d9ebb0;--q4:#a8dfbd;--q5:#5cc98a}
+:root[data-theme="light"] body{background:var(--bg);color:var(--fg)}
+:root[data-theme="light"] [style*="#ffd76a"]{color:#9a6400!important}
+:root[data-theme="light"] [style*="#ff8a80"]{color:#c62828!important}
+:root[data-theme="light"] [style*="color:#fff"]{color:var(--fg)!important}
+:root[data-theme="light"] .nwb{color:#fff}
+:root[data-theme="light"] img.fl{box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+:root[data-theme="light"] .top,:root[data-theme="light"] header.top{background:transparent;border-color:var(--line)}
+:root[data-theme="light"] .card{background:var(--panel);border-color:var(--line);box-shadow:0 1px 2px rgba(20,30,45,.06)}
+:root[data-theme="light"] .mfloat,:root[data-theme="light"] .mpop{background:rgba(255,255,255,.95)!important;color:var(--fg)}
+:root[data-theme="light"] .mapcard.fsm .mfloat .btn{background:rgba(255,255,255,.92)}
+:root[data-theme="light"] svg text{fill:var(--fg)}
+:root[data-theme="light"] .chip.g,:root[data-theme="light"] .pill.g{color:#0f5c2c}
+:root[data-theme="light"] .chip.y,:root[data-theme="light"] .pill.y{color:#7a4a00}
+:root[data-theme="light"] .chip.r,:root[data-theme="light"] .pill.r{color:#9b1c1c}
+:root[data-theme="light"] .clamp{-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+:root[data-theme="light"] .seg button[aria-pressed="true"]{background:#fff3e3;color:#7a3f00;border-color:var(--accent)}
+:root[data-theme="light"] .grp button[aria-pressed="true"]{color:#fff}
+:root[data-theme="light"] .modes button[aria-pressed="true"]{color:#fff}
+:root[data-theme="light"] svg text{stroke:#ffffff!important;stroke-opacity:.9}
+:root[data-theme="light"] .night{fill:#1b2a40!important;fill-opacity:.13!important;stroke:#7d8fa8!important}
+:root[data-theme="light"] .cy,:root[data-theme="light"] .clock b{color:var(--fg)}
+:root[data-theme="light"] .c0,:root[data-theme="light"] .c1,:root[data-theme="light"] .c2,:root[data-theme="light"] .c3,:root[data-theme="light"] .c4,:root[data-theme="light"] .c5{color:#16202b!important}
+:root[data-theme="light"] .fsum{color:var(--muted)!important}
+:root[data-theme="light"] a[style*="9cc4ff"],:root[data-theme="light"] [style*="#9cc4ff"]{color:#0d5fa8!important}
+:root[data-theme="light"] .page a:not(.btn){color:#0d5fa8}
+:root[data-theme="light"] [style*="rgba(10,15,23"],:root[data-theme="light"] [style*="rgba(10, 15, 23"]{background:rgba(255,255,255,.94)!important;color:var(--fg)!important}
+:root[data-theme="light"] .mhint{background:rgba(255,255,255,.95)!important;color:var(--fg)}
+/* ---- barras de filtros: todo alineado en una línea ---- */
+.xhf{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.xhf .seg{margin:0}
+label.f.xhs{display:inline-flex;flex-direction:row;align-items:center;gap:8px;margin:0}
+.xhf select,.xbar select,.xbar input[type=search]{height:36px;min-height:36px;padding:0 10px;box-sizing:border-box;font-size:.88rem}
+label.chk{display:inline-flex;align-items:center;gap:8px;min-height:36px;margin:0;line-height:1.2}
+label.chk input{margin:0}
+.xbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.seg button,.grp button,.modes button{display:inline-flex;align-items:center;justify-content:center;line-height:1.2}
+
+/* ---- botón de tema: alineado con los relojes, a la derecha ---- */
+.brow1 .clock{align-items:center}
+.thbtn{margin-left:auto;align-self:center;width:36px;height:36px;border-radius:50%}
+@media (max-width:760px){.brow1 .clock{flex:1 1 100%}}
+/* ---- enlaces dentro del texto: sin altura de botón, el renglón no se separa ---- */
+li .lnk,p .lnk,.stl .lnk,td .lnk{display:inline!important;min-height:0!important;height:auto!important;padding:0!important;margin:0!important;line-height:inherit!important;vertical-align:baseline!important;font-size:inherit}
+.stl li{line-height:1.5;margin:4px 0}
+.thbtn svg{margin:0!important;display:block}
+:root:not([data-theme="light"]) .thbtn .sun{display:none!important}
+/* ---- aviso DX: una línea por estación, cada una abre su ficha ---- */
+.alh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.all{display:flex;flex-direction:column;margin-top:6px}
+.alr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;width:100%;text-align:left;background:transparent;border:0;border-top:1px solid rgba(255,193,7,.18);padding:8px 0;color:inherit;font:inherit;cursor:pointer;min-height:0;border-radius:0}
+.alr:first-child{border-top:0}
+.alr .alf{color:var(--muted);font-variant-numeric:tabular-nums}
+.alr .alv{margin-left:auto;color:var(--accent);text-decoration:underline;white-space:nowrap}
+.albar .alh,.albar .all{flex:1 1 100%;width:100%}
+.albar .alh{justify-content:flex-start;gap:14px}
+/* ---- Mi log: la subida del archivo arriba, botón en español ---- */
+#logbox{display:flex;flex-direction:column}
+#logbox .drop{order:-2;margin-bottom:6px}#logbox #adifst{order:-1}
+.vhide{position:absolute!important;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.filebtn{position:relative;margin-top:10px;cursor:pointer;border-color:var(--accent);color:var(--accent)}
+.goal-more>summary{cursor:pointer;color:var(--accent);font-size:.85rem;margin:4px 0 8px}
+.sline{display:flex;align-items:center;gap:8px}.sline .ssum{flex:1 1 auto;min-width:0}.logbtn{white-space:nowrap}
+#adifst:empty{display:none}
+/* ---- concursos: el modo en una sola línea ---- */
+.caltab td:nth-child(3){font-size:.8rem;white-space:nowrap}.caltab td.mlong{white-space:normal;overflow-wrap:normal;word-break:normal}
+.caltab td.cald{padding-left:8px;white-space:nowrap}
+/* ---- valores largos en las fichas de datos: letra algo menor ---- */
+.chip .v.vlong{font-size:1.05rem;line-height:1.3}
+.caltab td:first-child{padding-left:10px!important}
+#logbox .drop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+#logbox .drop .filebtn{margin:0;width:auto;align-self:center}
+/* ---- 1.1.0: etiquetas de split, QSL y referencias ---- */
+.xtag{display:inline-block;font-size:.7rem;font-weight:600;line-height:1.3;padding:1px 6px;border-radius:5px;margin:3px 4px 0 0;border:1px solid var(--line);white-space:nowrap;vertical-align:baseline}
+.xtag.xs{color:#ffd76a;border-color:rgba(255,215,106,.45);background:rgba(255,215,106,.08)}
+.xtag.xq{color:var(--accent2);border-color:rgba(48,200,220,.4);background:rgba(48,200,220,.07)}
+.xtag.xr{color:var(--ok);border-color:rgba(61,220,132,.4);background:rgba(61,220,132,.07)}
+:root[data-theme="light"] .xtag.xs{color:#8a5a00;background:#fff4d6}
+.alr .alf .xtag{margin-top:0}
+/* intercambio de cada concurso */
+.xch{display:block;font-size:.72rem;font-weight:400;color:var(--muted);margin-top:2px}
+/* ¿me oyen? */
+.hcrow{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin:8px 0;padding:0!important;border:0!important;background:none!important}
+.hcrow input{height:38px;padding:0 10px;font:600 1rem var(--f-m,monospace);text-transform:uppercase;width:13ch;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--fg)}
+.hcrow .btn{height:38px}
+.hbands{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:8px 0}
+.hbands .chip .k{font-weight:700}
+/* POTA/SOTA y notificaciones */
+.psob{margin:6px 0 8px;font-size:.78rem;min-height:36px;padding:4px 12px}
+.psob[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.notifw{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
+.notifw .btn[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.qrpt td,.qrpt th{text-align:left;padding:5px 12px 5px 0;font-variant-numeric:tabular-nums}
+#metnote{margin-top:10px}
+/* ---- modo claro: textos que el diseño oscuro pintaba en blanco ---- */
+:root[data-theme="light"] .sp .f,:root[data-theme="light"] .sgrid .note b,:root[data-theme="light"] .rec b,:root[data-theme="light"] #info h3,:root[data-theme="light"] .mpop h3,:root[data-theme="light"] .mst tr.bst td,:root[data-theme="light"] .nav button:hover,:root[data-theme="light"] .nav button[aria-current="page"],:root[data-theme="light"] .sgrid b{color:var(--fg)}
+:root[data-theme="light"] .need{color:#9a6400}
+/* ---- visor del log ---- */
+.lvaw{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:8px 0}
+.lvbar{position:relative;height:7px;border-radius:4px;background:var(--q0,#1b2430);overflow:hidden;margin:6px 0 4px}
+.lvbar span{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.lvbar .lvw{background:#e0a030;opacity:.55}.lvbar .lvc{background:var(--ok)}
+.lvleg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.78rem;color:var(--muted);margin:10px 0 4px}
+.lvleg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.lvleg .lvc,.lvmap circle.c{background:var(--ok);fill:var(--ok)}.lvleg .lvw,.lvmap circle.w{background:#e0a030;fill:#e0a030}.lvleg .lvn,.lvmap circle.n{background:#5a6878;fill:#5a6878}
+.lvmap{width:100%;max-width:760px;margin:8px auto 4px}.lvmap svg{width:100%;height:auto;display:block;background:var(--ocean,#0e1622);border-radius:10px;border:1px solid var(--line)}
+.lvmap .lvland{fill:var(--land,#1f2a37);stroke:none}.lvmap circle.n{opacity:.55}
+.lvcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:4px 24px}
+.lvt{width:100%}.lvt td,.lvt th{padding:5px 8px 5px 0;text-align:left;font-variant-numeric:tabular-nums}.lvt .lvbc{width:38%}.lvt .lvbar{margin:0}
+.lvf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}.lvf .seg{margin:0}
+.lvf select,.lvf input{height:36px;padding:0 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);font:inherit;font-size:.88rem}
+.lvl{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:6px;margin:6px 0 10px}
+.lvi{display:flex;flex-direction:column;gap:5px;padding:8px 10px;border:1px solid var(--line);border-left:3px solid #5a6878;border-radius:8px;background:var(--panel2)}
+.lvi.c{border-left-color:var(--ok)}.lvi.w{border-left-color:#e0a030}
+.lvi small{color:var(--muted);font-size:.72rem;margin-left:4px}
+.lvbs{display:flex;flex-wrap:wrap;gap:4px}.lvbs i{font-style:normal;font:600 .68rem var(--f-m,monospace);padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
+.lvbs i.c{color:var(--ok);border-color:rgba(61,220,132,.45)}.lvbs i.w{color:#e0a030;border-color:rgba(224,160,48,.45)}.lvbs i.n{color:var(--muted)}
+:root[data-theme="light"] .lvbar{background:#e3e8ef}:root[data-theme="light"] .lvbs i.w,:root[data-theme="light"] .lvleg .lvw{color:#9a6400}
+.lvf select{width:auto!important;max-width:100%}.lvf input{width:16ch;max-width:100%}
+.lvmap .lvland{stroke:var(--grat,#2a3646);stroke-width:.4}
+/* ---- botón de idioma: bandera redonda junto al de modo claro u oscuro ---- */
+.langbtn{margin-left:auto;overflow:hidden;text-decoration:none}
+.langbtn+.thbtn{margin-left:8px}
+.langbtn img{display:block;width:24px;height:24px;object-fit:cover;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.hsel .grp.loc input,.hsel .grp.loc button,.hsel .grp.loc select{height:36px;min-height:36px;box-sizing:border-box}
+
+/* ---- mapa en modo oscuro: más luz y más contraste (tierra, mar, fronteras, noche) ---- */
+html:not([data-theme=light]) #map .ocean{fill:#10263f}
+html:not([data-theme=light]) #map .land{fill:#2e4561;stroke:#6f8cb0}
+html:not([data-theme=light]) #map .bord{stroke:#9db4d3;stroke-opacity:.6}
+html:not([data-theme=light]) #map .grat{stroke:#3d5878;stroke-opacity:.7}
+html:not([data-theme=light]) #map .night{fill:#00040c;fill-opacity:.32}
+html:not([data-theme=light]) #map .ring{stroke:#4a6488}
+html:not([data-theme=light]) #map .zl{fill:#c3d2e4}
+html:not([data-theme=light]) #map .ringl{fill:#b5c5da}
+
+/* ---- pantallas muy grandes (2K, 4K, 8K, plasma/TV): la página entera se amplía y ocupa todo el ancho ---- */
+html.bigz body{font-size:18px}
+html.bigz .wrap{max-width:1640px}
+@media (min-width:1800px){.wrap{max-width:96%!important}}
+html.bigz .wrap{max-width:96%!important}
+.zoombtn{position:relative;font:700 13px var(--f-m,monospace);letter-spacing:-.02em}
+.zoombtn small{position:absolute;right:-6px;bottom:-6px;font:700 9px var(--f-m,monospace);background:var(--accent);color:#06101c;border-radius:6px;padding:1px 3px;line-height:1.1}
+.zoombtn small:empty{display:none}
+/* 2.1: clúster */
+#clbar .seg{margin-top:8px}
+#clbar .seg button small{font:600 .72rem var(--f-m);color:var(--muted);margin-left:2px}
+#clbar .seg button
+#clbar .seg button i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.clbands{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+.clbands::-webkit-scrollbar{display:none}.clbands>*{flex:0 0 auto}
+.clnote{margin:8px 0 6px}
+.mleg{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:8px 0 6px;font-size:.75rem;color:var(--muted)}
+.mb{display:inline-block;font:700 .72rem/1.25 var(--f-m,monospace);letter-spacing:.02em;padding:1px 6px;border-radius:5px;color:#08111c;vertical-align:middle;white-space:nowrap}
+.mb-cw{background:#ffb627}.mb-ph{background:#5aa9ff}.mb-ft8{background:#3ddc84}.mb-ft4{background:#2fd1c4}.mb-rtty{background:#c39bff}.mb-dg{background:#ff86bf}.mb-na{background:#9aa7b8}
+.sp .f .mb{margin-left:4px;vertical-align:2px}
+.dxon{display:inline-block;margin:2px 0}.dxon b{color:#ffd76a}.dxlast{opacity:.75}.dxoff{opacity:.6}
+.dxof{display:inline-block;margin-right:10px;white-space:nowrap}
+:root[data-theme="light"] .dxon b{color:#8a5a00}
+#spots>.srcd,#spots>.empty,#spots>.note{grid-column:1/-1}
+.mleg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.mleg::-webkit-scrollbar{display:none}.mleg>*{flex:0 0 auto}
+.mleg .mb{line-height:1.5}
+.srci.nd{border-color:var(--line);opacity:.8}
+#spots>.clsec{grid-column:1/-1;margin:10px 0 2px;font:600 .78rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* 2.1.6: barras que se desplazan de lado. El difuminado solo en el lado donde queda algo por ver */
+#dxmodes .mpred:empty{display:none}
+.hscr{-webkit-mask-image:none!important;mask-image:none!important}
+.hscr[data-fr="1"]{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)!important;mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)!important}
+.hscr[data-fl="1"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px)!important;mask-image:linear-gradient(90deg,transparent,#000 28px)!important}
+.hscr[data-fl="1"][data-fr="1"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)!important;mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)!important}
+/* un pequeño margen al final para que el último botón no quede pegado al borde */
+#dxmodes.hscr::after,.clbands.hscr::after,.mleg.hscr::after{content:"";flex:0 0 6px}
+/* 2.1.7: tarjetas de DXpediciones con proporciones uniformes */
+.dx{align-items:start}
+.dx>.pill{align-self:start;height:auto;line-height:1.5;white-space:nowrap;text-align:center;min-width:3.4em}
+.dx .c{line-height:1.45}
+.dx .c .cty,.dx>span>.cty{font-family:var(--f-b);font-weight:400;font-size:.92em}
+.dx .c .cs{white-space:normal}
+.dx .tag{margin:4px 0 0;vertical-align:middle;line-height:1.5}
+.dx .agr{vertical-align:middle}
+.dx .fl{vertical-align:-1px}
+.dx{align-content:start}
+
+/* 2.1.8: todos los botones marcados con la misma intensidad en toda la plataforma */
+#clbar .seg button.clz{opacity:1}
+#clbar .seg button.clz:not([aria-pressed="true"]){color:var(--dim)}
+.mopts.off .msub{opacity:1!important}
+.mopts.off .msub .seg button:not([aria-pressed="true"]),.mopts.off .msub .segl{opacity:.45}
+.tabs .tab[aria-selected="true"]{background:#1e2733;border-color:var(--accent);color:var(--fg);box-shadow:none}
+:root[data-theme="light"] .tabs .tab[aria-selected="true"]{background:#fff3e3;border-color:var(--accent);color:#7a3f00}
+/* 2.1.10: tarjetas de spots alineadas igual en toda la plataforma
+   fila 1: frecuencia + modo | indicativo · bandera · país ............ hace X min
+   fila 2: etiquetas (NUEVO, en N clústeres, POTA/SOTA/WWFF) bajo el indicativo
+   debajo, a todo el ancho: quién lo oye, split/QSL, rumbos, distancia y probabilidad */
+.sp{grid-template-columns:max-content minmax(0,1fr)!important;column-gap:12px!important;row-gap:4px!important;align-items:start}
+.sp>.f{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.35}
+.sp>.f .mb{margin:0}
+.sp>span:nth-child(2){display:flex;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:5px;min-width:0;line-height:1.35}
+.sp>span:nth-child(2)>b{order:0;min-width:0}
+.sp>span:nth-child(2) .cs{line-height:1.35}
+.sp{position:relative}
+.sp>span:nth-child(2):has(.sage)>b{max-width:calc(100% - 5.4rem)}
+.sp>span:nth-child(2)>b .cs{white-space:normal}
+.sp .sage{position:absolute;top:7px;right:10px;font-size:.78rem;line-height:1.6;white-space:nowrap}
+.sp>span:nth-child(2):has(.nwb,.nsb,.xtag)::after{content:"";order:2;flex-basis:100%;height:0}
+.sp .nwb,.sp .nsb,.sp>span:nth-child(2) .xtag{order:3;margin:0;line-height:1.5;vertical-align:middle}
+.sp>.w{grid-column:1/-1!important;line-height:1.5;margin-top:2px}
+.sp>.w .xtag{margin:2px 4px 0 0}
+/* 2.1.11: todas las etiquetas pequeñas (modo, NUEVO, clústeres, POTA/SOTA/WWFF, split, QSL, Most Wanted, fonía…) con la misma medida y alineación */
+.mb,.nwb,.nsb,.xtag,.tag,.agr{display:inline-flex!important;align-items:center;justify-content:center;box-sizing:border-box;height:1.6em;min-height:0;padding:0 .5em!important;
+  font-size:.72rem!important;line-height:1!important;font-family:var(--f-m,monospace);font-weight:700;letter-spacing:.02em;border-radius:5px!important;
+  border:1px solid transparent;vertical-align:middle!important;white-space:nowrap;margin-top:0!important;margin-bottom:0!important;position:relative;top:-.06em}
+.xtag,.tag,.nsb{border-color:currentColor}
+.tag{border-color:var(--line);font-weight:600}
+.xtag.xs{border-color:rgba(255,215,106,.45)}.xtag.xq{border-color:rgba(48,200,220,.4)}.xtag.xr{border-color:rgba(61,220,132,.4)}
+:root[data-theme="light"] .xtag.xs{border-color:rgba(160,110,0,.35)}
+.mleg .mb{top:0}
+.sp>.f .mb,.sp>span:nth-child(2) .nwb,.sp>span:nth-child(2) .nsb,.sp>span:nth-child(2) .xtag,.alv .mb{top:0}
+.dx .agr,.dx .tag{white-space:nowrap}
+/* 2.1.12: separación entre la leyenda de modos (o la nota de programas) y las tarjetas */
+#clbar{margin-bottom:14px}
+#clbar .mleg{margin-bottom:0}
+#clbar .clnote{margin-bottom:0}
+.sp,.dx{box-sizing:border-box}
+.sp{align-content:start}
+
+/* 2.1.13: tarjeta de spot con un único borde izquierdo para todo
+   fila 1: frecuencia · modo · indicativo · bandera · país ................ hora
+   fila 2: etiquetas (NUEVO, en N clústeres, POTA…)  — desde el borde izquierdo
+   resto: quién lo oye (cada estación entera, sin partirse), split/QSL, rumbos y probabilidad */
+.sp{display:flex!important;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:6px;text-align:left}
+.sp>.f{order:0;flex:none}
+.sp>span:nth-child(2){display:contents}
+.sp>span:nth-child(2)>b{order:1;flex:1 1 0;min-width:7em;max-width:none!important;line-height:1.35}
+.sp .sage{position:static!important;order:2;flex:none;margin-left:auto;align-self:flex-start;padding-top:2px}
+.sp>span:nth-child(2)::after{display:none}
+.sp:has(.nwb,.nsb,span:nth-child(2)>.xtag)>span:nth-child(2)::after{content:"";display:block;order:3;flex-basis:100%;height:0}
+.sp .nwb,.sp .nsb,.sp>span:nth-child(2)>.xtag{order:4;flex:none}
+.sp>.w{order:5;flex:1 1 100%;line-height:1.55;margin-top:0}
+.sp>.w .cs{white-space:nowrap}
+.sp>.w .xtag{margin:3px 6px 1px 0!important}
+/* 2.1.13: más aire entre la leyenda de modos y la primera tarjeta */
+#clbar{margin-bottom:18px!important;padding-bottom:2px}
+#clbar .mleg{margin-top:10px}
+#spots>.clsec:first-child{margin-top:0}
+.sp>span:nth-child(2)>b{min-width:0!important}
+.nw{white-space:nowrap}
+/* la frecuencia, el indicativo y la hora comparten la línea de arriba aunque el país pase a la siguiente */
+.sp{align-items:flex-start!important}
+.sp>.f{padding-top:1px}
+.sp>span:nth-child(2)>b{padding-top:0}
+.sp .nwb,.sp .nsb,.sp>span:nth-child(2)>.xtag{align-self:center}
+/* 2.1.14: tarjeta de estación por secciones, todo alineado a la izquierda con la misma letra */
+.sc{box-sizing:border-box;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);display:flex;flex-direction:column;gap:6px;text-align:left;font-family:var(--f-b);line-height:1.4}
+.sc.old{opacity:.65}
+.sc-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.sc-call{font-weight:700;font-size:1.02rem;min-width:0}
+.sc-call .cs{white-space:normal}
+.sc-call .cty{font-weight:400;font-size:.9em}
+.sc-age{flex:none;color:var(--muted);font-size:.8rem;white-space:nowrap;padding-top:2px}
+.sc-f{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.sc-fq{font:600 1.05rem var(--f-m,monospace);letter-spacing:.01em}
+.sc-b{color:var(--muted);font-size:.85rem;white-space:nowrap}
+.sc-f .nwb,.sc-f .nsb,.sc-f .xtag,.sc-f .mb{top:0;margin:0}
+.sc-d{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:3px 12px;margin:2px 0 0;font-size:.86rem}
+.sc-d dt{color:var(--dim,var(--muted));font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;padding-top:.18em;white-space:nowrap}
+.sc-d dd{margin:0;color:var(--fg);min-width:0}
+.sc-d dd .cs{white-space:nowrap}
+.sc-d dd .cty{color:var(--muted)}
+.sc-d dd .xtag{margin:0 6px 2px 0!important;top:0}
+.sc-sep{color:var(--muted);margin-left:.4em}
+:root[data-theme="light"] .sc{background:var(--panel2)}
+@media (max-width:380px){.sc-d{gap:3px 9px}.sc-d dt{font-size:.68rem}}
+.alc{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:8px;margin:8px 0}
+.goal{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.sc-d dd .cs{white-space:normal}
+.sc-d dd .cs .fl{margin-right:3px}
+.sc-d dd{overflow-wrap:anywhere}
+.sc-d dd .cs{white-space:nowrap!important}
+.sc-d dd .cs .cty{white-space:normal}
+/* 2.1.15: en el listado vertical (móvil y tableta) un poco más de aire entre tarjetas */
+@media (max-width:1099px){#spots>.sc+.sc,#near>.sc+.sc{margin-top:10px}#spots>.sc,#near>.sc{margin-bottom:0}}
+@media (max-width:700px){.alc,.goal,#dxl{row-gap:10px!important}}
+/* el modo de la predicción ya no lleva raya inferior: todos los botones marcados son iguales (se indica en el texto y al pasar el ratón) */
+.seg button.pm,.seg button.pm[aria-pressed="true"]{box-shadow:none!important}
+/* 2.1.16: colores de banda iguales en toda la plataforma y fáciles de distinguir.
+   Ordenados como el espectro, de la banda más baja a la más alta: rojo, naranja, ámbar, lima, verde, turquesa,
+   celeste, añil, violeta, rosa, marrón, gris claro y gris pizarra. En modo claro, el mismo tono más oscuro para leerse bien. */
+:root,:root[data-theme="dark"],html:not([data-theme="light"]){--b160:#f87171;--b80:#fb923c;--b60:#facc15;--b40:#a3e635;--b30:#4ade80;--b20:#2dd4bf;--b17:#38bdf8;--b15:#818cf8;--b12:#c084fc;--b10:#f472b6;--b6:#d6a27a;--b2:#e2e8f0;--b70:#94a3b8}
+:root[data-theme="light"],html[data-theme="light"]{--b160:#dc2626;--b80:#ea580c;--b60:#ca8a04;--b40:#4d7c0f;--b30:#15803d;--b20:#0f766e;--b17:#0369a1;--b15:#4338ca;--b12:#7e22ce;--b10:#be185d;--b6:#6b3f1d;--b2:#6b7280;--b70:#1e293b}
+/* 2.1.17: etiquetas siempre centradas con el texto que las rodea */
+.alr .alf,.dxof{display:inline-flex;flex-wrap:wrap;align-items:center;column-gap:.4em;row-gap:4px}
+.alr>span:first-child{display:inline-flex;align-items:center}
+.alr .alf .mb,.alr .alf .xtag,.dxof .mb{top:0!important;margin:0!important}
+#map .ml{font-size:9.5px!important;letter-spacing:-.04em}
+.mapwrap{position:relative}
+.mnote{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:min(92%,520px);padding:8px 12px;border-radius:8px;background:rgba(10,14,19,.85);border:1px solid var(--line);color:var(--fg);font-size:.82rem;text-align:center;pointer-events:none}
+:root[data-theme="light"] .mnote{background:rgba(255,255,255,.92)}
+
+/* 2.2.0: línea gris y satélites */
+.glb{margin-top:14px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+.glb h4{margin:0 0 6px;font:700 .8rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.glw{margin:0 0 6px;padding-left:18px}.glw li{margin:3px 0}
+.glx{color:var(--muted)}.glx b{color:var(--fg)}
+.sat.live{border-color:var(--accent)}
+.satnow{color:var(--accent);letter-spacing:.06em}
+.satl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:8px;margin-top:8px}
+@media (max-width:700px){.satl{gap:10px}}
+.esw{margin:4px 0 14px}
+.esh{margin:0 0 8px;font:700 .8rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.esl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:8px}
+.sc.es.live{border-color:var(--accent)}
+.esbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 14px;border-color:var(--accent);margin-bottom:12px}
+.esbar .btn{margin-left:auto}
+
+@media (max-width:420px){.clock{gap:7px!important}.clock .thbtn{margin-left:4px}.clock>div{min-width:0}}
+@media (max-width:420px){.clock .thbtn{width:32px;height:32px}}
+@media (max-width:350px){h1{font-size:clamp(15px,5.4vw,19px)!important;flex-wrap:wrap}}
+@media (max-width:350px){.clock{flex-wrap:wrap;row-gap:6px}h1{white-space:normal!important;flex-wrap:wrap!important;max-width:100%}}
+/* 2.2.1: «Tu estación» plegada */
+.stmore{margin:10px 0 4px;border:1px solid var(--border);border-radius:10px;background:var(--panel2)}
+.stmore>summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;padding:10px 12px}
+.stmore>summary::-webkit-details-marker{display:none}
+.stmore>summary::before{content:"▸";color:var(--muted);width:1em;flex:0 0 auto}
+.stmore[open]>summary::before{content:"▾"}
+.stmore .stt{font-weight:600}
+.stmore .sto{font-size:.8em;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.stmore .stsum{flex:1 1 100%;padding-left:calc(1em + 8px);color:var(--muted);font-size:.9em;overflow-wrap:anywhere}
+.stmore[open] .stsum{display:none}
+.stmore .stin{padding:0 10px 4px}
+.stmore .stnote{margin:4px 12px 10px}
+/* 2.3.0: ISS en el mapa */
+.issg .issfoot{fill:rgba(255,196,0,.10);stroke:rgba(255,196,0,.55);stroke-width:1;vector-effect:non-scaling-stroke}
+.issg .issnext{fill:none;stroke:#ffc400;stroke-width:2;vector-effect:non-scaling-stroke}
+.issg .isspast{fill:none;stroke:#ffc400;stroke-width:1.5;stroke-dasharray:4 4;opacity:.6;vector-effect:non-scaling-stroke}
+.issg .issdot{fill:#ffc400;stroke:var(--bg);stroke-width:2;vector-effect:non-scaling-stroke}
+.issg .isslbl{font:600 12px var(--f-m);fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+:root[data-theme="light"] .issg .issnext,:root[data-theme="light"] .issg .isspast{stroke:#c77700}
+:root[data-theme="light"] .issg .issdot{fill:#c77700}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .issg .issnext,:root:not([data-theme="dark"]) .issg .isspast{stroke:#c77700}:root:not([data-theme="dark"]) .issg .issdot{fill:#c77700}}
+/* 2.3.0: «Hora a hora» explicado */
+.tlintro{margin:14px 0 10px;color:var(--muted);line-height:1.5}
+.tlintro b{color:var(--fg)}
+.tlsegh{margin:10px 0 6px;font-size:.85rem;color:var(--muted)}
+.hmleg2{gap:6px 14px;font-size:.8rem}
+.hmleg2 .hmlt{flex:1 1 100%;color:var(--fg);font-weight:600}
+.hmleg2 .hmli{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.hmleg2 i.na{background:repeating-linear-gradient(45deg,var(--panel2) 0 3px,rgba(128,128,128,.35) 3px 5px);border:1px solid var(--border)}
+.hmleg2 i.selk{background:transparent;outline:2px solid var(--fg);outline-offset:-2px}
+.tlhow{margin-top:12px;border-top:1px solid var(--border);padding-top:8px}
+.tlhow>summary{cursor:pointer;font-weight:600}
+.tlhow ul{margin:8px 0 0;padding-left:1.2em;line-height:1.5;color:var(--muted)}
+.tlhow li{margin:0 0 6px}
+.tlhow b{color:var(--fg)}
+#tl .tlintro,#tl .tlsegh{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;overflow:visible!important;white-space:normal!important;text-overflow:clip!important;max-height:none!important}
+/* 2.3.1: en el móvil la ficha del mapa es una hoja fija abajo: tiene que quedar por encima de la barra de pestañas */
+@media (max-width:760px){.mpop{z-index:60!important;overscroll-behavior:contain}}
+.mpop{background:var(--panel,#111823)!important;backdrop-filter:none!important}
+@media (max-width:760px){.mpop{box-shadow:0 -8px 30px rgba(0,0,0,.55)!important}}
+:root[data-theme="light"] .mpop{background:#fff!important}
+/* 2.3.2: letra grande con «Aa»: la cabecera y los textos que no se partían pueden pasar a otra línea */
+html.bigt h1{white-space:normal!important;flex-wrap:wrap!important;max-width:100%}
+html.bigt .clock{flex-wrap:wrap!important;row-gap:8px}
+html.bigt .nw{white-space:normal}
+html.bigt .sc .nw,html.bigt .sp .nw{overflow-wrap:anywhere}
+/* 2.3.2: nada se sale ni se corta en ninguna pantalla ni en ningún tamaño de «Aa» */
+.lvh{flex-wrap:wrap;row-gap:4px}
+.lvh>b{min-width:0}
+.hmleg2 .hmli{white-space:normal;max-width:100%}
+#creditos .note,.tlhow li,.stnote{overflow-wrap:anywhere}
+html.bigt .ssum{-webkit-line-clamp:unset!important;display:block!important;overflow:visible!important}
+html.bigt .cs,html.bigt .agr,html.bigt .tag,html.bigt .xtag{white-space:normal;max-width:100%}
+html.bigt .agr{display:inline-block}
+html.bigt .note,html.bigt .prac{overflow-wrap:anywhere}
+html.bigt .sline{flex-wrap:wrap!important}
+html.bigt .sline .ssum{flex:1 1 100%!important}
+html.bigt .thbtn{width:calc(34px * var(--tz,1));height:calc(34px * var(--tz,1))}
+html.bigt .thbtn svg{width:calc(18px * var(--tz,1));height:calc(18px * var(--tz,1))}
+html.bigt .thbtn{width:calc(34px * min(var(--tz,1),1.35));height:calc(34px * min(var(--tz,1),1.35))}
+html.bigt .thbtn svg{width:calc(18px * min(var(--tz,1),1.35));height:calc(18px * min(var(--tz,1),1.35))}
+html.bigt .zoombtn>span{font-size:.85rem}
+html.bigt img.fl{width:calc(18px * var(--tz,1));height:auto}
+/* 2.3.3: todas las barras de filtros (Ver, Modo, Banda) son carruseles de una sola línea */
+.clseg{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+.clseg::-webkit-scrollbar{display:none}
+.clseg>*{flex:0 0 auto}
+.clseg.hscr::after{content:"";flex:0 0 6px}
+.alf .clseg{margin:0 0 8px}.alf{margin:6px 0 10px}
+/* 2.3.5: bandas que el modo elegido no usa: se ven atenuadas pero se pueden marcar */
+.alf .seg button.clz,#bandseg button.clz{opacity:1}
+.alf .seg button.clz:not([aria-pressed="true"]),#bandseg button.clz:not([aria-pressed="true"]){color:var(--dim)}
+#map .zroot{will-change:transform}
+/* 2.3.7: estado del clúster en una línea discreta bajo el título */
+#clh .clst{display:block;margin-top:4px;font:400 .78rem/1.35 var(--f-b);letter-spacing:0;text-transform:none;color:var(--muted)}
+#clh .cld{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--dim);margin:0 6px 1px 0;vertical-align:middle}
+#clh .cld.ok{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
+#clh .cld.old{background:var(--warn)}
+/* 2.4.0: mapa a pantalla completa: paneles translúcidos que se apartan solos */
+.mapcard.fsm .mapctl,.mapcard.fsm .legend{background:color-mix(in srgb,var(--panel) 58%,transparent)!important;backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);border-color:color-mix(in srgb,var(--border) 70%,transparent);box-shadow:0 8px 30px rgba(0,0,0,.25);transition:opacity .5s ease,transform .5s ease}
+.mapcard.fsm .mfloat{transition:opacity .5s ease}
+.mapcard.fsm .mapctl :is(.mrt,.segl,.note),.mapcard.fsm .legend{text-shadow:0 1px 2px color-mix(in srgb,var(--bg) 80%,transparent)}
+.mapcard.fsm.idle .mapctl,.mapcard.fsm.idle .legend{opacity:.12}
+.mapcard.fsm.idle .mfloat{opacity:.35}
+.mapcard.fsm.idle .mapctl{transform:translateX(-6px)}
+.mapcard.fsm .mapctl:hover,.mapcard.fsm .legend:hover,.mapcard.fsm .mfloat:hover{opacity:1!important;transform:none}
+.mapcard.fsm .legend>span:not(:has(i)){display:none}
+@media (max-width:760px){
+ .mapcard.fsm .mapctl{width:auto!important;right:max(10px,env(safe-area-inset-right));max-height:30vh!important}
+ .mapcard.fsm .legend{font-size:.72rem!important;max-height:11vh!important;padding:5px 8px!important;gap:2px 8px}
+}
+:root[data-theme="light"] .mapcard.fsm .mapctl,:root[data-theme="light"] .mapcard.fsm .legend{background:color-mix(in srgb,#fff 62%,transparent)!important}
+/* modo tele: leyenda compacta y sin la frase de ayuda */
+/* 2.4.1: aviso DX flotante con tarjetas */
+#albar.albar2{display:block;padding:12px 14px}
+#albar.albar2[hidden]{display:none}
+#albar.albar2 .alh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin-bottom:10px}
+#albar.albar2 .alh .alt{font-weight:400;color:var(--muted);margin-left:4px}
+#albar.albar2 .alb{display:inline-flex;gap:14px}
+#albar.albar2 .alc{margin:0}
+/* 2.4.1: textos del mapa legibles en modo claro: tinta oscura con halo blanco (antes, blanco sobre claro) */
+html[data-theme=light] #map :is(.spotl,.skipl,.txl,.isslbl){fill:#10233a!important;stroke:#fff!important;stroke-opacity:.95;paint-order:stroke}
+html[data-theme=light] #map .dxx{fill:#8a4b00!important;stroke:#fff!important;stroke-opacity:.95;paint-order:stroke}
+html[data-theme=light] #map .azl{fill:#3c516c!important;stroke:#fff!important;stroke-width:3px}
+html[data-theme=light] #map .aurl{fill:#b3261e!important;paint-order:stroke;stroke:#fff;stroke-width:3px}
+html[data-theme=light] #map .star{stroke:#fff!important}
+html[data-theme=light] #map .gl{stroke:#fff!important;stroke-opacity:.9}
+html[data-theme=light] #map .spot{stroke:#10233a}
+/* 2.4.1: un texto largo abierto se ve entero también en modo claro (la regla del modo claro le dejaba el difuminado) */
+.clamp.open,:root[data-theme="light"] .clamp.open,html[data-theme=light] .clamp.open{-webkit-mask-image:none!important;mask-image:none!important;display:block!important;-webkit-line-clamp:unset!important;max-height:none!important;overflow:visible!important}
+/* 2.4.1: modo tele: fundido entre vistas */
+/* 2.4.1: textos del mapa en modo claro, con selectores clásicos (sin :is) para que ningún navegador los deje en blanco */
+html[data-theme="light"] #map text.spotl,html[data-theme="light"] #map text.skipl,html[data-theme="light"] #map text.txl,html[data-theme="light"] #map text.isslbl,html[data-theme="light"] #map text.ringl,html[data-theme="light"] #map text.zl{fill:#10233a!important;stroke:#ffffff!important;stroke-width:3px!important;stroke-opacity:.92!important;paint-order:stroke fill!important;stroke-linejoin:round}
+html[data-theme="light"] #map text.dxx{fill:#7a4100!important;stroke:#ffffff!important;stroke-width:3px!important;paint-order:stroke fill!important}
+html[data-theme="light"] #map text.ml{fill:#06101c!important}
+/* 2.4.1: los textos largos se recortan a 3 líneas (no 2) y el final se sigue leyendo un poco */
+.clamp{-webkit-line-clamp:3!important;line-clamp:3;-webkit-mask-image:linear-gradient(180deg,#000 62%,rgba(0,0,0,.35))!important;mask-image:linear-gradient(180deg,#000 62%,rgba(0,0,0,.35))!important}
+.clamp.open{-webkit-line-clamp:unset!important;line-clamp:none;-webkit-mask-image:none!important;mask-image:none!important}
+/* 2.4.1: textos del mapa en modo claro: borde más fino y algo transparente, para que la letra se lea siempre */
+html[data-theme="light"] #map text{paint-order:stroke fill;stroke-linejoin:round}
+html[data-theme="light"] #map text.spotl,html[data-theme="light"] #map text.skipl,html[data-theme="light"] #map text.txl,html[data-theme="light"] #map text.isslbl,html[data-theme="light"] #map text.ringl,html[data-theme="light"] #map text.zl,html[data-theme="light"] #map text.dxx,html[data-theme="light"] #map text.ml,html[data-theme="light"] #map text.gl{stroke-width:2.2px!important;stroke-opacity:.7!important}
+html[data-theme="light"] #map text.gl{fill:#3e5068!important}
+html[data-theme="light"] #map text.glc{fill:#2e3d52!important;opacity:.9}
+/* 2.4.1: tarjetas de DXpediciones */
+.sc.dxc{cursor:pointer;text-align:left}
+.sc.dxc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sc.dxc .sc-h .pill{flex:none}
+.sc.dxc .dxon{display:block}
+.sc.dxc .sc-d dd .dxon b{font-weight:600}
+#dxl>.llmore{grid-column:1/-1;justify-self:center;margin-top:10px}
+/* DXpediciones en mural: cada columna se llena de arriba abajo, sin huecos */
+#dxl{display:block!important;column-width:290px;column-gap:12px}
+#dxl>.sc{break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 12px!important;min-height:0!important;width:100%;box-sizing:border-box}
+#dxl>.llmore,#dxl>.note{column-span:all;display:block;margin:4px auto 0}
+.sc.dxc .dxof{display:flex;flex-wrap:wrap;white-space:normal;margin-right:0}
+.sc.dxc .dxon{margin:0}
+/* 2.4.1: el Sol en el resumen */
+.solsum{margin:14px 0 2px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.solsum-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:10px}
+.solsum-v{color:var(--muted);flex:1 1 220px}
+.solsum-k{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:8px 14px}
+.ssk{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;min-width:0}
+.ssk i{grid-row:1/3;width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.ssk-k{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ssk b{font:600 .95rem var(--f-m,monospace);overflow-wrap:anywhere}
+.lvk-g i{background:var(--ok,#3fb950)}.lvk-y i{background:var(--warn,#d29922)}.lvk-r i{background:var(--bad,#f85149)}
+.solsum-k{grid-template-columns:repeat(auto-fill,minmax(min(100%,118px),1fr))}
+.solsum-h #solgo{margin-left:auto}
+@media (max-width:420px){.solsum{padding:10px 12px}.solsum-k{gap:8px 10px}}
+/* 2.4.1: satélites en el mapa y panel de datos */
+.issg .satfoot{fill:rgba(64,200,255,.08);stroke:rgba(64,200,255,.6);stroke-width:1;vector-effect:non-scaling-stroke}
+.issg .satdot{fill:#40c8ff;stroke:var(--bg);stroke-width:1.5;vector-effect:non-scaling-stroke;opacity:.75}
+.issg .satdot.on{opacity:1}
+.issg .satlbl{font:600 11px var(--f-m);fill:#7fd8ff;stroke:var(--bg);stroke-width:3px;opacity:.8}
+.issg .satlbl.on{opacity:1;fill:#40c8ff}
+html[data-theme="light"] .issg .satdot{fill:#0077aa}
+html[data-theme="light"] .issg .satlbl{fill:#005a85!important;stroke:#fff!important;stroke-width:2.2px!important}
+html[data-theme="light"] .issg .isslbl{fill:#7a4100!important;stroke:#fff!important;stroke-width:2.2px!important}
+.issnote{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;margin:10px 0 0}
+.issnote .sn-c{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel2)}
+.issnote .sn-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.issnote .note{margin:6px 0 0}
+#mapcard .issnote{order:1}
+/* 2.4.1: ahorro de batería en móviles y tabletas: sin desenfoques ni brillos, que obligan a la GPU a repintar el mapa entero */
+@media (hover:none),(pointer:coarse){
+ *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+ #map [filter]{filter:none!important}
+ .mapcard.fsm .mapctl,.mapcard.fsm .legend{background:color-mix(in srgb,var(--panel) 92%,transparent)!important}
+ button,a,[role=button],summary,label{touch-action:manipulation}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* 2.4.1: «El Sol ahora» completo en el resumen */
+.solsum-g{margin-top:12px}.solsum-g:first-of-type{margin-top:0}
+.solsum-g h4{margin:0 0 8px;font:700 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.solsum .ssk b{overflow-wrap:anywhere}
+.solsum-n{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;border-top:1px solid var(--line);padding-top:10px}
+.solsum-n dt{font-weight:700}.solsum-n dd{margin:0;color:var(--muted)}
+@media (max-width:520px){.solsum-n{grid-template-columns:1fr}.solsum-n dd{margin-bottom:6px}}
+.solsum .ssk-k{white-space:normal;overflow:visible}
+
+#f_al{scroll-margin-top:96px}
+.ssk{grid-template-columns:auto minmax(0,1fr)}.solsum .ssk-k{overflow-wrap:anywhere;hyphens:auto}
+/* 2.4.5: franja de valores de la portada: rejilla de casillas iguales, como un panel de instrumentos */
+#sw{display:grid!important;grid-template-columns:repeat(var(--swc,4),minmax(0,1fr))!important;gap:0!important;flex:1 1 100%!important;padding:0!important;
+  border:1px solid var(--line)!important;border-radius:10px!important;background:var(--panel)!important;overflow:hidden;justify-content:stretch!important}
+#sw .chip{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center;gap:3px!important;min-width:0!important;max-width:none!important;
+  margin:0!important;padding:10px 12px!important;border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:inset -1px 0 0 var(--line),inset 0 -1px 0 var(--line)}
+#sw .chip:last-child{grid-column:span 2}
+#sw .chip .k{font-size:.66rem!important;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.2}
+#sw .chip .v{font-size:1.08rem!important;font-weight:600;line-height:1.15;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#sw .chip .v small{font-size:.68em;font-weight:500;margin-left:2px;opacity:.85}
+#sw .chip .t{display:none!important}
+#sw .chip{position:relative}
+#sw .chip::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0;background:var(--dim)}
+#sw .chip.g::before{background:#2e9d5b}#sw .chip.y::before{background:#d08a1c}#sw .chip.r::before{background:#d64545}
+#sw[data-cols="8"] .chip .v{font-size:1.15rem!important}
+#sw[data-cols="4"] .chip,#sw[data-cols="2"] .chip{padding:9px 10px 9px 12px!important}
+#sw[data-cols="4"] .chip .v{font-size:1rem!important}
+#sw .chip .v{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+#sw .chip .v small{white-space:nowrap}
+#sw[data-cols="2"] .chip .v{font-size:.95rem!important}
+/* 2.4.5: en pantallas anchas el aviso flotante reparte sus tarjetas en todo el ancho */
+#albar.albar2 .alc{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+/* fila de «Actualizar»: el informe de fuentes va en su propia línea, discreto, y no flota al lado del estado */
+.updrow #srcrep{flex:1 1 100%;margin:0!important;padding:0!important;border:0!important;background:none!important}
+.updrow #srcrep>summary{font-size:.78rem!important;font-weight:500;color:var(--muted);padding:2px 0!important;border:0!important}
+.updrow #srcrep>summary::before{display:none}
+.updrow #updst{flex:1 1 320px;margin:0}
+/* casillas de valores más legibles cuando hay sitio */
+#sw[data-cols="8"] .chip{padding:12px 16px 12px 18px!important}
+#sw[data-cols="8"] .chip .k{font-size:.72rem!important}
+#sw[data-cols="8"] .chip .v{font-size:1.35rem!important}
+/* 2.4.5: en pantallas anchas, tablas y tarjetas aprovechan todo el ancho */
+.bnows{max-width:none!important}
+@media (min-width:1000px){
+ table.caltab{display:table!important;width:100%!important;max-width:none!important}
+ table.btab{max-width:none!important;width:100%!important}
+ table.btab th:first-child,table.btab td:first-child{width:40%}
+}
+/* 2.4.9: «El Sol ahora» con desplegable y glosario al final del resumen */
+.solsum .solmore{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.solsum .solmore>summary{cursor:pointer;font-weight:600;color:var(--accent);list-style:none;display:flex;align-items:center;gap:8px}
+.solsum .solmore>summary::-webkit-details-marker{display:none}
+.solsum .solmore>summary::before{content:"▸";transition:transform .15s}
+.solsum .solmore[open]>summary::before{transform:rotate(90deg)}
+.solsum .solmore[open]>summary{margin-bottom:12px}
+details.glosw{margin:14px 0 2px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+details.glosw>summary{cursor:pointer;font-weight:600}
+details.glosw[open]>summary{margin-bottom:10px}
+details.glosw #glos ul{columns:2 340px;column-gap:28px;margin:6px 0 0;padding-left:18px}
+details.glosw #glos li{break-inside:avoid;margin:0 0 8px}
+/* 2.4.9: tablas de consulta del glosario */
+.glref{margin-top:12px;display:grid;gap:8px}
+.glr{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0}
+.glr>summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+.glr>summary::-webkit-details-marker{display:none}
+.glr>summary::before{content:"▸";color:var(--accent);transition:transform .15s}
+.glr[open]>summary::before{transform:rotate(90deg)}
+.glr>.note,.glr>h5,.glr>.glgrid{margin-left:14px;margin-right:14px}
+.glr>.note{margin-top:0;margin-bottom:10px}
+.glr>.glgrid:last-child{margin-bottom:14px}
+.glr h5{margin:14px 14px 8px;font:700 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.glgrid{display:grid;gap:6px}
+.glgrid.nato{grid-template-columns:repeat(auto-fill,minmax(min(100%,136px),1fr))}
+.glgrid.qc{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.glgrid.mo{grid-template-columns:repeat(auto-fill,minmax(min(100%,128px),1fr))}
+.glgrid.pro{grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
+.glt{display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);min-width:0}
+.glt>b{font:700 1.05rem var(--f-m,monospace);color:var(--accent);min-width:1.4em}
+.glgrid.qc .glt>b,.glgrid.pro .glt>b{min-width:3.2em}
+.glt>span{min-width:0;overflow-wrap:anywhere}
+.glgrid.pro .glt{flex-wrap:wrap}.glgrid.pro .glt small{flex:1 1 100%;color:var(--muted)}
+.mc{display:inline-flex;align-items:center;gap:3px;flex-wrap:nowrap;white-space:nowrap}
+.mc .md{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor}
+.mc .mh{display:inline-block;width:15px;height:6px;border-radius:3px;background:currentColor}
+.mc .mg{display:inline-block;width:10px}
+
+.glgrid.pro .mc{flex-wrap:wrap}
+.glt>span.mc{overflow-wrap:normal}
+.privn{margin:6px auto 0;max-width:760px;font-size:.8rem;color:var(--muted)}
+/* 2.5.0: accesibilidad: textos secundarios, etiquetas y color de acento con contraste suficiente (WCAG AA) en los dos temas */
+html[data-theme="light"],:root[data-theme="light"]{--dim:#56657a;--accent:#9a520a}
+html[data-theme="dark"],:root[data-theme="dark"]{--dim:#8b9db0}
+.sc.old{opacity:.8}
+html[data-theme="dark"] .hb>i{filter:brightness(1.9) saturate(1.1)}

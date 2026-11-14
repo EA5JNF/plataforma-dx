@@ -1,0 +1,4 @@
+const {chromium}=require("playwright");(async()=>{const b=await chromium.launch();for(const [l,w] of [["index",390],["en",1366]]){const p=await b.newPage({viewport:{width:w,height:900},deviceScaleFactor:2});const errs=[];p.on("pageerror",e=>errs.push(e.message));await p.route(/^https?:\/\/(?!localhost)/,r=>r.abort());await p.goto("http://localhost:8768/"+l+".html");await p.waitForTimeout(3500);
+await p.evaluate(()=>{selTab("ahora","f_rec",true);document.getElementById("f_rec").open=true});await p.waitForTimeout(500);
+console.log(l,await p.evaluate(()=>[...document.querySelectorAll("#rec .reccards .sc")].map(c=>c.innerText.replace(/\n+/g," | ")).join("\n")),errs,await p.evaluate(()=>MOD()));
+await (await p.$("#f_rec")).screenshot({path:"../qh_"+l+".png"});await p.close()}await b.close()})()
