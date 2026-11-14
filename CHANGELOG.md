@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.0 · 14/11/2026
+- Lectura del S-metro al anotar «Lo oigo»: una escala de S1 a S9 y de +10 a +60, en colores de verde a rojo como un S-metro real. La lectura se convierte en nivel de señal (S9 = −73 dBm y 6 dB por punto S), se compara con el ruido típico de la banda en tu entorno y la calibración usa esa relación señal/ruido real además de «lo oigo / no lo oigo», con lo que tus previsiones se ajustan mucho antes. Es opcional: sin lectura se guarda solo que lo oyes. / S-meter reading (S1 to S9+60) when logging «I hear it», used by the calibration.
+
 ## 2.5.9 · 14/11/2026
 - «Todos los modos»: casilla en la configuración de la estación (junto al modo), selector «Mi modo / Todos los modos» en «Qué hacer» y botón «Todos» en los selectores de modo del clúster y del mapa. Los tres van sincronizados y la elección se recuerda. Con todos los modos, el clúster, los avisos y «Qué hacer» proponen estaciones de cualquier modo, cada una con su probabilidad calculada en su propio modo; el modo elegido sigue siendo la base de la previsión. / «All modes» option in the station settings, in «What to do» and in the mode selectors.
 

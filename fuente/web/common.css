@@ -635,3 +635,12 @@ html[data-theme="dark"] .xtag.dxpt{box-shadow:0 0 0 1px rgba(255,255,255,.12) in
 .recm{display:inline-flex;margin:4px 0 10px;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .recm button{border:0;background:transparent;padding:6px 14px;font:600 .8rem var(--f-b,inherit);color:var(--muted);cursor:pointer}
 .recm button[aria-pressed="true"]{background:var(--accent);color:#fff}
+/* 2.6.0: escala de S-metro al anotar «Lo oigo» */
+.smeter{margin:10px 0 4px}
+.smeter .smt{display:block;font:700 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.smb{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:2px;border-radius:8px;overflow:hidden}
+.smb button{border:0;padding:8px 0 6px;font:700 .78rem var(--f-m,monospace);color:#fff;cursor:pointer;opacity:.55;
+  background:hsl(calc(130 - var(--i) * 9.5) 62% 40%);text-shadow:0 1px 0 rgba(0,0,0,.3);transition:opacity .12s}
+.smb button:hover{opacity:.8}
+.smb button[aria-pressed="true"]{opacity:1;box-shadow:inset 0 -3px 0 rgba(255,255,255,.85)}
+@media (max-width:420px){.smb button{font-size:.66rem;padding:7px 0 5px}}
