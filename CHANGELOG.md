@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.9 · 14/11/2026
+- En el aviso DX de la portada, «Silenciar» pasa a la izquierda, delante de «Ver en Avisos» y «Cerrar», y su menú se abre alineado con el botón. En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / «Mute» moved to the left of «See in Alerts» and «Close» on the DX alert.
+
 ## 2.6.8 · 14/11/2026
 - Tema claro u oscuro automático según el locator que escribas: se calcula la altura del Sol en tu cuadrícula (con la subcuadrícula si la pones) y se pasa a oscuro cuando el Sol baja de 3° bajo el horizonte, y a claro cuando vuelve a salir. Cambia en cuanto cambias el locator, sin esperar a la siguiente actualización, y se revisa cada minuto. Si eliges el tema a mano en Ajustes, se respeta tu elección. En español e inglés, en la web y en el artefacto. / Automatic light or dark theme from the locator you enter: it follows the Sun at your grid square, switches as soon as you change the locator, and respects a manual choice.
 
