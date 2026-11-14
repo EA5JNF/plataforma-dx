@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.0 · 14/11/2026
+- Buscador en DX: escribe un indicativo (o parte, como «EA5» o «/P») o una frecuencia (14.205, 14205, 7.07 o 14) y ves al momento todos los spots recientes que coinciden en el clúster DX y el RBN, POTA, SOTA y WWFF, con las mismas tarjetas que el resto de la plataforma, más si es una DXpedición anunciada y a qué estaciones ha oído ese indicativo. En español e inglés, en todas las pantallas y en los dos temas. / Search box in DX: find a callsign or a frequency across all the clusters checked.
+
 ## 2.7.10 · 14/11/2026
 - El botón «Avisarme con una notificación» sale en cualquier aparato que abra la web, incluso si el navegador no puede ejecutar la plataforma completa: entonces explica que hay que abrirla en un Chrome, Edge, Firefox o Safari actualizado. / The «Notify me» button shows on any device that can open the site, even when the browser cannot run the full platform.
 - La plataforma vuelve a funcionar en los iPad y iPhone con iPadOS o iOS 15 y 16 anteriores a 16.4: una expresión del formato de frecuencias que esas versiones de Safari no entienden impedía cargar una parte del código. Mismo resultado en todos los navegadores. / The platform runs again on iPad and iPhone with iOS/iPadOS 15 and 16 before 16.4.

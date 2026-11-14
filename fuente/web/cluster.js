@@ -334,7 +334,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     h+=rows.length?rows.slice(0,N).map(progRow).join("")+(rows.length>N?`<p class="note">${T(`Y ${rows.length-N} más.`,`And ${rows.length-N} more.`)}</p>`:""):`<div class="empty">${T(`Ningún activador de ${pl} en ${CMSTXT()}${bl} en la última hora.`,`No ${pl} activators in ${CMSTXT()}${bl} in the last hour.`)}</div>`;
     srcs.push((Array.isArray(L.acts)?T("POTA, SOTAwatch, WWFF Spots y Spothole","POTA, SOTAwatch, WWFF Spots and Spothole"):T("comentarios de los spots del clúster","cluster spot comments"))+(L.actsUTC?T(` · revisado a las ${String(L.actsUTC).slice(11,16)} UTC`,` · checked at ${String(L.actsUTC).slice(11,16)} UTC`):""))}
   h+=`<details class="srcd"><summary>${T("Fuentes","Sources")}</summary>${srcs.map(x=>`<p class="note">${x}</p>`).join("")}</details>`;
-  box.innerHTML=h}
+  box.innerHTML=h;try{srchInit();if($("srchq")&&$("srchq").value)srchRun()}catch(_){}}
 window.ACRACB_clrender=render;
 
 /* ---------- DXpediciones: dónde están operando ahora ---------- */
@@ -459,6 +459,32 @@ document.addEventListener("click",ev=>{const cs=ev.target.closest&&ev.target.clo
 function dCard(card){if(card.dataset.ohc)return dOf(card);const bt=card.querySelector("[data-stc]");if(!bt)return null;const C=bt.dataset.stc;const P=stPos(C);let b=bt.dataset.stb===""?null:+bt.dataset.stb;
   const t=stZone(C,P.p,b,P.d);if(!t)return null;if(b==null){try{const r=bestAny(t,localNow());b=r.p>0?r.b:3}catch(_){b=3}}
   let mode=card.dataset.mode||"";if(!mode){try{mode=MD().s}catch(_){}}return {t:t.id,b,call:C,mode,f:card.dataset.f||""}}
+
+/* ---------- 2.8.0: buscador de indicativo o frecuencia en todos los clústeres consultados ---------- */
+function qParse(q){q=String(q||"").trim().toUpperCase().replace(",",".");if(!q)return null;
+  if(/^\d+(\.\d+)?$/.test(q)){const v=parseFloat(q);if(!isFinite(v)||v<=0)return null;let k,tol;
+    if(q.includes(".")){const d=q.split(".")[1].length;k=v*1000;tol=d>=3?1.5:d===2?6:60}else if(v>=1000){k=v;tol=1.5}else{k=v*1000;tol=1000}return {k,tol,txt:q}}
+  const cl=q.replace(/[^A-Z0-9/]/g,"");return cl.length>=2?{c:cl,txt:cl}:null}
+const kHzOf=f=>{const v=parseFloat(f);return !isFinite(v)?NaN:v>1000?v:v*1000};
+function sMatch(Q,call,f){if(Q.c)return String(call||"").toUpperCase().includes(Q.c);const k=kHzOf(f);return isFinite(k)&&Math.abs(k-Q.k)<=Q.tol}
+function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=qParse(inp.value);if(!Q){box.hidden=true;box.innerHTML="";return}
+  const lh=st.mhour;const out=[];const now=[];
+  for(const s of (L.spots||[])){if(!sMatch(Q,s.call,s.f))continue;const a=spotAge(s);const e=spotEval(s,lh);out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
+  try{for(const o of progAll()){if(!sMatch(Q,o.call,o.f))continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
+  out.sort((x,y)=>(x.a??1e9)-(y.a??1e9));
+  const by=Q.c?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>String(b||"").toUpperCase().includes(Q.c))):[];
+  let dxa="";try{const d=(L.dx||[]).filter(d=>Q.c&&String(d.call||"").toUpperCase().includes(Q.c));if(d.length)dxa=`<p class="note srdx">${T("DXpedición anunciada","Announced DXpedition")}: ${d.slice(0,3).map(x=>`<b>${CS(dxTok(x.call)[0]||x.call)}</b>${x.until?` · ${T("hasta","until")} ${e2(x.until)}`:""}${x.qsx?` · QSX ${e2(x.qsx)}`:""}`).join("<br>")}</p>`}catch(_){}
+  const N=40,what=Q.c?`«${e2(Q.txt)}»`:(Q.tol>=1000?`${Math.round(Q.k/1000)} MHz`:`${(Q.k/1000).toFixed(3)} MHz`);
+  let h=`<p class="srh">${out.length?T(`${out.length} ${out.length===1?"spot":"spots"} con ${what} entre los spots recientes`,`${out.length} ${out.length===1?"spot":"spots"} matching ${what} among recent spots`):T(`${what} no aparece entre los spots recientes de los clústeres consultados.`,`${what} does not appear among recent spots on the clusters checked.`)}</p>`+dxa;
+  if(out.length)h+=`<div class="sgrid srgrid">${out.slice(0,N).map(x=>x.h).join("")}</div>`+(out.length>N?`<p class="note">${T(`Y ${out.length-N} más.`,`And ${out.length-N} more.`)}</p>`:"");
+  if(by.length)h+=`<p class="note srby">${T(`${e2(Q.txt)} ha oído a ${by.length} ${by.length===1?"estación":"estaciones"}`,`${e2(Q.txt)} has heard ${by.length} ${by.length===1?"station":"stations"}`)}: ${by.slice(0,12).map(s=>`${CS(s.call)} <span class="nw">${e2(s.f)}</span>`).join(" · ")}${by.length>12?" …":""}</p>`;
+  h+=`<p class="note srsrc">${T("Busca en el clúster DX y el RBN que reúne la plataforma, en POTA, SOTA, WWFF y en las DXpediciones anunciadas.","Searches the DX cluster and RBN spots the platform gathers, POTA, SOTA, WWFF and announced DXpeditions.")}</p>`;
+  box.innerHTML=h;box.hidden=false}
+function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
+  w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20" placeholder="${T("Indicativo o frecuencia: EA5RKB, 14.205…","Callsign or frequency: EA5RKB, 14.205…")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div><div id="srchres" hidden aria-live="polite"></div>`;
+  sec.insertBefore(w,sec.firstElementChild);let tm=0;const inp=$("srchq"),x=$("srchx");
+  inp.addEventListener("input",()=>{x.hidden=!inp.value;clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";x.hidden=true;srchRun();inp.focus()}}
+window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
 function hook(){if(typeof window.renderSide!=="function"||window.renderSide.__cl)return false;const o=window.renderSide;
   const w=function(){const r=o.apply(this,arguments);try{if(st.page==="dx"){render(st.mhour);renderNear();dxCards()}}catch(e){console.error(e)}return r};w.__cl=1;window.renderSide=w;return true}

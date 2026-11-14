@@ -806,3 +806,14 @@ html[data-theme="light"] .hm2 i.c5,html[data-theme="light"] .hmleg2 i.c5{backgro
 .hm2 i.dn.dn-d,.hmleg2 i.dn-d{background:#7dd3fc!important}
 html[data-theme="light"] .hm2 i.dn.dn-d,html[data-theme="light"] .hmleg2 i.dn-d{background:#38bdf8!important}
 html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#eef1f5 0 3px,#c3ccd7 3px 5px)}
+/* 2.8.0: buscador de los clústeres */
+.srch{padding:14px 16px}
+.srch .srl{display:block;font:600 .78rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.srch .srrow{display:flex;gap:8px}
+.srch input{flex:1;min-width:0;font:500 1rem var(--f-m,monospace);padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);text-transform:uppercase}
+.srch input::placeholder{text-transform:none;color:var(--muted)}
+.srch input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.srch .srh{font-weight:600;margin:12px 0 8px}
+.srch .srgrid{margin-top:4px}
+.srch .srsrc{margin-top:10px}
+.srch input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
