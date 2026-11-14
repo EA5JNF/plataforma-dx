@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.6 · 14/11/2026
+- Menos consumo: con la pestaña en segundo plano o la pantalla apagada se detienen también el giro de balizas, la animación del mapa, el glosario y la línea de 24 h. Más fuentes lentas (previsión de 3 días, flujo solar, manchas, WWV y aurora) se reutilizan unos minutos en lugar de pedirse en cada actualización. / Lower energy use: more timers pause in the background and slow sources are reused for a few minutes.
+- Fiabilidad: cada versión se comprueba automáticamente antes de publicarse y no sale si algún archivo tiene un error. / Every build is syntax-checked before publishing.
+
 ## 2.4.5 · 14/11/2026
 - Franja de valores de la portada rediseñada como un panel de instrumentos: casillas iguales con su nombre arriba, el valor debajo y una marca de color (verde, ámbar o rojo). Ocupa todo el ancho y se reparte en 8, 4 o 2 columnas según la pantalla y el tamaño de letra, siempre con las filas completas. / Top value strip redesigned as an instrument panel.
 - Toda la plataforma aprovecha mejor el espacio en pantallas anchas y televisores: las casillas de valores se reparten en filas iguales (sin media fila vacía), el aviso DX reparte sus tarjetas en todo el ancho, el calendario de concursos y la tabla de balizas ocupan todo el ancho, y el informe de fuentes de «Actualizar» va en su propia línea. / Better use of space on wide screens and TVs across the platform.
