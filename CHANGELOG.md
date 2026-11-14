@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.4 · 14/11/2026
+- La EEI y los satélites salen encendidos de serie en el mapa, con icono propio: la EEI con sus paneles solares y cada satélite con uno más pequeño, en verde cuando lo oyes. Al tocarlos (o su nombre bajo el mapa) se abre su ficha, como con las estaciones: posición, altura, velocidad, dónde está desde tu QTH, los tres próximos pases sobre tu locator con hora, duración, elevación máxima y rumbos, frecuencias de subida y bajada, y enlace al estado en AMSAT. Con la EEI o los satélites visibles ya no sale «Mapa en blanco». Solo en la web. / ISS and satellites on by default on the map, with their own icons and a details panel on tap.
+- Repaso general: sin errores en consola, sin fugas de memoria tras cientos de ciclos de actualización, misma cantidad de nodos y escuchadores, protección frente a código inyectado en los datos de las fuentes y política de seguridad sin avisos; formatos comprobados en móvil, tableta, portátil, escritorio, 2K, tele 720p y 4K, con los dos tamaños de letra, en español e inglés y en los dos temas. / General review: no errors, no memory leaks, security checks and every screen size.
+
 ## 2.7.3 · 14/11/2026
 - Satélites y EEI más fiables: la plataforma guarda su propia copia de las órbitas dos veces al día (tarea «Órbitas de satélites» en GitHub), descargada de CelesTrak o, si no responde, de AMSAT, y la lee desde su propia web. Si esa copia faltara, prueba CelesTrak y AMSAT directamente. Antes dependía solo de CelesTrak y, si no dejaba descargar, la pestaña Satélites y las capas ISS y Satélites del mapa se quedaban vacías. CelesTrak y AMSAT entran también en la vigilancia semanal de fuentes. / Satellites and ISS no longer depend on a single source: the platform keeps its own copy of the orbits, from CelesTrak or AMSAT.
 

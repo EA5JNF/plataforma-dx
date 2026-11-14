@@ -71,6 +71,10 @@ R('  ms.querySelectorAll("[data-mm]").forEach(b=>b.onclick=()=>toggleCM(b.datase
 R('${last?`<p class="calmsg">${last.h?"Anotado: <b>lo oyes</b>":"Anotado: <b>no lo oyes</b>"}','${last&&last.h&&window.ACRACB_smeter?ACRACB_smeter(last):""}${last?`<p class="calmsg">${last.h?"Anotado: <b>lo oyes</b>"+(last.s!=null&&window.ACRACB_sLbl?ACRACB_sLbl(last.s):""):"Anotado: <b>no lo oyes</b>"}')
 R('for(const o of arr){const p=Math.min(.98,Math.max(.02,rel(o.m+d,o.dl,o.du,o.thr)));ll+=o.h?Math.log(p):Math.log(1-p)}','for(const o of arr){const p=Math.min(.98,Math.max(.02,rel(o.m+d,o.dl,o.du,o.thr))),ww=o.w!=null?o.w:1;ll+=ww*(o.h?Math.log(p):Math.log(1-p));if(o.h&&o.snr!=null){const e=o.snr-(o.m+d);ll-=e*e/200}}')
 R('un previo de ±6 dB evita correcciones exageradas con pocas escuchas.</p>','un previo de ±6 dB evita correcciones exageradas con pocas escuchas.</p><p>Si lo oyes, marca también la lectura del S-metro, de S0 a S9 y por encima: la señal real, comparada con el ruido típico de esa banda en tu entorno, ajusta las previsiones mucho antes que un simple «lo oigo». S0 significa que la aguja no se mueve, algo habitual en fonía con bandas tranquilas: en ese caso manda la legibilidad R, porque con S0 y R3, R4 o R5 el QSO es posible.</p>')
+# 2.7.4: los botones ISS y Satélites del mapa no encienden el resto de capas: se ven aunque el mapa esté en blanco
+R('["mzin","mzout","mzr","mfs","mpan","mfsx"].includes(t.id)','["mzin","mzout","mzr","mfs","mpan","mfsx","mlyiss","mlysats"].includes(t.id)')
+# 2.7.4: con la EEI o los satélites encendidos el mapa no está «en blanco»
+R('h.hidden=!!(st.mapOn&&(st.ly.voa||st.ly.spots||st.ly.bcn||st.ly.dxp))}','h.hidden=!!(st.mapOn&&(st.ly.voa||st.ly.spots||st.ly.bcn||st.ly.dxp))||!!(typeof satellite!=="undefined"&&(st.ly.iss||st.ly.sats))}')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
