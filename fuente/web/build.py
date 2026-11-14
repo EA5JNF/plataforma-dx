@@ -75,6 +75,10 @@ R('un previo de ±6 dB evita correcciones exageradas con pocas escuchas.</p>','u
 R('["mzin","mzout","mzr","mfs","mpan","mfsx"].includes(t.id)','["mzin","mzout","mzr","mfs","mpan","mfsx","mlyiss","mlysats"].includes(t.id)')
 # 2.7.4: con la EEI o los satélites encendidos el mapa no está «en blanco»
 R('h.hidden=!!(st.mapOn&&(st.ly.voa||st.ly.spots||st.ly.bcn||st.ly.dxp))}','h.hidden=!!(st.mapOn&&(st.ly.voa||st.ly.spots||st.ly.bcn||st.ly.dxp))||!!(typeof satellite!=="undefined"&&(st.ly.iss||st.ly.sats))}')
+# 2.7.5: los modos funcionan como las bandas: con «Todos» activo no se marcan los demás; tocar uno deja solo ese; quitar el último vuelve a «Todos»
+R('function toggleCM(k){let s=CMS().slice();if(s.includes(k)){if(s.length===1)return;s=s.filter(x=>x!==k)}else s.push(k);st.cms=s;store.set("cmsall"','function toggleCM(k){const AL=Object.keys(MODES);let s=CMS().slice();if(s.length===AL.length)s=[k];else if(s.includes(k)){s=s.filter(x=>x!==k);if(!s.length)s=[MOD(),...AL.filter(x=>x!==MOD())]}else s.push(k);st.cms=s;store.set("cmsall"')
+R('aria-pressed="${sel.includes(k)}"','aria-pressed="${sel.length<Object.keys(MODES).length&&sel.includes(k)}"')
+R('{const ab=ms.querySelector("[data-mmall]");if(ab)ab.onclick=()=>toggleAllCM()}','{const ab=ms.querySelector("[data-mmall]");if(ab)ab.onclick=()=>{if(CMS().length<Object.keys(MODES).length)toggleAllCM()}}')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
