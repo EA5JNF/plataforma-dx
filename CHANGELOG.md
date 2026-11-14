@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.1 · 14/11/2026
+- Avisos DX: el aviso flotante respeta los modos y bandas que eliges en Avisos y tiene el mismo formato de tarjeta que el resto de la plataforma. / The floating DX alert follows your Alerts mode and band filters and uses the common card style.
+- DXpediciones: tarjetas por apartados (actividad, mejor hora, rumbo y distancia por el camino corto y el largo, línea gris, QSX); «Mostrar más» ya no deja tarjetas medio vacías ni tapa las de abajo. / Sectioned DXpedition cards; «Show more» fixed.
+- Distancias corregidas: en EE. UU., Canadá, Australia, Rusia, Japón, Brasil y China la estación se sitúa por el número de su indicativo (o el sufijo portable) y no en el centro del país. Junto al rumbo se dan las distancias del camino corto y del largo. / Distances fixed for large countries (station placed by call area); short and long path distances shown.
+- Donde un valor es la media mensual ya pone «media»; donde se combinan varias fuentes, «valor central». / «Average» and «central value» wording.
+- Mapa: más zoom (hasta 41 aumentos), nombres de países principales siempre visibles y más nombres a poco que amplíes, y textos legibles en modo claro también en Safari. / Map: more zoom, more country names, readable labels in light mode.
+- Mapa, «Qué ver»: la ISS con posición, altura, velocidad, próximo paso y frecuencias, y los satélites de radioaficionado con su posición, los que oyes ahora y los próximos pasos. / ISS and amateur satellites on the map.
+- Resumen: bloque «El Sol ahora» con flujo solar, manchas, Kp, índice A, viento solar, Bz, rayos X y apagones de las últimas 24 h. / «The Sun now» block on the summary.
+- Tema claro u oscuro automático según la hora del amanecer y el anochecer en tu locator; el botón sigue funcionando y tu elección dura hasta el siguiente cambio de luz. / Automatic light/dark theme from your locator's sunrise and sunset.
+- El texto «Qué significa cada valor» de la ionosonda ya no se corta. / Ionosonde help text no longer cut off.
+- Fuera el modo tele; las pantallas muy grandes conectadas a un ordenador se ajustan solas. / TV mode removed; very large screens adapt by themselves.
+- Menos consumo y menos calor en el móvil: el reloj y el mapa ya no despiertan al resto de la página cada segundo, nada se actualiza con la pestaña en segundo plano, y en pantallas táctiles se quitan los desenfoques y brillos que hacían trabajar a la GPU. Botones del mapa más ágiles. / Lower CPU and battery use, cooler phones, snappier map buttons.
+
 ## 2.4.0 · 13/11/2026
 - Previsión VOACAP con un sexto nivel de actividad solar (SSN 140): con más de 100 manchas ya no se queda fija en 100, y mejora 15, 12 y 10 m mientras el Sol siga alto. Calculado con el mismo VOACAP y los mismos ajustes que los otros cinco niveles. / A sixth solar activity level (SSN 140).
 - Las zonas VOACAP (132 zonas, 6 niveles) se guardan en Cloudflare Pages en un formato nuevo, comprimido con LZMA y con los datos exactos: la previsión es idéntica a la de antes hasta 100 manchas (comprobado zona por zona). Si Cloudflare no respondiera, la web prueba una copia de respaldo. En GitHub la web pasa de 792 MB a unos 5 MB. / VOACAP areas now served from Cloudflare Pages; the GitHub site drops from 792 MB to about 5 MB.
