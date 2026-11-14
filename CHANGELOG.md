@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.5 · 14/11/2026
+- Revisión general de fin de semana: pantallas (móvil 360 y 390, tableta vertical y horizontal, portátil, escritorio, 2K, tele 720p y 4K) con los dos tamaños de letra, en los dos temas y en español e inglés, sin desbordes; protección frente a código inyectado en los datos de las fuentes y política de seguridad sin avisos; carga, respuesta y reposo (unos 2 ms de procesador por segundo con la web quieta); memoria estable tras cientos de ciclos; buscador, avisos, notificaciones, silencio, «¿Lo oyes? / ¿Te oyen?», mapa, satélites y modos comprobados; tareas automáticas de GitHub y Cloudflare en verde. Tema claro: verde y ámbar de estados algo más oscuros para leerse mejor. / Weekend general review; slightly darker green and amber in the light theme for better contrast.
+
 ## 2.8.4 · 14/11/2026
 - Buscador: «Continente DX» se calcula ahora como en los clústeres, con el continente DXCC de cada estación (y su posición si no se conoce), igual que «Continente del spotter»; antes dependía de la zona de previsión y podía dejarlo vacío. Desplegable con identificador propio para que ningún navegador lo confunda. / Search: «DX continent» now uses each station's DXCC continent, like the spotter one.
 

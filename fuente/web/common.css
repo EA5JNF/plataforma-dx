@@ -27,7 +27,7 @@ a.btn{color:var(--fg)}
   --fg:#16202b;--muted:#4a5a6c;--dim:#6b7b8d;--accent:#b8640b;--accent2:#0d7f92;
   --ocean:#dfeaf4;--land:#f7f4ec;
   --b160:#4d7c0f;--b80:#047857;--b40:#1d4ed8;--b20:#7e22ce;--b17:#0e7490;--b15:#a16207;--b12:#be185d;--b10:#c2410c;--b60:#15803d;--b30:#4338ca;--b6:#c2410c;--b2:#a21caf;--b70:#334155;
-  --ok:#15803d;--warn:#a16207;--bad:#c62828;
+  --ok:#12702f;--warn:#8f5606;--bad:#c62828;
   --q0:#e7ecf2;--q1:#f6d6dc;--q2:#f4e3b5;--q3:#d9ebb0;--q4:#a8dfbd;--q5:#5cc98a}
 :root[data-theme="light"] body{background:var(--bg);color:var(--fg)}
 :root[data-theme="light"] [style*="#ffd76a"]{color:#9a6400!important}
