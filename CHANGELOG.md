@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.5 · 14/11/2026
+- La etiqueta «NUEVO» es más llamativa en toda la plataforma: píldora con degradado esmeralda y turquesa, brillo suave y un punto luminoso, en los dos temas. Sin animación, para no gastar batería. / More eye-catching «NEW» badge across the platform.
+
 ## 2.5.4 · 14/11/2026
 - Más rápida: las tipografías se sirven desde la propia web en lugar de Google Fonts. La página termina de cargar en 1,3 s en lugar de 2 s en un móvil lento simulado, el texto aparece antes, funciona igual sin conexión y ya no se conecta a ningún servidor de Google (más privacidad). / Fonts are now self-hosted: faster loading, works offline, no requests to Google.
 - Tarjetas más limpias: solo muestran la probabilidad final de QSO; cómo se calcula (VOACAP más clústeres) está explicado en Método › Cálculo. / Cards show only the final QSO chance; the explanation lives in Method.
