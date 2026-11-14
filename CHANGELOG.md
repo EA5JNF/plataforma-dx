@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.8 · 14/11/2026
+- «Hora a hora» más fácil de leer, como un semáforo: verde, la banda llega a buena parte del mundo a esa hora; amarillo y naranja, a una parte; rojo, a muy poco; oscuro, cerrada. Leyenda con palabras (cerrada, muy poco, poco, regular, bien, muy bien) y el porcentaje al lado; explicación corta al principio («Busca el verde»); la fila «Mejor» enseña el número de la banda también en el móvil; la fila «Sol» usa azul cielo para el día para no confundirse con el semáforo; casillas rayadas visibles en el tema claro. En español e inglés, en todas las pantallas y en los dos temas. / Hour-by-hour chart as a traffic light, with plain-word legend.
+
 ## 2.7.7 · 14/11/2026
 - Ahora › Bandas: la columna HamQSL volvía a salir «sin datos» en todas las bandas. Los datos sí llegaban, pero ya traducidos (Buena, Regular, Mala, Cerrada) y la tabla solo los entendía en inglés. Corregido; 60 m usa la previsión de HamQSL de 80–40 m. / Bands: the HamQSL column showed «no data» because its values arrive translated; fixed.
 

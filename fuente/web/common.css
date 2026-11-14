@@ -782,3 +782,25 @@ html[data-theme="light"] .issg .issico .it,html[data-theme="light"] .issg .satic
 .mpop .ohin .ohbig svg{width:20px;height:20px}
 /* 2.7.6: a pantalla completa no se enseña el panel de la EEI y los satélites (quedaba detrás del mapa) */
 .mapcard.fsm .issnote{display:none!important}
+
+/* 2.7.8: «Hora a hora» como un semáforo: oscuro cerrada, rojo muy poco, naranja poco, amarillo regular, verde claro bien, verde muy bien */
+.hm2 i.c0,.hmleg2 i.c0{background:#1c2532}
+.hm2 i.c1,.hmleg2 i.c1{background:#8b1e1e}
+.hm2 i.c2,.hmleg2 i.c2{background:#c2510c}
+.hm2 i.c3,.hmleg2 i.c3{background:#d9a404}
+.hm2 i.c4,.hmleg2 i.c4{background:#7cb518}
+.hm2 i.c5,.hmleg2 i.c5{background:#16a34a}
+html[data-theme="light"] .hm2 i.c0,html[data-theme="light"] .hmleg2 i.c0{background:#e3e8ee}
+html[data-theme="light"] .hm2 i.c1,html[data-theme="light"] .hmleg2 i.c1{background:#f4a3a3}
+html[data-theme="light"] .hm2 i.c2,html[data-theme="light"] .hmleg2 i.c2{background:#f9a35b}
+html[data-theme="light"] .hm2 i.c3,html[data-theme="light"] .hmleg2 i.c3{background:#f5d23c}
+html[data-theme="light"] .hm2 i.c4,html[data-theme="light"] .hmleg2 i.c4{background:#9fd83a}
+html[data-theme="light"] .hm2 i.c5,html[data-theme="light"] .hmleg2 i.c5{background:#22a957}
+.hmleg2 .hmli small{color:var(--muted);font-size:.85em}
+.tlintro b{color:var(--fg)}
+/* la fila «Mejor» enseña también en el móvil el número de la banda */
+@media (max-width:640px){.hm2 i.bst span{display:inline!important;font-size:min(.5rem,2.3vw);letter-spacing:-.06em}}
+/* la fila «Sol» con colores que no se confunden con los del semáforo: día azul cielo, línea gris morada, noche azul oscuro */
+.hm2 i.dn.dn-d,.hmleg2 i.dn-d{background:#7dd3fc!important}
+html[data-theme="light"] .hm2 i.dn.dn-d,html[data-theme="light"] .hmleg2 i.dn-d{background:#38bdf8!important}
+html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#eef1f5 0 3px,#c3ccd7 3px 5px)}
