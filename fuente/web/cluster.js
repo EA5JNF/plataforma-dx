@@ -91,8 +91,8 @@ window.ACRACB_card=o=>card(o);
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
-  (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
-    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(e.p*100),lpb:!!e.lp,
+  (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
+    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),lpb:sp.lp,
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
   (dxn||[]).forEach(x=>{const d=x.d;const call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
     const q=[].concat(d.qsx||[]).map(z=>String(z).match(/(\d+(?:\.\d+)?)\s*([A-Z0-9]+)?/i)).filter(Boolean).map(m=>({f:+m[1]>1000?+m[1]/1000:+m[1],m:(m[2]||"").toUpperCase()})).filter(z=>inBand(z.f,x.b));
@@ -111,8 +111,31 @@ function recCards(go,dxn){const out=[];
 window.ACRACB_recCards=recCards;window.ACRACB_geo=geoOf;window.ACRACB_split2=s=>splitTags(s);window.ACRACB_ago=ago;
 /* separa las etiquetas de split/QSL (van en su sección) de las de programa (van junto a la frecuencia) */
 function splitTags(s){const t=window.ACRACB_tags?ACRACB_tags(s):"";const xs=[],pr=[];(t.match(/<span class="xtag[^"]*"[^>]*>.*?<\/span>/g)||[]).forEach(x=>(/xtag x[sq]\b/.test(x)?xs:pr).push(x));return {xs:xs.join(""),pr}}
-function dxRow(s,e,a){const st=splitTags(s);const tags=[];if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
-  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(Math.max(e.pSP,e.t.l?e.pLP:0)*100),lpb:e.t&&e.t.l&&e.pLP>e.pSP,old:a>60})}
+/* 2.5.1: probabilidad de QSO de cada spot, lo más ajustada posible.
+   1) El modelo VOACAP con tu estación (potencia, antenas, altura, cable, entorno, calibración con tu log y la ionosfera de hoy)
+      calculado para el MODO del spot, no para el tuyo principal: un spot de FT8 necesita unos 27 dB menos que la SSB.
+   2) Lo que pasa ahora mismo: si estaciones a menos de 1.500 km de ti lo están oyendo, el camino está abierto desde tu zona;
+      pesa más cuanto más cerca, más reciente y con mejor señal (dB del skimmer o de FT8), y cuantas más estaciones lo oyen.
+   3) Si a ti te han oído en esa banda cerca de esa estación en los últimos 45 minutos («¿Me oyen?»), el camino funciona en los dos sentidos.
+   Si nadie cercano lo oye, se queda la cifra del modelo: que no haya spots no demuestra que el camino esté cerrado. */
+function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
+  let k="ssb";try{k=spotMode(s)}catch(_){}let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}
+  let pS=e.pSP||0,pL=e.t&&e.t.l?(e.pLP||0):0;
+  if(ex&&e.t&&lh!=null){try{pS=prob(e.t,lh,s.band,false,ex).p;pL=e.t.l?prob(e.t,lh,s.band,true,ex).p:0}catch(_){}}
+  const lp=pL>pS&&pL>=.05;const p0=lp?pL:pS;let p=p0;
+  const age=a==null?60:Math.max(0,a),wA=Math.exp(-age/30);let ev=0,near=0;
+  (s.from||[]).forEach(fr=>{if(!fr||fr[0]==null||fr[1]==null)return;try{const w=Math.max(0,1-distJS(TXP,fr)/1500);if(w>0){near++;ev=Math.max(ev,w)}}catch(_){}});
+  const m=String(s.c||"").match(/([-+]?\d{1,2})\s*dB/i);let fs=.6;
+  if(m){const v=+m[1];fs=/FT|JT|JS8|FSK|PSK/i.test(String(s.mode||""))?Math.max(0,Math.min(1,(v+24)/24)):Math.max(0,Math.min(1,(v-3)/20))}
+  /* lo observado manda en proporción a lo fiable que es: E (0 a 1) según cercanía, antigüedad y número de estaciones que lo oyen.
+     Con el camino abierto, tu probabilidad depende de lo bien que llega la señal: entre un 35 % (señal justa) y un 85 % (señal fuerte). */
+  const E=near?Math.min(1,ev*wA*(1+.15*(near-1))):0,cap=.35+.5*fs;if(E>0&&cap>p)p=p+(cap-p)*E;
+  let heard=false,hw=0;try{const H=window.ACRACB_heardList&&ACRACB_heardList();if(H&&s.dx){const ha=(Date.now()-H.at)/6e4;if(ha<45)for(const x of H.list){if(x.band===s.band&&x.pos&&distJS(x.pos,s.dx)<1500){heard=true;hw=Math.exp(-ha/45);break}}}}catch(_){}
+  if(heard&&p<.9)p=p+(.9-p)*hw;
+  return {p,lp,p0,near:near&&ev*wA>.25,heard}}
+window.ACRACB_spotProb=spotProb;
+function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(sp.heard)tags.push(`<span class="xtag xs">${T("te oyen por allí","they hear you there")}</span>`);else if(sp.near)tags.push(`<span class="xtag xq">${T("lo oyen cerca de ti","heard near you")}</span>`);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
+  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),lpb:sp.lp,old:a>60})}
 function progRow(o){const tag=`<a class="xtag xr" href="${refUrl(o.prog,o.ref)}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(PNAME[o.prog][0],PNAME[o.prog][1])}">${e2(o.prog)} ${e2(o.ref)}</a>`;
   return card({call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(o.c):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;

@@ -66,7 +66,7 @@ function qrpCard(){const el=$("qrpbox");if(!el)return;const eq=$("eq"),low=eq&&+
   <li>La CW gana unos 10–13 dB a la SSB y el FT8 más de 20: con 5 W en CW es como transmitir entre 50 y 100 W en SSB.</li></ul>`}
 
 /* =================== ¿Me oyen? =================== */
-let HR=null,HBUSY=false,HLAST=0;
+let HR=null,HBUSY=false,HLAST=0;window.ACRACB_heardList=()=>HR?{at:HR.at,band:null,list:HR.list}:null;
 const MEMO={};
 async function memo(k,min,fn){const m=MEMO[k];if(m&&Date.now()-m.t<min*6e4)return m.v;const v=await fn();MEMO[k]={t:Date.now(),v};return v}
 function rxPos(call,loc){try{if(loc&&typeof normLoc==="function"&&normLoc(loc))return locToLL(loc)}catch(e){}try{const ap=window.ACRACB_areaPos&&ACRACB_areaPos(call);if(ap)return ap}catch(e){}try{const e=callEnt(call);if(e&&e.lon!=null)return [e.lon,e.lat];if(e&&e.dxcc){const m=(V.meta||[]).find(x=>x[2]===e.dxcc);if(m)return [m[5],m[4]]}}catch(e){}return null}

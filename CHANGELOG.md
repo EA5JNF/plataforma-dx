@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.1 · 14/11/2026
+- Probabilidad de QSO de las tarjetas del clúster y de «Qué hacer», más ajustada: el modelo VOACAP con tu estación se calcula ahora para el modo del spot (un spot de FT8 o CW necesita bastante menos señal que la SSB) y se combina con lo que pasa en ese momento: si estaciones a menos de 1.500 km de ti lo están oyendo, pesa según su cercanía, la antigüedad del spot, la señal que dan y cuántas lo oyen; y si a ti te han oído cerca de esa estación en esa banda en los últimos 45 minutos, sube aún más. Las tarjetas lo indican con «lo oyen cerca de ti» o «te oyen por allí». / QSO chance now uses the spot's mode and live evidence: nearby spotters and stations that hear you.
+
 ## 2.5.0 · 14/11/2026
 - El código fuente completo de la plataforma se guarda en la carpeta `fuente` del repositorio, con instrucciones y un script para montarla y publicarla (`fuente/LEEME.md`). La web ya no depende de ningún equipo concreto para poder seguir mejorándose. / Full source code now kept in the `fuente` folder, with build instructions.
 - Respaldo de la previsión VOACAP: si `acracb-voacap.pages.dev` no responde, la web usa `acracb-voacap-respaldo.pages.dev`. El respaldo se crea y se pone al día con el flujo «Respaldo VOACAP en Cloudflare». / VOACAP backup on a second Cloudflare Pages project.
