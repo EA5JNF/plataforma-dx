@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.8 · 14/11/2026
+- Actualización automática según la corriente: donde el navegador dice si el aparato está enchufado (Chrome, Edge y Android), enchufado se actualiza cada minuto y con batería cada 3 minutos, también en portátiles. Donde no lo dice (iPhone, iPad, Safari y Firefox), móvil y tableta cada 3 minutos y ordenador cada minuto. Sin tocar la pantalla 5 minutos, cada 10. / Auto-update every minute when plugged in, every 3 minutes on battery.
+
 ## 2.4.7 · 14/11/2026
 - Avisos DX: el modo y las bandas que eliges en Avisos mandan en todo. La lista, el aviso flotante de la portada, el resumen del apartado y las notificaciones del móvil solo muestran los avisos de esa elección (por ejemplo, solo SSB en todas las bandas). Al cambiar el filtro se actualiza todo al momento. / Your Alerts mode and band choice now applies everywhere: list, home-screen alert, summary and phone notifications.
 
