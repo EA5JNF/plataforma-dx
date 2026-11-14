@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.4 · 14/11/2026
+- Menos calor y batería en el móvil: la actualización automática (30 fuentes cada vez) pasa a cada 3 minutos en móviles y tabletas (sigue cada minuto en el ordenador), a cada 10 minutos si nadie toca la pantalla durante 5, y se detiene con la pestaña en segundo plano. «Actualizar» sigue siendo inmediato. / Less heat and battery use: automatic updates every 3 min on phones, every 10 min when idle, none in the background.
+- «Qué hacer»: cada estación recomendada sale en una tarjeta como las del resto de la plataforma: frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y probabilidad de QSO. Si la DXpedición no ha publicado frecuencia para esa banda, se indica la habitual de su modo. / «What to do» now uses the common station cards.
+- La franja de valores de la portada incluye el índice A. / The top value strip now includes the A index.
+
 ## 2.4.3 · 14/11/2026
 - Distancias y rumbos de las tarjetas calculados sobre el elipsoide terrestre WGS84 (fórmula de Vincenty) en lugar de una Tierra esférica: precisión de metros (antes el error podía llegar al 0,5 %, unos 20 km hacia Australia). El camino largo usa la longitud real de esa vuelta al planeta, que no siempre es 40.030 km. Los locators de 8 y 10 caracteres se aprovechan enteros. / Distances and bearings on the WGS84 ellipsoid (Vincenty); long path uses the real loop length.
 - Índice A redondeado a número entero, como lo publica NOAA. / A index shown as an integer.
