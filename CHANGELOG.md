@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.3 · 14/11/2026
+- Distancias y rumbos de las tarjetas calculados sobre el elipsoide terrestre WGS84 (fórmula de Vincenty) en lugar de una Tierra esférica: precisión de metros (antes el error podía llegar al 0,5 %, unos 20 km hacia Australia). El camino largo usa la longitud real de esa vuelta al planeta, que no siempre es 40.030 km. Los locators de 8 y 10 caracteres se aprovechan enteros. / Distances and bearings on the WGS84 ellipsoid (Vincenty); long path uses the real loop length.
+- Índice A redondeado a número entero, como lo publica NOAA. / A index shown as an integer.
+- Botones del mapa sin retardo: el botón cambia en el acto y el mapa se redibuja en el fotograma siguiente; varias pulsaciones seguidas se redibujan una sola vez. / Map buttons respond instantly.
+
 ## 2.4.2 · 14/11/2026
 - Distancias y rumbos corregidos en las tarjetas del clúster: se medían hasta el punto de previsión VOACAP de la zona, no hasta la estación. Ahora se miden desde tu locator hasta la posición de la estación: la que da el spot o su locator, el locator escrito en el comentario o, si no hay, la región de su indicativo. Ya no se usa el centro del país que manda alguna fuente cuando no sabe dónde está la estación. Lo mismo en los avisos y en «¿Me oyen?». / Cluster card distances and bearings now go from your locator to the station itself, not to the VOACAP zone point.
 - «El Sol ahora» en el resumen trae todos los datos de la sección Sol: valores reales (también Bt, protones, aurora, llamaradas, apagones fuertes y tormentas de protones), las próximas horas y días (flujo de mañana, próxima tormenta, mejores días para el DX, CME) y el ciclo solar, con el resumen escrito de Sol, geomagnetismo y previsión. / «The Sun now» on the summary shows every solar value from the Sun section.
