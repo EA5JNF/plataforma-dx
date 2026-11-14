@@ -5,6 +5,10 @@ Idea original y realización: Alfredo, EA5JNF. © ACRACB.
 La web publicada (raíz del repositorio: `index.html`, `en.html`, `lib/`, `sw.js`) se genera a partir de esta carpeta.
 No se edita a mano: se cambia aquí y se vuelve a montar.
 
+**Dónde se publica (desde el 14/11/2026):** solo en la web de GitHub Pages (español e inglés) y, para los datos VOACAP, en Cloudflare.
+La versión de artefacto de Claude ya no se mantiene: `build.py` todavía genera `artifact.html`, pero no se publica en ningún sitio.
+Cada cambio debe funcionar en todas las pantallas (móvil, tableta, ordenador, 2K, tele 720p y 4K), con los dos tamaños de letra y en los dos temas.
+
 ## Qué hay
 
 | Carpeta | Contenido |
