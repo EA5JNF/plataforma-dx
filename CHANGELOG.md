@@ -5,6 +5,12 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.6 · 14/11/2026
+- Mapa: al tocar una estación, una DXpedición o un destino, la ventana trae el mismo «¿Lo oyes? / ¿Te ha oído?» que las tarjetas, con sus botones grandes y las escalas de legibilidad (R) y de señal (S0 a S9+60, o dB en digitales), en lugar del bloque antiguo. / Map popups now have the same «Do you hear it? / Did it hear you?» panel as the cards.
+- La ficha de la EEI y de cada satélite sale en la ventana pequeña del mapa, como la de las estaciones, en vez de a pantalla completa. / Satellite details open in the small map popup.
+- Iconos de la EEI y los satélites con fondo y borde propios, bien visibles en el tema claro y en el oscuro; en verde los que oyes ahora. / Clearer satellite icons in both themes.
+- A pantalla completa ya no se ve detrás del mapa el panel de la EEI y los satélites. / Fixed the satellite panel showing behind the full-screen map.
+
 ## 2.7.5 · 14/11/2026
 - Los modos (mapa, clúster y estación) funcionan como las bandas: con «Todos» activo no se marcan los demás; al tocar uno se ve solo ese, puedes sumar otros y, al quitar el último, vuelve a «Todos». Ya no se queda trabado el último modo marcado. La predicción VOACAP se calcula en el modo que elijas. En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / Modes now work like bands, with «All».
 

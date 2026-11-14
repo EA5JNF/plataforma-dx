@@ -143,11 +143,10 @@ function repHTML(o,voice,cw){const dig=!voice&&!cw;let x="";
   x+=dig?`<div class="ohd-db" role="group" aria-label="${T("Señal en dB del programa","Signal in dB from the software")}"><span class="smt">${T("¿Qué señal da el programa?","What does the software report?")} (<span class="nu">dB</span>)</span><div class="dbrow">${DBV.map((v,i)=>`<button type="button" data-db="${v}" data-o="${e2(o.at)}" aria-pressed="${o.db===v}" style="--i:${i}">${v>0?"+"+v:v}</button>`).join("")}</div></div>`:ACRACB_smeter(o);
   return x}
 const isDxp=call=>{try{const c=String(call||"").toUpperCase();return (L.dx||[]).some(d=>String(d.call||"").toUpperCase().split(/[\s,/]+/).includes(c)||String(d.call||"").toUpperCase().includes(c))}catch(_){return false}};
-function dlgHTML(d){const last=lastOwn(d.call,d.b),tx=lastOwn(d.call,d.b,"tx");const voice=VOICE(d.mode),cw=/^CW$/i.test(String(d.mode||"").trim());
+function dlgHTML(d,inl){const last=lastOwn(d.call,d.b),tx=lastOwn(d.call,d.b,"tx");const voice=VOICE(d.mode),cw=/^CW$/i.test(String(d.mode||"").trim());
   const ico={y:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',n:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>'};
   const h=last&&last.h,n=last&&!last.h,th=tx&&tx.h,tn=tx&&!tx.h,dxp=isDxp(d.call);
-  let x=`<div class="ohd-h"><div><div class="ohd-t">${T("¿Oyes a","Do you hear")} <b>${e2(d.call)}</b>?</div><div class="ohd-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</div></div><button type="button" class="ohd-x" data-ohx aria-label="${T("Cerrar","Close")}">×</button></div>
-   <div class="ohd-b"><button type="button" class="ohbig y" data-oh="1" aria-pressed="${!!h}">${ico.y}<span>${T("Lo oigo","I hear it")}</span></button><button type="button" class="ohbig n" data-oh="0" aria-pressed="${!!n}">${ico.n}<span>${T("No lo oigo","I don't hear it")}</span></button></div>`;
+  let x=(inl?"":`<div class="ohd-h"><div><div class="ohd-t">${T("¿Oyes a","Do you hear")} <b>${e2(d.call)}</b>?</div><div class="ohd-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</div></div><button type="button" class="ohd-x" data-ohx aria-label="${T("Cerrar","Close")}">×</button></div>`)+`   <div class="ohd-b"><button type="button" class="ohbig y" data-oh="1" aria-pressed="${!!h}">${ico.y}<span>${T("Lo oigo","I hear it")}</span></button><button type="button" class="ohbig n" data-oh="0" aria-pressed="${!!n}">${ico.n}<span>${T("No lo oigo","I don't hear it")}</span></button></div>`;
   if(h)x+=repHTML(last,voice,cw);
   /* 2.6.7: «¿Te ha oído?», el otro sentido del camino (tu transmisión) */
   x+=`<div class="ohd-sec"><div class="ohd-st">${T("¿Te ha oído?","Did it hear you?")}</div>
@@ -155,7 +154,7 @@ function dlgHTML(d){const last=lastOwn(d.call,d.b),tx=lastOwn(d.call,d.b,"tx");c
   if(th)x+=dxp?`<p class="note ohd-n">${T("Las DXpediciones casi siempre dan 59 o 599: cuenta que te han oído, sin reporte.","DXpeditions almost always give 59 or 599: what counts is that they heard you, without a report.")}</p>`:`<p class="note ohd-n2">${T("Reporte que te han dado:","Report you were given:")}</p>`+repHTML(tx,voice,cw);
   x+=`</div>`;
   x+=`<p class="note ohd-n">${T("«Lo oigo» ajusta tu recepción y «Me oyen» tu transmisión. Durante 45 minutos, las dos cambian el porcentaje de esa zona.","«I hear it» tunes your reception and «They hear me» your transmission. For 45 minutes, both change the chance for that area.")}</p>`;
-  if(last||tx)x+=`<div class="ohd-f"><button type="button" class="btn ohd-ok" data-ohx>${T("Listo","Done")}</button></div>`;
+  if(!inl&&(last||tx))x+=`<div class="ohd-f"><button type="button" class="btn ohd-ok" data-ohx>${T("Listo","Done")}</button></div>`;
   return x}
 function openDlg(d){DLG=d;let w=document.getElementById("ohdlg");if(!w){w=document.createElement("div");w.id="ohdlg";w.className="ohdlg";w.innerHTML='<div class="ohd-bg" data-ohx></div><div class="ohd-c" role="dialog" aria-modal="true"></div>';document.body.appendChild(w)}
   w.querySelector(".ohd-c").innerHTML=dlgHTML(d);w.hidden=false;document.documentElement.classList.add("ohopen");setTimeout(()=>{const b=w.querySelector("[data-oh]");b&&b.focus()},30)}
@@ -166,20 +165,34 @@ function addOwn(tid,b,call,mode,heard,dir){dir=dir||"rx";const RX=dir==="rx";con
   const lp=RX?t.l&&prob(t,lh,b,true,"rx").p>prob(t,lh,b,false,"rx").p:t.l&&prob(t,lh,b,true).p>prob(t,lh,b,false).p;const M=marg(t,lh,b,lp,RX);if(!M)return;
   const prev=lastOwn(call,b,dir);if(prev&&Date.now()-Date.parse(prev.at)<15*6e4){const i=OBS.indexOf(prev);if(i>=0)OBS.splice(i,1)}
   OBS.push({k:calKey(),t:tid,b,lh,h:heard?1:0,m:Math.round(M.m*10)/10,dl:M.DL,du:M.DU,thr:M.thr-ex,at:new Date().toISOString(),call,src:"tarjeta",dir,...(!RX&&!heard?{w:.35}:{}),...(!RX&&isDxp(call)?{dxp:1}:{})});if(OBS.length>600)OBS=OBS.slice(-600);
-  dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}
+  dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw();try{renderPop()}catch(_){}}
 /* vuelve a pintar los recuadros «¿Lo oyes?» que sigan en pantalla (aviso de portada incluido) */
 function rebox(){try{renderAlBar()}catch(_){}document.querySelectorAll(".ohbox").forEach(bx=>{const q=bx.querySelector("[data-ohq]");if(!q)return;bx.outerHTML=ACRACB_ohBox({t:q.dataset.t,b:+q.dataset.b,call:q.dataset.call,mode:q.dataset.mode})})}
 window.ACRACB_rebox=rebox;
 const T0=id=>{try{return TG().find(t=>t.id===id)}catch(_){return null}};
+const ctxD=el=>{const c=el.closest(".ohin");return c?dOf(c):DLG};
+/* 2.7.6: en las ventanas del mapa, el mismo «¿Lo oyes? / ¿Te ha oído?» que en las tarjetas, con sus dos escalas */
+function ohInline(d){return `<div class="ohin" data-t="${e2(d.t)}" data-b="${d.b}" data-call="${e2(d.call)}" data-mode="${e2(d.mode||"")}" data-f="${e2(d.f||"")}"><div class="ohin-t">${T("¿Lo oyes?","Do you hear it?")} <span class="ohin-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</span></div>${dlgHTML(d,true)}</div>`}
+window.ACRACB_ohInline=ohInline;
+(function(){let n=0;const h=setInterval(()=>{if(typeof calBtns==="function"&&!calBtns.__oh){const o=calBtns;const w=function(t){try{if(!t)return o.apply(this,arguments);const P=st.pop;let call=null,b=null,mode="",f="";
+    if(P&&P.k==="s"){const s=SPOTS()[P.i];const e=s&&spotEval(s,st.mhour);if(s&&e&&e.t&&e.t.id===t.id){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
+    else if(P&&P.k==="d"){const d=L.dx[P.i];if(d&&tFor(d)&&tFor(d).id===t.id)call=dxTok(d.call)[0]||d.call}
+    if(b==null)b=st.mband>=0?st.mband:bestAny(t,st.mhour).b;if(b==null||b<0||b>=10)return o.apply(this,arguments);
+    if(!call)call=t.name;if(!mode){try{mode=MD().s}catch(_){}}
+    return ohInline({t:t.id,b,call,mode,f})+`<div class="acts"><button class="btn" data-goz="${e2(t.id)}">${T("Ficha completa","Full details")}</button></div>`}catch(e){return o.apply(this,arguments)}};
+  w.__oh=1;try{calBtns=w}catch(e){window.calBtns=w}clearInterval(h)}else if(++n>100)clearInterval(h)},100)})();
 const dOf=el=>({t:el.dataset.t,b:+el.dataset.b,call:el.dataset.call,mode:el.dataset.mode,f:el.dataset.f||((el.closest(".sc")||{}).dataset||{}).f||""});
-document.addEventListener("click",ev=>{const tg=ev.target;if(!tg.closest)return;
+const ohClick=ev=>{const tg=ev.target;if(!tg.closest)return;
   if(tg.closest("[data-ohx]")){closeDlg();return}
-  const h=tg.closest("#ohdlg [data-oh]");if(h&&DLG){try{addOwn(DLG.t,DLG.b,DLG.call,DLG.mode,h.dataset.oh==="1")}catch(e){console.error(e)}return}
-  const tx=tg.closest("#ohdlg [data-tx]");if(tx&&DLG){try{addOwn(DLG.t,DLG.b,DLG.call,DLG.mode,tx.dataset.tx==="1","tx")}catch(e){console.error(e)}return}
-  const dbb=tg.closest("[data-db]");if(dbb){try{const o=OBS.slice().reverse().find(x=>x.at===dbb.dataset.o);if(o){const v=+dbb.dataset.db;if(o.db===v)delete o.db;else o.db=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
-  const rr=tg.closest("[data-rr]");if(rr){try{const o=OBS.slice().reverse().find(x=>x.at===rr.dataset.o);if(o){const v=+rr.dataset.rr;if(o.r===v)delete o.r;else o.r=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
+  const h=tg.closest("#ohdlg [data-oh],.ohin [data-oh]");if(h){const D=ctxD(h);if(D)try{addOwn(D.t,D.b,D.call,D.mode,h.dataset.oh==="1")}catch(e){console.error(e)}return}
+  const tx=tg.closest("#ohdlg [data-tx],.ohin [data-tx]");if(tx){const D=ctxD(tx);if(D)try{addOwn(D.t,D.b,D.call,D.mode,tx.dataset.tx==="1","tx")}catch(e){console.error(e)}return}
+  const dbb=tg.closest("[data-db]");if(dbb){try{const o=OBS.slice().reverse().find(x=>x.at===dbb.dataset.o);if(o){const v=+dbb.dataset.db;if(o.db===v)delete o.db;else o.db=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw();try{renderPop()}catch(_){}}}catch(e){console.error(e)}return}
+  const rr=tg.closest("[data-rr]");if(rr){try{const o=OBS.slice().reverse().find(x=>x.at===rr.dataset.o);if(o){const v=+rr.dataset.rr;if(o.r===v)delete o.r;else o.r=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw();try{renderPop()}catch(_){}}}catch(e){console.error(e)}return}
   const q=tg.closest("[data-ohq]");if(q){openDlg(dOf(q));return}
-  const card=tg.closest(".sc.ohc");if(card&&!tg.closest("a,button,input,select,summary,label,.cs")){const d=dCard(card);if(d)openDlg(d)}});
+  const card=tg.closest(".sc.ohc");if(card&&!tg.closest("a,button,input,select,summary,label,.cs")){const d=dCard(card);if(d)openDlg(d)}};
+/* 2.7.6: la ventana del mapa no deja pasar los clics: lo de dentro de «.ohin» se atiende antes, en captura */
+document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".ohin"))return;ohClick(ev)});
+document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".ohin")&&!ev.target.closest("[data-smt]")){ohClick(ev);ev.stopPropagation()}},true);
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&DLG){closeDlg();return}if((ev.key==="Enter"||ev.key===" ")&&ev.target.matches&&ev.target.matches(".sc.ohc")){ev.preventDefault();const d=dCard(ev.target);if(d)openDlg(d)}});
 /* tus escuchas recientes de una zona y banda: la prueba más fuerte (45 minutos) */
 window.ACRACB_own=(tid,dx,b,dir)=>{dir=dir||"rx";try{const lim=Date.now()-45*6e4;let best=null;for(let i=OBS.length-1;i>=0;i--){const o=OBS[i];if(!o.call||o.b!==b||(o.dir||"rx")!==dir)continue;const at=Date.parse(o.at);if(at<lim)break;
@@ -201,7 +214,7 @@ const DBV=[-24,-20,-15,-10,-5,0,5,10,20];
 function obsSnr(o){if(o.dxp)return null;const v=[];if(o.s===0&&o.r==null&&o.db==null)v.push(3);if(o.s!=null&&o.s>0){const n=NRUR[o.b];if(n!=null){let pen=0;try{if(o.dir!=="tx")pen=localNoisePen(o.b,o.lh)}catch(_){}v.push(Math.max(3,sDbm(o.s)-(n+pen)))}}if(o.r!=null&&RSNR[o.r]!=null)v.push(RSNR[o.r]);if(o.db!=null)v.push(o.db);return v.length?v.reduce((a,b)=>a+b,0)/v.length+33.8:null}
 window.ACRACB_smeter=last=>{const cur=last.s;return `<div class="smeter" role="group" aria-label="${T("Lectura del S-metro","S-meter reading")}"><span class="smt">${T("¿Con qué señal?","What signal?")}</span><div class="smb">${SVAL.map((v,i)=>`<button type="button" data-smt="${v}" data-o="${e2(last.at)}" aria-pressed="${cur===v}" style="--i:${i}">${v<=9?v:"+"+(v-9)}</button>`).join("")}</div></div>`};
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-smt]");if(!b)return;try{const o=OBS.slice().reverse().find(x=>x.at===b.dataset.o);if(!o)return;const v=+b.dataset.smt;
-  if(o.s===v)delete o.s;else o.s=v;{const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}try{redraw()}catch(_){}}catch(e){console.error(e)}});
+  if(o.s===v)delete o.s;else o.s=v;{const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}try{redraw()}catch(_){}}catch(e){console.error(e)}},true);
 /* 2.5.9: «Mi modo / Todos los modos» en «Qué hacer» y casilla «Todos los modos» en la estación: las dos cosas van sincronizadas */
 const allOn=()=>{try{return CMS().length===Object.keys(MODES).length}catch(_){return false}};
 window.ACRACB_recModes=()=>{const on=allOn();let my="";try{my=MODES[MOD()].s}catch(_){}

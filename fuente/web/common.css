@@ -756,3 +756,29 @@ html[data-theme="light"] .issg :is(.issico,.satico):hover .sathit{fill:rgba(0,0,
 #satpop .cps .note{display:inline-block;margin-top:2px}
 #satpop .cpb .agr{white-space:normal;line-height:1.35;height:auto}
 #satpop .cpg>div{min-width:0;overflow-wrap:anywhere}
+
+/* 2.7.6: iconos de la EEI y los satélites con fondo y borde propios: se ven igual de bien en el tema claro y en el oscuro */
+.issg .satbg{fill:rgba(8,12,18,.82);stroke-width:1.6;vector-effect:non-scaling-stroke}
+.issg .issico .satbg{stroke:#ffc400}
+.issg .satico .satbg{stroke:#40c8ff}
+.issg .satico.on .satbg{stroke:#4ade80;stroke-width:2.2}
+.issg :is(.issico,.satico) :is(.ip,.ib,.it){vector-effect:non-scaling-stroke}
+.issg :is(.issico,.satico):is(:hover,:focus-visible) .satbg{stroke-width:2.6}
+html[data-theme="light"] .issg .satbg{fill:rgba(255,255,255,.94)}
+html[data-theme="light"] .issg .issico .satbg{stroke:#9a520a}
+html[data-theme="light"] .issg .satico .satbg{stroke:#0369a1}
+html[data-theme="light"] .issg .satico.on .satbg{stroke:#15803d}
+html[data-theme="light"] .issg .issico .ib,html[data-theme="light"] .issg .satico .ib{fill:#ffffff;stroke:#1e293b}
+html[data-theme="light"] .issg .issico .ip{fill:#d97706;stroke:#5a3300}
+html[data-theme="light"] .issg .satico .ip{fill:#0284c7;stroke:#0c2a3d}
+html[data-theme="light"] .issg .satico.on .ip{fill:#16a34a;stroke:#0b3d1d}
+html[data-theme="light"] .issg .issico .it,html[data-theme="light"] .issg .satico .it{stroke:#1e293b}
+/* la ficha de satélite y el «¿Lo oyes?» dentro de la ventana del mapa */
+.mpop .satd{margin-top:8px}
+.mpop .ohin{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.mpop .ohin-t{font-weight:700;margin-bottom:8px}
+.mpop .ohin-s{font:500 .8rem var(--f-m,monospace);color:var(--muted);margin-left:6px}
+.mpop .ohin .ohbig{min-height:56px;padding:8px}
+.mpop .ohin .ohbig svg{width:20px;height:20px}
+/* 2.7.6: a pantalla completa no se enseña el panel de la EEI y los satélites (quedaba detrás del mapa) */
+.mapcard.fsm .issnote{display:none!important}

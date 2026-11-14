@@ -27,7 +27,7 @@ function nextPass(id){try{const now=Date.now();return (ACRACB_sats.passes||[]).f
 const hear0=p=>d3.geoDistance(me(),[p.lon,p.lat])/R<foot(p.h);
 function icon(g,q,s,id,iss,on){const n=g.append("g").attr("class",(iss?"issico":"satico")+(on?" on":"")).attr("transform",`translate(${q[0]},${q[1]}) scale(${1/s})`)
     .attr("pointer-events","all").attr("role","button").attr("tabindex","0").attr("aria-label",(iss?"ISS":((SATS().find(x=>x.id===id)||{}).n||""))+": "+T("ver ficha","show details"));
-  n.append("circle").attr("class","sathit").attr("r",iss?16:12);
+  n.append("circle").attr("class","sathit").attr("r",iss?20:16);n.append("circle").attr("class","satbg").attr("r",iss?15.5:11);
   if(iss){n.append("rect").attr("class","ip").attr("x",-13).attr("y",-7).attr("width",7).attr("height",14).attr("rx",1);n.append("rect").attr("class","ip").attr("x",6).attr("y",-7).attr("width",7).attr("height",14).attr("rx",1);
     n.append("path").attr("class","it").attr("d","M-6 0H6");n.append("rect").attr("class","ib").attr("x",-3.5).attr("y",-4).attr("width",7).attr("height",8).attr("rx",1.5)}
   else{n.append("rect").attr("class","ip").attr("x",-9).attr("y",-3).attr("width",5).attr("height",6).attr("rx",.8);n.append("rect").attr("class","ip").attr("x",4).attr("y",-3).attr("width",5).attr("height",6).attr("rx",.8);
@@ -36,21 +36,24 @@ function icon(g,q,s,id,iss,on){const n=g.append("g").attr("class",(iss?"issico":
 function lookNow(r,t){try{const P=me(),obs={longitude:P[0]*R,latitude:P[1]*R,height:.05},d=new Date(t),pv=satellite.propagate(r,d);if(!pv||!pv.position)return null;
   const la=satellite.ecfToLookAngles(obs,satellite.eciToEcf(pv.position,satellite.gstime(d)));return {el:la.elevation/R,az:(la.azimuth/R+360)%360,km:la.rangeSat}}catch(e){return null}}
 const CB=a=>{try{return typeof cab==="function"?cab(Math.round(a)):""}catch(e){return ""}};
-function openSat(id){const sd=SATS().find(x=>x.id===id)||{id,n:"ISS"},r=REC.get(id);if(!r)return;const now=Date.now(),p=at(r,now);if(!p)return;const iss=id===25544,on=hear0(p),lk=lookNow(r,now);
+function satHTML(id){const sd=SATS().find(x=>x.id===id)||{id,n:"ISS"},r=REC.get(id);if(!r)return "";const now=Date.now(),p=at(r,now);if(!p)return "";const iss=id===25544,on=hear0(p),lk=lookNow(r,now);
   try{if(window.ACRACB_sats&&!(ACRACB_sats.passes||[]).length)ACRACB_sats.calc()}catch(e){}
   const ps=(()=>{try{return (ACRACB_sats.passes||[]).filter(x=>x.s&&x.s.id===id&&x.los>now).slice(0,3)}catch(e){return []}})();
-  const tile=(k,v)=>v?`<div><span class="note">${k}</span><b>${v}</b></div>`:"";const note=Array.isArray(sd.note)?sd.note[EN()?1:0]:(sd.note||"");
-  let h=`<div class="cph"><div><div class="cpc">${e2(sd.n)}</div><div class="cpe">${iss?T("Estación Espacial Internacional","International Space Station"):T("Satélite de radioaficionado","Amateur satellite")+(sd.kind?" · "+e2(sd.kind):"")} · NORAD ${id}</div>
-    <div class="cpb">${on?`<span class="agr ok">${T("La oyes ahora","In range now")}</span>`:`<span class="agr">${T("Fuera de tu alcance ahora","Out of range now")}</span>`}</div></div><button type="button" class="btn cpx" data-satx aria-label="${T("Cerrar","Close")}">${T("Cerrar","Close")}</button></div>`;
-  h+=`<h3>${T("Ahora","Now")}</h3><div class="cpg">${tile(T("Posición","Position"),ll(p.lat,p.lon))}${tile(T("Altura","Altitude"),nf(p.h)+" km")}${tile(T("Velocidad","Speed"),nf(p.v*3600)+" km/h")}${lk?tile(T("Desde tu QTH","From your QTH"),lk.el>0?`${Math.round(lk.el)}° ${T("de elevación","elevation")} · ${Math.round(lk.az)}° ${CB(lk.az)}`:`${T("bajo el horizonte","below the horizon")} · ${nf(lk.km)} km`):""}</div>`;
-  h+=`<h3>${T("Próximos pases sobre tu locator","Next passes over your locator")}</h3>`+(ps.length?ps.map(x=>`<div class="cps"><b>${loc(x.aos)}–${loc(x.los)}</b> ${T("hora local","local time")} · ${Math.max(1,Math.round((x.los-x.aos)/6e4))} min · ${T("máx.","max")} <b>${Math.round(x.max)}°</b><br><span class="note">${T("sale","rises")} ${Math.round(x.azA)}° ${CB(x.azA)} · ${T("punto más alto","peak")} ${Math.round(x.azM)}° ${CB(x.azM)}${x.azL!=null?` · ${T("se pone","sets")} ${Math.round(x.azL)}° ${CB(x.azL)}`:""}</span></div>`).join(""):`<p class="note">${T("Ninguno en las próximas 24 h por encima del mínimo elegido en DX › Satélites.","None in the next 24 h above the minimum chosen in DX › Satellites.")}</p>`);
-  h+=`<h3>${T("Frecuencias","Frequencies")}</h3><div class="cpg">${iss?tile(T("Voz","Voice"),"145.800 FM")+tile("APRS","145.825"):""}${tile(T("Subida","Uplink"),e2(sd.up||""))}${tile(T("Bajada","Downlink"),e2(sd.down||""))}</div>${note?`<p class="note">${e2(note)}</p>`:""}`;
-  h+=`<p class="note">${T("El círculo del mapa es la zona desde la que se oye ahora.","The circle on the map is the area where it can be heard now.")}</p>`;
-  h+=`<h3>${T("Más información","More information")}</h3><div class="cpl"><a class="btn" href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>${T("Estado en AMSAT","Status at AMSAT")}</a><button type="button" class="btn" data-satgo>${T("Todos los pases","All passes")}</button></div>`;
-  let ov=document.getElementById("satpop");if(!ov){ov=document.createElement("div");ov.id="satpop";ov.className="cpop";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");document.body.appendChild(ov);
-    ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.closest("[data-satx]"))closeSat();else if(ev.target.closest("[data-satgo]")){closeSat();try{go("dx");selTab("dx","f_sat",true)}catch(e){}}});
-    document.addEventListener("keydown",ev=>{if(ev.key==="Escape")closeSat()})}
-  ov.setAttribute("aria-label",sd.n);ov.innerHTML=`<div class="cpan" tabindex="-1">${h}</div>`;ov.hidden=false;document.body.classList.add("noscroll");ov.querySelector(".cpan").focus()}
+  const row=(k,v)=>v?`<dt>${k}</dt><dd>${v}</dd>`:"";const note=Array.isArray(sd.note)?sd.note[EN()?1:0]:(sd.note||"");
+  let h=`<h3>${e2(sd.n)}</h3><p class="note" style="margin:0">${iss?T("Estación Espacial Internacional","International Space Station"):T("Satélite de radioaficionado","Amateur satellite")+(sd.kind?" · "+e2(sd.kind):"")}</p>
+    <p style="margin:6px 0 0">${on?`<span class="agr ok">${T("La oyes ahora","In range now")}</span>`:`<span class="agr">${T("Fuera de tu alcance ahora","Out of range now")}</span>`}</p>
+    <dl class="sc-d satd">${row(T("Posición","Position"),ll(p.lat,p.lon))}${row(T("Altura","Altitude"),nf(p.h)+" km")}${row(T("Velocidad","Speed"),nf(p.v*3600)+" km/h")}${lk?row(T("Desde tu QTH","From your QTH"),lk.el>0?`${Math.round(lk.el)}° ${T("de elevación","elevation")} · ${Math.round(lk.az)}° ${CB(lk.az)}`:`${T("bajo el horizonte","below the horizon")} · ${nf(lk.km)} km`):""}
+    ${row(T("Próximos pases","Next passes"),ps.length?ps.map(x=>`<span class="nw"><b>${loc(x.aos)}–${loc(x.los)}</b> · ${T("máx.","max")} ${Math.round(x.max)}°</span><br><span class="note">${T("sale","rises")} ${Math.round(x.azA)}° ${CB(x.azA)}${x.azL!=null?` · ${T("se pone","sets")} ${Math.round(x.azL)}° ${CB(x.azL)}`:""}</span>`).join("<br>"):T("ninguno en 24 h","none in 24 h"))}
+    ${iss?row(T("Voz","Voice"),"145.800 FM")+row("APRS","145.825"):""}${row(T("Subida","Uplink"),e2(sd.up||""))}${row(T("Bajada","Downlink"),e2(sd.down||""))}</dl>
+    ${note?`<p class="note" style="margin:6px 0 0">${e2(note)}</p>`:""}
+    <div class="acts"><a class="btn" href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>${T("Estado en AMSAT","Status at AMSAT")}</a><button type="button" class="btn" data-satgo>${T("Todos los pases","All passes")}</button></div>`;
+  return h}
+/* 2.7.6: la ficha sale en la ventana pequeña del mapa, como la de las estaciones */
+function openSat(id){if(!REC.get(id))return;if(typeof st!=="undefined"&&typeof renderPop==="function"&&document.getElementById("mpop")){st.pop={k:"sat",id};renderPop();return}}
+(function(){let n=0;const t=setInterval(()=>{if(typeof renderPop==="function"&&!renderPop.__sat){const o=renderPop;const w=function(){try{if(typeof st!=="undefined"&&st.pop&&st.pop.k==="sat"){const el=document.getElementById("mpop");const h=satHTML(st.pop.id);if(!h){closePop();return}
+      el.innerHTML=`<button class="x" aria-label="${T("Cerrar","Close")}" id="mpx">×</button>`+h;el.hidden=false;document.getElementById("mpx").onclick=closePop;
+      const g=el.querySelector("[data-satgo]");if(g)g.onclick=()=>{closePop();try{go("dx");selTab("dx","f_sat",true)}catch(e){}};return}}catch(e){}return o.apply(this,arguments)};
+    w.__sat=1;try{renderPop=w}catch(e){window.renderPop=w}clearInterval(t)}else if(++n>100)clearInterval(t)},100)})();
 function closeSat(){const ov=document.getElementById("satpop");if(ov&&!ov.hidden){ov.hidden=true;document.body.classList.remove("noscroll")}}
 function draw(){const old=document.getElementById("issg");if(old)old.remove();note();if(!(onISS()||onSats())||typeof ZROOT==="undefined"||!ZROOT||typeof PR==="undefined"||!PR)return;
   if(!REC.size){load().then(()=>{if(REC.size)draw()});return}
