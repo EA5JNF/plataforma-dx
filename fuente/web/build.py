@@ -79,6 +79,9 @@ R('h.hidden=!!(st.mapOn&&(st.ly.voa||st.ly.spots||st.ly.bcn||st.ly.dxp))}','h.hi
 R('function toggleCM(k){let s=CMS().slice();if(s.includes(k)){if(s.length===1)return;s=s.filter(x=>x!==k)}else s.push(k);st.cms=s;store.set("cmsall"','function toggleCM(k){const AL=Object.keys(MODES);let s=CMS().slice();if(s.length===AL.length)s=[k];else if(s.includes(k)){s=s.filter(x=>x!==k);if(!s.length)s=[MOD(),...AL.filter(x=>x!==MOD())]}else s.push(k);st.cms=s;store.set("cmsall"')
 R('aria-pressed="${sel.includes(k)}"','aria-pressed="${sel.length<Object.keys(MODES).length&&sel.includes(k)}"')
 R('{const ab=ms.querySelector("[data-mmall]");if(ab)ab.onclick=()=>toggleAllCM()}','{const ab=ms.querySelector("[data-mmall]");if(ab)ab.onclick=()=>{if(CMS().length<Object.keys(MODES).length)toggleAllCM()}}')
+# 2.7.7: HamQSL llega ya traducido (Buena/Regular/Mala/Cerrada): el contraste de bandas lo leía solo en inglés y salía «sin datos»
+R('const lvl=s=>({good:2,fair:1,poor:0,"band closed":0,closed:0})[String(s||"").toLowerCase()];','const lvl=s=>({good:2,fair:1,poor:0,"band closed":0,closed:0,buena:2,regular:1,mala:0,cerrada:0,abierta:2})[String(s||"").toLowerCase().replace(/ *[(].*$/,"")];')
+R('const HQG={0:"80m-40m",','const HQG={0:"80m-40m",8:"80m-40m",')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')

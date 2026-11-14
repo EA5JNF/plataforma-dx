@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.7 · 14/11/2026
+- Ahora › Bandas: la columna HamQSL volvía a salir «sin datos» en todas las bandas. Los datos sí llegaban, pero ya traducidos (Buena, Regular, Mala, Cerrada) y la tabla solo los entendía en inglés. Corregido; 60 m usa la previsión de HamQSL de 80–40 m. / Bands: the HamQSL column showed «no data» because its values arrive translated; fixed.
+
 ## 2.7.6 · 14/11/2026
 - Mapa: al tocar una estación, una DXpedición o un destino, la ventana trae el mismo «¿Lo oyes? / ¿Te ha oído?» que las tarjetas, con sus botones grandes y las escalas de legibilidad (R) y de señal (S0 a S9+60, o dB en digitales), en lugar del bloque antiguo. / Map popups now have the same «Do you hear it? / Did it hear you?» panel as the cards.
 - La ficha de la EEI y de cada satélite sale en la ventana pequeña del mapa, como la de las estaciones, en vez de a pantalla completa. / Satellite details open in the small map popup.
