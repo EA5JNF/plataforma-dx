@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.8 · 14/11/2026
+- Tema claro u oscuro automático según el locator que escribas: se calcula la altura del Sol en tu cuadrícula (con la subcuadrícula si la pones) y se pasa a oscuro cuando el Sol baja de 3° bajo el horizonte, y a claro cuando vuelve a salir. Cambia en cuanto cambias el locator, sin esperar a la siguiente actualización, y se revisa cada minuto. Si eliges el tema a mano en Ajustes, se respeta tu elección. En español e inglés, en la web y en el artefacto. / Automatic light or dark theme from the locator you enter: it follows the Sun at your grid square, switches as soon as you change the locator, and respects a manual choice.
+
 ## 2.6.7 · 14/11/2026
 - «¿Te ha oído?» en el diálogo de todas las tarjetas de estación, con el mismo diseño que «¿Lo oyes?»: «Me oyen / No me oyen» y el reporte que te han dado según el modo (R y S en fonía y CW; dB del programa en digitales). «Lo oigo» ajusta tu recepción y «Me oyen» tu transmisión; durante 45 minutos «Me oyen» sube mucho la probabilidad de esa zona y «No me oyen» la baja poco, porque puede ser el pile-up. En las DXpediciones solo cuenta que te han oído, porque casi siempre dan 59 o 599. La tarjeta lo indica con «Te oyen · R5 · S9». En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / «Did it hear you?» on every station card, with the report you were given, tuning your transmission side.
 
