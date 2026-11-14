@@ -84,7 +84,7 @@ function card(o){
   const f=fl.length?`<div class="sc-f">${fl.join("")}</div>`:"";
   const g=o.geo;let rumbo="",dist="";
   if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;
-    dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km${o.p!=null?`<span class="sc-sep">·</span>`:""}</span>${o.p!=null?` <span class="nw"><b>${o.p} %</b> ${T("de QSO","QSO chance")}${o.lpb?T(" (paso largo)"," (long path)"):""}</span>${o.p0!=null&&Math.abs(o.p0-o.p)>=3?` <span class="nw sc-p0">(VOACAP ${o.p0} %${T(" + clúster"," + cluster")})</span>`:""}`:""}`}
+    dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km${o.p!=null?`<span class="sc-sep">·</span>`:""}</span>${o.p!=null?` <span class="nw"><b>${o.p} %</b> ${T("de QSO","QSO chance")}${o.lpb?T(" (paso largo)"," (long path)"):""}</span>`:""}`}
   return `<div class="sc${o.old?" old":""}">${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl></div>`}
 window.ACRACB_card=o=>card(o);
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
@@ -170,7 +170,7 @@ function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
   if(heard&&p<.9)p=p+(.9-p)*hw;
   return {p,lp,p0,near:E>.3,self,E,heard}}
 window.ACRACB_spotProb=spotProb;
-function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(sp.heard)tags.push(`<span class="xtag xs">${T("te oyen por allí","they hear you there")}</span>`);else if(sp.near)tags.push(`<span class="xtag xq">${sp.self?T("lo oyen cerca de ti","heard near you"):T("su zona se oye desde aquí","its area is heard from here")}</span>`);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
+function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
   return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,old:a>60})}
 function progRow(o){const tag=`<a class="xtag xr" href="${refUrl(o.prog,o.ref)}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(PNAME[o.prog][0],PNAME[o.prog][1])}">${e2(o.prog)} ${e2(o.ref)}</a>`;
   return card({call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(o.c):"",old:o.a>30})}

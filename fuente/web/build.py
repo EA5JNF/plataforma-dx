@@ -353,8 +353,18 @@ def webify(c, lang):
     open(os.path.join(OUT, mfn), "w", encoding="utf-8").write(json.dumps(mf, ensure_ascii=False))
     c = re.sub(r'<link rel="manifest" href="data:[^"]+">', '<link rel="manifest" href="%s">' % mfn, c, count=1)
     # la fuente no bloquea el primer dibujo de la página (con 3G se ve antes el texto con la fuente del sistema)
-    c, k = re.subn(r'<link rel="stylesheet" href="(https://fonts\.googleapis\.com/[^"]+)">', r'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="\1" media="print" onload="this.media=`all`"><noscript><link rel="stylesheet" href="\1"></noscript>', c)
+    # 2.5.4: las tipografías se sirven desde la propia web (sin pedir nada a Google: más rápido, sin conexión y sin rastro)
+    UR = "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+    FF = [('Saira Condensed', 'saira-condensed', (500, 600, 700)), ('IBM Plex Sans', 'ibm-plex-sans', (400, 500, 600)), ('IBM Plex Mono', 'ibm-plex-mono', (400, 500, 600))]
+    faces = "".join("@font-face{font-family:'%s';font-style:normal;font-weight:%d;font-display:swap;src:url(fonts/%s-latin-%d-normal.woff2) format('woff2');unicode-range:%s}" % (fam, wt, fn, wt, UR) for fam, fn, ws in FF for wt in ws)
+    pre = '<link rel="preload" href="fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>'
+    c, k = re.subn(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">', lambda m: pre + "<style>" + faces + "</style>", c)
     assert k == 1, k
+    import shutil as _sh
+    os.makedirs(os.path.join(W, "out", "fonts"), exist_ok=True)
+    for fam, fn, ws in FF:
+        for wt in ws:
+            _sh.copy(os.path.join(SP, "ext", "fonts", "%s-latin-%d-normal.woff2" % (fn, wt)), os.path.join(W, "out", "fonts"))
     assert "data:image/png;base64" not in c[:c.index("</head>")], "icono incrustado"
     # 2.1.1: el código y los datos grandes que no cambian van en archivos aparte con su huella en el nombre.
     # La página (que se pide siempre a la red) pasa de ~345 kB a ~70 kB comprimidos; lo demás queda guardado en el dispositivo.
@@ -383,15 +393,13 @@ def webify(c, lang):
     out.append(c[last:]); c = "".join(out)
     # 2.1.2: política de seguridad de contenidos (CSP). Solo se ejecuta el código propio de la web (archivos de lib/ y los
     # pequeños bloques de la cabecera, identificados por su huella). Un texto malicioso que llegara de un clúster no podría ejecutarse.
-    c, k = re.subn(r'<link rel="stylesheet" href="(https://fonts\.googleapis\.com/[^"]+)" media="print" onload="this\.media=`all`">',
-                   r'<link rel="stylesheet" href="\1" media="print" id="gfont"><script>(function(l){if(!l)return;function a(){l.media="all"}if(l.sheet)a();else l.addEventListener("load",a)})(document.getElementById("gfont"))</script>', c)
-    assert k == 1, k
+    # 2.5.4: ya no hay hoja de Google Fonts que activar
     assert not re.search(r'\son[a-z]+="', c[:c.index("<body")] if "<body" in c else c[:5000]), "manejador en línea en la cabecera"
     hs = []
     for m in re.finditer(r'<script>(.*?)</script>', c, re.S):
         hs.append("'sha256-%s'" % base64.b64encode(hashlib.sha256(m.group(1).encode("utf-8")).digest()).decode())
-    csp = ("default-src 'self'; script-src 'self' %s; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-           "font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https:; "
+    csp = ("default-src 'self'; script-src 'self' %s; style-src 'self' 'unsafe-inline'; "
+           "font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' https:; "
            "worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'") % " ".join(dict.fromkeys(hs))
     c = c.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="%s">\n<meta name="referrer" content="strict-origin-when-cross-origin">' % csp, 1)
     assert "Content-Security-Policy" in c
