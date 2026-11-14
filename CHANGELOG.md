@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.9 · 14/11/2026
+- Resumen: «El Sol ahora» enseña a la vista lo esencial (flujo solar, manchas, Kp, índice A, viento solar, Bz, rayos X y apagones con el veredicto); el resto de valores, la previsión, el ciclo solar y las explicaciones van en un desplegable. / «The Sun now» shows the essentials; the rest folds away.
+- «Palabras y expresiones que conviene saber» pasa al final del resumen, con 55 términos (antes 35) y 8 a la vista cada vez, y tres tablas de consulta: el alfabeto fonético internacional, el código Q más usado y el código Morse para CW con sus abreviaturas. / Glossary moved to the end of the summary, with 55 terms, the phonetic alphabet, the Q code and Morse code for CW.
+- Versión en inglés: ortografía de Estados Unidos (color, ionized, kilometers, analyze). / English version uses US spelling.
+
 ## 2.4.8 · 14/11/2026
 - Actualización automática según la corriente: donde el navegador dice si el aparato está enchufado (Chrome, Edge y Android), enchufado se actualiza cada minuto y con batería cada 3 minutos, también en portátiles. Donde no lo dice (iPhone, iPad, Safari y Firefox), móvil y tableta cada 3 minutos y ordenador cada minuto. Sin tocar la pantalla 5 minutos, cada 10. / Auto-update every minute when plugged in, every 3 minutes on battery.
 
