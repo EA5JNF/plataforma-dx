@@ -61,6 +61,8 @@ R(' ["Baliza","un emisor automático que transmite siempre igual. Si la oyes, es
 R('const pick=[...GLOS.filter(g=>want.has(g[0])).slice(0,2),...rest].slice(0,5);','const pick=[...GLOS.filter(g=>want.has(g[0])).slice(0,2),...rest].slice(0,8);')
 R('<summary>Palabras que conviene saber</summary>','<summary>Palabras y expresiones que conviene saber</summary>')
 R('let WARM=0;function warmCache(){const id=++WARM;','let WARM=0,WARMT=0;function warmCache(){const id=++WARM;if(document.hidden)return;if(window.ACRACB_lowPower&&ACRACB_lowPower()){if(Date.now()-WARMT<9e5)return;WARMT=Date.now()}')
+R('function prob(t,lh,b,lp,extra){const RXM=extra==="rx";if(RXM)extra=0;const key=t.id+"|"+lh+"|"+b+"|"+(lp?1:0)+"|"+(extra||0)+(RXM?"|rx":"");','function prob(t,lh,b,lp,extra){const RXM=extra==="rx";if(RXM)extra=0;const key=t.id+"|"+lh+"|"+b+"|"+(lp?1:0)+"|"+(extra||0)+(RXM?"|rx":"")+(window.ACRACB_NOLIVE?"|nl":"");')
+R('const r={p:rel(M.m+PRM().cal+(extra||0),M.DL,M.DU,M.thr),muf:M.muf};CACHE.set(key,r);return r}','let pp=rel(M.m+PRM().cal+(extra||0),M.DL,M.DU,M.thr);if(!lp&&!RXM&&!window.ACRACB_NOLIVE&&window.ACRACB_live)try{pp=ACRACB_live(t,lh,b,pp,extra||0)}catch(e){}const r={p:pp,muf:M.muf};CACHE.set(key,r);return r}')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
@@ -231,6 +233,10 @@ w = w.replace("Prohibida su copia, reproducción o adaptación sin permiso escri
 # 2.5.0: nota de privacidad en el pie
 assert 'Fuentes y agradecimientos</button></p>' in w
 w = w.replace('Fuentes y agradecimientos</button></p>', 'Fuentes y agradecimientos</button></p><p class="privn">Privacidad: sin registro, sin cookies y sin seguimiento. Tus ajustes y tu log ADIF se guardan solo en este dispositivo y no se envían a ningún sitio.</p>', 1)
+# 2.5.3: explicación del equilibrio VOACAP + clústeres en Método
+_mt = '<details class="mdet"><summary>VOACAP real</summary>'
+assert _mt in w
+w = w.replace(_mt, '<details class="mdet"><summary>Equilibrio con los clústeres</summary><p>Cada probabilidad de la hora actual se equilibra con lo que dicen los clústeres en ese momento. Cuentan los spots de los últimos 45 minutos en esa banda hacia ese destino o su zona, según lo que se parece el trayecto del que los oye al tuyo: misma zona de rebote en la ionosfera y distancia parecida. Pesan más si son recientes, traen buena señal y son del mismo modo que el tuyo: un spot de FT8 prueba menos para la SSB, porque pasa con mucha menos señal. Con el camino confirmado, la cifra se acerca a lo que permite la señal, del 35 al 85 %. Una hora antes o después cuenta la mitad y a partir de dos horas manda solo la previsión. Si a ti te han oído cerca de esa estación, sube aún más. Sin spots parecidos manda VOACAP, salvo un caso: si desde tu zona se está oyendo mucho DX en esa banda y nadie oye nada de un destino donde normalmente hay actividad, la cifra baja con prudencia, como mucho a la mitad, porque esa dirección probablemente está cerrada.</p></details>\n        ' + _mt, 1)
 def assemble(w, upd, LANG, TITLE):
     global man
     NM = os.path.join(SP, "pub", "node_modules")

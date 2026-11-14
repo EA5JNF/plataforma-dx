@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.3 · 14/11/2026
+- El equilibrio entre VOACAP y los clústeres se aplica a toda la plataforma: mapa, resumen, bandas, hora a hora, «Qué hacer», DXpediciones y avisos. Cada probabilidad de la hora actual se corrige con los spots de los últimos 45 minutos hacia ese destino o su zona, según el parecido del trayecto, la antigüedad, la señal y el modo (un spot de FT8 prueba menos para la SSB). Una hora antes o después cuenta la mitad; a partir de dos horas, solo la previsión. / The VOACAP + cluster balance now applies to every figure on the platform.
+- Evidencia en contra: si desde tu zona se oye mucho DX en una banda y nada de un destino que normalmente está activo, su probabilidad baja con prudencia, como mucho a la mitad. / Negative evidence: an active band with nothing heard from a usually active destination lowers its chance, at most by half.
+- Explicado en Método › Cálculo › «Equilibrio con los clústeres». / Explained in Method › Calculation.
+
 ## 2.5.2 · 14/11/2026
 - Probabilidad de QSO aún más precisa, como equilibrio entre la previsión VOACAP y la realidad de los clústeres: cada spot de los últimos 45 minutos en esa banda, de esa estación o de otra de su misma zona, cuenta según lo que se parece el trayecto del que lo oye al tuyo (misma zona de rebote en la ionosfera y distancia parecida), su antigüedad y su señal. La tarjeta muestra la cifra final y, al lado, la de VOACAP sola cuando difieren. / QSO chance balances VOACAP and live cluster data, weighting each spot by path similarity, age and signal; the card shows both figures.
 

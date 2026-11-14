@@ -125,21 +125,45 @@ const v3=p=>{const la=p[1]*RD2,lo=p[0]*RD2;return [Math.cos(la)*Math.cos(lo),Mat
 const mid=(a,b)=>{const x=v3(a),y=v3(b),m=[x[0]+y[0],x[1]+y[1],x[2]+y[2]],n=Math.hypot(...m)||1;return [Math.atan2(m[1],m[0])/RD2,Math.asin(m[2]/n)/RD2]};
 const snrF=(s)=>{const m=String(s.c||"").match(/([-+]?\d{1,2})\s*dB/i);if(!m)return .6;const v=+m[1];return /FT|JT|JS8|FSK|PSK/i.test(String(s.mode||""))?Math.max(0,Math.min(1,(v+24)/24)):Math.max(0,Math.min(1,(v-3)/20))};
 let SIX=null,SIXK="";
-function spotIndex(){const k=(L.spotsUTC||"")+"|"+(L.spots||[]).length;if(SIX&&SIXK===k)return SIX;SIXK=k;SIX=[];
+function spotIndex(){const k=(L.updatedUTC||"")+"|"+(L.spotsUTC||"")+"|"+(L.spots||[]).length;if(SIX&&SIXK===k)return SIX;SIXK=k;SIX=[];
   for(const s of (L.spots||[])){if(!s.dx||s.dx[0]==null||s.band==null)continue;let a=null;try{a=spotAge(s)}catch(_){}if(a==null||a>45)continue;
-    SIX.push({call:s.call,band:s.band,dx:s.dx,from:(s.from||[]).filter(f=>f&&f[0]!=null&&f[1]!=null),wA:Math.exp(-Math.max(0,a)/30),fs:snrF(s)})}return SIX}
+    SIX.push({call:s.call,mode:s.mode,band:s.band,dx:s.dx,from:(s.from||[]).filter(f=>f&&f[0]!=null&&f[1]!=null),wA:Math.exp(-Math.max(0,a)/30),fs:snrF(s)})}return SIX}
+/* un spot en un modo que pasa con menos señal que el tuyo prueba menos: FT8 frente a SSB cuenta una cuarta parte */
+function modeW(spMode,myAdj){let k="ssb";try{k=spotMode({mode:spMode})}catch(_){}const d=((MODES[k]&&MODES[k].adj)||0)-myAdj;return d>0?Math.exp(-d/20):1}
+/* lo que dicen ahora los clústeres de una zona (destino) en una banda, visto desde tu locator */
+let ZEV=new Map(),ZEVK="";
+function zoneEv(dx,band,myAdj,key){spotIndex();const sk=SIXK+"|"+TXP.join(",")+"|"+myAdj;if(sk!==ZEVK){ZEV=new Map();ZEVK=sk}spotIndex();const kk=key+"|"+band;if(ZEV.has(kk))return ZEV.get(kk);
+  const myMid=mid(TXP,dx),myLen=distJS(TXP,dx);let miss=1,wSum=0,fsW=0;
+  for(const x of spotIndex()){if(x.band!==band||distJS(x.dx,dx)>1200)continue;const mw=modeW(x.mode,myAdj);
+    for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*mw;if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs}}
+  const r={E:1-miss,fs:wSum?fsW/wSum:.6};ZEV.set(kk,r);return r}
+/* 2.5.3: la misma ponderación en TODA la plataforma: cada probabilidad de VOACAP de la hora actual se equilibra con lo que dicen
+   los clústeres hacia ese destino; una hora antes o después cuenta la mitad y a partir de dos horas manda solo la previsión */
+window.ACRACB_live=(t,lh,b,p,extra)=>{if(t.lat==null||t.lon==null||b==null)return p;let now;try{now=localNow()}catch(_){return p}
+  let dh=Math.abs(lh-now);dh=Math.min(dh,24-dh);const wh=Math.max(0,1-dh/2);if(!wh)return p;
+  let myAdj=0;try{myAdj=MD().adj+(extra||0)}catch(_){}const z=zoneEv([t.lon,t.lat],b,myAdj,t.id);
+  /* evidencia en contra: si los que te rodean están oyendo mucho DX en esta banda y nadie oye nada de un destino donde
+     normalmente hay actividad, lo más probable es que esa dirección esté cerrada. Se baja con prudencia, como mucho a la mitad. */
+  if(z.E<.05){const bz=busyNear(b),aw=Math.min(1,(t.act||0)/5);return bz>0&&aw>0?p*(1-.5*bz*aw*wh):p}
+  const cap=.35+.5*z.fs;return cap>p?p+(cap-p)*z.E*wh:p};
+/* cuánto se oye en una banda desde tu zona ahora mismo (0 = nada, 1 = mucha actividad) */
+let BZ=new Map(),BZK="";
+function busyNear(b){spotIndex();const k=SIXK+"|"+TXP.join(",");if(k!==BZK){BZ=new Map();BZK=k}if(BZ.has(b))return BZ.get(b);let n=0;
+  for(const x of spotIndex()){if(x.band!==b)continue;for(const fr of x.from){try{if(distJS(TXP,fr)<1500){n+=x.wA;break}}catch(_){}}}
+  const r=1-Math.exp(-n/8);BZ.set(b,r);return r}
 function pathSim(fr,dx,myMid,myLen){try{const L2=distJS(fr,dx),ms=distJS(mid(fr,dx),myMid),dl=(L2-myLen)/Math.max(800,.3*myLen);const q=ms/1200;return Math.exp(-q*q)*Math.exp(-dl*dl)}catch(_){return 0}}
 function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
   let k="ssb";try{k=spotMode(s)}catch(_){}let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}
   let pS=e.pSP||0,pL=e.t&&e.t.l?(e.pLP||0):0;
-  if(ex&&e.t&&lh!=null){try{pS=prob(e.t,lh,s.band,false,ex).p;pL=e.t.l?prob(e.t,lh,s.band,true,ex).p:0}catch(_){}}
+  if(e.t&&lh!=null){window.ACRACB_NOLIVE=true;try{pS=prob(e.t,lh,s.band,false,ex).p;pL=e.t.l?prob(e.t,lh,s.band,true,ex).p:0}catch(_){}finally{window.ACRACB_NOLIVE=false}}
   const lp=pL>pS&&pL>=.05;const p0=lp?pL:pS;let p=p0;
   let E=0,fsW=0,wSum=0,self=false;
   if(s.dx&&s.dx[0]!=null&&!lp){const myMid=mid(TXP,s.dx),myLen=distJS(TXP,s.dx);let miss=1;
     /* el propio spot (aunque sea algo antiguo) y los demás de la misma zona */
     const own={dx:s.dx,from:(s.from||[]).filter(f=>f&&f[0]!=null),wA:Math.exp(-Math.max(0,a==null?60:a)/30),fs:snrF(s),same:true};
     const cand=[own].concat(spotIndex().filter(x=>x.band===s.band&&x.call!==s.call&&distJS(x.dx,s.dx)<1200));
-    for(const x of cand)for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*(x.same?1:.7);if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs;if(x.same&&w>.25)self=true}
+    let spAdj=0;try{spAdj=(MODES[k]&&MODES[k].adj)||0}catch(_){}
+    for(const x of cand)for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*(x.same?1:.7*modeW(x.mode,spAdj));if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs;if(x.same&&w>.25)self=true}
     E=1-miss}
   const fs=wSum?fsW/wSum:.6,cap=.35+.5*fs;if(E>0&&cap>p)p=p+(cap-p)*E;
   let heard=false,hw=0;try{const H=window.ACRACB_heardList&&ACRACB_heardList();if(H&&s.dx){const ha=(Date.now()-H.at)/6e4;if(ha<45)for(const x of H.list){if(x.band===s.band&&x.pos&&distJS(x.pos,s.dx)<1500){heard=true;hw=Math.exp(-ha/45);break}}}}catch(_){}
