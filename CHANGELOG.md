@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.4.2 · 14/11/2026
+- Distancias y rumbos corregidos en las tarjetas del clúster: se medían hasta el punto de previsión VOACAP de la zona, no hasta la estación. Ahora se miden desde tu locator hasta la posición de la estación: la que da el spot o su locator, el locator escrito en el comentario o, si no hay, la región de su indicativo. Ya no se usa el centro del país que manda alguna fuente cuando no sabe dónde está la estación. Lo mismo en los avisos y en «¿Me oyen?». / Cluster card distances and bearings now go from your locator to the station itself, not to the VOACAP zone point.
+- «El Sol ahora» en el resumen trae todos los datos de la sección Sol: valores reales (también Bt, protones, aurora, llamaradas, apagones fuertes y tormentas de protones), las próximas horas y días (flujo de mañana, próxima tormenta, mejores días para el DX, CME) y el ciclo solar, con el resumen escrito de Sol, geomagnetismo y previsión. / «The Sun now» on the summary shows every solar value from the Sun section.
+- Aviso DX: «Ver los N» lleva a la lista completa de Avisos y la deja a la vista; el aviso flotante ya no la tapa. / «See all» in the DX alert now opens the full Alerts list.
+
 ## 2.4.1 · 14/11/2026
 - Avisos DX: el aviso flotante respeta los modos y bandas que eliges en Avisos y tiene el mismo formato de tarjeta que el resto de la plataforma. / The floating DX alert follows your Alerts mode and band filters and uses the common card style.
 - DXpediciones: tarjetas por apartados (actividad, mejor hora, rumbo y distancia por el camino corto y el largo, línea gris, QSX); «Mostrar más» ya no deja tarjetas medio vacías ni tapa las de abajo. / Sectioned DXpedition cards; «Show more» fixed.
