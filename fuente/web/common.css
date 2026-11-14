@@ -622,3 +622,9 @@ html[data-theme="dark"] .hb>i{filter:brightness(1.9) saturate(1.1)}
   box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 2px 8px rgba(5,150,105,.38);text-shadow:0 1px 0 rgba(0,0,0,.2);white-space:nowrap}
 .nwb::before{content:"";width:5px;height:5px;border-radius:50%;background:#d1fae5;box-shadow:0 0 5px 1px rgba(167,243,208,.9);flex:none}
 html[data-theme="dark"] .nwb{box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 0 12px rgba(16,185,129,.45)}
+/* 2.5.6: etiqueta «DXpedición» bien visible: degradado rojo-ámbar, letra blanca y brillo cálido (sin animación) */
+.xtag.dxpt{color:#fff!important;background:linear-gradient(135deg,#b91c1c 0%,#dc2626 50%,#d97706 100%)!important;border:0!important;border-radius:999px!important;
+  font-weight:700!important;letter-spacing:.06em;padding:1px 9px 0!important;text-shadow:0 1px 0 rgba(0,0,0,.28);
+  box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 2px 8px rgba(220,38,38,.35);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.xtag.dxpt::before{content:"";width:5px;height:5px;border-radius:50%;background:#fde68a;box-shadow:0 0 5px 1px rgba(253,224,71,.9);flex:none}
+html[data-theme="dark"] .xtag.dxpt{box-shadow:0 0 0 1px rgba(255,255,255,.12) inset,0 0 12px rgba(239,68,68,.45)}

@@ -94,19 +94,23 @@ function recCards(go,dxn){const out=[];
   (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
     out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
-  (dxn||[]).forEach(x=>{const d=x.d;const call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
+  /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
+  let my=new Set();try{CMS().forEach(k=>my.add(String(MODES[k].s).toUpperCase()))}catch(_){}
+  const inMy=d=>{const m=Array.isArray(d.modes)?d.modes.map(z=>String(z).toUpperCase()):[];return !m.length||!my.size||m.some(z=>my.has(z)||(z==="JS8"&&my.has("JS8CALL")))};
+  (dxn||[]).filter(x=>inMy(x.d)).forEach(x=>{const d=x.d;const call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
     const q=[].concat(d.qsx||[]).map(z=>String(z).match(/(\d+(?:\.\d+)?)\s*([A-Z0-9]+)?/i)).filter(Boolean).map(m=>({f:+m[1]>1000?+m[1]/1000:+m[1],m:(m[2]||"").toUpperCase()})).filter(z=>inBand(z.f,x.b));
     let my="";try{my=String(MOD()||"").toUpperCase()}catch(e){}const pick=q.find(z=>z.m&&my&&z.m===my)||q[0];
     if(pick){f=pick.f.toFixed(3);mode=pick.m}
     else{const sp=(L.spots||[]).filter(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b)[0];if(sp){f=sp.f;mode=sp.mode||""}}
-    let hab=false;if(!mode&&Array.isArray(d.modes)&&d.modes.length){const mm=d.modes.map(z=>String(z).toUpperCase());mode=mm.includes(my)?my:mm.includes("SSB")&&!/CW|FT/.test(my)?"SSB":mm[0]}
+    const MYS=new Set();try{CMS().forEach(k=>MYS.add(String(MODES[k].s).toUpperCase()))}catch(_){}
+    let hab=false;if(!mode&&Array.isArray(d.modes)&&d.modes.length){const mm=d.modes.map(z=>String(z).toUpperCase());mode=mm.includes(my)?my:(mm.find(z=>MYS.has(z))||(mm.includes("SSB")&&!/CW|FT/.test(my)?"SSB":mm[0]))}
     /* sin QSX ni spot en esa banda: la frecuencia habitual de las DXpediciones en ese modo */
     if(!f&&mode){const H={SSB:[1.845,3.790,7.090,14.195,18.145,21.295,24.945,28.495,null,null,50.110],CW:[1.826,3.523,7.023,14.023,18.073,21.023,24.893,28.023,5.354,10.106,50.090],
       FT8:[1.840,3.573,7.074,14.074,18.100,21.074,24.915,28.074,5.357,10.136,50.313],FT4:[1.840,3.575,7.047,14.080,18.104,21.140,24.919,28.180,null,10.140,50.318],
       RTTY:[1.838,3.580,7.040,14.083,18.105,21.083,24.925,28.083,null,10.140,50.300]};const v=(H[mode]||[])[x.b];if(v){f=v.toFixed(3);hab=true}}
-    const tg=[`<span class="xtag xs">${T("DXpedición","DXpedition")}</span>`];
+    const tg=[`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`];
     out.push(card({call,f,band:x.b,mode,tags:tg,geo:isFinite(d.lon)&&isFinite(d.lat)?geoOf([d.lon,d.lat]):null,p:Math.round(x.p*100),lpb:!!x.lp,
-      note:[hab?T("Frecuencia habitual de las DXpediciones en este modo: confírmala en el clúster.","Usual DXpedition frequency for this mode: check the cluster."):"",d.until?T("Activa hasta el "+e2(d.until)+".","Active until "+e2(String(d.until).replace(/\b(ene|abr|ago|dic)\b/g,m=>({ene:"Jan",abr:"Apr",ago:"Aug",dic:"Dec"})[m]))+"."):""].filter(Boolean).join(" ")}))});
+      note:[hab?T("Frecuencia habitual de las DXpediciones en este modo: confírmala en el clúster.","Usual DXpedition frequency for this mode: check the cluster."):"",d.until?T("Activa hasta el "+e2(d.until)+".","Active until "+e2(String(d.until).replace(/\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b/g,m=>({ene:"Jan",feb:"Feb",mar:"Mar",abr:"Apr",may:"May",jun:"Jun",jul:"Jul",ago:"Aug",sep:"Sep",oct:"Oct",nov:"Nov",dic:"Dec"})[m]))+"."):""].filter(Boolean).join(" ")}))});
   return out.length?`<div class="alc reccards">${out.join("")}</div>`:""}
 window.ACRACB_recCards=recCards;window.ACRACB_geo=geoOf;window.ACRACB_split2=s=>splitTags(s);window.ACRACB_ago=ago;
 /* separa las etiquetas de split/QSL (van en su sección) de las de programa (van junto a la frecuencia) */
@@ -253,7 +257,7 @@ function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.
   fb.querySelectorAll("[data-alb]").forEach(b=>b.onclick=()=>{const v=b.dataset.alb;if(v==="")AB.clear();else{const n=+v;if(AB.has(n))AB.delete(n);else AB.add(n);if(bl.every(x=>AB.has(x)))AB.clear()}S.set("acracb_albands",JSON.stringify([...AB]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
   const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band))));
   wrap.innerHTML=vis.length?vis.map(({x,sp,band,mode})=>{const st=splitTags({c:x.c||sp.c||""});const need=String(x.need||"");
-    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;
+    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return card({call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(st.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:st.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")
     :`<p class="note">${T("Ningún aviso con este modo y esta banda. Pulsa «Todos» o «Todas» para verlos todos.","No alerts for this mode and band. Tap «All» to see them all.")}</p>`}
@@ -272,7 +276,7 @@ function alBar(){const el=$("albar");if(!el)return;const al=L.alert;if(!al||!Arr
   el.hidden=false;el.classList.add("albar2");
   el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc(fmtT(al.at))}</span></b><span class="alb"><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div>
   <div class="alc">${shown.map(({x,sp,band,mode})=>{const stg=splitTags({c:x.c||sp.c||""});const need=String(x.need||"");
-    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;let a=null;try{a=spotAge({t:x.t})}catch(e){}
+    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return card({call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")}</div>`;
   $("algo").onclick=()=>{go("dx");try{selTab("dx","f_al",true)}catch(e){}el.hidden=true;const fa=$("f_al");if(fa){fa.open=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{try{fa.scrollIntoView({block:"start",behavior:"smooth"})}catch(e){fa.scrollIntoView()}}))}};$("alx").onclick=()=>{try{sessionStorage.setItem("aloff",al.at)}catch(e){}el.hidden=true}}
 window.renderAlBar=alBar;document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".nav button,#subnav button,.ptabs button,[data-pg]"))setTimeout(()=>{try{alBar()}catch(e){}},80)},true);

@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.6 · 14/11/2026
+- La etiqueta «DXpedición» destaca en toda la plataforma: píldora roja y ámbar con letra blanca, brillo cálido y un punto luminoso, en los dos temas. / The «DXpedition» badge now stands out in red and amber.
+- «Qué hacer» solo recomienda lo que puedes trabajar: los spots y las DXpediciones en tus modos (el de tu estación y los que añadas en el clúster). Antes podía proponer una DXpedición que solo trabajaba en CW aunque operaras en SSB. / «What to do» only suggests stations in your own modes.
+- En la versión inglesa, los meses de las fechas de las DXpediciones salen en inglés (Nov, Dec…). / DXpedition dates use English month names.
+
 ## 2.5.5 · 14/11/2026
 - La etiqueta «NUEVO» es más llamativa en toda la plataforma: píldora con degradado esmeralda y turquesa, brillo suave y un punto luminoso, en los dos temas. Sin animación, para no gastar batería. / More eye-catching «NEW» badge across the platform.
 
