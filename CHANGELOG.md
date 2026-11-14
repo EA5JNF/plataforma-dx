@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.7 · 14/11/2026
+- El código de la web se publica compactado: un 13 % menos de peso, el primer texto aparece en 0,24 s (antes 0,28 s), menos trabajo del procesador al abrir (4,1 s frente a 4,4 s en un móvil lento simulado) y menos memoria (22 MB frente a 29 MB). Revisión completa en todas las pantallas, tamaños de letra e idiomas, sin errores. / Minified code: lighter, faster first paint, less CPU and memory at startup.
+
 ## 2.5.6 · 14/11/2026
 - La etiqueta «DXpedición» destaca en toda la plataforma: píldora roja y ámbar con letra blanca, brillo cálido y un punto luminoso, en los dos temas. / The «DXpedition» badge now stands out in red and amber.
 - «Qué hacer» solo recomienda lo que puedes trabajar: los spots y las DXpediciones en tus modos (el de tu estación y los que añadas en el clúster). Antes podía proponer una DXpedición que solo trabajaba en CW aunque operaras en SSB. / «What to do» only suggests stations in your own modes.
