@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.1 · 14/11/2026
+- La fila «Ver» del clúster funciona como la de bandas: con «Todos» activo no se marcan los demás; al tocar uno se ve solo ese, puedes sumar otros y, al quitar el último, vuelve a «Todos». Ningún botón se queda trabado. / The cluster «Show» row now works like the band row.
+- S-metro de 10 en 10 por encima de S9: +10, +20, +30, +40, +50 y +60, en «Lo oigo» y en «Me oyen». / S-meter in 10 dB steps above S9, up to +60.
+- En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / In Spanish and English, web and artifact, every screen and both themes.
+
 ## 2.7.0 · 14/11/2026
 - El mismo comportamiento en todas las tarjetas de estación de la plataforma: al tocar la tarjeta se abre «¿Oyes a…?» (Lo oigo / Me oyen) y al tocar el indicativo se abre su ficha completa (entidad, cómo llegarle, tus bandas hacia allí, actividad en el clúster, DXpedición y enlaces), la misma que ya salía en la pestaña DX. Corregido que en el clúster, Avisos y otras listas desplegables la tarjeta no abriera el diálogo. Las DXpediciones también abren el diálogo; el mapa sigue en la ficha. / The same behavior on every station card: tap the card to log what you hear, tap the callsign for its full page.
 - S0 en el S-metro: la aguja no se mueve, algo habitual en fonía con bandas tranquilas. Con S0 manda la legibilidad R, porque con S0 y R3, R4 o R5 el QSO es posible; se aplica a la calibración y a los porcentajes de toda la plataforma. / S0 on the S-meter: readability R decides the signal-to-noise estimate.

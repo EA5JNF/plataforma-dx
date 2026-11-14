@@ -43,11 +43,12 @@ const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","re
 function bar(counts,bcounts){
   const bs=bandsOK(),list=ORD.filter(b=>bs.has(b));[...BSEL].forEach(b=>{if(!bs.has(b))BSEL.delete(b)});
   const tb=[["dx","DX"]].concat(PROGS.map(p=>[p,p]));
-  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
+  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)&&!tb.every(([z])=>TYPES.has(z))}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
     (list.length>1?`<div class="seg clseg clbands" role="group" aria-label="${T("Banda del clúster","Cluster band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-clb="" aria-pressed="${!BSEL.size}">${T("Todas","All")}</button>${list.map(b=>`<button type="button" data-clb="${b}" aria-pressed="${BSEL.has(b)}"${bcounts[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bcounts[b]?` <small>${bcounts[b]}</small>`:""}</button>`).join("")}</div>`:"")}
 function wire(box){
   /* cada botón se marca o se desmarca; siempre queda al menos un tipo */
-  box.querySelectorAll("[data-clt]").forEach(b=>b.onclick=()=>{const k=b.dataset.clt;if(k==="*"){["dx"].concat(PROGS).forEach(x=>TYPES.add(x))}else if(TYPES.has(k)){if(TYPES.size>1)TYPES.delete(k)}else TYPES.add(k);S.set("acracb_cltypes",JSON.stringify([...TYPES]));render()});
+  box.querySelectorAll("[data-clt]").forEach(b=>b.onclick=()=>{/* 2.7.1: como las bandas: «Todos» es la selección vacía; tocar un tipo con «Todos» activo deja solo ese; quitar el último vuelve a «Todos» */
+  const k=b.dataset.clt,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}S.set("acracb_cltypes",JSON.stringify([...TYPES]));render()});
   /* «Todas» quita la selección; marcar todas las bandas equivale a «Todas» */
   box.querySelectorAll("[data-clb]").forEach(b=>b.onclick=()=>{const v=b.dataset.clb;if(v==="")BSEL.clear();else{const n=+v;if(BSEL.has(n))BSEL.delete(n);else BSEL.add(n);const all=ORD.filter(x=>bandsOK().has(x));if(all.every(x=>BSEL.has(x)))BSEL.clear()}
     S.set("acracb_clbands",JSON.stringify([...BSEL]));render()})}
@@ -187,7 +188,7 @@ window.ACRACB_own=(tid,dx,b,dir)=>{dir=dir||"rx";try{const lim=Date.now()-45*6e4
 /* 2.6.0: lectura del S-metro al pulsar «Lo oigo». S9 = −73 dBm y 6 dB por punto S; por encima, S9 + dB.
    La lectura menos el ruido típico de la banda en un entorno rural (más el ruido de tu entorno que hayas puesto en la estación)
    da la relación señal/ruido que de verdad tuviste, y la calibración la usa además de «lo oigo / no lo oigo». */
-const SVAL=[0,1,2,3,4,5,6,7,8,9,19,29,39,49,69];
+const SVAL=[0,1,2,3,4,5,6,7,8,9,19,29,39,49,59,69];
 const sTxt=v=>v<=9?"S"+v:"S9+"+(v-9);window.ACRACB_sTxt=sTxt;window.ACRACB_sLbl=v=>T(" con <b>"," at <b>")+sTxt(v)+"</b>";
 const sDbm=v=>v<=9?-73-6*(9-v):-73+(v-9);
 const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];
