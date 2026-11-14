@@ -123,7 +123,7 @@ window.ACRACB_recCards=recCards;
 const ohKey=o=>o.call+"|"+o.b;
 function lastOwn(call,b){try{const lim=Date.now()-2*36e5;for(let i=OBS.length-1;i>=0;i--){const o=OBS[i];if(o.call===call&&o.b===b&&Date.parse(o.at)>lim)return o}}catch(_){}return null}
 window.ACRACB_ohBox=oh=>{if(oh.b==null||oh.b>=10)return "";const last=lastOwn(oh.call,oh.b);
-  const st=last?(last.h?`<span class="ohs y">${T("Lo oyes","You hear it")}${last.r!=null?" · R"+last.r:""}${last.s!=null?" · "+sTxt(last.s):""}</span>`:`<span class="ohs n">${T("No lo oyes","You don't hear it")}</span>`):"";
+  const st=last?(last.h?`<span class="ohs y">${T("Lo oyes","You hear it")}${last.r!=null?" · R"+last.r:""}${last.s!=null?" · "+sTxt(last.s):""}${last.db!=null?" · "+(last.db>0?"+":"")+last.db+" dB":""}</span>`:`<span class="ohs n">${T("No lo oyes","You don't hear it")}</span>`):"";
   return `<div class="ohbox"><div class="ohr"><button type="button" class="ohq" data-ohq data-t="${e2(oh.t)}" data-b="${oh.b}" data-call="${e2(oh.call)}" data-mode="${e2(oh.mode||"")}">${T("¿Lo oyes?","Do you hear it?")}</button>${st}</div></div>`};
 /* diálogo «¿Lo oyes?»: se abre al tocar cualquier tarjeta de estación */
 const VOICE=m=>/^(SSB|USB|LSB|AM|FM|PHONE)?$/i.test(String(m||"").trim());
@@ -134,8 +134,9 @@ function dlgHTML(d){const last=lastOwn(d.call,d.b);const voice=VOICE(d.mode);
   const h=last&&last.h,n=last&&!last.h;
   let x=`<div class="ohd-h"><div><div class="ohd-t">${T("¿Oyes a","Do you hear")} <b>${e2(d.call)}</b>?</div><div class="ohd-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</div></div><button type="button" class="ohd-x" data-ohx aria-label="${T("Cerrar","Close")}">×</button></div>
    <div class="ohd-b"><button type="button" class="ohbig y" data-oh="1" aria-pressed="${!!h}">${ico.y}<span>${T("Lo oigo","I hear it")}</span></button><button type="button" class="ohbig n" data-oh="0" aria-pressed="${!!n}">${ico.n}<span>${T("No lo oigo","I don't hear it")}</span></button></div>`;
-  if(h){if(voice)x+=`<div class="ohd-r" role="group" aria-label="${T("Legibilidad (R)","Readability (R)")}"><span class="smt">${T("¿Cómo se entiende? (R)","How readable? (R)")}</span><div class="rrow">${[1,2,3,4,5].map(r=>`<button type="button" data-rr="${r}" data-o="${e2(last.at)}" aria-pressed="${last.r===r}"><b>R${r}</b><small>${T(RTXT[r][0],RTXT[r][1])}</small></button>`).join("")}</div></div>`;
-    x+=ACRACB_smeter(last)}
+  const cw=/^CW$/i.test(String(d.mode||"").trim()),dig=!voice&&!cw;
+  if(h){if(voice||cw)x+=`<div class="ohd-r" role="group" aria-label="${T("Legibilidad (R)","Readability (R)")}"><span class="smt">${T("¿Cómo se entiende? (R)","How readable? (R)")}</span><div class="rrow">${[1,2,3,4,5].map(r=>`<button type="button" data-rr="${r}" data-o="${e2(last.at)}" aria-pressed="${last.r===r}"><b>R${r}</b><small>${T(RTXT[r][0],RTXT[r][1])}</small></button>`).join("")}</div></div>`;
+    x+=dig?`<div class="ohd-db" role="group" aria-label="${T("Señal en dB del programa","Signal in dB from the software")}"><span class="smt">${T("¿Qué señal da el programa?","What does the software report?")} (<span class="nu">dB</span>)</span><div class="dbrow">${DBV.map((v,i)=>`<button type="button" data-db="${v}" data-o="${e2(last.at)}" aria-pressed="${last.db===v}" style="--i:${i}">${v>0?"+"+v:v}</button>`).join("")}</div></div>`:ACRACB_smeter(last)}
   x+=`<p class="note ohd-n">${h?T("Marca lo que puedas: cuanto más precisa la escucha, antes se ajustan tus previsiones.","Tap what you can: the more precise the report, the sooner your predictions are tuned."):T("Tu escucha ajusta las previsiones de tu estación y, durante 45 minutos, el porcentaje de esa zona.","Your report tunes your station's predictions and, for 45 minutes, the chance for that area.")}</p>`;
   if(last)x+=`<div class="ohd-f"><button type="button" class="btn ohd-ok" data-ohx>${T("Listo","Done")}</button></div>`;
   return x}
@@ -157,6 +158,7 @@ const dOf=el=>({t:el.dataset.t,b:+el.dataset.b,call:el.dataset.call,mode:el.data
 document.addEventListener("click",ev=>{const tg=ev.target;if(!tg.closest)return;
   if(tg.closest("[data-ohx]")){closeDlg();return}
   const h=tg.closest("#ohdlg [data-oh]");if(h&&DLG){try{addOwn(DLG.t,DLG.b,DLG.call,DLG.mode,h.dataset.oh==="1")}catch(e){console.error(e)}return}
+  const dbb=tg.closest("[data-db]");if(dbb){try{const o=OBS.slice().reverse().find(x=>x.at===dbb.dataset.o);if(o){const v=+dbb.dataset.db;if(o.db===v)delete o.db;else o.db=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
   const rr=tg.closest("[data-rr]");if(rr){try{const o=OBS.slice().reverse().find(x=>x.at===rr.dataset.o);if(o){const v=+rr.dataset.rr;if(o.r===v)delete o.r;else o.r=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr;dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();rebox();redraw()}}catch(e){console.error(e)}return}
   const q=tg.closest("[data-ohq]");if(q){openDlg(dOf(q));return}
   const card=tg.closest(".sc[data-ohc]");if(card&&!tg.closest("a,button,input,select,summary,label,.cs,details"))openDlg(dOf(card))});
@@ -175,7 +177,9 @@ const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];
 /* VOACAP trabaja en dB-Hz: la relación en 2,4 kHz se pasa sumando 33,8 dB; una señal que apenas asoma sobre el ruido cuenta como 3 dB */
 /* R (legibilidad, solo fonía): R1 ≈ 0 dB, R2 ≈ 3, R3 ≈ 6, R4 ≈ 10 y R5 ≈ 15 dB de relación en 2,4 kHz. Con S y R se promedian. */
 const RSNR={1:0,2:3,3:6,4:10,5:15};
-function obsSnr(o){const v=[];if(o.s!=null){const n=NRUR[o.b];if(n!=null){let pen=0;try{pen=localNoisePen(o.b,o.lh)}catch(_){}v.push(Math.max(3,sDbm(o.s)-(n+pen)))}}if(o.r!=null&&RSNR[o.r]!=null)v.push(RSNR[o.r]);return v.length?v.reduce((a,b)=>a+b,0)/v.length+33.8:null}
+/* modos digitales: la relación señal/ruido que da el programa (FT8, FT4, RTTY…), ya en un ancho de unos 2,5 kHz */
+const DBV=[-24,-20,-15,-10,-5,0,5,10,20];
+function obsSnr(o){const v=[];if(o.s!=null){const n=NRUR[o.b];if(n!=null){let pen=0;try{pen=localNoisePen(o.b,o.lh)}catch(_){}v.push(Math.max(3,sDbm(o.s)-(n+pen)))}}if(o.r!=null&&RSNR[o.r]!=null)v.push(RSNR[o.r]);if(o.db!=null)v.push(o.db);return v.length?v.reduce((a,b)=>a+b,0)/v.length+33.8:null}
 window.ACRACB_smeter=last=>{const cur=last.s;return `<div class="smeter" role="group" aria-label="${T("Lectura del S-metro","S-meter reading")}"><span class="smt">${T("¿Con qué señal?","What signal?")}</span><div class="smb">${SVAL.map((v,i)=>`<button type="button" data-smt="${v}" data-o="${e2(last.at)}" aria-pressed="${cur===v}" style="--i:${i}">${v<=9?v:"+"+(v-9)}</button>`).join("")}</div></div>`};
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-smt]");if(!b)return;try{const o=OBS.slice().reverse().find(x=>x.at===b.dataset.o);if(!o)return;const v=+b.dataset.smt;
   if(o.s===v)delete o.s;else o.s=v;{const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}try{redraw()}catch(_){}}catch(e){console.error(e)}});
@@ -346,7 +350,25 @@ function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.
 function alRow(x){const sp=(L.spots||[]).find(s=>s.call===x.call)||{};const band=x.band!=null?x.band:sp.band;const mode=x.mode||sp.mode||"";return {x,sp,band,mode,g:mgrp(mode,x.f!=null?x.f:sp.f)}}
 function alOK(x){const r=alRow(x);return (!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))}
 window.ACRACB_alOK=x=>{try{return alOK(x)}catch(e){return true}};
-function alBar(){const el=$("albar");if(!el)return;const al=L.alert;if(!al||!Array.isArray(al.items)){el.hidden=true;return}
+/* 2.6.6: silenciar los avisos de la portada y las notificaciones: 1 hora, hasta mañana a las 8:00 o hasta reactivarlos */
+const MUTEK="acracb_almute";
+const muteUntil=()=>{try{const v=localStorage.getItem(MUTEK);if(!v)return 0;return v==="inf"?Infinity:+v||0}catch(_){return 0}};
+const alMuted=()=>muteUntil()>Date.now();window.ACRACB_alMuted=alMuted;
+function setMute(kind){let v="";if(kind==="60")v=String(Date.now()+36e5);else if(kind==="tom"){const d=new Date();d.setDate(d.getDate()+(d.getHours()>=8?1:0));d.setHours(8,0,0,0);v=String(+d)}else if(kind==="inf")v="inf";
+  try{v?localStorage.setItem(MUTEK,v):localStorage.removeItem(MUTEK)}catch(_){}alBar();muteBanner()}
+function muteTxt(){const u=muteUntil();if(u===Infinity)return T("hasta que los reactives","until you turn them back on");const d=new Date(u),hm=d.toLocaleTimeString(window.ACRACB_LANG==="en"?"en-US":"es-ES",{hour:"2-digit",minute:"2-digit"});
+  return new Date().toDateString()===d.toDateString()?T("hasta las "+hm,"until "+hm):T("hasta mañana a las "+hm,"until tomorrow at "+hm)}
+function muteBanner(){const box=$("alerts");if(!box)return;let b=document.getElementById("almute");if(!alMuted()){if(b)b.remove();return}
+  if(!b){b=document.createElement("div");b.id="almute";b.className="almute";box.insertAdjacentElement("beforebegin",b)}
+  b.innerHTML=`<span class="almi">${BELL_OFF}</span><span>${T("Avisos de la portada y notificaciones silenciados","Home-screen alerts and notifications muted")} ${e2(muteTxt())}.</span><button type="button" class="btn" data-unmute>${T("Reactivar","Turn back on")}</button>`}
+const BELL_OFF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.7 21a2 2 0 0 1-3.4 0M18.6 13.1A7.6 7.6 0 0 1 18 10V8a6 6 0 0 0-9.3-5M6.3 6.3A6 6 0 0 0 6 8v2a7.6 7.6 0 0 1-2 5.2V17h13M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;
+  const mb=t.closest("#almb");if(mb){const m=document.getElementById("almenu");if(m){const op=m.hidden;m.hidden=!op;mb.setAttribute("aria-expanded",String(op))}return}
+  const mu=t.closest("[data-mute]");if(mu){setMute(mu.dataset.mute);return}
+  if(t.closest("[data-unmute]")){setMute("");return}
+  const m=document.getElementById("almenu");if(m&&!m.hidden&&!t.closest("#almenu")){m.hidden=true;const b=document.getElementById("almb");b&&b.setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"){const m=document.getElementById("almenu");if(m&&!m.hidden){m.hidden=true}}});
+function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;muteBanner();return}muteBanner();const al=L.alert;if(!al||!Array.isArray(al.items)){el.hidden=true;return}
   const age=al.at?(Date.now()-Date.parse(al.at))/6e4:1e9;let off=null;try{off=sessionStorage.getItem("aloff")}catch(e){}
   const rows=al.items.map(alRow).filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band))));
   if(!rows.length||age>150||off===al.at){el.hidden=true;el.innerHTML="";return}
@@ -354,7 +376,7 @@ function alBar(){const el=$("albar");if(!el)return;const al=L.alert;if(!al||!Arr
   {const fa=$("f_al");if(typeof st!=="undefined"&&st.page==="dx"&&fa&&fa.getClientRects().length){el.hidden=true;return}}
   const shown=rows.slice(0,3);
   el.hidden=false;el.classList.add("albar2");
-  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc(fmtT(al.at))}</span></b><span class="alb"><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div>
+  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc(fmtT(al.at))}</span></b><span class="alb"><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><span class="almw"><button type="button" class="almb" id="almb" aria-haspopup="menu" aria-expanded="false" title="${T("Silenciar avisos","Mute alerts")}">${BELL_OFF}<span>${T("Silenciar","Mute")}</span></button><span class="almenu" id="almenu" role="menu" hidden><button type="button" role="menuitem" data-mute="60">${T("1 hora","1 hour")}</button><button type="button" role="menuitem" data-mute="tom">${T("Hasta mañana a las 8:00","Until tomorrow 8:00")}</button><button type="button" role="menuitem" data-mute="inf">${T("Hasta que los reactive","Until I turn them back on")}</button></span></span><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div>
   <div class="alc">${shown.map(({x,sp,band,mode})=>{const stg=splitTags({c:x.c||sp.c||""});const need=String(x.need||"");
     const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:x.c||sp.c,t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")}</div>`;

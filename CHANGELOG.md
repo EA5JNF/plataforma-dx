@@ -5,6 +5,12 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.6 · 14/11/2026
+- Botón «Silenciar» en el aviso DX de la portada: 1 hora, hasta mañana a las 8:00 o hasta que lo reactives. Mientras tanto no salen ni el aviso de la portada ni las notificaciones del móvil; en Avisos se indica hasta cuándo, con un botón «Reactivar». En el móvil las opciones salen como hoja inferior y en el ordenador como menú. / «Mute» button on the home-screen DX alert.
+- «¿Lo oyes?» ocupa menos en las tarjetas: una sola línea discreta al pie, a la derecha, sin separador. / More discreet «Do you hear it?» line on cards.
+- Reporte según el modo: en fonía, R (legibilidad) y S; en CW también R y S, como en el RST; en los modos digitales (FT8, FT4, RTTY…), la señal en dB que da el programa, más exacta que el S-metro. / Report by mode: R and S on phone and CW, software dB on digital modes.
+- En español e inglés, en la web y en el artefacto, en todas las pantallas y en los dos temas. / In Spanish and English, web and artifact, every screen and both themes.
+
 ## 2.6.5 · 14/11/2026
 - Al tocar cualquier tarjeta de estación de la plataforma se abre el diálogo «¿Oyes a…?», con dos botones grandes «Lo oigo» y «No lo oigo». Si la oyes, en fonía (SSB, AM y FM) puedes marcar la legibilidad, de R1 «ilegible» a R5 «perfecto», y en todos los modos la señal del S-metro. La R y la S se combinan para estimar la relación señal/ruido real y afinar tus previsiones. La tarjeta muestra después «Lo oyes · R4 · S7». Se cierra con «Listo», con la cruz, tocando fuera o con Escape. En español e inglés, en la web y en el artefacto, en el móvil (desde abajo) y en el ordenador (en el centro), en los dos temas. / Tapping any station card opens a «Do you hear…?» dialog with large buttons, readability (R, phone modes) and S-meter.
 
