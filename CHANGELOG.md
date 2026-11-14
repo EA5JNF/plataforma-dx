@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.6 · 15/11/2026
+- Mapa: al ampliar, alejar o mover el mapa podían desaparecer las costas y fronteras, o verse solo un recuadro de tierra. Pasaba cuando se abría la pestaña Mapa más de minuto y medio después de cargar la web: el mapa ya no se enteraba de los gestos y seguía usando el recorte de la vista anterior. Ahora se engancha al dibujarse, sea cuando sea, y además se recalcula un instante después de cada movimiento. En todas las pantallas, en los dos temas y en español e inglés. / Map: coastlines and borders could vanish or show only a box of land after zooming or panning; fixed.
+
 ## 2.8.5 · 14/11/2026
 - Revisión general de fin de semana: pantallas (móvil 360 y 390, tableta vertical y horizontal, portátil, escritorio, 2K, tele 720p y 4K) con los dos tamaños de letra, en los dos temas y en español e inglés, sin desbordes; protección frente a código inyectado en los datos de las fuentes y política de seguridad sin avisos; carga, respuesta y reposo (unos 2 ms de procesador por segundo con la web quieta); memoria estable tras cientos de ciclos; buscador, avisos, notificaciones, silencio, «¿Lo oyes? / ¿Te oyen?», mapa, satélites y modos comprobados; tareas automáticas de GitHub y Cloudflare en verde. Tema claro: verde y ámbar de estados algo más oscuros para leerse mejor. / Weekend general review; slightly darker green and amber in the light theme for better contrast.
 
