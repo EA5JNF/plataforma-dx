@@ -85,14 +85,14 @@ function card(o){
   const g=o.geo;let rumbo="",dist="";
   if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;
     dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km${o.p!=null?`<span class="sc-sep">·</span>`:""}</span>${o.p!=null?` <span class="nw"><b>${o.p} %</b> ${T("de QSO","QSO chance")}${o.lpb?T(" (paso largo)"," (long path)"):""}</span>`:""}`}
-  return `<div class="sc${o.old?" old":""}">${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl></div>`}
+  return `<div class="sc${o.old?" old":""}">${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${o.oh&&window.ACRACB_ohBox?ACRACB_ohBox(o.oh):""}</div>`}
 window.ACRACB_card=o=>card(o);
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
   (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
-    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,
+    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
   /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
   let my=new Set();try{CMS().forEach(k=>my.add(String(MODES[k].s).toUpperCase()))}catch(_){}
@@ -111,10 +111,38 @@ function recCards(go,dxn){const out=[];
     const tg=[`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`];
     let pp=x.p,plp=!!x.lp;try{const mk=Object.keys(MODES).find(z=>String(MODES[z].s).toUpperCase()===String(mode).toUpperCase());const ex=mk?MODES[mk].adj-MD().adj:0;
       const t=tFor(d),lh=localNow();if(ex&&t){const a1=prob(t,lh,x.b,false,ex).p,a2=t.l?prob(t,lh,x.b,true,ex).p:0;plp=a2>a1&&a2>=.05;pp=plp?a2:a1}}catch(_){}
-    out.push(card({call,f,band:x.b,mode,tags:tg,geo:isFinite(d.lon)&&isFinite(d.lat)?geoOf([d.lon,d.lat]):null,p:Math.round(pp*100),lpb:plp,
+    out.push(card({call,f,band:x.b,mode,tags:tg,geo:isFinite(d.lon)&&isFinite(d.lat)?geoOf([d.lon,d.lat]):null,p:Math.round(pp*100),lpb:plp,oh:(()=>{try{const t=tFor(d);return t?{t:t.id,b:x.b,call,mode}:null}catch(_){return null}})(),
       note:[hab?T("Frecuencia habitual de las DXpediciones en este modo: confírmala en el clúster.","Usual DXpedition frequency for this mode: check the cluster."):"",d.until?T("Activa hasta el "+e2(d.until)+".","Active until "+e2(String(d.until).replace(/\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b/g,m=>({ene:"Jan",feb:"Feb",mar:"Mar",abr:"Apr",may:"May",jun:"Jun",jul:"Jul",ago:"Aug",sep:"Sep",oct:"Oct",nov:"Nov",dic:"Dec"})[m]))+"."):""].filter(Boolean).join(" ")}))});
   return out.length?`<div class="alc reccards">${out.join("")}</div>`:""}
 window.ACRACB_recCards=recCards;
+/* 2.6.4: «¿Lo oyes?» en las tarjetas de estaciones activas. Tu escucha de esa estación concreta (banda, hora, modo y, si quieres,
+   la lectura del S-metro) entra en la calibración de tu estación y, durante 45 minutos, es la prueba más fuerte para esa zona:
+   si la oyes, el camino está abierto; si no la oyes, su probabilidad baja. */
+let OHOPEN="";
+const ohKey=o=>o.call+"|"+o.b;
+function lastOwn(call,b){try{const lim=Date.now()-2*36e5;for(let i=OBS.length-1;i>=0;i--){const o=OBS[i];if(o.call===call&&o.b===b&&Date.parse(o.at)>lim)return o}}catch(_){}return null}
+window.ACRACB_ohBox=oh=>{if(oh.b==null||oh.b>=10)return "";const last=lastOwn(oh.call,oh.b),open=OHOPEN===ohKey(oh);
+  const st=last?(last.h?`<span class="ohs y">${T("Lo oyes","You hear it")}${last.s!=null?" · "+sTxt(last.s):""}</span>`:`<span class="ohs n">${T("No lo oyes","You don't hear it")}</span>`):"";
+  const d=`data-t="${e2(oh.t)}" data-b="${oh.b}" data-call="${e2(oh.call)}" data-mode="${e2(oh.mode||"")}"`;
+  return `<div class="ohbox${open?" open":""}"><div class="ohr"><button type="button" class="ohq" data-ohq ${d} aria-expanded="${open}">${T("¿Lo oyes?","Do you hear it?")}</button>${st}</div>`+
+   (open?`<div class="ohp"><div class="calbt" role="group"><button type="button" class="btn obs obsy" data-oh="1" ${d} aria-pressed="${!!(last&&last.h)}">${T("Lo oigo","I hear it")}</button><button type="button" class="btn obs obsn" data-oh="0" ${d} aria-pressed="${!!(last&&!last.h)}">${T("No lo oigo","I don't hear it")}</button></div>`+
+    (last&&last.h?ACRACB_smeter(last):"")+`<p class="note">${T("Tu escucha ajusta las previsiones de tu estación y, durante 45 minutos, el porcentaje de esa zona.","Your report tunes your station's predictions and, for 45 minutes, the chance for that area.")}</p></div>`:"")+`</div>`};
+function addOwn(tid,b,call,mode,heard){const t=T0(tid);if(!t)return;const lh=localNow();let ex=0;try{const k=spotMode({mode});ex=((MODES[k]&&MODES[k].adj)||0)-MD().adj}catch(_){}
+  const lp=t.l&&prob(t,lh,b,true,"rx").p>prob(t,lh,b,false,"rx").p;const M=marg(t,lh,b,lp,true);if(!M)return;
+  const prev=lastOwn(call,b);if(prev&&Date.now()-Date.parse(prev.at)<15*6e4){const i=OBS.indexOf(prev);if(i>=0)OBS.splice(i,1)}
+  OBS.push({k:calKey(),t:tid,b,lh,h:heard?1:0,m:Math.round(M.m*10)/10,dl:M.DL,du:M.DU,thr:M.thr-ex,at:new Date().toISOString(),call,src:"tarjeta"});if(OBS.length>600)OBS=OBS.slice(-600);
+  dbSave("owner/cal",OBS);fitCal();CACHE.clear();OHOPEN=heard?call+"|"+b:"";refresh();rebox()}
+/* vuelve a pintar los recuadros «¿Lo oyes?» que sigan en pantalla (aviso de portada incluido) */
+function rebox(){try{renderAlBar()}catch(_){}document.querySelectorAll(".ohbox").forEach(bx=>{const q=bx.querySelector("[data-ohq]");if(!q)return;bx.outerHTML=ACRACB_ohBox({t:q.dataset.t,b:+q.dataset.b,call:q.dataset.call,mode:q.dataset.mode})})}
+window.ACRACB_rebox=rebox;
+const T0=id=>{try{return TG().find(t=>t.id===id)}catch(_){return null}};
+document.addEventListener("click",ev=>{const q=ev.target.closest&&ev.target.closest("[data-ohq]");if(q){const k=q.dataset.call+"|"+q.dataset.b;OHOPEN=OHOPEN===k?"":k;const box=q.closest(".ohbox");
+    if(box){const oh={t:q.dataset.t,b:+q.dataset.b,call:q.dataset.call,mode:q.dataset.mode};box.outerHTML=ACRACB_ohBox(oh)}return}
+  const h=ev.target.closest&&ev.target.closest("[data-oh]");if(h){try{addOwn(h.dataset.t,+h.dataset.b,h.dataset.call,h.dataset.mode,h.dataset.oh==="1")}catch(e){console.error(e)}}});
+/* tus escuchas recientes de una zona y banda: la prueba más fuerte (45 minutos) */
+window.ACRACB_own=(tid,dx,b)=>{try{const lim=Date.now()-45*6e4;let best=null;for(let i=OBS.length-1;i>=0;i--){const o=OBS[i];if(!o.call||o.b!==b)continue;const at=Date.parse(o.at);if(at<lim)break;
+    let same=o.t===tid;if(!same&&dx){const t=T0(o.t);same=t&&distJS([t.lon,t.lat],dx)<1200}if(same){best=o;break}}
+  if(!best)return null;const w=Math.exp(-(Date.now()-Date.parse(best.at))/(45*6e4));const fs=best.s!=null?Math.max(.2,Math.min(1,(best.s<=9?best.s:9+(best.s-9)/10)/10.5)):.6;return {h:!!best.h,w,fs}}catch(_){return null}};
 /* 2.6.0: lectura del S-metro al pulsar «Lo oigo». S9 = −73 dBm y 6 dB por punto S; por encima, S9 + dB.
    La lectura menos el ruido típico de la banda en un entorno rural (más el ruido de tu entorno que hayas puesto en la estación)
    da la relación señal/ruido que de verdad tuviste, y la calibración la usa además de «lo oigo / no lo oigo». */
@@ -126,7 +154,7 @@ const NRUR=[-100,-105,-110,-120,-123,-125,-127,-129,-108,-115,-131];
 function obsSnr(o){const n=NRUR[o.b];if(n==null)return null;let pen=0;try{pen=localNoisePen(o.b,o.lh)}catch(_){}return Math.max(3,sDbm(o.s)-(n+pen))+33.8}
 window.ACRACB_smeter=last=>{const cur=last.s;return `<div class="smeter" role="group" aria-label="${T("Lectura del S-metro","S-meter reading")}"><span class="smt">${T("¿Con qué señal?","What signal?")}</span><div class="smb">${SVAL.map((v,i)=>`<button type="button" data-smt="${v}" data-o="${e2(last.at)}" aria-pressed="${cur===v}" style="--i:${i}">${v<=9?v:"+"+(v-9)}</button>`).join("")}</div></div>`};
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-smt]");if(!b)return;try{const o=OBS.slice().reverse().find(x=>x.at===b.dataset.o);if(!o)return;const v=+b.dataset.smt;
-  if(o.s===v){delete o.s;delete o.snr}else{o.s=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}}catch(e){console.error(e)}});
+  if(o.s===v){delete o.s;delete o.snr}else{o.s=v;const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}}catch(e){console.error(e)}});
 /* 2.5.9: «Mi modo / Todos los modos» en «Qué hacer» y casilla «Todos los modos» en la estación: las dos cosas van sincronizadas */
 const allOn=()=>{try{return CMS().length===Object.keys(MODES).length}catch(_){return false}};
 window.ACRACB_recModes=()=>{const on=allOn();let my="";try{my=MODES[MOD()].s}catch(_){}
@@ -170,6 +198,7 @@ window.ACRACB_live=(t,lh,b,p,extra)=>{if(t.lat==null||t.lon==null||b==null)retur
   let myAdj=0;try{myAdj=MD().adj+(extra||0)}catch(_){}const z=zoneEv([t.lon,t.lat],b,myAdj,t.id);
   /* evidencia en contra: si los que te rodean están oyendo mucho DX en esta banda y nadie oye nada de un destino donde
      normalmente hay actividad, lo más probable es que esa dirección esté cerrada. Se baja con prudencia, como mucho a la mitad. */
+  {const ow=window.ACRACB_own&&ACRACB_own(t.id,[t.lon,t.lat],b);if(ow){const w=ow.w*wh;if(ow.h){const cap=.45+.5*ow.fs;return cap>p?p+(cap-p)*w:p}return p*(1-.7*w)}}
   if(z.E<.05){const bz=busyNear(b),aw=Math.min(1,(t.act||0)/5);return bz>0&&aw>0?p*(1-.5*bz*aw*wh):p}
   const cap=.35+.5*z.fs;return cap>p?p+(cap-p)*z.E*wh:p};
 /* cuánto se oye en una banda desde tu zona ahora mismo (0 = nada, 1 = mucha actividad) */
@@ -194,14 +223,15 @@ function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
   const fs=wSum?fsW/wSum:.6,cap=.35+.5*fs;if(E>0&&cap>p)p=p+(cap-p)*E;
   let heard=false,hw=0;try{const H=window.ACRACB_heardList&&ACRACB_heardList();if(H&&s.dx){const ha=(Date.now()-H.at)/6e4;if(ha<45)for(const x of H.list){if(x.band===s.band&&x.pos&&distJS(x.pos,s.dx)<1500){heard=true;hw=Math.exp(-ha/45);break}}}}catch(_){}
   if(heard&&p<.9)p=p+(.9-p)*hw;
+  try{const ow=window.ACRACB_own&&ACRACB_own(e.t&&e.t.id,s.dx,s.band);if(ow){if(ow.h){const cap=.45+.5*ow.fs;if(cap>p)p=p+(cap-p)*ow.w}else p=p*(1-.7*ow.w)}}catch(_){}
   return {p,lp,p0,near:E>.3,self,E,heard}}
 window.ACRACB_spotProb=spotProb;
 /* 2.6.3: la misma probabilidad de QSO en todas las tarjetas (avisos, aviso de portada, «Cerca», POTA/SOTA/WWFF) */
 function PC(s,a){try{if(s.band==null)return {};const dx=s.dx&&s.dx[0]!=null?s.dx:(window.ACRACB_areaPos&&ACRACB_areaPos(s.call));if(!dx)return {};
   const ss=Object.assign({},s,{dx,kind:"dx",from:Array.isArray(s.from)?s.from:[]});const e=spotEval(ss,localNow());if(!e||!e.t)return {};const r=spotProb(ss,e,a);
-  return isFinite(r.p)?{p:Math.round(r.p*100),lpb:!!r.lp}:{}}catch(_){return {}}}
+  return isFinite(r.p)?{p:Math.round(r.p*100),lpb:!!r.lp,oh:{t:e.t.id,b:ss.band,call:ss.call,mode:ss.mode}}:{}}catch(_){return {}}}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
-  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,old:a>60})}
+  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60})}
 function progRow(o){const tag=`<a class="xtag xr" href="${refUrl(o.prog,o.ref)}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(PNAME[o.prog][0],PNAME[o.prog][1])}">${e2(o.prog)} ${e2(o.ref)}</a>`;
   return card({...PC({call:o.call,band:o.band,mode:o.mode,f:o.f,dx:o.dx,t:o.t,c:o.c},o.a),call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(o.c):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;

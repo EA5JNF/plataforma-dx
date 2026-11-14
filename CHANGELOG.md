@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.6.4 · 14/11/2026
+- «¿Lo oyes?» en todas las tarjetas de estaciones activas (clúster, aviso de portada, Avisos, «Qué hacer», «Cerca» y POTA/SOTA/WWFF): un enlace discreto despliega «Lo oigo / No lo oigo» y, si la oyes, la escala del S-metro. La tarjeta muestra después «Lo oyes · S7» o «No lo oyes». Tu escucha entra en la calibración de tu estación y, durante 45 minutos, es la prueba más fuerte para esa zona y banda: si la oyes, su probabilidad sube según la señal; si no la oyes, baja. En español e inglés, en la web y en el artefacto. / «Do you hear it?» on every active station card, with S-meter reading, feeding calibration and the live chance for 45 minutes.
+
 ## 2.6.3 · 14/11/2026
 - La probabilidad de QSO sale ahora en todas las tarjetas de estación: el aviso DX de la portada, la lista de Avisos, «Cerca» y las actividades POTA, SOTA y WWFF, con la misma medida que el resto de la plataforma (VOACAP con tu estación, en el modo del spot, equilibrado con los clústeres). En español e inglés, en la web y en el artefacto. / QSO chance now shown on every station card, including the home-screen alert, Alerts, Nearby and POTA/SOTA/WWFF.
 

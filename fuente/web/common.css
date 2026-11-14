@@ -652,3 +652,12 @@ html[data-theme="dark"] .xtag.dxpt{box-shadow:0 0 0 1px rgba(255,255,255,.12) in
 .smb button:hover{opacity:.8}
 .smb button[aria-pressed="true"]{opacity:1;box-shadow:inset 0 -3px 0 rgba(255,255,255,.85)}
 @media (max-width:420px){.smb button{font-size:.66rem;padding:7px 0 5px}}
+/* 2.6.4: «¿Lo oyes?» en las tarjetas */
+.ohbox{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.ohr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ohq{border:0;background:none;padding:0;font:600 .8rem var(--f-b,inherit);color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.ohs{font:700 .72rem var(--f-m,monospace);letter-spacing:.04em;padding:2px 8px;border-radius:999px}
+.ohs.y{background:color-mix(in srgb,#16a34a 16%,transparent);color:#15803d}.ohs.n{background:color-mix(in srgb,#dc2626 14%,transparent);color:#b91c1c}
+html[data-theme="dark"] .ohs.y{color:#4ade80}html[data-theme="dark"] .ohs.n{color:#f87171}
+.ohp{margin-top:8px}.ohp .calbt{display:flex;gap:8px;flex-wrap:wrap}.ohp .note{margin:6px 0 0;font-size:.78rem}
+.obs.obsy[aria-pressed="true"],.obs.obsn[aria-pressed="true"]{color:#fff!important}
