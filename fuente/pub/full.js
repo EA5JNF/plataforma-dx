@@ -1,5 +1,5 @@
 const {chromium}=require("playwright");const fs=require("fs");(async()=>{const b=await chromium.launch();
-const DEV=[["m360",360,740,2,1],["m390",390,844,3,1],["tabV",820,1180,2,1],["tabH",1180,820,2,1],["lap",1366,768,1,0],["desk",1920,1080,1,0],["2k",2560,1440,1,0],["tv720",1280,720,1,0],["tv4k",3840,2160,1,0]];
+const DEV=[["m360",360,740,2,1],["m390",390,844,3,1],["tabV",820,1180,2,1],["tabH",1180,820,2,1],["lap",1366,768,1,0],["desk",1920,1080,1,0],["2k",2560,1440,1,0],["tv720",1280,720,1,0],["tv4k",3840,2160,1,0],["tv8k",7680,4320,1,0]];
 const ZS=(process.argv[2]||"1,1.25,1.5,1.75,2").split(",").map(Number);const ONLY=process.argv[3]||"";const LANG=process.argv[4]||"index";
 const report=[];
 for(const [nm,w,h,dpr,mob] of DEV){if(ONLY&&!ONLY.split(",").includes(nm))continue;for(const z of ZS){

@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.8 · 15/11/2026
+- Logo nuevo de la plataforma y de la web app: el globo azimutal en azul, con «DX» y «ACRACB». Se ve en el icono de la pantalla de inicio (iPhone, iPad y Android), en la pestaña del navegador y en el instalador; en Android lleva además una versión con margen para que el recorte en círculo no corte nada. El logo anterior se guarda en las fuentes. / New logo: the azimuthal globe, with an Android-safe version.
+- «Próximas 12 horas» más clara: tramos siempre con el mismo formato («08–09»), la banda y el número de destinos abiertos como dato principal, con un punto de color según la calidad, y debajo, más discreto, la calidad y con quién; «la mejor» marcada. En el móvil con letra grande la fila se parte en dos líneas en vez de salirse. / Clearer «Next 12 hours».
+- En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas.
+
 ## 2.8.7 · 15/11/2026
 - Ahora › Resumen agrupado de forma más clara, sin tarjetas repetidas: «Ahora» (la mejor banda con cuántos destinos abre, hacia dónde y con quién, «También abiertas» con las siguientes bandas y sus destinos, y 6 m, 2 m y 70 cm), «Próximas 12 horas» por tramos (qué banda conviene de qué hora a qué hora, con «la mejor» marcada) y «Estaciones raras en el aire». Sustituye a las antiguas «Mejor hora próxima» y «Noche o amanecer», que solían repetir lo mismo. / Summary regrouped: Now, Next 12 hours by time slots, and rare stations.
 - Menú principal en este orden: Ahora, DX, Mapa y el resto como estaba. / Main menu order: Now, DX, Map, then the rest.

@@ -6,7 +6,7 @@ from PIL import Image
 W = os.path.dirname(os.path.abspath(__file__))
 SP = os.path.dirname(W)
 BASE = os.path.join(SP, "pub", "base_clean.html")
-ICON = os.path.join(SP, "ext", "icono-1024.png")  # icono original del club, 1024 px
+ICON = os.path.join(SP, "ext", "icono-1024.png")  # logo del club, 1024 px (desde 2.8.8, el globo azimutal; el anterior queda en icono-1024-atardecer.png)
 s = open(BASE, encoding="utf-8").read()
 
 def R(a, b, n=1):
@@ -95,10 +95,10 @@ function renderEasyS(now,full){const e0=easyAt(now);
   let tl="";
   if(full){const rows=[];for(let x=now+1;x<=now+12;x++){const h=x%24,e=easyAt(h),b=e?e.b:-1,last=rows[rows.length-1];if(last&&last.b===b){last.to=h;if(e&&e.sc>last.sc){last.sc=e.sc;last.e=e}}else rows.push({from:h,to:h,b,e,sc:e?e.sc:0})}
     const best=rows.reduce((a,r)=>r.sc>(a?a.sc:0)?r:a,null);
-    tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div>${rows.map(r=>{const span=r.from===r.to?hh(r.from)+":00":hh(r.from)+"–"+hh((r.to+1)%24)+" h";
-      if(!r.e)return `<div class="ezr"><span class="ezh">${span}</span><span class="ezb">—</span><span class="ezx note">Bandas tranquilas: buen momento para escuchar.</span></div>`;
-      const top=r.e.ts.slice(0,2).map(x=>esc(x.t.name.split(" (")[0])).join(", ");
-      return `<div class="ezr${r===best?" ezbest":""}"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx">${ezWord(r.e.ts[0].p)} · ${top}${r===best?' <span class="ezm">la mejor</span>':""}</span></div>`}).join("")}</div>`}
+    tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas <span class="ezth">hora local</span></div>${rows.map(r=>{const span=hh(r.from)+"–"+hh((r.to+1)%24);
+      if(!r.e)return `<div class="ezr"><span class="ezh">${span}</span><span class="ezb ezb0">—</span><span class="ezx"><span class="ezn">Bandas tranquilas</span><span class="ezw">Buen momento para escuchar</span></span></div>`;
+      const top=r.e.ts.slice(0,3).map(x=>esc(x.t.name.split(" (")[0])).join(", "),p=r.e.ts[0].p,q=p>=.7?"q3":p>=.5?"q2":"q1";
+      return `<div class="ezr${r===best?" ezbest":""}"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx"><span class="ezn"><i class="ezq ${q}" aria-hidden="true"></i><b>${r.e.ts.length} <span>destinos</span></b>${r===best?' <span class="ezm">la mejor</span>':""}</span><span class="ezw">${ezWord(p)} · ${top}</span></span></div>`}).join("")}</div>`}
   else tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div><p class="note">Calculando…</p></div>`;
   const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,now)}:null}).filter(x=>x&&x.p>=.3).sort((a,b)=>b.p-a.p).slice(0,3);
   $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<p><b>${CS(x.d.call)}</b> · ${BANDS[x.b]}${x.d.qsx?" · "+esc(x.d.qsx):""} · ${dirTxt(x.lp?x.t.laz:x.t.az)}</p>`).join("")}</div>`:"")+`</div>`+
@@ -174,6 +174,11 @@ R('const cls=p=>p<.05?"c0"', 'const cls=p=>!(p>=0)?"c0":p<.05?"c0"')
 R('const pct=p=>p<.01?"·"', 'const pct=p=>!(p>=0)?"—":p<.01?"·"')
 # meta para app de iPhone/iPad y color del tema
 img = Image.open(ICON).convert("RGBA")
+def pngm(sz):
+    # 2.8.8: versión «maskable» (Android recorta en círculo): el logo al 80 % sobre su propio color de fondo
+    b = io.BytesIO(); bgc = img.convert("RGB").getpixel((4, 4)); inner = int(sz * .8); im = img.resize((inner, inner), Image.LANCZOS)
+    bg = Image.new("RGB", (sz, sz), bgc); bg.paste(im, ((sz - inner) // 2, (sz - inner) // 2), mask=im.split()[3]); bg.save(b, "PNG", optimize=True)
+    return base64.b64encode(b.getvalue()).decode()
 def png(sz):
     b = io.BytesIO(); im = img.resize((sz, sz), Image.LANCZOS)
     bg = Image.new("RGB", (sz, sz), (10, 14, 19)); bg.paste(im, mask=im.split()[3]); bg.save(b, "PNG", optimize=True)
@@ -312,7 +317,7 @@ def assemble(w, upd, LANG, TITLE):
     # manifiesto para Android/escritorio (iPhone/iPad usan apple-touch-icon)
     man = {"name": "ACRACB - Plataforma DX", "short_name": "ACRACB DX", "display": "standalone", "background_color": "#0a0e13", "theme_color": "#0a0e13",
            "start_url": ".", "icons": [{"src": "data:image/png;base64," + png(192), "sizes": "192x192", "type": "image/png"},
-                                       {"src": "data:image/png;base64," + png(512), "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}
+                                       {"src": "data:image/png;base64," + png(512), "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": "data:image/png;base64," + pngm(512), "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}
     w = w.replace(head_meta, head_meta + '<link rel="manifest" href="data:application/manifest+json;base64,%s">\n<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,%s">\n'
                   % (base64.b64encode(json.dumps(man).encode()).decode(), png(192)), 1)
     doc = ('<!doctype html>\n<html lang="' + LANG + '">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
@@ -391,10 +396,12 @@ def webify(c, lang):
         open(os.path.join(OUT, "lib", name), "w", encoding="utf-8").write(src)
     def pngf(sz):
         p = "icon-%d.png" % sz; open(os.path.join(OUT, p), "wb").write(base64.b64decode(png(sz))); return p
+    def pngmf(sz):
+        p = "icon-%d-maskable.png" % sz; open(os.path.join(OUT, p), "wb").write(base64.b64decode(pngm(sz))); return p
     c = re.sub(r'(<link rel="apple-touch-icon" sizes="180x180" href=")data:image/png;base64,[^"]+', lambda m: m.group(1) + pngf(180), c, count=1)
     c = re.sub(r'(<link rel="icon" type="image/png" sizes="192x192" href=")data:image/png;base64,[^"]+', lambda m: m.group(1) + pngf(192), c, count=1)
     c = re.sub(r'(<link rel="icon" type="image/png" href=")data:image/png;base64,[^"]+', lambda m: m.group(1) + "icon-192.png", c)
-    mf = dict(man); mf["icons"] = [{"src": pngf(192), "sizes": "192x192", "type": "image/png"}, {"src": pngf(512), "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]
+    mf = dict(man); mf["icons"] = [{"src": pngf(192), "sizes": "192x192", "type": "image/png"}, {"src": pngf(512), "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": pngmf(512), "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]
     mfn = "manifest.webmanifest" if lang == "es" else "manifest-en.webmanifest"
     if lang == "en": mf["name"] = "ACRACB - DX Platform"; mf["start_url"] = "en.html"
     mf["lang"] = lang
