@@ -470,7 +470,7 @@ const DIGIS=new Set(["FT8","FT4","RTTY","PSK","JS8","MSK144","Q65","JT65","FST4"
 const BANDW={"160":0,"80":1,"75":1,"60":8,"40":2,"30":9,"20":3,"17":4,"15":5,"12":6,"10":7,"6":10,"2":11,"70CM":12,"70":12};
 const FREQB=[[1800,2000,0],[3500,4000,1],[5250,5450,8],[7000,7300,2],[10100,10150,9],[14000,14350,3],[18068,18168,4],[21000,21450,5],[24890,24990,6],[28000,29700,7],[50000,54000,10],[144000,148000,11],[430000,440000,12]];
 function bandOfK(k){const r=FREQB.find(x=>k>=x[0]&&k<=x[1]);return r?r[2]:null}
-function qParse(q){const raw=String(q||"").trim();if(!raw)return null;const Q={bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[]};
+function qParse(q){const raw=String(q||"").trim();const Q={bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[],cont:null,age:null};
   const toks=NOACC(raw).replace(/,/g,".").replace(/(\d)\s+(M|CM|MHZ|KHZ)\b/g,"$1$2").split(/[\s;]+/).filter(Boolean);
   for(let t of toks){let m;
     if(MODEW[t]){Q.modes.add(MODEW[t]);Q.chips.push(T("modo ","mode ")+MODEW[t]);continue}
@@ -499,11 +499,21 @@ function cMatch(Q,call,ref,ent){const C=String(call||"").toUpperCase(),base=C.sp
 function sMatch(Q,o){if(Q.bands.size&&!Q.bands.has(o.band))return false;if(!mOK(Q,o.mode))return false;
   if(Q.progs.size&&!Q.progs.has(o.prog||"dx"))return false;if(Q.f){const k=kHzOf(o.f);if(!isFinite(k)||Math.abs(k-Q.f.k)>Q.f.tol)return false}
   return cMatch(Q,o.call,o.ref,o.ent)}
-function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=qParse(inp.value);if(!Q){box.hidden=true;box.innerHTML="";return}
+const CONTS=[["EU","Europa","Europe"],["AF","África","Africa"],["AS","Asia","Asia"],["NA","Norteamérica","North America"],["SA","Sudamérica","South America"],["OC","Oceanía","Oceania"],["AN","Antártida","Antarctica"]];
+function selQ(){const g=id=>{const e=$(id);return e?e.value:""};const Q=qParse($("srchq")?$("srchq").value:"")||{bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[],cont:null,age:null};
+  const b=g("srb"),m=g("srm"),t=g("srt"),k=g("src"),a=g("sra");
+  if(b!==""){Q.bands=new Set([+b]);Q.chips=Q.chips.filter(x=>!/^(banda|band) /.test(x));Q.chips.push(T("banda ","band ")+BANDS[+b])}
+  if(m){Q.modes=new Set([m]);Q.chips=Q.chips.filter(x=>!/^(modo|mode) /.test(x));Q.chips.push(T("modo ","mode ")+(m==="DIGI"?T("digitales","digital"):m))}
+  if(t){Q.progs=new Set([t]);Q.chips.push(t==="dx"?"DX":t)}
+  if(k){Q.cont=k;const n=CONTS.find(x=>x[0]===k);Q.chips.push(n?T(n[1],n[2]):k)}
+  if(a){Q.age=+a;Q.chips.push(T(`últimos ${a} min`,`last ${a} min`))}
+  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.age;return any?Q:null}
+function contOf(call,dx,band){try{const e=spotEval({call,dx:dx||(window.ACRACB_areaPos&&ACRACB_areaPos(call)),band:band!=null?band:3,kind:"dx",from:[]},st.mhour);return e&&e.t?e.t.cont:null}catch(_){return null}}
+function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=selQ();const clr=$("srchx");if(clr)clr.hidden=!Q;if(!Q){box.hidden=true;box.innerHTML="";return}
   const lh=st.mhour;const out=[];
   for(const s of (L.spots||[])){const ent=(s.dxcc||"")+" "+(()=>{try{return (callEnt(s.call)||{}).name||""}catch(_){return ""}})();
-    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);const e=spotEval(s,lh);out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
-  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
+    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);if(Q.age&&!(a!=null&&a<=Q.age))continue;const e=spotEval(s,lh);if(Q.cont&&!(e&&e.t&&e.t.cont===Q.cont))continue;out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
+  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;if(Q.age&&!(o.a!=null&&o.a<=Q.age))continue;if(Q.cont&&contOf(o.call,o.dx,o.band)!==Q.cont)continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
   out.sort((x,y)=>(x.a??1e9)-(y.a??1e9));
   const onlyCall=Q.calls.filter(x=>x.c).map(x=>x.c);
   const by=onlyCall.length?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>onlyCall.some(c=>String(b||"").toUpperCase().includes(c)))):[];
@@ -516,11 +526,17 @@ function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;co
   if(by.length)h+=`<p class="note srby">${T(`${e2(onlyCall.join(", "))} ha oído a ${by.length} ${by.length===1?"estación":"estaciones"}`,`${e2(onlyCall.join(", "))} has heard ${by.length} ${by.length===1?"station":"stations"}`)}: ${by.slice(0,12).map(s=>`${CS(s.call)} <span class="nw">${e2(s.f)}</span>`).join(" · ")}${by.length>12?" …":""}</p>`;
   box.innerHTML=h;box.hidden=false;const pb=box.querySelector("[data-srcall]");if(pb)pb.onclick=()=>{try{openCall(pb.dataset.srcall)}catch(_){}}}
 function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
-  w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia, banda, modo o país","Callsign, frequency, band, mode or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
-    <p class="note srex">${T("Puedes combinar palabras. Prueba:","You can combine words. Try:")} ${["EA5RKB/P","EA8/*","14.074","20m FT8","40 CW","POTA SSB","*/MM",T("Japón","Japan")].map(x=>`<button type="button" class="srchip srtry" data-srq="${e2(x)}">${e2(x)}</button>`).join("")}</p>
-    <div id="srchres" hidden aria-live="polite"></div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. El asterisco * vale por cualquier cosa.","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. The asterisk * matches anything.")}</p>`;
+  w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia o país","Callsign, frequency or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
+    <div class="srsel">
+      <label><span>${T("Banda","Band")}</span><select id="srb"><option value="">${T("Todas","All")}</option>${ORD.map(b=>`<option value="${b}">${BANDS[b]}</option>`).join("")}</select></label>
+      <label><span>${T("Modo","Mode")}</span><select id="srm"><option value="">${T("Todos","All")}</option><option value="SSB">SSB</option><option value="CW">CW</option><option value="FT8">FT8</option><option value="FT4">FT4</option><option value="RTTY">RTTY</option><option value="DIGI">${T("Digitales (todos)","Digital (all)")}</option><option value="AM">AM</option><option value="FM">FM</option></select></label>
+      <label><span>${T("Tipo","Type")}</span><select id="srt"><option value="">${T("Todos","All")}</option><option value="dx">DX</option>${PROGS.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></label>
+      <label><span>${T("Continente","Continent")}</span><select id="src"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])}</option>`).join("")}</select></label>
+      <label><span>${T("Oído hace","Heard within")}</span><select id="sra"><option value="">${T("Cuando sea","Any time")}</option><option value="15">${T("15 minutos","15 minutes")}</option><option value="30">${T("30 minutos","30 minutes")}</option><option value="60">${T("1 hora","1 hour")}</option></select></label>
+    </div>
+    <div id="srchres" hidden aria-live="polite"></div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. En el texto el asterisco * vale por cualquier cosa (EA8/* o */MM) y puedes escribir también banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p>`;
   sec.insertBefore(w,sec.firstElementChild);let tm=0;const inp=$("srchq"),x=$("srchx");
-  inp.addEventListener("input",()=>{x.hidden=!inp.value;clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";x.hidden=true;srchRun();inp.focus()};w.querySelectorAll("[data-srq]").forEach(b=>b.onclick=()=>{inp.value=b.dataset.srq;x.hidden=false;srchRun()})}
+  inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
 function hook(){if(typeof window.renderSide!=="function"||window.renderSide.__cl)return false;const o=window.renderSide;

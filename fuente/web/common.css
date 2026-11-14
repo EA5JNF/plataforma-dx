@@ -822,3 +822,8 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .srch .srchip{font:500 .76rem var(--f-m,monospace);padding:3px 8px;border-radius:999px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);white-space:nowrap}
 .srch .srtry{cursor:pointer}
 .srch .srtry:hover,.srch .srtry:focus-visible{border-color:var(--accent);color:var(--accent)}
+.srch .srsel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.2rem),1fr));gap:8px 10px;margin-top:10px}
+.srch .srsel label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.srch .srsel span{font:600 .7rem var(--f-m,monospace);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.srch .srsel select{width:100%;min-width:0;font:500 .92rem var(--f-b,inherit);padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--fg)}
+.srch .srsel select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}

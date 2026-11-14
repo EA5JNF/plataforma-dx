@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.2 · 14/11/2026
+- Buscador de DX con desplegables, más sencillo: Banda, Modo (SSB, CW, FT8, FT4, RTTY, digitales, AM, FM), Tipo (DX, POTA, SOTA, WWFF), Continente y «Oído hace» (15 min, 30 min, 1 h). Se combinan entre sí y con el texto (indicativo, frecuencia o país); los resultados salen al momento y «Borrar» lo deja todo como al principio. En el móvil, los desplegables van de dos en dos. En español e inglés, en todas las pantallas y en los dos temas. / DX search with simple dropdowns for band, mode, type, continent and age.
+
 ## 2.8.1 · 14/11/2026
 - Buscador de DX más versátil: entiende indicativos de cualquier tipo (EA5RKB, EA5RKB/P, /M, /MM, /QRP, VP8/G3ABC, EA8/DF4UE, especiales como 8J1RL, 4U1UN, R100RS o II0A) y también por partes (EA5, G3ABC dentro de VP8/G3ABC), comodines (EA8/* o */MM), frecuencias (14.074, 14074, 7.1 o 14), bandas (20m, 20 m, 40, 70cm), modos (SSB, LSB, USB, fonía, CW, FT8, FT4, RTTY, PSK, digi…), programas (POTA, SOTA, WWFF, DX), referencias (US-1234, EA5/AT-001, EAFF-0123) y países (Japón, Chile). Las palabras se combinan: «20m FT8», «40 CW», «POTA SSB», «chile ft8». Enseña qué ha entendido, de qué entidad es un indicativo aunque no tenga spots, con enlace a su ficha, y botones de ejemplo para probar. En español e inglés, en todas las pantallas y en los dos temas. / Search now understands any kind of callsign, wildcards, frequencies, bands, modes, programs, references and countries, combined.
 
