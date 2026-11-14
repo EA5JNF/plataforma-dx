@@ -120,6 +120,7 @@ li .lnk,p .lnk,.stl .lnk,td .lnk{display:inline!important;min-height:0!important
 .psob[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
 .notifw{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
 .notifw .btn[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.notifw .nhelp{flex-basis:100%;margin:2px 0 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
 .qrpt td,.qrpt th{text-align:left;padding:5px 12px 5px 0;font-variant-numeric:tabular-nums}
 #metnote{margin-top:10px}
 /* ---- modo claro: textos que el diseño oscuro pintaba en blanco ---- */

@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.9 · 14/11/2026
+- Avisos: el botón «Avisarme con una notificación» sale ahora en todos los aparatos. Antes desaparecía donde el navegador no deja notificar, por ejemplo en el iPad o el iPhone con la plataforma abierta en Safari sin guardarla en la pantalla de inicio. Ahora, al pulsarlo, explica cómo activarlas: en el iPad y el iPhone, guardarla con Compartir › «Añadir a pantalla de inicio» y abrirla desde ese icono (o actualizar a iOS o iPadOS 16.4 si es más antiguo); en otros navegadores, abrirla en Chrome, Edge, Firefox o Safari. En español e inglés, en todas las pantallas y en los dos temas. / The «Notify me» button now shows on every device and explains how to enable notifications where the browser does not allow them (iPad and iPhone: Add to Home Screen).
+
 ## 2.7.8 · 14/11/2026
 - «Hora a hora» más fácil de leer, como un semáforo: verde, la banda llega a buena parte del mundo a esa hora; amarillo y naranja, a una parte; rojo, a muy poco; oscuro, cerrada. Leyenda con palabras (cerrada, muy poco, poco, regular, bien, muy bien) y el porcentaje al lado; explicación corta al principio («Busca el verde»); la fila «Mejor» enseña el número de la banda también en el móvil; la fila «Sol» usa azul cielo para el día para no confundirse con el semáforo; casillas rayadas visibles en el tema claro. En español e inglés, en todas las pantallas y en los dos temas. / Hour-by-hour chart as a traffic light, with plain-word legend.
 

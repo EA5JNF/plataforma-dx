@@ -132,7 +132,17 @@ let SWR=null;
 if(!ART&&"serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("sw.js").then(r=>{SWR=r}).catch(()=>{})}
 function notifOn(){return canN&&Notification.permission==="granted"&&S.get("acracb_notif")==="1"}
 function notify(title,body){try{if(SWR&&SWR.showNotification){SWR.showNotification(title,{body,tag:"acracb-"+title,icon:document.querySelector('link[rel="apple-touch-icon"]')?.href});return}new Notification(title,{body})}catch(e){}}
-function notifUI(){const host=$("alerts");if(!host||!canN)return;let w=$("notifw");if(!w){w=document.createElement("div");w.id="notifw";w.className="notifw";host.insertAdjacentElement("beforebegin",w)}
+/* 2.7.9: el botón sale en todos los aparatos. Si el navegador no deja notificar (iPhone o iPad en Safari sin guardar en la
+   pantalla de inicio, iOS antiguo, navegadores de tele o dentro de otras apps), al pulsarlo explica cómo conseguirlo. */
+const IOSD=(()=>{try{return /iP(hone|ad|od)/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)}catch(e){return false}})();
+const STDA=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}})();
+let NHELP=false;
+function notifHelp(){return IOSD&&!STDA?`<p class="note nhelp">En el iPad y el iPhone, Safari solo deja enviar notificaciones a las webs guardadas en la pantalla de inicio. Toca Compartir, el cuadrado con la flecha hacia arriba, elige «Añadir a pantalla de inicio», abre la plataforma desde ese icono y pulsa aquí otra vez.</p>`:
+  IOSD?`<p class="note nhelp">Para recibir notificaciones de webs, el iPad y el iPhone necesitan iOS o iPadOS 16.4 o posterior. Actualízalo en Ajustes › General › Actualización de software.</p>`:
+  `<p class="note nhelp">Este navegador no deja enviar notificaciones de webs. Abre la plataforma en Chrome, Edge, Firefox o Safari para activarlas.</p>`}
+function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw");if(!w){w=document.createElement("div");w.id="notifw";w.className="notifw";host.insertAdjacentElement("beforebegin",w)}
+  if(!canN){w.innerHTML=`<button class="btn" id="notifb" aria-expanded="${NHELP}">Avisarme con una notificación</button><span class="note"> Para que te avise aunque estés en otra app o pestaña.</span>${NHELP?notifHelp():""}`;
+    $("notifb").onclick=()=>{NHELP=!NHELP;notifUI()};return}
   const st=Notification.permission,on=notifOn();
   w.innerHTML=st==="denied"?`<p class="note">Las notificaciones están desactivadas para esta web. Si quieres avisos, actívalas en los ajustes del navegador.</p>`:
     `<button class="btn" id="notifb" aria-pressed="${on}">${on?"Notificaciones activadas":"Avisarme con una notificación"}</button><span class="note"> ${on?"Te llegará un aviso cuando aparezca en el clúster una DXpedición o entidad que te falte, mientras la web esté abierta (en el iPhone y el iPad, guardada en la pantalla de inicio).":"Para que te avise aunque estés en otra app o pestaña."}</span>`;
