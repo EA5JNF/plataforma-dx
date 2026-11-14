@@ -628,3 +628,10 @@ html[data-theme="dark"] .nwb{box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 
   box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 2px 8px rgba(220,38,38,.35);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .xtag.dxpt::before{content:"";width:5px;height:5px;border-radius:50%;background:#fde68a;box-shadow:0 0 5px 1px rgba(253,224,71,.9);flex:none}
 html[data-theme="dark"] .xtag.dxpt{box-shadow:0 0 0 1px rgba(255,255,255,.12) inset,0 0 12px rgba(239,68,68,.45)}
+.mmall{font-weight:700!important}
+/* 2.5.9: casilla «Todos los modos» y selector de «Qué hacer» */
+.allm{display:inline-flex;align-items:center;gap:6px;margin-left:10px;font-size:.85rem;color:var(--muted);white-space:nowrap;cursor:pointer}
+.allm input{width:16px;height:16px;accent-color:var(--accent)}
+.recm{display:inline-flex;margin:4px 0 10px;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.recm button{border:0;background:transparent;padding:6px 14px;font:600 .8rem var(--f-b,inherit);color:var(--muted);cursor:pointer}
+.recm button[aria-pressed="true"]{background:var(--accent);color:#fff}

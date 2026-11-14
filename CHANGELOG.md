@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.5.9 · 14/11/2026
+- «Todos los modos»: casilla en la configuración de la estación (junto al modo), selector «Mi modo / Todos los modos» en «Qué hacer» y botón «Todos» en los selectores de modo del clúster y del mapa. Los tres van sincronizados y la elección se recuerda. Con todos los modos, el clúster, los avisos y «Qué hacer» proponen estaciones de cualquier modo, cada una con su probabilidad calculada en su propio modo; el modo elegido sigue siendo la base de la previsión. / «All modes» option in the station settings, in «What to do» and in the mode selectors.
+
 ## 2.5.8 · 14/11/2026
 - Misma medida en toda la plataforma (VOACAP equilibrado con los clústeres), salvo la capa «Predicción VOACAP» del mapa y su ventana de destino, que enseñan la previsión de VOACAP sola. Explicado en Método › Cálculo. / One measure everywhere, except the map's «VOACAP forecast» layer, which shows pure VOACAP.
 - Bandas: «sin datos» en lugar de «sin dato». / Bands table wording.
