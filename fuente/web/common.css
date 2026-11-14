@@ -880,3 +880,19 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .ez .ezdest:hover,.ez .ezdest:focus-visible{border-color:var(--accent);outline:none}
 .ez .ezmapb{margin-top:6px}
 @media (prefers-reduced-motion:reduce){.eztl .ezd>summary.ezr::after{transition:none}}
+/* 2.8.11: destinos con sus estaciones del clúster */
+.ez .ezhint{margin:6px 0 8px;color:var(--muted);font-size:.9rem}
+.ez .ezdst{border:1px solid var(--line);border-radius:10px;margin:0 0 6px;background:var(--panel)}
+.ez .ezdst>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;padding:8px 12px;align-items:baseline}
+.ez .ezdst>summary::-webkit-details-marker{display:none}
+.ez .ezdst .ezdn{font-weight:600}
+.ez .ezdst .ezdc{color:var(--accent);font:600 .8rem var(--f-m,monospace);white-space:nowrap}
+.ez .ezdst[open]>summary{border-bottom:1px solid var(--line)}
+.ez .ezsp{padding:6px 12px 10px}
+.ez .ezs{padding:4px 0;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.ez .ezs .ezf{font:600 .95rem var(--f-m,monospace)}
+.ez .ezs .ezmd{font:600 .72rem var(--f-m,monospace);padding:1px 6px;border-radius:5px;border:1px solid var(--border);color:var(--muted)}
+.ez .ezs .ezag{color:var(--muted);font-size:.85rem;margin-left:auto}
+.ez .ezsp .ezdest{margin-top:4px}
+.ez .ezoff{margin-top:8px}
+.ez .ezs .cty{display:none}

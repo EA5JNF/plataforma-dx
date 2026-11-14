@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.11 · 15/11/2026
+- Ahora › Resumen: los desplegables de destinos enseñan lo que oye el clúster, no la previsión. En «Ahora» y en cada tramo de «Próximas 12 horas», cada país con estaciones en el clúster en esa banda se despliega con sus estaciones (indicativo, que abre su ficha, frecuencia, modo y hace cuánto), ordenados por número de estaciones, con «Ver en el mapa». Si nadie de esos destinos sale en el clúster, lo dice. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Destination lists now show what the cluster hears, by country, not the forecast.
+
 ## 2.8.10 · 15/11/2026
 - Logo: «ACRACB» se lee ahora en todos los tamaños. Va en grande dentro del globo azimutal, encima de «DX», en vez de en letra pequeña debajo; en la pantalla de inicio del iPhone, iPad y Android, en la pestaña del navegador y en el instalador. La versión anterior del globo se guarda en las fuentes. / Logo: «ACRACB» now readable at every size.
 

@@ -87,16 +87,25 @@ R('if(z)z.insertAdjacentHTML("beforeend",easyVHF());','')
 _i=s.index("function renderEasyS(now,full){");_j=s.index("/* ---------- glosario",_i)
 s=s[:_i]+r"""function ezWord(p){return p>=.7?"muy buena":p>=.5?"buena":"aceptable"}
 function ezAlt(lh,skip){return memo("ezalt|"+lh+"|"+MOD()+"|"+st.mode,()=>{const out=[];const T0=TG().filter(inMode);for(const b of BI()){if(b>=10)continue;let n=0,sc=0;for(const t of T0){const p=Math.max(prob(t,lh,b,false).p,prob(t,lh,b,true).p);if(p>=.3){n++;sc+=p}}if(n)out.push([b,n,sc])}return out.sort((a,c)=>c[2]-a[2])}).filter(x=>x[0]!==skip).slice(0,3)}
-function ezList(ts,h,b){const g={};ts.forEach(x=>{const k=x.t.cont||"?";(g[k]=g[k]||[]).push(x)});const ord=["EU","AF","AS","NA","SA","OC"];
-  return `<div class="ezlist">${Object.keys(g).sort((a,c)=>ord.indexOf(a)-ord.indexOf(c)).map(k=>`<div class="ezcg"><span class="ezl">${CONTN[k]||k}</span>${g[k].map(x=>`<button type="button" class="ezdest" data-ezt="${esc(x.t.id)}" data-ezh="${h}" data-ezb="${b}">${esc(x.t.name.split(" (")[0])} <span>${Math.round(x.p*100)} %${x.lp?" · LP":""}</span></button>`).join("")}</div>`).join("")}
-  <button type="button" class="btn ezmapb" data-ezh="${h}" data-ezb="${b}">Ver en el mapa</button></div>`}
+/* 2.8.11: los desplegables de destinos enseñan lo que oye el clúster de esos destinos en esa banda, no la previsión */
+function ezAgoT(a){const EN=window.ACRACB_LANG==="en";return a==null||!isFinite(a)?"":a<1?(EN?"now":"ahora"):a<90?(EN?a+" min ago":"hace "+a+" min"):(EN?Math.round(a/60)+" h ago":"hace "+Math.round(a/60)+" h")}
+function ezEnt(s){try{const e=callEnt(s.call);if(e&&e.name)return e.name}catch(_){}return s.dxcc&&isNaN(s.dxcc)?String(s.dxcc):s.call}
+function ezSpots(ts,b){const zs=new Set(ts.map(x=>x.t.id)),by=new Map(),now=localNow();for(const s of (L.spots||[])){if(s.band!==b)continue;let e=null;try{e=spotEval(s,now)}catch(_){}if(!e||!e.t||!zs.has(e.t.id))continue;const k=ezEnt(s);if(!by.has(k))by.set(k,{z:e.t.id,a:[]});by.get(k).a.push(s)}
+  by.forEach(o=>o.a.sort((x,y)=>(spotAge(x)??1e9)-(spotAge(y)??1e9)));return by}
+function ezList(ts,h,b){const by=ezSpots(ts,b);const on=[...by.entries()].sort((x,y)=>y[1].a.length-x[1].a.length),hit=new Set(on.map(x=>x[1].z)),off=ts.filter(x=>!hit.has(x.t.id));
+  const row=s=>`<div class="ezs">${CS(s.call)} <b class="ezf">${esc(s.f)}</b>${s.mode?` <span class="ezmd">${esc(s.mode)}</span>`:""} <span class="ezag">${ezAgoT(spotAge(s))}</span></div>`;
+  let x=`<div class="ezlist"><p class="ezhint">${on.length?`Estaciones de estos destinos que el clúster oye ahora en ${BANDS[b]}:`:`Ahora mismo el clúster no oye a ninguna estación de estos destinos en ${BANDS[b]}.`}</p>`;
+  x+=on.map(([name,o])=>{const a=o.a;return `<details class="ezdst"><summary><span class="ezdn">${esc(name)}</span><span class="ezdc">${a.length} ${a.length===1?"estación":"estaciones"}</span></summary><div class="ezsp">${a.slice(0,12).map(row).join("")}${a.length>12?`<p class="note">Y ${a.length-12} más.</p>`:""}<button type="button" class="lnk ezdest" data-ezt="${esc(o.z)}" data-ezh="${h}" data-ezb="${b}">Ver en el mapa</button></div></details>`}).join("");
+  if(off.length&&on.length)x+=`<p class="note ezoff">${off.length} ${off.length===1?"destino abierto no sale":"destinos abiertos no salen"} ahora en el clúster.</p>`;
+  return x+`</div>`}
+function ezCount(ts,b){let n=0;ezSpots(ts,b).forEach(o=>n+=o.a.length);return n}
 function ezGo(h,b,id){try{st.mhour=+h;const mh=$("mh");if(mh)mh.value=st.mhour;st.mbs=[+b];st.mapOn=true;st.ly.voa=true;store.set("ly",JSON.stringify(st.ly));renderBandSeg();go("mapa");refresh();if(id)setTimeout(()=>{try{openPop({k:"t",id})}catch(e){}},350)}catch(e){console.error(e)}}
 document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".ezdest,.ezmapb");if(!t)return;ev.preventDefault();ezGo(t.dataset.ezh,t.dataset.ezb,t.dataset.ezt||null)});
 function ezVHF(){return [10,11,12].map(b=>{const [lv,t]=vhfStatus(b);return `<span class="ezv"><b style="color:${BC[b]}">${BANDS[b]}</b> <span class="lv-${lv}" style="background:none;border:0;padding:0">${t}</span></span>`}).join("")}
 function renderEasyS(now,full){const e0=easyAt(now);
   let card=easyCard("Ahora · "+hh(now)+":00",now,e0);if(e0)card=card.replace(/(<p class="ezbig">[\s\S]*?)<\/p>/,`$1 · ${e0.ts.length} <span>destinos</span></p>`);const alt=e0?ezAlt(now,e0.b):[];
   let extra=(alt.length?`<p class="ezalt"><span class="ezl">También abiertas</span> ${alt.map(([b,n])=>`<span class="ezc"><b style="color:${BC[b]}">${BANDS[b]}</b> ${n} <span>destinos</span></span>`).join("")}</p>`:"")+`<div class="ezvh"><span class="ezl">6 m, 2 m y 70 cm</span>${ezVHF()}</div>`;
-  if(e0)extra=`<details class="ezd ezd0"><summary class="ezsm">Ver los ${e0.ts.length} <span>destinos</span></summary>${ezList(e0.ts,now,e0.b)}</details>`+extra;
+  if(e0){const n=ezCount(e0.ts,e0.b);extra=`<details class="ezd ezd0"><summary class="ezsm">${n?`En el clúster: ${n} ${n===1?"estación":"estaciones"} de estos destinos`:"En el clúster: nadie de estos destinos ahora"}</summary>${ezList(e0.ts,now,e0.b)}</details>`+extra}
   card=card.includes('<details class="why">')?card.replace('<details class="why">',extra+'<details class="why">'):card.replace(/<\/div>$/,extra+"</div>");
   let tl="";
   if(full){const rows=[];for(let x=now+1;x<=now+12;x++){const h=x%24,e=easyAt(h),b=e?e.b:-1,last=rows[rows.length-1];if(last&&last.b===b){last.to=h;if(e&&e.sc>last.sc){last.sc=e.sc;last.e=e}}else rows.push({from:h,to:h,b,e,sc:e?e.sc:0})}
