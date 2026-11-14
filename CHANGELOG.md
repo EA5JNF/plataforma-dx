@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.7.10 · 14/11/2026
+- El botón «Avisarme con una notificación» sale en cualquier aparato que abra la web, incluso si el navegador no puede ejecutar la plataforma completa: entonces explica que hay que abrirla en un Chrome, Edge, Firefox o Safari actualizado. / The «Notify me» button shows on any device that can open the site, even when the browser cannot run the full platform.
+- La plataforma vuelve a funcionar en los iPad y iPhone con iPadOS o iOS 15 y 16 anteriores a 16.4: una expresión del formato de frecuencias que esas versiones de Safari no entienden impedía cargar una parte del código. Mismo resultado en todos los navegadores. / The platform runs again on iPad and iPhone with iOS/iPadOS 15 and 16 before 16.4.
+
 ## 2.7.9 · 14/11/2026
 - Avisos: el botón «Avisarme con una notificación» sale ahora en todos los aparatos. Antes desaparecía donde el navegador no deja notificar, por ejemplo en el iPad o el iPhone con la plataforma abierta en Safari sin guardarla en la pantalla de inicio. Ahora, al pulsarlo, explica cómo activarlas: en el iPad y el iPhone, guardarla con Compartir › «Añadir a pantalla de inicio» y abrirla desde ese icono (o actualizar a iOS o iPadOS 16.4 si es más antiguo); en otros navegadores, abrirla en Chrome, Edge, Firefox o Safari. En español e inglés, en todas las pantallas y en los dos temas. / The «Notify me» button now shows on every device and explains how to enable notifications where the browser does not allow them (iPad and iPhone: Add to Home Screen).
 
