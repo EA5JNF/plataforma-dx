@@ -310,7 +310,9 @@ function renderNear(){const box=$("near");if(!box||typeof SPOTS!=="function")ret
   box.innerHTML=(nr.length?nr.map(({s,a})=>nearRow(s,a)).join(""):`<div class="empty">${T(`Sin spots cercanos de ${CMSTXT()} ahora.`,`No nearby ${CMSTXT()} spots right now.`)}</div>`);keep.forEach(k=>box.appendChild(k))}
 
 /* ---------- clúster ---------- */
-let LH=null;
+let LH=null;let CLALL=false,CLOPEN=false;try{CLALL=localStorage.getItem("acracb_clall")==="1"}catch(_){}
+document.addEventListener("click",ev=>{const f=ev.target.closest&&ev.target.closest("[data-clfor]");if(f){CLALL=f.dataset.clfor==="all";CLOPEN=false;try{localStorage.setItem("acracb_clall",CLALL?"1":"")}catch(_){}render();return}
+  const m=ev.target.closest&&ev.target.closest("[data-clmore]");if(m){CLOPEN=true;render()}});
 function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS!=="function")return;if(LH==null)LH=st.mhour;
   let bx=$("clbar");if(!bx){bx=document.createElement("div");bx.id="clbar";box.parentNode.insertBefore(bx,box)}
   const bs=bandsOK();
@@ -329,7 +331,20 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
   let h="";const srcs=[];
   if(TYPES.has("dx")){const rows=dxs.filter(x=>inB(x.s.band));
     if(TYPES.size>1)h+=`<p class="note clsec">DX</p>`;
-    h+=rows.length?rows.map(x=>dxRow(x.s,x.e,x.a)).join(""):`<div class="empty">${T(`Sin spots DX de ${CMSTXT()} útiles${bl} ahora.`,`No useful ${CMSTXT()} DX spots${bl} right now.`)}</div>`;
+    /* 2.8.20: una fila por estación (sus otras frecuencias al lado), por defecto solo lo que puedes trabajar
+       (oída en la última media hora y con al menos un 10 %), lo nuevo arriba y pocas filas con «Ver N más» */
+    const G=new Map();rows.forEach(x=>{let pp=0;try{pp=spotProb(x.s,x.e,x.a).p}catch(_){pp=x.e.p||0}x.pp=pp;const k=SK(x.s.call);if(!G.has(k))G.set(k,[]);G.get(k).push(x)});
+    const grp=[...G.values()].map(a=>{a.sort((u,v)=>v.pp-u.pp);const best=a[0];return {a,best,nw:a.some(x=>x.s.nw),pp:best.pp,age:Math.min(...a.map(x=>x.a??1e9))}});
+    const useful=g=>g.age<=30&&g.pp>=.1;const yours=grp.filter(useful);
+    const sel=CLALL?grp:yours;sel.sort((u,v)=>(v.nw-u.nw)||(v.pp-u.pp));
+    const N=document.documentElement.classList.contains("vc")?6:8;
+    h+=`<div class="seg clfor" role="group" aria-label="${T("Qué estaciones ver","Which stations to show")}"><button type="button" data-clfor="you" aria-pressed="${!CLALL}">${T("Para ti","For you")} <small>${yours.length}</small></button><button type="button" data-clfor="all" aria-pressed="${CLALL}">${T("Todos","All")} <small>${grp.length}</small></button></div>`;
+    if(!CLALL)h+=`<p class="note clfn">${T("Estaciones oídas en la última media hora y con al menos un 10 % para tu estación.","Stations heard in the last half hour with at least a 10 % chance for your station.")}</p>`;
+    const alt=g=>g.a.slice(1).map(x=>`<span class="xtag xalt" style="color:${BC[x.s.band]}">${e2(x.s.f)} · ${BANDS[x.s.band]}</span>`);
+    const one=g=>{const x=g.best;const sv=x.s;const tg=alt(g);if(!tg.length)return dxRow(sv,x.e,x.a);const o=Object.assign({},sv);const r=dxRow(o,x.e,x.a);return r.replace('<div class="sc-f">','<div class="sc-f">'+'').replace(/(<div class="sc-f">[\s\S]*?)(<\/div>)/,(m,a1,a2)=>a1+tg.join("")+a2)};
+    const cards=sel.map(one);const open=CLOPEN||cards.length<=N+2;
+    h+=cards.length?(open?cards:cards.slice(0,N)).join("")+(open?"":`<button type="button" class="btn llmore" data-clmore>${T(`Ver ${cards.length-N} estaciones más`,`Show ${cards.length-N} more stations`)}</button>`)
+      :`<div class="empty">${CLALL||!grp.length?T(`Sin spots DX de ${CMSTXT()} útiles${bl} ahora.`,`No useful ${CMSTXT()} DX spots${bl} right now.`):T(`Ninguna estación que puedas trabajar ahora${bl}. Pulsa «Todos» para ver las ${grp.length} del clúster.`,`No stations you can work right now${bl}. Tap «All» to see the ${grp.length} on the cluster.`)}</div>`;
     srcs.push(e2(L.spotsSrc||"—"))}
   const ps=PROGS.filter(p=>TYPES.has(p));
   if(ps.length){const rows=pa.filter(o=>ps.includes(o.prog)&&inB(o.band)).sort((a,b)=>(a.a??1e9)-(b.a??1e9));const N=80;

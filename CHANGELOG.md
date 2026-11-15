@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.20 · 15/11/2026
+- Clúster mundial con menos entradas:
+  - Una fila por estación: si sale en varias bandas, sus otras frecuencias van en la misma tarjeta.
+  - Por defecto, «Para ti»: solo las estaciones oídas en la última media hora y con al menos un 10 % para tu estación. «Todos» enseña el resto. Cada botón dice cuántas hay y la elección se recuerda en el dispositivo.
+  - Las nuevas van arriba y después las de más probabilidad.
+  - Se ven 6 en la vista compacta y 8 en la completa, con «Ver N estaciones más» debajo.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / World cluster: one row per station, «For you» filter by default (last 30 min and at least 10 %), new ones first, 6 or 8 rows with «Show more».
+
 ## 2.8.19 · 15/11/2026
 - Mapa: ya no se abre en blanco ni sale el aviso «Mapa en blanco». Valores iniciales: Nombres, Noche, el modo de tu estación (SSB), todas las bandas, Clúster y camino corto y largo. Lo demás empieza apagado: predicción VOACAP, caminos, saltos, balizas, DXpediciones, ISS y satélites. A partir de ahí cada uno elige y se recuerda en el dispositivo. Al abrir esta versión se aplican una vez estos valores iniciales.
 - El botón «Clúster» del mapa ya no se traba: enciende y apaga a la primera.

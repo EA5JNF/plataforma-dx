@@ -134,6 +134,8 @@ R('class="lvh"><b>${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lv
 R('ly:{voa:true,arcs:true,spots:true,hops:false,bcn:false,labels:true,night:true,dxp:true}','ly:{voa:false,arcs:false,spots:true,hops:false,bcn:false,labels:true,night:true,dxp:false,iss:false,sats:false}')
 R('\nst.mapOn=false;\n','\nst.mapOn=true;\n')
 R('{const v=store.get("path");if(v','{if(store.get("mapdef")!=="2819"){["ly","path","mbs","cmsall","dens"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});store.set("mapdef","2819")}const v=store.get("path");if(v')
+# 2.8.20: el clúster DX hace su propio límite de filas
+R('limitList($("spots"),12,"spots");','')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')

@@ -186,6 +186,6 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
  function btn(){if(document.getElementById("viewbtn"))return true;var z=document.getElementById("zoombtn");if(!z)return false;
   var b=document.createElement("button");b.id="viewbtn";b.type="button";b.className="thbtn viewbtn";
   b.innerHTML='<svg class="vfull" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/></svg><svg class="vcomp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>';
-  b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply()};
+  b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply();try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}};
   z.parentElement.insertBefore(b,z);apply();return true}
  (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();

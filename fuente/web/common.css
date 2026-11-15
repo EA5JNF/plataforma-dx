@@ -978,3 +978,9 @@ html.vc .seg.clseg,html.vc .seg.mseg{margin-top:4px!important;margin-bottom:4px!
 .lvh>b{overflow-wrap:normal;word-break:normal;hyphens:manual}
 /* 2.8.19: sin el aviso de «Mapa en blanco» */
 #mhint{display:none!important}
+/* 2.8.20: clúster «Para ti / Todos» y otras frecuencias de la misma estación */
+.seg.clfor{margin:4px 0 6px;gap:6px}.seg.clfor small{font:600 .72rem var(--f-m,monospace);color:var(--muted);margin-left:4px}
+.clfn{margin:0 0 8px;font-size:.8rem}
+.sc-f .xalt{background:var(--panel);border:1px solid var(--line);font:600 .74rem var(--f-m,monospace)}
+#spots>.llmore{display:block;margin:10px auto 0}
+html.vc .clfn{display:none}
