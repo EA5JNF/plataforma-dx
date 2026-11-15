@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.15 · 15/11/2026
+- DX: «Buscar en los clústeres» pasa a ir debajo de los submenús (Clúster, Avisos, Cerca…), para que el menú principal y los submenús vayan juntos sin nada en medio. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / DX: cluster search moved below the sub-menu so both menu bars stay together.
+
 ## 2.8.14 · 15/11/2026
 - Ahora › Resumen › «Estaciones raras en el aire»: cada estación en dos líneas proporcionadas, con el indicativo, la bandera y el país arriba y, debajo y más pequeño, la banda en su color y el rumbo, que ya no se parten a mitad de dato. Separadas por una línea fina. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Rare stations card: cleaner two-line layout per station.
 

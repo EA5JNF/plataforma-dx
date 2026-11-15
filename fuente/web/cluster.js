@@ -551,7 +551,7 @@ function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if
       <label><span>${T("Antigüedad","Age")}</span><select id="sra"><option value="">${T("Todas","All")}</option><option value="15">${T("Últimos 15 min","Last 15 min")}</option><option value="30">${T("Últimos 30 min","Last 30 min")}</option><option value="60">${T("Última hora","Last hour")}</option></select></label>
     </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
     <div id="srchres" hidden aria-live="polite"></div>`;
-  sec.insertBefore(w,sec.firstElementChild);let tm=0;const inp=$("srchq"),x=$("srchx");
+  {const pt=sec.querySelector(":scope>.ptabs");if(pt)pt.after(w);else sec.insertBefore(w,sec.firstElementChild)}let tm=0;const inp=$("srchq"),x=$("srchx");
   inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
