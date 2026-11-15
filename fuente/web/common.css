@@ -976,3 +976,5 @@ html.vc .seg.clseg,html.vc .seg.mseg{margin-top:4px!important;margin-bottom:4px!
 .lvh::after{content:"";display:table;clear:both}
 .lvh>.lvp{float:right;margin:.15em 0 4px 10px}
 .lvh>b{overflow-wrap:normal;word-break:normal;hyphens:manual}
+/* 2.8.19: sin el aviso de «Mapa en blanco» */
+#mhint{display:none!important}

@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.19 · 15/11/2026
+- Mapa: ya no se abre en blanco ni sale el aviso «Mapa en blanco». Valores iniciales: Nombres, Noche, el modo de tu estación (SSB), todas las bandas, Clúster y camino corto y largo. Lo demás empieza apagado: predicción VOACAP, caminos, saltos, balizas, DXpediciones, ISS y satélites. A partir de ahí cada uno elige y se recuerda en el dispositivo. Al abrir esta versión se aplican una vez estos valores iniciales.
+- El botón «Clúster» del mapa ya no se traba: enciende y apaga a la primera.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Map: no more blank start; new defaults (names, night, your mode, all bands, cluster, short and long path); the cluster button no longer sticks.
+
 ## 2.8.18 · 15/11/2026
 - Las etiquetas «Favorable», «Regular» y «Desfavorable» de las tarjetas de VHF (6 m, 2 m y 70 cm) y del Sol van siempre arriba a la derecha, a la misma altura en todas las tarjetas, también con la letra grande. En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Level tags always top-right, aligned across cards.
 

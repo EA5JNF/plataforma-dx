@@ -129,6 +129,11 @@ R('setSum("dxp",ds.length?`${ds.length} activas · mejor ahora: ${ds[0].d.call} 
 # 2.8.18: la etiqueta de nivel va antes del título para que flote arriba a la derecha, a la misma altura en todas las tarjetas
 R('class="lvh"><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lvh"><span class="lvp">${LVN[lv]}</span><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b></div>')
 R('class="lvh"><b>${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lvh"><span class="lvp">${LVN[lv]}</span><b>${t}.</b></div>')
+# 2.8.19: el mapa ya no se abre en blanco. Valores iniciales: nombres, noche, modo de tu estación (SSB), todas las bandas,
+# clúster y camino corto y largo; lo demás apagado (predicción, caminos, saltos, balizas, DXpediciones, ISS y satélites).
+R('ly:{voa:true,arcs:true,spots:true,hops:false,bcn:false,labels:true,night:true,dxp:true}','ly:{voa:false,arcs:false,spots:true,hops:false,bcn:false,labels:true,night:true,dxp:false,iss:false,sats:false}')
+R('\nst.mapOn=false;\n','\nst.mapOn=true;\n')
+R('{const v=store.get("path");if(v','{if(store.get("mapdef")!=="2819"){["ly","path","mbs","cmsall","dens"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});store.set("mapdef","2819")}const v=store.get("path");if(v')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
