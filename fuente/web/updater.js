@@ -291,7 +291,11 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     if(s.dxpos&&s.dxpos[0]!=null&&s.dxpos[1]!=null&&!g.dxpos)g.dxpos=s.dxpos;if(!g.dxpos){const cp=cmtPos(s.c);if(cp)g.dxpos=cp}g.eu=g.eu||deEU}
   const pm=new Map();(prev.spots||[]).forEach(p=>pm.set(p.call+"|"+Math.round(parseFloat(p.f)*500),p));
   let spots=[],nn=0,cf=0;
-  for(const [key,g] of groups){const e=g.ed,dx=g.dxpos||areaPos(g.call,e);if(!dx)continue;const dxcc=e?e.dxcc:null,cont=e?e.cont:null;let kind;
+  for(const [key,g] of groups){const e=g.ed,o0=pm.get(key);
+    /* 2.8.34: la misma estación sigue en el mismo sitio del mapa: si esta vez ninguna fuente trae su posición exacta, se usa la
+       de la actualización anterior; y los que la oían antes se suman a los de ahora (hasta 4) */
+    if(o0){if(!g.dxpos&&o0.dxp&&o0.dx)g.dxpos=o0.dx;(o0.by||[]).forEach((x,i)=>{if(g.by.length<4&&!g.by.includes(x)){g.by.push(x);g.from.push((o0.from||[])[i]||[0,0])}});if(o0.eu)g.eu=true}
+    const dx=g.dxpos||areaPos(g.call,e);if(!dx)continue;const dxcc=e?e.dxcc:null,cont=e?e.cont:null;let kind;
     const far=()=>g.from.filter(p=>p[0]||p[1]).map(p=>distKm(dx,p));
     if(NEARDX.has(dxcc))kind="near";
     else if(g.band>=10){const d=far();if(!d.length||Math.max(...d)<300)continue;kind="vhf"}
@@ -300,7 +304,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
     if(g.skim&&[...g.srcs].every(x=>x==="RBN"||x==="PSK Reporter"))note.push(g.srcs.has("RBN")?"oído por skimmer (RBN)":"decodificado (PSK Reporter)");
-    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,utc:iso(g.t),_t:+g.t});
+    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,utc:iso(g.t),dxp:!!g.dxpos,eu:!!g.eu,_t:+g.t});
     if(nw)nn++;if(ns>1)cf++}
   /* 2.8.33: los spots aún vigentes de la actualización anterior se conservan aunque esta vez no los traiga ninguna fuente
      (una fuente que no responde ya no hace desaparecer estaciones del mapa), y el tope se aplica por antigüedad: antes se

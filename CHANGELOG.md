@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.34 · 15/11/2026
+- Mapa fiel al clúster y estable: cada estación sigue en el mismo sitio entre actualizaciones (si una vez ninguna fuente trae su posición exacta, se mantiene la anterior en lugar de saltar al centro del país), y los que la oyen se acumulan (hasta 4) en lugar de cambiar de una actualización a otra. Comprobado en cinco rondas con datos que cambian: el mapa muestra exactamente las estaciones del clúster, sin moverse ni parpadear.
+- En español e inglés. / Map spots now stay in place and match the cluster exactly across updates.
+
 ## 2.8.33 · 15/11/2026
 - Clúster y mapa: las estaciones ya no desaparecen y vuelven a aparecer entre actualizaciones. Pasaba por dos motivos: si en una actualización alguna fuente no respondía, sus spots se perdían hasta la siguiente; y al llegar al tope de 100 spots se daba prioridad a los «nuevos», de modo que los demás salían y volvían a entrar. Ahora se conservan los spots que siguen vigentes (60 minutos en HF y 2 horas en VHF) aunque esa vez no lleguen, y el tope (150) se aplica por antigüedad.
 - En español e inglés. / Cluster stations no longer vanish and reappear between updates.
