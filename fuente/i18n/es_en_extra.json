@@ -239,5 +239,14 @@
 " anunciadas · ": " announced · ",
 " con spots en la última hora · mejor ahora: ": " with spots in the last hour · best now: ",
 "con spots en la última hora · mejor ahora:": "with spots in the last hour · best now:",
-"anunciadas ·": "announced ·"
+"anunciadas ·": "announced ·",
+"No hay spots útiles de la última hora en": "No useful spots from the last hour in",
+"y en tus bandas.": "on your bands.",
+"Probabilidad de QSO para ti ahora en": "QSO chance for you now on",
+" y ": " and ",
+" más": " more",
+"−0,5 a −1,5 dB": "−0.5 to −1.5 dB",
+"−0,5 a −1 dB": "−0.5 to −1 dB",
+"−10 a −15 dB": "−10 to −15 dB",
+"−1,5": "−1.5"
 }

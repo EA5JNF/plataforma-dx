@@ -239,8 +239,8 @@ function txtSolar(L,now,kpmx){const out=[],h=+madParts(now).hour,fr=h>=7&&h<13?"
   const fut=((L.outlook27||{}).days||[]).filter(d=>d[0]>new Date(now).toISOString().slice(0,10)).slice(0,10),p=[];
   if(fut.length){const mx=Math.max(...fut.map(d=>d[1])),mn=Math.min(...fut.map(d=>d[1])),ref=sfi||fut[0][1],last=fut[fut.length-1][1];
     p.push(`NOAA espera flujo ${last>ref+5?"al alza":last<ref-5?"a la baja":"estable"} (entre ${mn} y ${mx} en diez días)`);
-    const stt=fut.find(d=>d[3]>=5);if(stt){const d=new Date(stt[0]+"T00:00:00Z");p.push(`posible tormenta el ${d.getUTCDate()} de ${MES[d.getUTCMonth()]} (Kp ${stt[3]})`)}}
-  const c=(L.cme||[])[0];if(c&&c.arrival){const a=new Date(c.arrival);p.push(`llega una eyección de masa coronal hacia el ${a.getUTCDate()} de ${MES[a.getUTCMonth()]} a las ${String(a.getUTCHours()).padStart(2,"0")} UTC: ${c.note}`)}
+    const stt=fut.find(d=>d[3]>=5);if(stt){const d=new Date(stt[0]+"T00:00:00Z");p.push(`posible tormenta el ${d.getUTCDate()}${window.ACRACB_LANG==="en"?" ":" de "}${MES[d.getUTCMonth()]} (Kp ${stt[3]})`)}}
+  const c=(L.cme||[])[0];if(c&&c.arrival){const a=new Date(c.arrival);p.push(`llega una eyección de masa coronal hacia el ${a.getUTCDate()}${window.ACRACB_LANG==="en"?" ":" de "}${MES[a.getUTCMonth()]} a las ${String(a.getUTCHours()).padStart(2,"0")} UTC: ${c.note}`)}
   else if(kpmx!=null&&kpmx>=4)p.push(`Kp hasta ${esn(kpmx,1)} en los próximos tres días`);
   if(p.length)out.push(["Previsión",p.map(x=>x[0].toUpperCase()+x.slice(1)).join(". ")+"."]);return out}
 function txtNear(sp){const nr=sp.filter(s=>s.kind==="near");if(!nr.length)return "Pocas estaciones ibéricas destacadas en esta ronda.";
@@ -330,7 +330,7 @@ async function updateAll(auto){if(BUSY)return;BUSY=true;const t0=Date.now();LAST
   if(vals.sfi)N.sfi=r0(M("sfi"));if(vals.kp)N.kp=r0(M("kp"));if(vals.wind)N.wind=r0(M("wind"));if(vals.bz)N.bz=r1(M("bz"));if(WD.bt!=null)N.bt=r1(WD.bt);
   const sp=Object.assign({},N.space||{});if(vals.ssn)sp.ssn=r0(M("ssn"));if(vals.a)sp.a=r0(M("a"));if(R["NOAA densidad"]!=null)sp.dens=r1(R["NOAA densidad"]);
   const xc=mostCommon((vals.xray||[]).map(x=>String(x[1]).toUpperCase()));if(xc)sp.xray=XR.now||xc;if(SC.S!=null)sp.proton=`S${SC.S} `+(String(SC.S)==="0"?"normal":"tormenta de protones");
-  const OV=R["NOAA aurora"];if(OV&&OV[1]!=null)sp.aurora=OV[0]?`${Math.round(OV[0])} % en el norte de Europa (${Math.round(OV[1])}° N)`:"Sin aurora sobre Europa";N.space=sp;
+  const OV=R["NOAA aurora"];if(OV&&OV[1]!=null)sp.aurora=OV[0]?`${Math.round(OV[0])} % ${window.ACRACB_LANG==="en"?"in northern Europe":"en el norte de Europa"} (${Math.round(OV[1])}° N)`:(window.ACRACB_LANG==="en"?"No aurora over Europe":"Sin aurora sobre Europa");N.space=sp;
   if(TD.blocks)N.kpfc={base:TD.base,issued:TD.issued||"NOAA",days:TD.days,blocks:TD.blocks};
   const rad=Object.assign({},N.radio||{});["r12","r3","s1"].forEach(k=>{const v=SC[k]!=null?SC[k]:TD[k];if(v!=null)rad[k]=r0(v)});N.radio=rad;if(rad.r12!=null)N.flare=`M ${rad.r12} % · X ${rad.r3||0} %`;
   if(R["NOAA 27 días"])N.outlook27=R["NOAA 27 días"];if(R["NASA DONKI"])N.cme=R["NASA DONKI"];if(R["WSPR.live"])N.wspr={at:iso(t0),bands:R["WSPR.live"]};

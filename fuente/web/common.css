@@ -1017,3 +1017,13 @@ html.vc .clfn{display:none}
 .mapcard.fsm #mpan{min-width:min(11.5em,54vw);justify-content:center;text-align:center}
 html.bigt .mapcard.fsm .mfloat .btn{font-size:min(.9rem,3.6vw);padding:6px 10px}
 .mapcard.fsm .mfloat .btn{transform:none!important;transition:background-color .15s,border-color .15s}
+/* 2.8.23: valores largos de las casillas (p. ej. la aurora en inglés) sin salirse con letra grande */
+.chip .v.vlong{font-size:.95rem;overflow-wrap:anywhere}
+html.bigt .chip .v{overflow-wrap:anywhere}
+/* 2.8.23: ruta desde tu QTH hasta la estación elegida con «Ver en el mapa» */
+.mfroute{fill:none;stroke:var(--accent);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:10 7;vector-effect:non-scaling-stroke;filter:url(#glow)}
+.mfdot{fill:var(--accent);stroke:#fff;stroke-width:2.5;vector-effect:non-scaling-stroke}
+.mfpulse{fill:none;stroke:var(--accent);stroke-width:2.5;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:mfp 1.8s ease-out infinite}
+@keyframes mfp{from{opacity:.9;transform:scale(.45)}to{opacity:0;transform:scale(1.5)}}
+@media (prefers-reduced-motion:reduce){.mfpulse{animation:none;opacity:.6}}
+.mflbl{font-family:var(--f-m,monospace);font-weight:700;fill:var(--fg);paint-order:stroke;stroke:var(--bg);stroke-linejoin:round}

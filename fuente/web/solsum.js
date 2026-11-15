@@ -18,7 +18,7 @@ const today=()=>new Date().toISOString().slice(0,10);
 function more(){const s=L.space||{};const r=L.radio||{};const pr=String(s.proton||"");const out=[];
   if(L.bt!=null)out.push(["Bt",L.bt+" nT",lv3(L.bt,10,20,1)]);
   if(pr)out.push([T("Protones","Protons"),pr,/S0/i.test(pr)?"g":/S1/i.test(pr)?"y":"r"]);
-  if(s.aurora)out.push([T("Aurora","Aurora"),s.aurora,(m=>m?lv3(+m[1],20,50,1):"n")(String(s.aurora).match(/(\d+)\s*%/))]);
+  if(s.aurora)out.push([T("Aurora","Aurora"),window.ACRACB_tx?ACRACB_tx(s.aurora):s.aurora,(m=>m?lv3(+m[1],20,50,1):"n")(String(s.aurora).match(/(\d+)\s*%/))]);
   if(L.flare)out.push([T("Llamaradas (24 h)","Flares (24 h)"),L.flare,(m=>m?lv3(+m[1],10,30,1):"n")(String(L.flare).match(/X\s*(\d+)/))]);
   if(r.r3!=null)out.push([T("Apagón fuerte R3+ (24 h)","Strong blackout R3+ (24 h)"),r.r3+" %",lv3(r.r3,10,25,1)]);
   if(r.s1!=null)out.push([T("Tormenta de protones (24 h)","Proton storm (24 h)"),r.s1+" %",lv3(r.s1,10,25,1)]);
@@ -28,7 +28,12 @@ function kpNext(){const f=L.kpfc;if(!f||!f.base||!Array.isArray(f.blocks))return
   f.blocks.forEach((d,i)=>d.forEach((v,j)=>{const t=b0+(i*24+j*3)*36e5;if(t+3*36e5>now&&t<now+24*36e5&&v!=null)mx=mx==null?v:Math.max(mx,v)}));return mx}
 function ahead(){const out=[];const k=kpNext();if(k!=null)out.push([T("Kp máximo próximas 24 h","Max Kp next 24 h"),nf(k,1),lv3(k,3,4.5,1)]);
   const o=L.outlook27&&L.outlook27.days;if(Array.isArray(o)){const t=today();const fut=o.filter(d=>d[0]>t);
-    if(fut[0])out.push([T("Flujo solar mañana","Solar flux tomorrow"),"SFI "+fut[0][1],lv3(fut[0][1],110,90)]);
+    /* 2.8.23: la previsión de NOAA es semanal; si hoy se mide un flujo muy distinto del previsto para hoy, mañana se corrige
+       con esa diferencia y se deja la cifra de NOAA al lado (antes salía «hoy 132, mañana 95» sin explicación) */
+    if(fut[0]){const td=o.find(d=>d[0]===t),obs=+(document.getElementById("sfi")||{}).value||0;let v=fut[0][1],txt="SFI "+v;
+      if(td&&obs>0&&Math.abs(obs-td[1])>=10){v=Math.max(60,Math.round(fut[0][1]+obs-td[1]));txt="SFI ≈"+v+" (NOAA: "+fut[0][1]+")"}
+      const tm=new Date(Date.parse(t+"T12:00:00Z")+864e5).toISOString().slice(0,10);
+      out.push([fut[0][0]===tm?T("Flujo solar mañana","Solar flux tomorrow"):T("Flujo solar el ","Solar flux on ")+dm(fut[0][0]),txt,lv3(v,110,90)])}
     const st=fut.find(d=>d[3]>=5||d[2]>=20);out.push([T("Próxima tormenta (NOAA)","Next storm (NOAA)"),st?dm(st[0])+" · Ap "+st[2]:T("ninguna en 27 días","none in 27 days"),st?((Date.parse(st[0])-Date.now())/864e5<3?"r":"y"):"g"]);
     const best=fut.filter(d=>d[2]<=5).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,3).sort((a,b)=>a[0].localeCompare(b[0]));
     if(best.length)out.push([T("Mejores días para el DX","Best DX days"),best.map(d=>dm(d[0])).join(", "),"g"])}

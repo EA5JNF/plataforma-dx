@@ -101,7 +101,7 @@ function ezList(ts,h,b){const by=ezSpots(ts,b);const on=[...by.entries()].sort((
 function ezFut(ts,h,b){const it=ts.slice(0,8).map(x=>`<button type="button" class="lnk ezdest ezfd" data-ezt="${esc(x.t.id)}" data-ezh="${h}" data-ezb="${b}"><span class="ezdn">${esc(x.t.name.split(" (")[0])}</span><span class="ezdc">${ezWord(x.p)}</span></button>`).join("");
   return `<div class="ezlist"><p class="ezhint">Previsión de destinos que se abrirán en ${BANDS[b]}:</p><div class="ezfl">${it}</div>${ts.length>8?`<p class="note">${ts.length-8} <span>destinos más</span></p>`:""}<p class="note">La lista de estaciones del clúster aparece cuando llega la hora, porque el clúster solo sabe quién sale ahora.</p><button type="button" class="lnk ezmapb" data-ezh="${h}" data-ezb="${b}">Ver en el mapa</button></div>`}
 function ezCount(ts,b){let n=0;ezSpots(ts,b).forEach(o=>n+=o.a.length);return n}
-function ezGo(h,b,id){try{st.mhour=+h;const mh=$("mh");if(mh)mh.value=st.mhour;st.mbs=[+b];st.mapOn=true;st.ly.voa=true;store.set("ly",JSON.stringify(st.ly));renderBandSeg();go("mapa");refresh();if(id)setTimeout(()=>{try{openPop({k:"t",id})}catch(e){}},350)}catch(e){console.error(e)}}
+function ezGo(h,b,id){try{st.mhour=+h;const mh=$("mh");if(mh)mh.value=st.mhour;st.mbs=[+b];st.mapOn=true;st.ly.voa=true;store.set("ly",JSON.stringify(st.ly));renderBandSeg();go("mapa");refresh();if(id)setTimeout(()=>{try{if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({id})))openPop({k:"t",id})}catch(e){}},350)}catch(e){console.error(e)}}
 document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".ezdest,.ezmapb");if(!t)return;ev.preventDefault();ezGo(t.dataset.ezh,t.dataset.ezb,t.dataset.ezt||null)});
 function ezVHF(){return [10,11,12].map(b=>{const [lv,t]=vhfStatus(b);return `<span class="ezv"><b style="color:${BC[b]}">${BANDS[b]}</b> <span class="lv-${lv}" style="background:none;border:0;padding:0">${t}</span></span>`}).join("")}
 function renderEasyS(now,full){const e0=easyAt(now);
@@ -136,6 +136,31 @@ R('\nst.mapOn=false;\n','\nst.mapOn=true;\n')
 R('{const v=store.get("path");if(v','{if(store.get("mapdef")!=="2819"){["ly","path","mbs","cmsall","dens"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});store.set("mapdef","2819")}const v=store.get("path");if(v')
 # 2.8.20: el clúster DX hace su propio límite de filas
 R('limitList($("spots"),12,"spots");','')
+# 2.8.23: congruencia de datos
+# Miles siempre con separador (antes «8071 km» al lado de «31.961 km»): punto en español, coma en inglés
+R('const fk=n=>Math.round(n).toLocaleString("es-ES");','const fk=n=>{const v=Math.round(+n||0);return (v<0?"-":"")+String(Math.abs(v)).replace(/\\B(?=(\\d{3})+(?!\\d))/g,window.ACRACB_LANG==="en"?",":".")};')
+R('.text(km.toLocaleString("es-ES")+" km")','.text(fk(km)+" km")')
+R('a más de ${lim} km','a más de ${fk(lim)} km')
+# En «Por qué», la frecuencia de la banda con tres decimales como en el resto de la web (antes «7.1 MHz»)
+_i=s.index("function explain(t,b,lh,lp){"); _j=s.index("\nfunction ",_i+10); s=s[:_i]+s[_i:_j].replace("${f} MHz","${f.toFixed(3)} MHz")+s[_j:]
+# «Qué hacer» › «Lo que dice el clúster»: solo spots de la última hora (antes proponía escuchar spots de hace horas)
+R('const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e);','const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e&&(x.a==null||x.a<=60));')
+# el rumbo de un spot, con las mismas coordenadas que su tarjeta del clúster (antes 148° aquí y 149° allí)
+R('(rumbo ${e.lp?e.laz:e.az}° ${cab(e.lp?e.laz:e.az)})','(rumbo ${(g=>`${g}° ${cab(g)}`)((window.ACRACB_spAz&&ACRACB_spAz(s,e.lp))??(e.lp?e.laz:e.az))})')
+R('if(!sp.length)h+=`<p>No hay spots de fonía útiles en las bandas de este modo. ${','if(!sp.length)h+=`<p>No hay spots útiles de la última hora en ${esc(MD().s)} y en tus bandas. ${')
+# El resumen de avisos decía «3 avisos: C8K 80 m, C8K 40 m» sin indicar que hay más
+R('${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}`','${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}${it.length>2?" y "+(it.length-2)+" más":""}`')
+# Kp con coma decimal también en inglés: ahora coma en español y punto en inglés
+R('${String(Math.round(mx*10)/10).replace(".",",")}','${String(Math.round(mx*10)/10).replace(".",window.ACRACB_LANG==="en"?".":",")}')
+# Método: en inglés quedaban «−0.5 a −1,5 dB» y «f−1,5»
+R('<td>−0,5 a −1,5 dB</td>','<td>−0,5 a −1,5 dB</td>')
+# textos que vienen de los datos: tres decimales y, en inglés, traducidos al pintarlos
+R('<p class="note" style="margin:4px 0 0">${esc(d.info)}</p>','<p class="note" style="margin:4px 0 0">${esc(window.ACRACB_tx?ACRACB_tx(d.info):d.info)}</p>')
+R('<p class="note" style="margin:4px 0 0">${esc(L.nearNote)}</p>','<p class="note" style="margin:4px 0 0">${esc(window.ACRACB_tx?ACRACB_tx(L.nearNote):L.nearNote)}</p>')
+R('["Aurora",s.aurora,"",""','["Aurora",window.ACRACB_tx?ACRACB_tx(s.aurora):s.aurora,"",""')
+# «Ver en el mapa» desde la ficha de un indicativo o de un destino: ruta y zoom, sin abrir la tarjeta de información
+R('if($("cpmap"))$("cpmap").onclick=()=>{closeCall();go("mapa");openPop({k:"t",id:t.id})};','if($("cpmap"))$("cpmap").onclick=()=>{closeCall();if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({call,id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
+R('$("zmap").onclick=()=>{go("mapa");openPop({k:"t",id:t.id})};','$("zmap").onclick=()=>{if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
@@ -495,6 +520,10 @@ def webify(c, lang):
     return c
 import glob as _g
 for _f in _g.glob(os.path.join(W, "out", "lib", "*-" + "[0-9a-f]" * 10 + ".js")): os.remove(_f)
+# 2.8.23: las frecuencias de los planes de banda se escribían «14.300 kHz»; en inglés eso es 14,3 kHz y el resto de la web
+# (clúster, mapa, tarjetas) usa MHz con tres decimales y punto. Se unifican en MHz en los dos idiomas.
+_FQ = re.compile(r'\b(\d{1,3}\.\d{3}(?:\s?[\u2013-]\s?\d{1,3}\.\d{3})?)(\s?)kHz')
+w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 w_es = webify(w_es, "es"); w_en = webify(w_en, "en")
 import shutil; shutil.copy(os.path.join(W, "sw.js"), os.path.join(W, "out", "sw.js"))
 print("traducciones", n1, n2)

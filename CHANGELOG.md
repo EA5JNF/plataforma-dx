@@ -5,6 +5,20 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.23 · 15/11/2026
+- «Ver en el mapa» desde la ficha de un indicativo, de un destino o del Resumen: va al mapa, encuadra con zoom tu QTH y la estación, traza la ruta entre los dos y marca la estación, sin abrir la tarjeta de información. La ruta se mantiene aunque el mapa se actualice.
+- Revisión de congruencia de datos en toda la plataforma:
+  - Frecuencias de los planes de banda en MHz con tres decimales, como en el resto de la web (antes «14.300 kHz», que en inglés se lee 14,3 kHz). En «Por qué», la frecuencia de la banda también con tres decimales.
+  - Miles siempre con separador (antes «corto 8071 km · largo 31.961 km»): punto en español y coma en inglés, también en los anillos del mapa y en los textos de VHF.
+  - Porcentaje de las DXpediciones como en el resto («52 %»), con la banda a la que se refiere.
+  - «Qué hacer» › «Lo que dice el clúster» y DX › Avisos ya no proponen spots de hace horas: solo los de la última hora llevan «¿Lo oyes?». El aviso de «sin spots» ya no habla de fonía cuando el modo es otro.
+  - El rumbo de un spot en «Qué hacer» sale con las mismas coordenadas que su tarjeta del clúster.
+  - El resumen de avisos dice cuántos más hay («3 avisos: C8K 80 m, C8K 40 m y 1 más»).
+  - Flujo solar de mañana corregido con lo medido hoy cuando la previsión semanal de NOAA se ha quedado atrás, con la cifra de NOAA al lado.
+  - Versión inglesa: sin restos en español en las notas de los spots, la información de las DXpediciones, las estaciones cercanas, la aurora, las fechas y la tabla de antenas; decimales con punto.
+  - Frecuencias con más de tres decimales en los datos recibidos se muestran con tres.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / «Show on map» now zooms to a route from your QTH to the station without opening the info card; data consistency review (units, thousands, percentages, recent-only suggestions, solar flux, English leftovers).
+
 ## 2.8.22 · 15/11/2026
 - Mapa a pantalla completa: los botones «Ocultar controles» y «Salir» ya no saltan de sitio. Antes, al tocarlos en el móvil se perdía el centrado, y al cambiar «Ocultar» por «Mostrar controles» se movía «Salir». Ahora quedan fijos, centrados, sin salirse de la pantalla con ningún tamaño de letra. En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Full-screen map: bottom buttons stay fixed and centred.
 

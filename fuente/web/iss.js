@@ -21,7 +21,7 @@ const me=()=>(typeof TXP!=="undefined"&&TXP)||[-0.67,38.63];
 const foot=h=>Math.acos(6371/(6371+h))/R;
 const loc=t=>{try{return new Date(t).toLocaleTimeString(EN()?"en-GB":"es-ES",{hour:"2-digit",minute:"2-digit"})}catch(e){return ""}};
 const ll=(lat,lon)=>`${Math.abs(lat).toFixed(1).replace(".",EN()?".":",")}° ${lat>=0?"N":"S"}, ${Math.abs(lon).toFixed(1).replace(".",EN()?".":",")}° ${lon>=0?"E":(EN()?"W":"O")}`;
-const nf=n=>Math.round(n).toLocaleString(EN()?"en-GB":"es-ES");
+const nf=n=>(typeof fk==="function"?fk(n):Math.round(n).toLocaleString(EN()?"en-GB":"es-ES"));
 function nextPass(id){try{const now=Date.now();return (ACRACB_sats.passes||[]).find(p=>p.s&&p.s.id===id&&p.los>now)||null}catch(e){return null}}
 /* 2.7.4: icono propio para la EEI y para cada satélite; al tocarlo se abre su ficha, como con las estaciones */
 const hear0=p=>d3.geoDistance(me(),[p.lon,p.lat])/R<foot(p.h);

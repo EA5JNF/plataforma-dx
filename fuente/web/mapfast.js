@@ -53,3 +53,45 @@ function boot(){all();addEventListener("resize",later,{passive:true});
   document.addEventListener("click",()=>setTimeout(later,60),true)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
+
+/* ---- 2.8.23: «Ver en el mapa» desde una estación o un destino ----
+   Va al mapa, encuadra con zoom tu QTH y la estación, traza la ruta entre los dos y marca la estación.
+   No abre la tarjeta de información: quien pulsa ya viene de verla. */
+(function(){
+"use strict";
+let FOC=null,hooked=false;
+function posFor(call,t){try{if(call){const C=String(call).toUpperCase();
+    const s=(L.spots||[]).find(x=>String(x.call||"").toUpperCase()===C&&Array.isArray(x.dx)&&x.dx.length===2&&x.dx[0]!=null);if(s)return s.dx;
+    const d=(L.dx||[]).find(x=>String(x.call||"").toUpperCase().split(/[ ,]+/).includes(C)&&isFinite(x.lon)&&isFinite(x.lat));if(d)return [d.lon,d.lat];
+    const a=window.ACRACB_areaPos&&ACRACB_areaPos(C);if(a&&a.length===2)return a}}catch(e){}
+  if(t&&isFinite(t.lon)&&isFinite(t.lat))return [t.lon,t.lat];return null}
+function proj(){const el=document.getElementById("map");if(!el||typeof d3==="undefined")return null;
+  const vb=(el.getAttribute("viewBox")||"0 0 900 900").trim().split(/\s+/).map(Number),W=vb[2]||900,H=vb[3]||900;
+  return {W,H,pr:d3.geoAzimuthalEquidistant().rotate([-TXP[0],-TXP[1]]).fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)}}
+function sizes(){if(!ZROOT)return;const k=(ZT&&ZT.k)||1;ZROOT.selectAll("g.mfocus .mfdot").attr("r",7/k);ZROOT.selectAll("g.mfocus .mfpulse").attr("r",16/k);
+  ZROOT.selectAll("g.mfocus .mflbl").attr("font-size",14/k).attr("stroke-width",4/k).each(function(){const t=d3.select(this);t.attr("x",+t.attr("data-x")+10/k).attr("y",+t.attr("data-y")-10/k)})}
+function draw(zoom){if(!FOC||typeof ZROOT==="undefined"||!ZROOT)return;const P=proj();if(!P)return;const {pr,W,H}=P,path=d3.geoPath(pr),line={type:"LineString",coordinates:[TXP,FOC.p]};
+  ZROOT.selectAll("g.mfocus").remove();const g=ZROOT.append("g").attr("class","mfocus");
+  g.append("path").attr("class","mfroute").attr("d",path(line));const b=pr(FOC.p);if(!b)return;
+  g.append("circle").attr("class","mfpulse").attr("cx",b[0]).attr("cy",b[1]).attr("r",16);
+  g.append("circle").attr("class","mfdot").attr("cx",b[0]).attr("cy",b[1]).attr("r",7);
+  if(FOC.lbl)g.append("text").attr("class","mflbl").attr("data-x",b[0]).attr("data-y",b[1]).attr("x",b[0]+10).attr("y",b[1]-10).text(FOC.lbl);
+  if(ZM&&!hooked){hooked=true;ZM.on("zoom.mfocus",sizes)}
+  sizes();
+  if(zoom&&ZM&&ZSVG){const bb=path.bounds(line),x0=bb[0][0],y0=bb[0][1],x1=bb[1][0],y1=bb[1][1];
+    const dx=Math.max(60,x1-x0),dy=Math.max(60,y1-y0),k=Math.max(1,Math.min(10,.72*Math.min(W/dx,H/dy))),cx=(x0+x1)/2,cy=(y0+y1)/2;
+    const tr=d3.zoomIdentity.translate(W/2-k*cx,H/2-k*cy).scale(k);
+    const red=matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;(red?ZSVG:ZSVG.transition().duration(600)).call(ZM.transform,tr)}}
+window.ACRACB_mapFocus=function(o){try{const t=o&&o.id?T(o.id):null,p=(o&&o.p)||posFor(o&&o.call,t);if(!p)return false;
+    FOC={p,lbl:(o&&o.call)||(t?String(t.name).split(" (")[0]:"")};
+    st.pop=null;const mp=document.getElementById("mpop");if(mp)mp.hidden=true;try{if(typeof closeCall==="function")closeCall()}catch(e){}
+    if(!st.mapOn)st.mapOn=true;
+    if(st.page!=="mapa")go("mapa");
+    let n=0;const tryDraw=()=>{n++;if(typeof ZROOT!=="undefined"&&ZROOT&&document.getElementById("map")&&document.getElementById("map").querySelector("g.zroot"))draw(true);else if(n<30)setTimeout(tryDraw,100)};setTimeout(tryDraw,150);return true}
+  catch(e){console.error(e);return false}};
+/* el mapa se redibuja a menudo: la ruta se vuelve a poner sola; se quita al dejar la página del mapa */
+function watch(){const el=document.getElementById("map");if(!el)return setTimeout(watch,500);
+  new MutationObserver(()=>{if(FOC&&!el.querySelector("g.mfocus"))setTimeout(()=>draw(false),0)}).observe(el,{childList:true});
+  setInterval(()=>{if(FOC&&st.page!=="mapa")FOC=null},2000)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",watch);else watch();
+})();
