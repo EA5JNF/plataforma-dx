@@ -300,9 +300,14 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
     if(g.skim&&[...g.srcs].every(x=>x==="RBN"||x==="PSK Reporter"))note.push(g.srcs.has("RBN")?"oído por skimmer (RBN)":"decodificado (PSK Reporter)");
-    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,_t:+g.t});
+    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,utc:iso(g.t),_t:+g.t});
     if(nw)nn++;if(ns>1)cf++}
-  spots.sort((a,b)=>b._t-a._t);const keep=spots.filter(s=>s.nw||s.band>=10);spots=keep.concat(spots.filter(s=>!keep.includes(s))).slice(0,100).sort((a,b)=>b._t-a._t);
+  /* 2.8.33: los spots aún vigentes de la actualización anterior se conservan aunque esta vez no los traiga ninguna fuente
+     (una fuente que no responde ya no hace desaparecer estaciones del mapa), y el tope se aplica por antigüedad: antes se
+     daba prioridad a los «nuevos» y los demás salían y volvían a entrar en cada actualización */
+  const got=new Set(spots.map(x=>x.call+"|"+Math.round(parseFloat(x.f)*500)));
+  for(const [k,p] of pm){if(got.has(k)||!p.utc)continue;const tt=ptime(p.utc);if(!tt)continue;const age=(t0-tt)/6e4;if(age<0||age>(p.band>=10?120:60))continue;spots.push(Object.assign({},p,{nw:false,_t:+tt}))}
+  spots.sort((a,b)=>b._t-a._t);spots=spots.slice(0,150);
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);
   const heard=new Map();(prev.heard||[]).forEach(h=>{const l=ptime(h.last);if(l&&t0-l<=6*36e5)heard.set(h.dxcc,Object.assign({},h))});
   for(const [e,call,b,m,tt,src] of heardRaw){let h=heard.get(e.dxcc);if(!h){h={dxcc:e.dxcc,ent:e.name,calls:[],b:[],m:[],n:0,last:iso(tt),src:[],pos:e.pos};heard.set(e.dxcc,h)}

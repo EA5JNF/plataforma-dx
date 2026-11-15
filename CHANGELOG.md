@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.33 · 15/11/2026
+- Clúster y mapa: las estaciones ya no desaparecen y vuelven a aparecer entre actualizaciones. Pasaba por dos motivos: si en una actualización alguna fuente no respondía, sus spots se perdían hasta la siguiente; y al llegar al tope de 100 spots se daba prioridad a los «nuevos», de modo que los demás salían y volvían a entrar. Ahora se conservan los spots que siguen vigentes (60 minutos en HF y 2 horas en VHF) aunque esa vez no lleguen, y el tope (150) se aplica por antigüedad.
+- En español e inglés. / Cluster stations no longer vanish and reappear between updates.
+
 ## 2.8.32 · 15/11/2026
 - Mapa: la etiqueta «ISS», los nombres de los satélites y sus iconos ya no cambian de tamaño solos. Con zoom se encogían dos veces o ninguna según cuándo se hubieran redibujado (la etiqueta pasaba de 15 a 52 píxeles al ampliar). Ahora siguen la misma escala que el resto de marcas del mapa y se recolocan al terminar el gesto de zoom.
 - En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / ISS and satellite labels and icons no longer change size on their own.
