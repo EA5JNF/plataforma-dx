@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.28 · 15/11/2026
+- Menú principal y submenús con tamaños uniformes:
+  - Todos los botones del menú principal miden lo mismo.
+  - Todas las pestañas de todos los submenús miden lo mismo entre sí, más pequeñas que el menú.
+  - Si en una pantalla estrecha no caben, se reduce primero el margen interior y después la fila se desplaza de lado, siempre con los botones iguales. Se recalcula al cambiar de sección, de tamaño de letra, de vista o de ventana.
+- Pestañas con nombre más corto para que ninguna desentone: «6 m · 2 m · 70 cm» pasa a «V-UHF» y «Fuentes y aviso legal» a «Créditos».
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Main menu buttons all share one width, and all sub-menu tabs share one smaller width.
+
 ## 2.8.27 · 15/11/2026
 - «Ficha completa» desde el mapa a pantalla completa ya no deja la plataforma bloqueada: al salir del mapa hacia cualquier otra sección, la pantalla completa se cierra primero. Antes el navegador seguía en pantalla completa sobre un mapa oculto y no se podía desplazar la página.
 - 2 m y 70 cm: el alcance troposférico salía «unos 1 km» y las probabilidades no se calculaban, por un dato de ruido que faltaba. Ahora el balance de enlace cuenta el ruido del entorno de la otra estación (ITU-R P.372), no repite el ajuste del modo y usa una pérdida más allá del horizonte más realista (20 dB al pasarlo y 0,13 dB/km en 2 m o 0,17 dB/km en 70 cm). Con 100 W en SSB y una directiva sale un alcance normal de unos 350 km en 2 m.

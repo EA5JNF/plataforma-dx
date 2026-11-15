@@ -205,3 +205,30 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
     for(const f of window.ACRACB_afterDraw){try{f()}catch(e){console.error(e)}}}finally{busy=false}};
   const w=function(){const ev=window.event;if(inClick||(ev&&(ev.type==="click"||ev.type==="change"||ev.type==="input"))){if(!pend)pend=requestAnimationFrame(()=>{pend=0;run()});return}run()};
   w.__core=w.__fast=w.__iss=w.__fino=w.__ok=w.__pure=1;window.drawMap=w})();
+/* ---- 2.8.28: menú principal y pestañas de los submenús del mismo ancho ----
+   Todos los botones del menú principal miden lo mismo (el del texto más largo), y todas las pestañas de todos
+   los submenús miden lo mismo entre sí (más pequeñas que el menú). Las pestañas de secciones ocultas se miden
+   en una copia invisible. Si no caben, se recorta el margen interior (hasta 8 px por lado) antes de desplazar.
+   Se recalcula al cambiar de sección, de tamaño de letra, de vista o de ventana; solo escribe si cambia. */
+(function(){
+  if(window.__hkEq)return;window.__hkEq=1;
+  const vis=b=>!b.hidden&&b.style.display!=="none";
+  function natural(texts,cls){const probe=document.createElement("div");probe.className=cls+" eqm";probe.setAttribute("aria-hidden","true");
+    probe.style.cssText="position:absolute;left:-99999px;top:0;visibility:hidden;width:max-content;max-width:none;pointer-events:none";
+    probe.innerHTML=texts.map(t=>`<button type="button" tabindex="-1">${t}</button>`).join("");document.body.appendChild(probe);
+    let w=0,tx=0;probe.querySelectorAll("button").forEach(b=>{const r=b.getBoundingClientRect().width,cs=getComputedStyle(b);w=Math.max(w,r);tx=Math.max(tx,r-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight))});probe.remove();return {w,tx}}
+  function apply(rows,m,avail,n){let w=m.w;if(w*n>avail)w=Math.max(Math.floor(avail/n),m.tx+16);const px=Math.ceil(w)+"px";
+    rows.forEach(r=>{if(r.style.getPropertyValue("--eqw")!==px)r.style.setProperty("--eqw",px);r.classList.add("eqw")})}
+  function all(){const nav=document.querySelector(".nav");if(!nav)return;const av=nav.clientWidth;if(!av)return;
+    const nb=[...nav.querySelectorAll(":scope > button")].filter(vis);
+    if(nb.length)apply([nav],natural(nb.map(b=>b.innerHTML),"nav"),av,nb.length);
+    const rows=[...document.querySelectorAll(".ptabs")];const tb=rows.flatMap(r=>[...r.querySelectorAll(":scope > button")].filter(vis));
+    if(tb.length){const most=Math.max(...rows.map(r=>[...r.querySelectorAll(":scope > button")].filter(vis).length));apply(rows,natural(tb.map(b=>b.innerHTML),"ptabs"),av-8,most)}}
+  let q=0;function later(){if(q)return;q=requestAnimationFrame(()=>{q=0;all()})}
+  window.ACRACB_eqTabs=all;
+  document.addEventListener("click",()=>{later();setTimeout(all,350)},true);
+  window.addEventListener("resize",later);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(later);
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",later);else later();
+  window.addEventListener("load",later);setTimeout(all,1500);
+})();

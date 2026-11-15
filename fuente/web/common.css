@@ -1036,3 +1036,9 @@ html.bigt .chip .v{overflow-wrap:anywhere}
 .updb.run .ic{background:color-mix(in srgb,var(--accent) 15%,transparent)!important}
 :root[data-theme="light"] .updb:not(.run){color:#fff!important}
 :root[data-theme="light"] .updb:not(.run) .ic{background:rgba(255,255,255,.18)!important}
+/* 2.8.28: menú y pestañas de cada submenú, todos del mismo ancho (el del texto más largo de su fila) */
+.nav.eqw button,.ptabs.eqw button{flex:1 0 var(--eqw)!important;min-width:var(--eqw)!important;text-align:center;justify-content:center}
+.nav.eqw button,.ptabs.eqw button{padding-left:6px!important;padding-right:6px!important}
+.ptabs.eqw button{flex-grow:0!important}
+.ptabs.eqw{width:max-content!important;max-width:100%!important}
+.nav.eqm button,.ptabs.eqm button{flex:0 0 auto!important;min-width:0!important;width:auto!important}
