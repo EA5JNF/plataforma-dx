@@ -4,7 +4,7 @@
 (function(){
 "use strict";
 const pure=f=>{const w=function(){const on=typeof st!=="undefined"&&st.ly&&st.ly.voa;if(on)window.ACRACB_NOLIVE=true;try{return f.apply(this,arguments)}finally{if(on)window.ACRACB_NOLIVE=false}};w.__pure=1;return w};
-function hook(){let ok=true;for(const n of ["drawMap","renderPop"]){const f=window[n];if(typeof f!=="function"){ok=false;continue}if(!f.__pure&&!f.__fast)window[n]=pure(f)}return ok}
+function hook(){const f=window.renderPop;if(typeof f!=="function")return false;if(window.__hkPurePop)return true;window.__hkPurePop=1;window.renderPop=pure(f);return true}
 let n=0;const t=setInterval(()=>{if(hook()||++n>40)clearInterval(t)},50);
 })();
 
@@ -15,7 +15,7 @@ let n=0;const t=setInterval(()=>{if(hook()||++n>40)clearInterval(t)},50);
 "use strict";
 let inClick=false,pend=0,args=null;
 document.addEventListener("click",e=>{const t=e.target;if(t&&t.closest&&t.closest('section[data-pg="mapa"]')&&!t.closest("#map")){inClick=true;setTimeout(()=>{inClick=false},0)}},true);
-function hook(){const d=window.drawMap;if(typeof d!=="function")return false;if(d.__fast)return true;
+function hook(){return true;const d=window.drawMap;if(typeof d!=="function")return false;if(d.__fast)return true;
   const w=function(){if(!inClick)return d.apply(this,arguments);args=arguments;if(pend)return;
     pend=requestAnimationFrame(()=>setTimeout(()=>{pend=0;const a=args;args=null;try{d.apply(null,a||[])}catch(e){console.error(e)}},0))};
   w.__fast=1;window.drawMap=w;return true}

@@ -50,7 +50,7 @@ function satHTML(id){const sd=SATS().find(x=>x.id===id)||{id,n:"ISS"},r=REC.get(
   return h}
 /* 2.7.6: la ficha sale en la ventana pequeña del mapa, como la de las estaciones */
 function openSat(id){if(!REC.get(id))return;if(typeof st!=="undefined"&&typeof renderPop==="function"&&document.getElementById("mpop")){st.pop={k:"sat",id};renderPop();return}}
-(function(){let n=0;const t=setInterval(()=>{if(typeof renderPop==="function"&&!renderPop.__sat){const o=renderPop;const w=function(){try{if(typeof st!=="undefined"&&st.pop&&st.pop.k==="sat"){const el=document.getElementById("mpop");const h=satHTML(st.pop.id);if(!h){closePop();return}
+(function(){let n=0;const t=setInterval(()=>{if(typeof renderPop==="function"&&!window.__hkSatPop){window.__hkSatPop=1;const o=renderPop;const w=function(){try{if(typeof st!=="undefined"&&st.pop&&st.pop.k==="sat"){const el=document.getElementById("mpop");const h=satHTML(st.pop.id);if(!h){closePop();return}
       el.innerHTML=`<button class="x" aria-label="${T("Cerrar","Close")}" id="mpx">×</button>`+h;el.hidden=false;document.getElementById("mpx").onclick=closePop;
       const g=el.querySelector("[data-satgo]");if(g)g.onclick=()=>{closePop();try{go("dx");selTab("dx","f_sat",true)}catch(e){}};return}}catch(e){}return o.apply(this,arguments)};
     w.__sat=1;try{renderPop=w}catch(e){window.renderPop=w}clearInterval(t)}else if(++n>100)clearInterval(t)},100)})();
@@ -92,7 +92,7 @@ function note(){let n=document.getElementById("issnote");if(!(onISS()||onSats())
       <dt>${T("Próximos","Next")}</dt><dd>${off.length?off.map(x=>`<button type="button" class="lnk snb" data-satp="${x.s.id}">${e2(x.s.n)}</button> ${loc(x.np.aos)} (${T("máx.","max")} ${Math.round(x.np.max)}°)`).join("<br>"):"—"}</dd></dl>
       <p class="note">${T("Toca la EEI o un satélite en el mapa, o su nombre aquí, para ver su ficha. Los que oyes ahora van resaltados con su zona de cobertura.","Tap the ISS or a satellite on the map, or its name here, to see its details. Those in range are highlighted with their footprint.")}</p></div>`}
   if(n.innerHTML!==h)n.innerHTML=h}
-function hook(){const o=window.drawMap;if(typeof o!=="function"||o.__iss)return false;const w=function(){const r=o.apply(this,arguments);try{draw()}catch(e){}return r};w.__iss=1;window.drawMap=w;return true}
+function hook(){if(window.__hkIss)return true;window.__hkIss=1;window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(()=>draw());return true}
 function btns(){const sw=document.getElementById("mapsw");if(!sw)return false;if(typeof satellite==="undefined")return true;
   const mk=(ly,txt,tt)=>{if(sw.querySelector(`[data-ly="${ly}"]`))return;const b=document.createElement("button");b.type="button";b.id="mly"+ly;b.dataset.ly=ly;b.textContent=txt;b.title=tt;b.setAttribute("aria-pressed",String(!!(st.ly&&st.ly[ly])));
     b.onclick=ev=>{ev.stopPropagation();st.ly[ly]=!st.ly[ly];b.setAttribute("aria-pressed",String(!!st.ly[ly]));try{store.set("ly",JSON.stringify(st.ly))}catch(e){}try{draw()}catch(e){}};sw.appendChild(b)};

@@ -152,9 +152,9 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   mo=new MutationObserver(ms=>{if(busy)return;if(ms.some(m=>m.type==="characterData"||(m.type==="childList"&&m.target.nodeName==="text")))later()});
   mo.observe(svg,{childList:true,subtree:true,characterData:true})}
  function hook(){if(typeof drawMap!=="function"||typeof zoomMarks!=="function"){setTimeout(hook,200);return}
-  const d0=drawMap,z0=zoomMarks;
-  window.drawMap=function(){const r=d0.apply(this,arguments);try{run()}catch(e){}return r};
-  window.zoomMarks=function(){const r=z0.apply(this,arguments);try{run()}catch(e){}return r};
+  const z0=zoomMarks;window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(()=>run());
+  /* durante el zoom, una sola vez al terminar el gesto (antes en cada fotograma del gesto) */
+  window.zoomMarks=function(){const r=z0.apply(this,arguments);later();return r};
   window.addEventListener("resize",later);watch();later()}
  hook()})();
 
@@ -189,3 +189,17 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
   b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply();try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}};
   z.parentElement.insertBefore(b,z);apply();return true}
  (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
+
+/* ---- 2.8.26: un solo envoltorio para el dibujo del mapa ----
+   Antes cada añadido del mapa envolvía drawMap y, si otro lo envolvía después, volvía a envolverlo: en un minuto se
+   apilaban decenas de capas y cada redibujado repetía el relieve fino, los satélites y las etiquetas decenas de veces.
+   Ahora hay un único envoltorio, puesto una vez: dibuja el mapa (con la capa VOACAP pura cuando toca), después ejecuta
+   en orden los añadidos registrados en ACRACB_afterDraw y, si el dibujo viene de un clic, lo agrupa en el siguiente fotograma. */
+window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
+(function core(){if(typeof drawMap!=="function"){setTimeout(core,30);return}if(window.__hkCore)return;window.__hkCore=1;
+  const base=drawMap;let inClick=false,pend=0,busy=false;
+  document.addEventListener("click",e=>{const t=e.target;if(t&&t.closest&&t.closest('section[data-pg="mapa"]')&&!t.closest("#map")){inClick=true;setTimeout(()=>{inClick=false},0)}},true);
+  const run=()=>{if(busy)return;busy=true;try{const on=typeof st!=="undefined"&&st.ly&&st.ly.voa;if(on)window.ACRACB_NOLIVE=true;try{base()}finally{if(on)window.ACRACB_NOLIVE=false}
+    for(const f of window.ACRACB_afterDraw){try{f()}catch(e){console.error(e)}}}finally{busy=false}};
+  const w=function(){const ev=window.event;if(inClick||(ev&&(ev.type==="click"||ev.type==="change"||ev.type==="input"))){if(!pend)pend=requestAnimationFrame(()=>{pend=0;run()});return}run()};
+  w.__core=w.__fast=w.__iss=w.__fino=w.__ok=w.__pure=1;window.drawMap=w})();

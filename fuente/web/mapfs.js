@@ -20,7 +20,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
    varios seguidos, se redibuja una sola vez. Fuera de los clics, el mapa se dibuja igual que siempre. */
 (function(){
 "use strict";
-function wrap(){const o=window.drawMap;if(typeof o!=="function")return false;if(o.__ok)return true;
+function wrap(){return true;const o=window.drawMap;if(typeof o!=="function")return false;if(o.__ok)return true;
   if(!(window.ACRACB_mapfino&&window.ACRACB_iss)||!(o.__iss||o.__fino))return false;/* espera a que estén puestos los demás añadidos del mapa */
   let pend=false;const w=function(){const ev=window.event;if(ev&&(ev.type==="click"||ev.type==="change"||ev.type==="input")){if(!pend){pend=true;requestAnimationFrame(()=>{pend=false;try{o()}catch(e){}})}return}return o.apply(this,arguments)};
   w.__ok=1;w.__iss=1;w.__fino=1;window.drawMap=w;return true}

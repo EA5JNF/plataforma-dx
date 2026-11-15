@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.26 · 15/11/2026
+- El mapa ya no se traba. Cada añadido del mapa (relieve fino, ISS y satélites, etiquetas, pantalla completa, botones rápidos) envolvía el dibujo y, si otro lo envolvía después, volvía a envolverlo: en un minuto se apilaban decenas de capas y cada redibujado repetía el relieve fino, los satélites y las etiquetas decenas de veces. Ahora hay un único envoltorio que dibuja el mapa una vez y después cada añadido, en orden. Las etiquetas se recolocan al terminar el gesto de zoom, no en cada fotograma. Con todas las capas encendidas, cada dibujo tarda unos 30 ms en un móvil.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / The map no longer freezes: one single drawing wrapper instead of dozens stacked.
+
 ## 2.8.25 · 15/11/2026
 - «Método» pasa a llamarse «Cómo funciona».
 - Ahora › Bandas usa el mismo criterio que «Hora a hora»:

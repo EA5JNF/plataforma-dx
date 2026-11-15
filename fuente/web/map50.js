@@ -38,7 +38,7 @@ function later(){clearTimeout(tm);tm=setTimeout(()=>{redraw();halo()},90)}
    de la vista anterior. Ahora se engancha también desde el propio dibujo del mapa y, por si un gesto no termina limpio,
    se recalcula igualmente un poco después del último movimiento. */
 function hookZ(){if(typeof ZM==="undefined"||!ZM)return false;if(!ZM.on("end.fino"))ZM.on("end.fino",later);if(!ZM.on("zoom.fino"))ZM.on("zoom.fino",()=>{clearTimeout(tm);tm=setTimeout(()=>{redraw();halo()},260)});return true}
-function hookD(){const o=window.drawMap;if(typeof o!=="function"||o.__fino)return false;const w=function(){const r=o.apply(this,arguments);try{hookZ()}catch(e){}try{redraw()}catch(e){}return r};w.__fino=1;window.drawMap=w;return true}
+function hookD(){if(window.__hkFino)return true;window.__hkFino=1;window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(()=>{try{hookZ()}catch(e){}redraw()});return true}
 function boot(){let n=0;const t=setInterval(()=>{const a=hookZ(),b=hookD();if((a&&b)||++n>300)clearInterval(t)},300)}
 window.ACRACB_mapfino={redraw};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
