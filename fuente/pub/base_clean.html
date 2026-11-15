@@ -1387,10 +1387,10 @@ function bcnNow(){const n=new Date(),s=(n.getUTCMinutes()*60+n.getUTCSeconds())%
 let GEO=null,PR=null;
 /* ---------- zoom del mapa ---------- */
 let ZM=null,ZT=typeof d3!=="undefined"?d3.zoomIdentity:{k:1},ZROOT=null,ZSVG=null;
-function zoomMarks(k){if(!ZROOT)return;const s=Math.pow(k,.75);
-  ZROOT.selectAll("circle").each(function(){if(this.dataset.r===undefined)this.dataset.r=this.getAttribute("r");this.setAttribute("r",this.dataset.r/s)});
-  ZROOT.selectAll("text").each(function(){const x=this.dataset.ax!==undefined?+this.dataset.ax:+this.getAttribute("x"),y=this.dataset.ay!==undefined?+this.dataset.ay:+this.getAttribute("y");this.setAttribute("transform",k>1.01?`translate(${x},${y}) scale(${1/s}) translate(${-x},${-y})`:"")});
-  ZROOT.selectAll("rect").each(function(){const x=+this.getAttribute("x")+5,y=+this.getAttribute("y")+5;const b=this.dataset.t===undefined?(this.dataset.t=this.getAttribute("transform")||""):this.dataset.t;this.setAttribute("transform",(k>1.01?`translate(${x},${y}) scale(${1/s}) translate(${-x},${-y}) `:"")+b)})}
+function zoomMarks(k){if(!ZROOT)return;const s=Math.pow(k,.75);if(document.getElementById("issg")&&window.ACRACB_iss){try{ACRACB_iss.draw()}catch(e){}}
+  ZROOT.selectAll("circle").each(function(){if(this.closest("#issg"))return;if(this.dataset.r===undefined)this.dataset.r=this.getAttribute("r");this.setAttribute("r",this.dataset.r/s)});
+  ZROOT.selectAll("text").each(function(){if(this.closest("#issg"))return;const x=this.dataset.ax!==undefined?+this.dataset.ax:+this.getAttribute("x"),y=this.dataset.ay!==undefined?+this.dataset.ay:+this.getAttribute("y");this.setAttribute("transform",k>1.01?`translate(${x},${y}) scale(${1/s}) translate(${-x},${-y})`:"")});
+  ZROOT.selectAll("rect").each(function(){if(this.closest("#issg"))return;const x=+this.getAttribute("x")+5,y=+this.getAttribute("y")+5;const b=this.dataset.t===undefined?(this.dataset.t=this.getAttribute("transform")||""):this.dataset.t;this.setAttribute("transform",(k>1.01?`translate(${x},${y}) scale(${1/s}) translate(${-x},${-y}) `:"")+b)})}
 /* ---------- nombres del mapa: países, capitales y entidades DXCC, según el zoom y sin solaparse ---------- */
 let GL=null,GLN=[],GLraf=0,GLG=null,BASEC=null,GLC=null;const svgPx=(el,W)=>{let m=null;try{m=el.getScreenCTM()}catch(e){}return Math.max(.3,m&&m.a?m.a:(el.clientWidth||W)/W)};const GLg=()=>GL||(GL=(()=>{try{return JSON.parse(document.getElementById("geolbl").textContent)}catch(e){return {c:[],k:[],e:[]}}})());
 function drawGeoLabels(Z,pr,W){GLN=[];GLG=null;if(!st.ly.labels)return;const svgEl=$("map");const px=svgPx(svgEl,W);

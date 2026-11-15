@@ -55,6 +55,9 @@ function openSat(id){if(!REC.get(id))return;if(typeof st!=="undefined"&&typeof r
       const g=el.querySelector("[data-satgo]");if(g)g.onclick=()=>{closePop();try{go("dx");selTab("dx","f_sat",true)}catch(e){}};return}}catch(e){}return o.apply(this,arguments)};
     w.__sat=1;try{renderPop=w}catch(e){window.renderPop=w}clearInterval(t)}else if(++n>100)clearInterval(t)},100)})();
 function closeSat(){const ov=document.getElementById("satpop");if(ov&&!ov.hidden){ov.hidden=true;document.body.classList.remove("noscroll")}}
+/* 2.8.32: las etiquetas de la ISS y de los satélites se escalan aquí con el zoom (el resto del mapa lo hace zoomMarks, que ya no las toca):
+   antes se escalaban dos veces y cambiaban de tamaño cada vez que se redibujaban */
+function lbl(g,cls,x,y,txt,k,s){const t=g.append("text").attr("class",cls).attr("x",x).attr("y",y).attr("paint-order","stroke").text(txt);if(k>1.01)t.attr("transform",`translate(${x},${y}) scale(${1/s}) translate(${-x},${-y})`);return t}
 function draw(){const old=document.getElementById("issg");if(old)old.remove();note();if(!(onISS()||onSats())||typeof ZROOT==="undefined"||!ZROOT||typeof PR==="undefined"||!PR)return;
   if(!REC.size){load().then(()=>{if(REC.size)draw()});return}
   const now=Date.now(),path=d3.geoPath(PR),k=(typeof ZT!=="undefined"&&ZT&&ZT.k)||1,s=Math.pow(k,.75);
@@ -63,14 +66,14 @@ function draw(){const old=document.getElementById("issg");if(old)old.remove();no
     const hear=d3.geoDistance(me(),[p.lon,p.lat])/R<foot(p.h);
     if(hear)g.append("path").attr("class","satfoot").attr("d",path(d3.geoCircle().center([p.lon,p.lat]).radius(foot(p.h)).precision(2)()));
     icon(g,q,s,sd.id,false,hear);
-    g.append("text").attr("class","satlbl"+(hear?" on":"")).attr("x",q[0]+11/s).attr("y",q[1]+4/s).attr("paint-order","stroke").text(sd.n)});
+    lbl(g,"satlbl"+(hear?" on":""),q[0]+11/s,q[1]+4/s,sd.n,k,s)});
   if(onISS()){const r=REC.get(25544);const p=r&&at(r,now);if(p){const f=foot(p.h);
     g.append("path").attr("class","issfoot").attr("d",path(d3.geoCircle().center([p.lon,p.lat]).radius(f).precision(2)()));
     const past=track(r,now-45*6e4,now),next=track(r,now,now+95*6e4);
     if(past.length>1)g.append("path").attr("class","isspast").attr("d",path({type:"LineString",coordinates:past}));
     if(next.length>1)g.append("path").attr("class","issnext").attr("d",path({type:"LineString",coordinates:next}));
     const q=PR([p.lon,p.lat]);if(q){icon(g,q,s,25544,true,hear0(p));
-      g.append("text").attr("class","isslbl").attr("x",q[0]+15/s).attr("y",q[1]+4/s).attr("paint-order","stroke").text("ISS")}}}
+      lbl(g,"isslbl",q[0]+15/s,q[1]+4/s,"ISS",k,s)}}}
   note()}
 /* panel de datos bajo la leyenda */
 function note(){let n=document.getElementById("issnote");if(!(onISS()||onSats())){if(n)n.remove();return}

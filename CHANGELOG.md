@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.32 · 15/11/2026
+- Mapa: la etiqueta «ISS», los nombres de los satélites y sus iconos ya no cambian de tamaño solos. Con zoom se encogían dos veces o ninguna según cuándo se hubieran redibujado (la etiqueta pasaba de 15 a 52 píxeles al ampliar). Ahora siguen la misma escala que el resto de marcas del mapa y se recolocan al terminar el gesto de zoom.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / ISS and satellite labels and icons no longer change size on their own.
+
 ## 2.8.31 · 15/11/2026
 - Optimización general, sin cambiar nada de lo que se ve ni de las cifras (comprobado: las 248.976 probabilidades de todos los destinos, horas y bandas salen idénticas):
   - Cálculo de la previsión el doble de rápido: la caché de probabilidades usa claves numéricas y los valores que solo cambian cada minuto (modo, antenas, parámetros, Kp por hora, antena por banda) se guardan sin buscarlos en cada una de cientos de miles de llamadas. Recalcular todo el día pasa de 340 a 140 ms.
