@@ -34,7 +34,7 @@ const mostCommon=a=>{const v=a.filter(Boolean);if(!v.length)return null;const c=
 const r0=x=>x==null?null:Math.round(x),r1=x=>x==null?null:Math.round(x*10)/10;
 const pick=(o,...k)=>{for(const x of k)if(o&&o[x]!=null&&o[x]!=="")return o[x];return null};
 const iso=t=>new Date(t).toISOString().replace(/\.\d{3}Z$/,"Z");
-const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],DIA=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],DC=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],DIA=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],DC=window.ACRACB_LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const MESN={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
 const esn=(x,d)=>x==null?"—":x.toFixed(d||0).replace(".",",");
 const joinEs=a=>{a=a.filter(Boolean);return a.length<2?(a[0]||""):a.slice(0,-1).join(", ")+" y "+a[a.length-1]};

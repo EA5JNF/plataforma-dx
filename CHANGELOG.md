@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.24 · 15/11/2026
+- Versión inglesa traducida por completo:
+  - Los textos que el servidor escribe en español se traducen al cargar los datos: resúmenes del Sol, del Kp y de la previsión, estaciones cercanas, VHF, notas de los spots, CME, protones, aurora, avisos y fuentes del clúster.
+  - Información de las DXpediciones: lo que no se puede traducir con frases fijas se rehace en inglés con sus datos (fecha de fin, bandas y modos).
+  - Fechas («Nov 20»), días de la semana de la previsión de Kp y nombres de entidades y países, siempre en inglés.
+  - «Método»: la frase del valor central, completa en inglés.
+- La versión española no cambia.
+- En todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / English version fully translated, including server-generated texts, DXpedition info, dates, weekdays and entity names.
+
 ## 2.8.23 · 15/11/2026
 - «Ver en el mapa» desde la ficha de un indicativo, de un destino o del Resumen: va al mapa, encuadra con zoom tu QTH y la estación, traza la ruta entre los dos y marca la estación, sin abrir la tarjeta de información. La ruta se mantiene aunque el mapa se actualice.
 - Revisión de congruencia de datos en toda la plataforma:

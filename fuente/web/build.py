@@ -32,7 +32,7 @@ R('function drawMap(){setTimeout(()=>{try{foldSums()}catch(e){}},0);','function 
 R('h.textContent="Clúster del planeta · "+CMSTXT()+(HB()!=null?" · "+BANDS[HB()]:"")+(mc!=null?` · revisado hace ${mc} min`:"")+(L.spotsNew!=null?` · ${L.spotsNew} nuevos`:"")+(m!=null?` · último spot hace ${m} min`:"")','{const E=window.ACRACB_LANG==="en",fr=mc!=null&&mc<=3,dot=`<i class="cld ${mc==null?"":fr?"ok":"old"}" title="${mc==null?"":E?`checked ${mc} min ago`:`revisado hace ${mc} min`}"></i>`;const bits=[CMSTXT()+(HB()!=null?" · "+BANDS[HB()]:"")];if(mc!=null&&!fr)bits.push(E?`checked ${mc} min ago`:`revisado hace ${mc} min`);if(L.spotsNew!=null)bits.push(E?`${L.spotsNew} new`:`${L.spotsNew} nuevos`);if(m!=null)bits.push(E?`last spot ${m} min ago`:`último spot hace ${m} min`);\n  h.innerHTML=(E?"World cluster":"Clúster del planeta")+`<span class="clst">${dot}${bits.join(" · ")}</span>`}')
 R('<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">','<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><script>/* 2.4.1: ahorro de batería: con la página oculta (otra pestaña, pantalla apagada) los temporizadores de 1 s o más no trabajan */(function(){var si=window.setInterval;window.setInterval=function(f,d){var a=[].slice.call(arguments,2);if(typeof f==="function"&&(+d||0)>=1000){var g=function(){if(document.hidden)return;return f.apply(this,arguments)};return si.apply(window,[g,d].concat(a))}return si.apply(window,arguments)}})();</script>')
 R('la SNR mediana y sus deciles','la SNR media y sus deciles')
-R('(la <b>mediana</b>, o el más repetido si no es un número)','(el <b>valor central</b>, o el más repetido si no es un número)')
+R('(la <b>mediana</b>, o el más repetido si no es un número)','(<b>el valor central</b>, o el más repetido si no es un número)')
 R('VOACAP da <b>medianas del mes</b>','VOACAP da <b>medias del mes</b>')
 R('VOACAP da medianas del mes, centradas','VOACAP da medias del mes, centradas')
 R('la MUF mediana del camino es','la MUF media del camino es')
@@ -161,6 +161,8 @@ R('["Aurora",s.aurora,"",""','["Aurora",window.ACRACB_tx?ACRACB_tx(s.aurora):s.a
 # «Ver en el mapa» desde la ficha de un indicativo o de un destino: ruta y zoom, sin abrir la tarjeta de información
 R('if($("cpmap"))$("cpmap").onclick=()=>{closeCall();go("mapa");openPop({k:"t",id:t.id})};','if($("cpmap"))$("cpmap").onclick=()=>{closeCall();if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({call,id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
 R('$("zmap").onclick=()=>{go("mapa");openPop({k:"t",id:t.id})};','$("zmap").onclick=()=>{if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
+# 2.8.24: en inglés, los nombres de entidad salen en inglés (antes quedaban algunos en español, p. ej. «Rusia asiática»)
+R('function dxName(dx){if(ESN[dx])return ESN[dx];','function dxName(dx){if(window.ACRACB_LANG==="en"){try{const e=DXDg().d[dx];if(e&&e[1])return e[1]}catch(_){}}if(ESN[dx])return ESN[dx];')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
