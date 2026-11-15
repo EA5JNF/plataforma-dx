@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.25 · 15/11/2026
+- «Método» pasa a llamarse «Cómo funciona».
+- Ahora › Bandas usa el mismo criterio que «Hora a hora»:
+  - La columna Plataforma dice qué parte del mundo se oye en cada banda (destinos con al menos un 30 %), con las mismas palabras y colores: cerrada, muy poco, poco, regular, bien, muy bien. Antes daba el mejor destino de la banda y podía decir «abierta 47 %» donde «Hora a hora» decía «muy poco».
+  - El mejor destino de cada banda sigue en «Ver por qué».
+  - La conclusión sale por mayoría de las fuentes: «Abierta» si la mayoría la ve bien y ninguna la da por cerrada, «Floja» si ninguna la da por cerrada pero no hay mayoría, «Cerrada» si casi todas la dan cerrada y «Dudosa» cuando se contradicen. Antes bastaba que HamQSL dijera «floja» para que una banda con 97 %, 15 spots y miles de señales WSPR saliera «Floja».
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / «Method» is now «How it works»; Bands uses the same scale as Hour by hour, and its conclusion is a majority vote of the sources.
+
 ## 2.8.24 · 15/11/2026
 - Versión inglesa traducida por completo:
   - Los textos que el servidor escribe en español se traducen al cargar los datos: resúmenes del Sol, del Kp y de la previsión, estaciones cercanas, VHF, notas de los spots, CME, protones, aurora, avisos y fuentes del clúster.

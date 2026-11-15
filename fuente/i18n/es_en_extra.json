@@ -249,5 +249,16 @@
 "−0,5 a −1 dB": "−0.5 to −1 dB",
 "−10 a −15 dB": "−10 to −15 dB",
 "−1,5": "−1.5",
-"el valor central": "the central value"
+"el valor central": "the central value",
+"Cómo funciona": "How it works",
+"muy poco": "very little",
+"poco": "little",
+"regular": "fair",
+"bien": "good",
+"muy bien": "very good",
+"Cuatro opiniones independientes a las": "Four independent opinions at",
+": la predicción de esta plataforma para tu estación (qué parte del mundo se oye en esa banda, igual que en «Hora a hora»),": ": this platform's prediction for your station (how much of the world that band reaches, the same as in «Hour by hour»),",
+"la predicción de esta plataforma para tu estación (qué parte del mundo se oye en esa banda, igual que en «Hora a hora»),": "this platform's prediction for your station (how much of the world that band reaches, the same as in «Hour by hour»),",
+"La conclusión sale por mayoría: «Abierta» si la mayoría de las fuentes la ve bien y ninguna la da por cerrada, «Floja» si ninguna la da por cerrada pero no hay mayoría clara, «Cerrada» si casi todas la dan cerrada y «Dudosa» cuando se contradicen.": "The conclusion is a majority vote: «Open» if most sources see the band well and none calls it closed, «Weak» if none calls it closed but there is no clear majority, «Closed» if almost all call it closed, and «Doubtful» when they contradict each other.",
+"Mejor destino de cada banda ahora:": "Best destination on each band now:"
 }
