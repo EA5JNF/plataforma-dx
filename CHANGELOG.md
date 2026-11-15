@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.39 · 15/11/2026
+- Revisión de veracidad contra referencias independientes:
+  - Sol: salida, puesta, línea gris y altura con las fórmulas de NOAA (antes una aproximación) y con el cruce del horizonte interpolado (antes se redondeaba a 5 minutos). Comparado con la biblioteca astronómica astral en siete lugares (tu QTH, Tokio, Sídney, Nueva York, Reikiavik, São Paulo y Maputo): error de 0–2 minutos (3–4 en Islandia), antes de hasta 9 minutos. La altura del sol, a 0,2° de la referencia.
+  - Balizas NCDXF: comprobado el horario oficial (qué baliza emite en cada banda cada 10 segundos) y la posición de las 18.
+  - Países: comprobados 230 indicativos y prefijos con el fichero cty.dat, incluidos los portables (F/EA5JNF, EA8/DL1ABC, /P, /QRP, /MM). 36 entidades salían en inglés en la versión española («Crete», «Guantanamo Bay», «Ogasawara Is.»…) y ahora salen en español; la isla Pedro I decía «(Isla Bouvet)» y es de Noruega.
+  - Modos: las frecuencias de PSK31 (14.070, 21.070…) ya no se marcan como SSB.
+  - Distancias y rumbos: comprobados en todas las tarjetas (versión 2.8.38).
+- En español e inglés. / Accuracy review: NOAA sun formulas, beacon schedule, 230 callsigns checked, Spanish entity names, PSK31 frequencies.
+
 ## 2.8.38 · 15/11/2026
 - Distancia y rumbo de un indicativo, siempre desde tu estación hasta esa estación, en toda la plataforma:
   - El cálculo de cada spot (rumbo, distancia, probabilidad y «Por qué») es siempre hacia la estación del indicativo, en el mapa, el clúster, los avisos, «Qué hacer», la búsqueda y la ficha de cada indicativo. Antes, en las estaciones cercanas oídas lejos (YU5R oída en EE. UU.), el porcentaje de algunas tarjetas se calculaba hacia el que la oía.
