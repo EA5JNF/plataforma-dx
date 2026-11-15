@@ -338,5 +338,22 @@
 "indica que": "means",
 "está abierta hacia allí. Para ti, hacia": "is open that way. For you, towards",
 "paso largo": "long path",
-"paso corto": "short path"
+"paso corto": "short path",
+"Que la oigan tan lejos indica que": "Being heard that far away means",
+"está abierta hacia": "is open towards",
+". Para ti, hacia allí:": ". For you, that way:",
+"los spots del clúster de la última hora confirman que ese camino está abierto ahora: la previsión sola daba un": "cluster spots from the last hour confirm that this path is open now: the forecast alone gave",
+"% y con lo que se oye sube a": "% and with what is being heard it rises to",
+"en la última hora apenas se oye nada por ese camino aunque la banda está activa: la previsión sola daba un": "in the last hour almost nothing is heard along this path although the band is active: the forecast alone gave",
+"% y baja a": "% and it drops to",
+"llega en": "it arrives in",
+"un salto": "one hop",
+"km, saliendo a": "km, leaving at",
+"unos": "about",
+"saltos de": "hops of",
+"un salto de": "one hop of",
+"MHz queda justo en la MUF media del camino": "MHz is right at the average MUF of the path",
+"MHz): unos días se refleja y otros no, y cuando abre lo hace con QSB": "MHz): some days it is reflected and others not, and when it opens there is QSB",
+": unos días se refleja y otros no, y cuando abre lo hace con QSB": ": some days it is reflected and others not, and when it opens there is QSB",
+"está abierta entre Europa y": "is open between Europe and"
 }

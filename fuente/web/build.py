@@ -142,7 +142,7 @@ R('const fk=n=>Math.round(n).toLocaleString("es-ES");','const fk=n=>{const v=Mat
 R('.text(km.toLocaleString("es-ES")+" km")','.text(fk(km)+" km")')
 R('a más de ${lim} km','a más de ${fk(lim)} km')
 # En «Por qué», la frecuencia de la banda con tres decimales como en el resto de la web (antes «7.1 MHz»)
-_i=s.index("function explain(t,b,lh,lp){"); _j=s.index("\nfunction ",_i+10); s=s[:_i]+s[_i:_j].replace("${f} MHz","${f.toFixed(3)} MHz")+s[_j:]
+_i=s.index("function explain(t,b,lh,lp,km){"); _j=s.index("\nfunction ",_i+10); s=s[:_i]+s[_i:_j].replace("${f} MHz","${f.toFixed(3)} MHz")+s[_j:]
 # «Qué hacer» › «Lo que dice el clúster»: solo spots de la última hora (antes proponía escuchar spots de hace horas)
 R('const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e);','const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e&&(x.a==null||x.a<=60));')
 # el rumbo de un spot, con las mismas coordenadas que su tarjeta del clúster (antes 148° aquí y 149° allí)

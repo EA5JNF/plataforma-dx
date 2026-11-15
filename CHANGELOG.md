@@ -5,6 +5,16 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.37 · 15/11/2026
+- Mapa › ficha de un spot, rehecha para que todo lo que dice sea de esa estación:
+  - «Para ti», rumbo, distancia y «Por qué» son siempre los de la estación del spot (YU5R: 61° ENE, 1.881 km), también cuando la oye alguien lejos.
+  - Si una estación cercana la oye alguien lejos (YU5R oída en EE. UU.), al final y separado: «Que la oigan tan lejos indica que 20 m está abierta entre Europa y EE. UU. noreste. Para ti, hacia allí: X % (298° ONO · 6.063 km)».
+  - «Por qué» cuenta los saltos con la distancia real de la estación, no con la del centro de su zona de previsión (EI9HX: un salto de 1.766 km, antes «1.460 km»), y dice «un salto» en lugar de «unos 1 salto».
+  - Si la frecuencia queda justo en la MUF media (hasta un 12 % por encima), ya no dice que «no vuelve»: dice que unos días se refleja y otros no.
+  - Si los spots del clúster cambian mucho la cifra de la previsión, lo explica con las dos cifras.
+  - «la ionosonda indica una MUF un 30 % más baja» (antes «un -30 % más baja»).
+- En español e inglés. / Spot details rebuilt: everything refers to the spotted station; the open path to a distant spotter is shown separately.
+
 ## 2.8.36 · 15/11/2026
 - Mapa › ficha de un spot: cuando una estación cercana (Europa) la oye alguien lejos (por ejemplo YU5R oída en EE. UU.), la ficha daba la distancia y el rumbo hacia el que la oye como si fueran los de la estación (6.051 km a 297° para YU5R). Ahora dice primero la distancia y el rumbo reales de la estación y con qué probabilidad te llega, y después, por separado, que el camino hacia donde la oyen está abierto, con su rumbo, distancia y probabilidad. «¿Lo oyes?» se apunta a la estación, no a la zona del que la oye. Lo mismo en la ficha de cada indicativo.
 - Nombres: YU, 9A, LZ, YO, OH, SM, LA, DL, OK, HA, G, EI, UR y EW salían con el nombre de su zona de previsión («Balcanes», «Escandinavia»…) en lugar del país. Ahora sale el país (Serbia, Croacia, Suecia…).
