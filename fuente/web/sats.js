@@ -24,7 +24,7 @@ const TLEURL2="https://www.amsat.org/tle/current/nasabare.txt",MIRROR=(()=>{try{
    copiado dos veces al día en datos/satnogs.json junto a las órbitas */
 let SN=null,snAsk=false;
 function snLoad(){if(snAsk||!MIRROR)return;snAsk=true;fetch(MIRROR.replace("tle-amateur.txt","satnogs.json"),{credentials:"omit",referrerPolicy:"no-referrer"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.sats){SN=j;render()}}).catch(()=>{})}
-function snTag(id){const x=SN&&SN.sats&&SN.sats[id];if(!x)return "";const act=(x.tx||[]).filter(t=>t.s==="active").length;const ok=x.st==="alive"&&act>0;
+function snTag(id){const x=SN&&SN.sats&&SN.sats[id];if(!x)return "";const act=(x.tx||[]).filter(t=>t.s==="active").length;const ok=act>0&&!/re-?entered|decayed|dead/i.test(String(x.st||""));
   return `<span class="xtag ${ok?"xq":"xs"}" title="${e2(T(`SatNOGS DB: ${act} transmisores activos`,`SatNOGS DB: ${act} active transmitters`))}">SatNOGS: ${ok?T("activo","active"):T("inactivo","inactive")}</span>`}
 let REC=null,PASSES=null,calcAt=0,calcFor="",busy=false,err="",LOW=S.get("acracb_satlow")==="1";
 function parse(txt){const L=String(txt||"").split(/\r?\n/).map(s=>s.trimEnd()).filter(Boolean),out={};

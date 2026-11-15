@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.30 · 15/11/2026
+- DX › Satélites: SatNOGS DB indica «en órbita» en lugar de «vivo», y la etiqueta salía «inactivo» en todos. Ahora un satélite sale «activo» si tiene algún transmisor activo y no ha reentrado.
+- Primeras copias ya en la web: 81.935 usuarios de LoTW con subidas en el último año y el estado de los ocho satélites.
+- En español e inglés, en todas las pantallas. / SatNOGS status tag fixed.
+
 ## 2.8.29 · 15/11/2026
 - Cuatro fuentes nuevas, públicas, gratuitas y sin registro, con su crédito en la plataforma:
   - **LoTW (ARRL)**: junto al indicativo de cada spot y de cada DXpedición sale «LoTW» si esa estación ha subido su log en el último año. Al tocarlo o pasar por encima se ve la fecha de la última subida; si fue hace más de 90 días, sale atenuado. La lista se copia cada semana en la propia web y solo se descargan los trozos de los indicativos que hay en pantalla.
