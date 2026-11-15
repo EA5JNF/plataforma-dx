@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.22 · 15/11/2026
+- Mapa a pantalla completa: los botones «Ocultar controles» y «Salir» ya no saltan de sitio. Antes, al tocarlos en el móvil se perdía el centrado, y al cambiar «Ocultar» por «Mostrar controles» se movía «Salir». Ahora quedan fijos, centrados, sin salirse de la pantalla con ningún tamaño de letra. En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Full-screen map: bottom buttons stay fixed and centred.
+
 ## 2.8.21 · 15/11/2026
 - Mapa a pantalla completa:
   - Los botones «Ocultar controles» y «Salir» van centrados abajo, separados del borde.
