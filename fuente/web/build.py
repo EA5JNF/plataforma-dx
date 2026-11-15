@@ -118,7 +118,7 @@ function renderEasyS(now,full){const e0=easyAt(now);
       return `<details class="ezd${r===best?" ezbest":""}"><summary class="ezr"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx"><span class="ezn"><i class="ezq ${q}" aria-hidden="true"></i><b>${r.e.ts.length} <span>destinos</span></b>${r===best?' <span class="ezm">la mejor</span>':""}</span><span class="ezw">${ezWord(p)} · ${top}</span></span></summary>${r.from===(now+1)%24?ezList(r.e.ts,r.from,r.b):ezFut(r.e.ts,r.from,r.b)}</details>`}).join("")}</div>`}
   else tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div><p class="note">Calculando…</p></div>`;
   const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,now)}:null}).filter(x=>x&&x.p>=.3).sort((a,b)=>b.p-a.p).slice(0,3);
-  $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<p><b>${CS(x.d.call)}</b> · ${BANDS[x.b]}${x.d.qsx?" · "+esc(x.d.qsx):""} · ${dirTxt(x.lp?x.t.laz:x.t.az)}</p>`).join("")}</div>`:"")+`</div>`+
+  $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<div class="ezrx"><div class="ezrc">${CS(x.d.call)}</div><div class="ezrm"><b style="color:${BC[x.b]}">${BANDS[x.b]}</b>${x.d.qsx?`<span class="ezrf">${esc(x.d.qsx)}</span>`:""}<span>${dirTxt(x.lp?x.t.laz:x.t.az)}</span></div></div>`).join("")}</div>`:"")+`</div>`+
    `<details class="why"><summary>Palabras que conviene saber</summary><div class="ez ezg2" id="glos"></div></details>`}
 """+s[_j:]
 # 2.8.7: menú principal: Ahora, DX, Mapa y el resto como estaba

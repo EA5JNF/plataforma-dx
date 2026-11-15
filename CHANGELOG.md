@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.14 · 15/11/2026
+- Ahora › Resumen › «Estaciones raras en el aire»: cada estación en dos líneas proporcionadas, con el indicativo, la bandera y el país arriba y, debajo y más pequeño, la banda en su color y el rumbo, que ya no se parten a mitad de dato. Separadas por una línea fina. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Rare stations card: cleaner two-line layout per station.
+
 ## 2.8.13 · 15/11/2026
 - Ahora › Resumen: el clúster solo se enseña donde tiene sentido. «Ahora» y el tramo de «Próximas 12 horas» que empieza en la próxima hora siguen con las estaciones que oye el clúster por país. Los tramos más lejanos enseñan la previsión: los destinos que se abrirán en esa banda con su calidad (al tocar uno se abre el mapa a esa hora con su ventana), cuántos más hay y «Ver en el mapa», con una nota de que la lista del clúster aparece cuando llega la hora. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / Later time slots show the forecast instead of what the cluster hears now.
 
