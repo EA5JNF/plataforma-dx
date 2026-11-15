@@ -174,3 +174,18 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
   try{for(const k in FLURL)if(!FLURL[k]){delete FLURL[k];stale=true}}catch(e){}
  }catch(e){}}
  let stale=false;window.ACRACB_flagfix=fix;fix();if(stale)setTimeout(()=>{try{CACHE.clear();refresh()}catch(e){}},0)})();
+
+/* ---- 2.8.16: vista «Completa» o «Compacta» para toda la plataforma ----
+   Completa: todo como siempre, con sus desplegables. Compacta: lo esencial de un vistazo (una o dos líneas por estación,
+   sin explicaciones). Se elige con el botón de la cabecera y se recuerda en el dispositivo hasta que se vuelva a cambiar. */
+(function(){var EN=window.ACRACB_LANG==="en",K="acracb_view";
+ function cur(){try{return localStorage.getItem(K)==="compact"?"compact":"full"}catch(e){return "full"}}
+ function apply(){var c=cur()==="compact";document.documentElement.classList.toggle("vc",c);var b=document.getElementById("viewbtn");
+  if(b){b.setAttribute("aria-pressed",String(c));b.title=c?(EN?"Compact view (tap for full view)":"Vista compacta (pulsa para la completa)"):(EN?"Full view (tap for compact view)":"Vista completa (pulsa para la compacta)");b.setAttribute("aria-label",b.title)}}
+ apply();
+ function btn(){if(document.getElementById("viewbtn"))return true;var z=document.getElementById("zoombtn");if(!z)return false;
+  var b=document.createElement("button");b.id="viewbtn";b.type="button";b.className="thbtn viewbtn";
+  b.innerHTML='<svg class="vfull" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/></svg><svg class="vcomp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>';
+  b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply()};
+  z.parentElement.insertBefore(b,z);apply();return true}
+ (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();

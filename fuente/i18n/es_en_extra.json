@@ -234,5 +234,10 @@
 "Previsión de destinos que se abrirán en": "Forecast of destinations that will open on",
 "La lista de estaciones del clúster aparece cuando llega la hora, porque el clúster solo sabe quién sale ahora.": "The cluster station list appears when the time comes, because the cluster only knows who is on the air now.",
 "destinos más": "more destinations",
-"estaciones más": "more stations"
+"estaciones más": "more stations",
+"ninguna con spots en la última hora": "none with spots in the last hour",
+" anunciadas · ": " announced · ",
+" con spots en la última hora · mejor ahora: ": " with spots in the last hour · best now: ",
+"con spots en la última hora · mejor ahora:": "with spots in the last hour · best now:",
+"anunciadas ·": "announced ·"
 }

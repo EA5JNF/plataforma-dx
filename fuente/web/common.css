@@ -664,9 +664,7 @@ html[data-theme="dark"] .ohs.y{color:#4ade80}html[data-theme="dark"] .ohs.n{colo
 .ohp{margin-top:8px}.ohp .calbt{display:flex;gap:8px;flex-wrap:wrap}.ohp .note{margin:6px 0 0;font-size:.78rem}
 .obs.obsy[aria-pressed="true"],.obs.obsn[aria-pressed="true"]{color:#fff!important}
 /* 2.6.5: diálogo «¿Lo oyes?» */
-.sc.ohc{cursor:pointer;transition:border-color .15s,box-shadow .15s}
-@media (hover:hover){.sc.ohc:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:0 2px 10px rgba(0,0,0,.06)}}
-.sc.ohc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sc.ohc{transition:background-color .2s,border-color .2s}
 html.ohopen{overflow:hidden}
 .ohdlg{position:fixed;inset:0;z-index:10050;display:flex;align-items:flex-end;justify-content:center}
 .ohdlg[hidden]{display:none}
@@ -717,7 +715,9 @@ html[data-theme="dark"] .ohbig.y:not([aria-pressed="true"]){color:#4ade80}html[d
 .ohr{justify-content:flex-end;gap:8px;min-height:0}
 .ohq{font-weight:600!important;color:var(--accent)!important;text-decoration:none!important}
 .ohq::after{content:" ›"}
-@media (hover:hover){.sc.ohc:hover .ohq{text-decoration:underline!important;text-underline-offset:3px}}
+.ohq{display:inline-flex;align-items:center;min-height:44px;padding:0 4px!important;margin:-10px -4px -10px 0!important}
+@media (hover:hover){.ohq:hover{text-decoration:underline!important;text-underline-offset:3px}}
+.ohq:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 .ohs{padding:1px 7px!important}
 /* escala de dB para modos digitales */
 .ohdlg .ohd-db{margin-top:16px}
@@ -907,3 +907,36 @@ html[data-theme="light"] .hm2 i.na{background:repeating-linear-gradient(45deg,#e
 .ez .ezrc .cs{font-weight:700}
 .ez .ezrm{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:3px;font:500 .85rem var(--f-m,monospace);color:var(--muted)}
 .ez .ezrm>*{white-space:nowrap}
+/* 2.8.16: tarjeta sombreada cuando ya has anotado si la oyes o si te oye */
+.sc.ohc:has(.ohs){background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.sc.ohc:has(.ohs.y){background:color-mix(in srgb,#16a34a 9%,var(--panel));border-color:color-mix(in srgb,#16a34a 40%,var(--line))}
+.sc.ohc:has(.ohs.n):not(:has(.ohs.y)){background:color-mix(in srgb,#dc2626 7%,var(--panel));border-color:color-mix(in srgb,#dc2626 32%,var(--line))}
+.ohd-se{margin:14px 0 0;font-size:.8rem;color:var(--muted)}
+.dxoffh{margin:14px 0 6px;font:700 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* 2.8.16: vista compacta (botón de la cabecera; se recuerda) */
+.viewbtn .vcomp{display:none}html.vc .viewbtn .vfull{display:none}html.vc .viewbtn .vcomp{display:block}
+html.vc .viewbtn{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.sc-cp{display:none}
+html.vc .sc-cp{display:inline;font:500 .85rem var(--f-m,monospace);color:var(--muted);white-space:nowrap}
+html.vc .sc-cp b{color:var(--fg)}
+html.vc .sc{gap:3px;padding:7px 12px}
+html.vc .sc .sc-d,html.vc .sc .goal-more,html.vc .sc>.note{display:none}
+html.vc .sc .sc-f{gap:4px 10px}
+html.vc .sc .sc-fq{font-size:.98rem}
+html.vc .sc .ohbox{margin-top:0!important}
+html.vc .sc .ohq{min-height:36px;margin:-6px -4px -6px 0!important}
+html.vc .alc,html.vc .goal,html.vc .reccards{gap:5px;margin:6px 0}
+html.vc .alc,html.vc .goal,html.vc #dxl{row-gap:5px!important}
+html.vc #dxl>.sc{margin-bottom:5px}
+html.vc details.why,html.vc .ezhint,html.vc .srsrc,html.vc .goal-more>summary~.note{display:none!important}
+html.vc .card{padding-top:10px;padding-bottom:10px}
+.ohq::after{content:"\00a0›"!important}
+html.vc .sc.ohc{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px}
+html.vc .sc.ohc>.sc-h{grid-column:1/-1}
+html.vc .sc.ohc>.sc-f{grid-column:1}
+html.vc .sc.ohc>.ohbox{grid-column:2;grid-row:2/span 2;align-self:end}
+html.vc .sc.ohc>.ohbox .ohs{display:none}
+@media (max-width:560px){html.vc .sc.ohc>.sc-f{grid-column:1/-1}html.vc .sc.ohc>.ohbox{grid-column:1/-1;grid-row:auto;justify-self:end}html.vc .sc .ohq{min-height:32px;margin:-4px -4px -6px 0!important}}
+html.bigt.vc .sc.ohc>.sc-f{grid-column:1/-1}html.bigt.vc .sc.ohc>.ohbox{grid-column:1/-1;grid-row:auto;justify-self:end}
+#dxl>.dxoffh{column-span:all;margin:14px 0 8px}
+@media (max-width:440px){.clock{flex-wrap:wrap!important;row-gap:8px}.clock::before{content:"";flex-basis:100%;order:1;height:0}.clock .thbtn,.clock .langbtn{order:2}.clock .langbtn{margin-left:0!important}}

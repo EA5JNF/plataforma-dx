@@ -1,6 +1,5 @@
 # Logo
 
-El logo actual es la propuesta 3, «Globo azimutal», de propuestas.png (desde la versión 2.8.8).
-`propuestas.py` genera las ocho propuestas en SVG; el PNG de 1024 px se guarda en `fuente/ext/icono-1024.png` y el anterior en `icono-1024-atardecer.png`.
+Desde la versión 2.8.16 vuelve el icono original, el del atardecer (cielo de atardecer, torre con directiva y saltos en la ionosfera). Está en `fuente/ext/icono-1024.png` y la misma imagen en `icono-1024-atardecer.png`.
 
-Desde la 2.8.10 se usa la variante C de `variantes3.png` («Todo dentro del globo», generada con `gen3.py`), para que «ACRACB» se lea también en pequeño. La primera versión del globo queda en `fuente/ext/icono-1024-globo-v1.png`.
+Entre la 2.8.8 y la 2.8.15 se usó el globo azimutal. `propuestas.py` y `gen3.py` generan aquellas propuestas. Las dos versiones del globo quedan en `fuente/ext/icono-1024-globo-v1.png` y `icono-1024-globo-c.png`.

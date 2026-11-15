@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.16 · 15/11/2026
+- «¿Lo oyes?» solo se abre al tocar ese texto, no al tocar cualquier parte de la tarjeta. El texto tiene una zona de toque cómoda en el móvil.
+- Las tarjetas de estaciones en las que ya has anotado si la oyes o si te oye se sombrean: en verde si la oyes o te oye, en rojo si no.
+- Cada anotación se guarda con tu locator, potencia y antenas de ese momento y se mantiene hasta que anotes algo nuevo, ya no caduca a las dos horas. El diálogo dice cuándo se anotó y con qué estación. Su efecto en las previsiones sigue durando 45 minutos.
+- Las DXpediciones sin spots en la última hora ya no se proponen: no salen en «Qué hacer» ni en «Estaciones raras en el aire», y en DX › DXpediciones van al final, atenuadas, bajo «Anunciadas, sin spots en la última hora» y sin «¿Lo oyes?». «Estaciones raras en el aire» da la frecuencia y la banda del último spot.
+- Vista «Completa» o «Compacta» para toda la plataforma, con un botón nuevo en la cabecera, junto a «Aa». La completa es la de siempre. La compacta enseña cada estación en una o dos líneas (indicativo, frecuencia, modo, banda, rumbo, porcentaje y «¿Lo oyes?») y quita las explicaciones. Se recuerda en el dispositivo hasta que se vuelva a cambiar.
+- En los móviles estrechos, los cuatro botones de la cabecera (idioma, vista, «Aa» y tema) van juntos en su propia línea.
+- Resumen de DX › DXpediciones: cuántas hay anunciadas, cuántas tienen spots en la última hora y la mejor de ellas.
+- Vuelve el icono original de la app, el del atardecer. En Android, el borde del icono redondo sigue el color del cielo arriba y el de la Tierra abajo.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / «Do you hear it?» opens only from its own link; logged stations are shaded; logs are kept with your station setup until you log again; DXpeditions without spots in the last hour are no longer suggested; new full/compact view for the whole platform, remembered on the device; the original sunset app icon is back.
+
 ## 2.8.15 · 15/11/2026
 - DX: «Buscar en los clústeres» pasa a ir debajo de los submenús (Clúster, Avisos, Cerca…), para que el menú principal y los submenús vayan juntos sin nada en medio. En español e inglés, en todas las pantallas (también 8K), con los dos tamaños de letra y en los dos temas. / DX: cluster search moved below the sub-menu so both menu bars stay together.
 

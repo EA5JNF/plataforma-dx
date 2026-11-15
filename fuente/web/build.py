@@ -6,7 +6,7 @@ from PIL import Image
 W = os.path.dirname(os.path.abspath(__file__))
 SP = os.path.dirname(W)
 BASE = os.path.join(SP, "pub", "base_clean.html")
-ICON = os.path.join(SP, "ext", "icono-1024.png")  # logo del club, 1024 px (desde 2.8.8, el globo azimutal; el anterior queda en icono-1024-atardecer.png)
+ICON = os.path.join(SP, "ext", "icono-1024.png")  # logo del club, 1024 px: desde 2.8.16 vuelve el original del atardecer (los globos quedan en icono-1024-globo-*.png)
 s = open(BASE, encoding="utf-8").read()
 
 def R(a, b, n=1):
@@ -117,12 +117,15 @@ function renderEasyS(now,full){const e0=easyAt(now);
       const top=r.e.ts.slice(0,3).map(x=>esc(x.t.name.split(" (")[0])).join(", "),p=r.e.ts[0].p,q=p>=.7?"q3":p>=.5?"q2":"q1";
       return `<details class="ezd${r===best?" ezbest":""}"><summary class="ezr"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx"><span class="ezn"><i class="ezq ${q}" aria-hidden="true"></i><b>${r.e.ts.length} <span>destinos</span></b>${r===best?' <span class="ezm">la mejor</span>':""}</span><span class="ezw">${ezWord(p)} · ${top}</span></span></summary>${r.from===(now+1)%24?ezList(r.e.ts,r.from,r.b):ezFut(r.e.ts,r.from,r.b)}</details>`}).join("")}</div>`}
   else tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas</div><p class="note">Calculando…</p></div>`;
-  const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,now)}:null}).filter(x=>x&&x.p>=.3).sort((a,b)=>b.p-a.p).slice(0,3);
-  $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<div class="ezrx"><div class="ezrc">${CS(x.d.call)}</div><div class="ezrm"><b style="color:${BC[x.b]}">${BANDS[x.b]}</b>${x.d.qsx?`<span class="ezrf">${esc(x.d.qsx)}</span>`:""}<span>${dirTxt(x.lp?x.t.laz:x.t.az)}</span></div></div>`).join("")}</div>`:"")+`</div>`+
+  const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);if(!t)return null;let sp=[];try{sp=(window.ACRACB_dxSpots?ACRACB_dxSpots(d):[]).filter(o=>o.a!=null&&o.a<=60&&o.band!=null&&o.band<10)}catch(_){}if(!sp.length)return null;let best=null;for(const o of sp){const pp=Math.max(prob(t,now,o.band,false).p,t.l?prob(t,now,o.band,true).p:0);if(!best||pp>best.p)best={p:pp,b:o.band,f:o.f,lp:t.l&&prob(t,now,o.band,true).p>prob(t,now,o.band,false).p}}return {d,t,...best}}).filter(x=>x&&x.p>=.15).sort((a,b)=>b.p-a.p).slice(0,3);
+  $("easy").innerHTML=`<div class="ezg">${card}${tl}`+(dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<div class="ezrx"><div class="ezrc">${CS(x.d.call)}</div><div class="ezrm"><b style="color:${BC[x.b]}">${x.f?esc(x.f)+" · ":""}${BANDS[x.b]}</b>${!x.f&&x.d.qsx?`<span class="ezrf">${esc(x.d.qsx)}</span>`:""}<span>${dirTxt(x.lp?x.t.laz:x.t.az)}</span></div></div>`).join("")}</div>`:"")+`</div>`+
    `<details class="why"><summary>Palabras que conviene saber</summary><div class="ez ezg2" id="glos"></div></details>`}
 """+s[_j:]
 # 2.8.7: menú principal: Ahora, DX, Mapa y el resto como estaba
 R('<button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button>','<button data-pg="dx">DX</button><button data-pg="mapa">Mapa</button>')
+# 2.8.16: «Qué hacer» solo propone DXpediciones con spots en la última hora
+R('const dxNow=L.dx.filter(dxNew).map(','const dxNow=L.dx.filter(dxNew).filter(d=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(d.call||"").split(/[ ,]/)[0])}catch(_){return true}}).map(')
+R('setSum("dxp",ds.length?`${ds.length} activas · mejor ahora: ${ds[0].d.call} en ${BANDS[ds[0].b]} (${Math.round(ds[0].p*100)} %)`:"Ninguna activa ahora")','{const da=ds.filter(x=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(x.d.call||"").split(/[ ,]/)[0])}catch(_){return true}});setSum("dxp",ds.length?`${ds.length} anunciadas · `+(da.length?`${da.length} con spots en la última hora · mejor ahora: ${da[0].d.call} en ${BANDS[da[0].b]} (${Math.round(da[0].p*100)} %)`:"ninguna con spots en la última hora"):"Ninguna activa ahora")}')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
@@ -193,8 +196,9 @@ R('const pct=p=>p<.01?"·"', 'const pct=p=>!(p>=0)?"—":p<.01?"·"')
 img = Image.open(ICON).convert("RGBA")
 def pngm(sz):
     # 2.8.8: versión «maskable» (Android recorta en círculo): el logo al 80 % sobre su propio color de fondo
-    b = io.BytesIO(); bgc = img.convert("RGB").getpixel((4, 4)); inner = int(sz * .8); im = img.resize((inner, inner), Image.LANCZOS)
-    bg = Image.new("RGB", (sz, sz), bgc); bg.paste(im, ((sz - inner) // 2, (sz - inner) // 2), mask=im.split()[3]); bg.save(b, "PNG", optimize=True)
+    # 2.8.16: con el icono del atardecer, el borde de arriba sigue el color del cielo y el de abajo el de la Tierra
+    b = io.BytesIO(); rgb = img.convert("RGB"); W0 = rgb.width; top = rgb.getpixel((W0 // 2, 3)); bot = rgb.getpixel((W0 // 2, W0 - 4)); inner = int(sz * .8); im = img.resize((inner, inner), Image.LANCZOS)
+    bg = Image.new("RGB", (sz, sz), top); bg.paste(Image.new("RGB", (sz, sz // 2), bot), (0, sz // 2)); bg.paste(im, ((sz - inner) // 2, (sz - inner) // 2), mask=im.split()[3]); bg.save(b, "PNG", optimize=True)
     return base64.b64encode(b.getvalue()).decode()
 def png(sz):
     b = io.BytesIO(); im = img.resize((sz, sz), Image.LANCZOS)
