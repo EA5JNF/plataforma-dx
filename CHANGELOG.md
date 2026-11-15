@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.40 · 15/11/2026
+- Notificaciones de nuevo en marcha. En la versión 2.8.27, al quitar el antiguo botón «Solo parques y cumbres», se borró por error también el bloque de las notificaciones y el registro del service worker. Desde entonces no se podían activar las notificaciones (el botón no hacía nada) y la web no se guardaba en el dispositivo para funcionar sin conexión en quien la abría por primera vez. Se restaura el bloque tal como estaba en la 2.8.26: activar, probar, silenciar y avisos de DXpediciones y entidades que te faltan.
+- En iPhone y iPad las notificaciones solo funcionan con la web añadida a la pantalla de inicio y abierta desde ahí (iOS 16.4 o posterior); la propia web lo explica al pulsar el botón.
+- En español e inglés. / Notifications and offline support restored (accidentally removed in 2.8.27).
+
 ## 2.8.39 · 15/11/2026
 - Revisión de veracidad contra referencias independientes:
   - Sol: salida, puesta, línea gris y altura con las fórmulas de NOAA (antes una aproximación) y con el cruce del horizonte interpolado (antes se redondeaba a 5 minutos). Comparado con la biblioteca astronómica astral en siete lugares (tu QTH, Tokio, Sídney, Nueva York, Reikiavik, São Paulo y Maputo): error de 0–2 minutos (3–4 en Islandia), antes de hasta 9 minutos. La altura del sol, a 0,2° de la referencia.
