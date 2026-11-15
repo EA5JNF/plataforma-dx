@@ -192,7 +192,7 @@ const ctxD=el=>{const c=el.closest(".ohin");return c?dOf(c):DLG};
 function ohInline(d){return `<div class="ohin" data-t="${e2(d.t)}" data-b="${d.b}" data-call="${e2(d.call)}" data-mode="${e2(d.mode||"")}" data-f="${e2(d.f||"")}"><div class="ohin-t">${T("¿Lo oyes?","Do you hear it?")} <span class="ohin-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</span></div>${dlgHTML(d,true)}</div>`}
 window.ACRACB_ohInline=ohInline;
 (function(){let n=0;const h=setInterval(()=>{if(typeof calBtns==="function"&&!window.__hkOh){window.__hkOh=1;const o=calBtns;const w=function(t){try{if(!t)return o.apply(this,arguments);const P=st.pop;let call=null,b=null,mode="",f="";
-    if(P&&P.k==="s"){const s=SPOTS()[P.i];const e=s&&spotEval(s,st.mhour);if(s&&e&&e.t&&e.t.id===t.id){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
+    if(P&&P.k==="s"){const s=SPOTS()[P.i];const e=s&&spotEval(s,st.mhour);const tf=s?tFor(s):null;if(s&&((e&&e.t&&e.t.id===t.id)||(tf&&tf.id===t.id))){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
     else if(P&&P.k==="d"){const d=L.dx[P.i];if(d&&tFor(d)&&tFor(d).id===t.id)call=dxTok(d.call)[0]||d.call}
     if(b==null)b=st.mband>=0?st.mband:bestAny(t,st.mhour).b;if(b==null||b<0||b>=10)return o.apply(this,arguments);
     if(!call)call=t.name;if(!mode){try{mode=MD().s}catch(_){}}

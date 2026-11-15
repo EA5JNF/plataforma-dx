@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.36 · 15/11/2026
+- Mapa › ficha de un spot: cuando una estación cercana (Europa) la oye alguien lejos (por ejemplo YU5R oída en EE. UU.), la ficha daba la distancia y el rumbo hacia el que la oye como si fueran los de la estación (6.051 km a 297° para YU5R). Ahora dice primero la distancia y el rumbo reales de la estación y con qué probabilidad te llega, y después, por separado, que el camino hacia donde la oyen está abierto, con su rumbo, distancia y probabilidad. «¿Lo oyes?» se apunta a la estación, no a la zona del que la oye. Lo mismo en la ficha de cada indicativo.
+- Nombres: YU, 9A, LZ, YO, OH, SM, LA, DL, OK, HA, G, EI, UR y EW salían con el nombre de su zona de previsión («Balcanes», «Escandinavia»…) en lugar del país. Ahora sale el país (Serbia, Croacia, Suecia…).
+- En español e inglés. / Spot details for nearby stations heard far away now show the station's real distance and, separately, the open path towards the spotter; countries named properly.
+
 ## 2.8.35 · 15/11/2026
 - Distancias y rumbos correctos en toda la plataforma (mapa, clúster, avisos, «Qué hacer», búsqueda y actividades en portable). Algunas fuentes dan como posición «exacta» de una estación la dirección de QRZ de su mánager (una DXpedición a Mozambique situada en Alemania) o el locator del que avisa escrito en el comentario. Ahora toda posición que cae lejos de la entidad del indicativo se descarta y se usa la de la entidad (o la de su zona en los países grandes). El límite es de 1.300 km, y más en los países grandes (EE. UU., Canadá, Rusia, Australia, Brasil, China…). También se corrigen al abrir la página los spots guardados de antes.
 - En español e inglés. / Wrong station positions (manager's address, spotter's grid) are discarded: distances and bearings are now correct everywhere.
