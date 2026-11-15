@@ -5,6 +5,9 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.18 · 15/11/2026
+- Las etiquetas «Favorable», «Regular» y «Desfavorable» de las tarjetas de VHF (6 m, 2 m y 70 cm) y del Sol van siempre arriba a la derecha, a la misma altura en todas las tarjetas, también con la letra grande. En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Level tags always top-right, aligned across cards.
+
 ## 2.8.17 · 15/11/2026
 - Vista compacta más compacta. Cada estación ocupa dos líneas: arriba el indicativo con su bandera, la frecuencia, el modo y hace cuánto; debajo la banda, las etiquetas en pequeño, el rumbo, el porcentaje y «¿Lo oyes?». El buscador del clúster cabe en una sola línea, con «Filtros» al lado. Los botones de filtro del clúster son más bajos y la leyenda de colores de los modos se oculta. La vista completa no cambia.
 - En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Tighter compact view: two lines per station, one-line cluster search, smaller cluster filters.

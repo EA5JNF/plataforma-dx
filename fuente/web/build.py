@@ -126,6 +126,9 @@ R('<button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button>','<butto
 # 2.8.16: «Qué hacer» solo propone DXpediciones con spots en la última hora
 R('const dxNow=L.dx.filter(dxNew).map(','const dxNow=L.dx.filter(dxNew).filter(d=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(d.call||"").split(/[ ,]/)[0])}catch(_){return true}}).map(')
 R('setSum("dxp",ds.length?`${ds.length} activas · mejor ahora: ${ds[0].d.call} en ${BANDS[ds[0].b]} (${Math.round(ds[0].p*100)} %)`:"Ninguna activa ahora")','{const da=ds.filter(x=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(x.d.call||"").split(/[ ,]/)[0])}catch(_){return true}});setSum("dxp",ds.length?`${ds.length} anunciadas · `+(da.length?`${da.length} con spots en la última hora · mejor ahora: ${da[0].d.call} en ${BANDS[da[0].b]} (${Math.round(da[0].p*100)} %)`:"ninguna con spots en la última hora"):"Ninguna activa ahora")}')
+# 2.8.18: la etiqueta de nivel va antes del título para que flote arriba a la derecha, a la misma altura en todas las tarjetas
+R('class="lvh"><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lvh"><span class="lvp">${LVN[lv]}</span><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b></div>')
+R('class="lvh"><b>${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lvh"><span class="lvp">${LVN[lv]}</span><b>${t}.</b></div>')
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')

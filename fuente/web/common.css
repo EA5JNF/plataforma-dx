@@ -971,3 +971,8 @@ html.vc .alc,html.vc .goal,html.vc .reccards,html.vc #dxl{row-gap:4px!important;
 html.vc .sc.ohc .sc-f>.xtag,html.vc .sc.ohc .sc-f>.dxpt,html.vc .sc.ohc .sc-f>.nwb,html.vc .sc.ohc .sc-f>.nsb,html.vc .sc.ohc .sc-f>.agr,html.vc .sc.ohc .sc-f>.tag{font-size:.6rem!important;padding:1px 6px!important;box-shadow:none!important;letter-spacing:.02em}
 html.vc .seg.clseg button,html.vc .seg.mseg button{min-height:32px!important;padding-top:3px!important;padding-bottom:3px!important;font-size:.82rem}
 html.vc .seg.clseg,html.vc .seg.mseg{margin-top:4px!important;margin-bottom:4px!important;gap:4px}
+/* 2.8.18: la etiqueta Favorable / Regular / Desfavorable siempre arriba a la derecha, a la misma altura en todas las tarjetas */
+.lvh{display:block!important}
+.lvh::after{content:"";display:table;clear:both}
+.lvh>.lvp{float:right;margin:.15em 0 4px 10px}
+.lvh>b{overflow-wrap:normal;word-break:normal;hyphens:manual}
