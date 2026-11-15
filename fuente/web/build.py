@@ -409,6 +409,11 @@ upd = open(os.path.join(W, "updater.js"), encoding="utf-8").read()
 w_es = assemble(w, upd, "es", "ACRACB - Plataforma DX")
 w_es = w_es.replace('<head>\n<meta charset="utf-8">', '<head>\n<meta charset="utf-8">\n<script>try{if(localStorage.getItem("acracb_lang")==="en"&&!/[?&]es\\b/.test(location.search))location.replace("en.html"+location.hash)}catch(e){}</script>', 1)
 assert 'location.replace("en.html"' in w_es
+# 2.8.27: cada idioma con su forma de escribir los decimales (coma en español, punto en inglés), salvo las
+# frecuencias, que van siempre con punto en los dos (74.4 Hz, 2.5 kHz, 7.0475 MHz)
+def es_dec(c):
+    return re.sub(r'(?<![\d.,])(\d+),(\d+)(?=\s?(?:GHz|MHz|kHz|Hz)\b)', r'\1.\2', c)
+w_es = es_dec(w_es)
 sys.path.insert(0, os.path.join(SP, "i18n"))
 import apply as I18N
 w_en_src, n1 = I18N.translate(w.replace(hubbuild.P_ES, hubbuild.P_EN))

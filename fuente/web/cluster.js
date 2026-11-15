@@ -191,7 +191,7 @@ const ctxD=el=>{const c=el.closest(".ohin");return c?dOf(c):DLG};
 /* 2.7.6: en las ventanas del mapa, el mismo «¿Lo oyes? / ¿Te ha oído?» que en las tarjetas, con sus dos escalas */
 function ohInline(d){return `<div class="ohin" data-t="${e2(d.t)}" data-b="${d.b}" data-call="${e2(d.call)}" data-mode="${e2(d.mode||"")}" data-f="${e2(d.f||"")}"><div class="ohin-t">${T("¿Lo oyes?","Do you hear it?")} <span class="ohin-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</span></div>${dlgHTML(d,true)}</div>`}
 window.ACRACB_ohInline=ohInline;
-(function(){let n=0;const h=setInterval(()=>{if(typeof calBtns==="function"&&!calBtns.__oh){const o=calBtns;const w=function(t){try{if(!t)return o.apply(this,arguments);const P=st.pop;let call=null,b=null,mode="",f="";
+(function(){let n=0;const h=setInterval(()=>{if(typeof calBtns==="function"&&!window.__hkOh){window.__hkOh=1;const o=calBtns;const w=function(t){try{if(!t)return o.apply(this,arguments);const P=st.pop;let call=null,b=null,mode="",f="";
     if(P&&P.k==="s"){const s=SPOTS()[P.i];const e=s&&spotEval(s,st.mhour);if(s&&e&&e.t&&e.t.id===t.id){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
     else if(P&&P.k==="d"){const d=L.dx[P.i];if(d&&tFor(d)&&tFor(d).id===t.id)call=dxTok(d.call)[0]||d.call}
     if(b==null)b=st.mband>=0?st.mband:bestAny(t,st.mhour).b;if(b==null||b<0||b>=10)return o.apply(this,arguments);
@@ -449,7 +449,7 @@ function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;
     return card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")}</div>`;
   $("algo").onclick=()=>{go("dx");try{selTab("dx","f_al",true)}catch(e){}el.hidden=true;const fa=$("f_al");if(fa){fa.open=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{try{fa.scrollIntoView({block:"start",behavior:"smooth"})}catch(e){fa.scrollIntoView()}}))}};$("alx").onclick=()=>{try{sessionStorage.setItem("aloff",al.at)}catch(e){}el.hidden=true}}
 window.renderAlBar=alBar;document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".nav button,#subnav button,.ptabs button,[data-pg]"))setTimeout(()=>{try{alBar()}catch(e){}},80)},true);
-function hookA(){if(typeof window.renderAlerts!=="function"||window.renderAlerts.__cl)return false;const o=window.renderAlerts;const w=function(){const r=o.apply(this,arguments);try{alertCards()}catch(e){console.error(e)}return r};w.__cl=1;window.renderAlerts=w;return true}
+function hookA(){if(window.__hkAl)return true;if(typeof window.renderAlerts!=="function")return false;window.__hkAl=1;const o=window.renderAlerts;const w=function(){const r=o.apply(this,arguments);try{alertCards()}catch(e){console.error(e)}return r};w.__cl=1;window.renderAlerts=w;return true}
 if(!hookA()){const t2=setInterval(()=>{if(hookA())clearInterval(t2)},200);setTimeout(()=>clearInterval(t2),15000)}
 
 
@@ -589,7 +589,7 @@ function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if
   inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
-function hook(){if(typeof window.renderSide!=="function"||window.renderSide.__cl)return false;const o=window.renderSide;
+function hook(){if(window.__hkSide)return true;if(typeof window.renderSide!=="function")return false;window.__hkSide=1;const o=window.renderSide;
   const w=function(){const r=o.apply(this,arguments);try{if(st.page==="dx"){render(st.mhour);renderNear();dxCards()}}catch(e){console.error(e)}return r};w.__cl=1;window.renderSide=w;return true}
 if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout(()=>clearInterval(t),15000)}
 })();

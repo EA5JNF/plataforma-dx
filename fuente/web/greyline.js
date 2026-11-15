@@ -43,7 +43,7 @@ window.ACRACB_grey={sunEl,windows,events,short,block};
 function posFor(call){try{const e=callEnt(call);const sp=(L.spots||[]).find(s=>String(s.call).toUpperCase()===call&&s.dx);if(sp)return [sp.dx,e];
   const d=typeof dxFor==="function"?dxFor(call):null;if(d&&isFinite(d.lon))return [[d.lon,d.lat],e];
   const t=e?TG().find(x=>x.dxcc===e.dxcc):null;return [t?[t.lon,t.lat]:null,e]}catch(e){return [null,null]}}
-function hook(name,after){const o=window[name];if(typeof o!=="function"||o.__gl)return false;const w=function(){const r=o.apply(this,arguments);try{after.apply(this,arguments)}catch(e){}return r};w.__gl=1;window[name]=w;return true}
+function hook(name,after){const K="__hkgl_"+name;if(window[K])return true;const o=window[name];if(typeof o!=="function")return false;window[K]=1;const w=function(){const r=o.apply(this,arguments);try{after.apply(this,arguments)}catch(e){}return r};w.__gl=1;window[name]=w;return true}
 function boot(){let n=0;const t=setInterval(()=>{
   const a=hook("openCall",function(call){const c=String(call||"").toUpperCase().trim();const pan=document.querySelector("#cpop .cpan");if(!pan)return;const [p,e]=posFor(c);const h=block(p,e&&e.name);if(h)pan.insertAdjacentHTML("beforeend",h)});
   const b=hook("renderInfo",function(){const box=document.getElementById("info");if(!box)return;let z=null;try{z=TG().find(x=>x.id===st.zone)||TG()[0]}catch(e){}if(!z)return;const h=block([z.lon,z.lat],z.name);if(h)box.insertAdjacentHTML("beforeend",h)});

@@ -10,7 +10,7 @@ function items(){const s=L.space||{};const xr=String(s.xray||"").trim().toUpperC
   return [[T("Flujo solar","Solar flux"),L.sfi!=null?"SFI "+L.sfi:null,lv3(L.sfi,110,90)],[T("Manchas","Sunspots"),s.ssn!=null?"SSN "+s.ssn:null,lv3(s.ssn,90,50)],
    ["Kp",L.kp,lv3(L.kp,3,4.5,1)],[T("Índice A","A index"),s.a!=null&&s.a!==""&&!isNaN(+s.a)?Math.round(+s.a):null,lv3(s.a,10,20,1)],[T("Viento solar","Solar wind"),L.wind!=null?L.wind+" km/s":null,lv3(L.wind,450,550,1)],
    ["Bz",L.bz!=null?L.bz+" nT":null,L.bz==null?"n":L.bz>=0?"g":L.bz>-5?"y":"r"],[T("Rayos X","X-rays"),s.xray||null,!xr?"n":"AB".includes(xr)?"g":xr==="C"?"y":"r"],
-   [T("Apagón (24 h)","Blackout (24 h)"),L.radio&&L.radio.r12!=null?L.radio.r12+" %":null,!L.radio||L.radio.r12==null?"n":L.radio.r12<20?"g":L.radio.r12<40?"y":"r"]].filter(x=>x[1]!=null&&x[1]!=="")}
+   [T("Apagón R1–R2 (24 h)","R1–R2 blackout (24 h)"),L.radio&&L.radio.r12!=null?L.radio.r12+" %":null,!L.radio||L.radio.r12==null?"n":L.radio.r12<20?"g":L.radio.r12<40?"y":"r"]].filter(x=>x[1]!=null&&x[1]!=="")}
 const nf=(v,d)=>v==null||isNaN(+v)?null:(+v).toFixed(d==null?1:d).replace(/\.0$/,"").replace(".",EN()?".":",");
 const dm=iso=>{const p=String(iso).split("-");return p.length===3?(+p[2])+"/"+(+p[1]):iso};
 const today=()=>new Date().toISOString().slice(0,10);
@@ -97,7 +97,7 @@ function render(){const box=document.getElementById("easy");if(!box||typeof L===
     const d=el.querySelector(".solmore");if(d)d.addEventListener("toggle",()=>{SOLOPEN=d.open})}
   /* 2.4.9: «Palabras y expresiones que conviene saber» va al final del resumen, después del Sol */
   try{const g=document.getElementById("glos"),gd=g&&g.closest("details");if(gd&&!gd.classList.contains("glosw")){document.querySelectorAll("details.glosw").forEach(x=>x.remove());gd.classList.add("glosw");el.insertAdjacentElement("afterend",gd);if(!REF)REF=refHTML();gd.insertAdjacentHTML("beforeend",REF)}}catch(e){}}
-function hook(){const o=window.renderEasyS;if(typeof o!=="function"||o.__sol)return false;const w=function(){const r=o.apply(this,arguments);try{render()}catch(e){}return r};w.__sol=1;window.renderEasyS=w;return true}
+function hook(){if(window.__hkSol)return true;const o=window.renderEasyS;if(typeof o!=="function")return false;window.__hkSol=1;const w=function(){const r=o.apply(this,arguments);try{render()}catch(e){}return r};w.__sol=1;window.renderEasyS=w;return true}
 function boot(){let n=0;const t=setInterval(()=>{if(hook()||++n>75){clearInterval(t);try{render()}catch(e){}}},200)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();

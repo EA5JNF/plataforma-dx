@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.27 · 15/11/2026
+- «Ficha completa» desde el mapa a pantalla completa ya no deja la plataforma bloqueada: al salir del mapa hacia cualquier otra sección, la pantalla completa se cierra primero. Antes el navegador seguía en pantalla completa sobre un mapa oculto y no se podía desplazar la página.
+- 2 m y 70 cm: el alcance troposférico salía «unos 1 km» y las probabilidades no se calculaban, por un dato de ruido que faltaba. Ahora el balance de enlace cuenta el ruido del entorno de la otra estación (ITU-R P.372), no repite el ajuste del modo y usa una pérdida más allá del horizonte más realista (20 dB al pasarlo y 0,13 dB/km en 2 m o 0,17 dB/km en 70 cm). Con 100 W en SSB y una directiva sale un alcance normal de unos 350 km en 2 m.
+- Revisión de la veracidad de los contenidos:
+  - Concursos: YO DX HF es el último fin de semana completo de agosto (no el tercero), LZ DX el penúltimo de noviembre, S. M. el Rey de España SSB el cuarto de junio, EA PSK63 de 12:00 a 11:59 y los dos de S. M. el Rey terminan a las 11:59.
+  - Glosario: 40 m también sirve de día a corta distancia; el paso largo se usa cuando la ionosfera está mejor por el arco largo, a menudo siguiendo la línea gris, no por estar «mejor iluminado».
+  - Sol: aurora en 6 y 2 m (a veces 10 m) y desde España con Kp 7 o más; clase M de rayos X degrada las bandas bajas y X puede cortarlas todas; «Apagón R1–R2»; «manchas del día» en lugar de «SSN»; foF2 explicada como la frecuencia que la ionosfera devuelve en incidencia vertical; comparación con los ciclos 19 a 24 completa.
+  - Antípodas: cualquier rumbo llega ahí.
+  - Coordenadas del QTH y de las antípodas en positivo con N/S y E/O.
+- Decimales como se escriben en cada idioma: coma en español (0,6 nT, 160,9 manchas, coordenadas del QTH) y punto en inglés. Las frecuencias van siempre con punto en los dos (foF2 9.1 MHz, tono 74.4 Hz, 2.5 kHz). FT4 en 40 m: 7.0475 MHz (antes «7.047,5 kHz»).
+- Mantenimiento interno: cada añadido envuelve sus funciones una sola vez; se quita código sin uso de POTA/SOTA; los desplegables de «Cómo funciona» vuelven a abrirse; el botón «Actualizar» usa el color de acento.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Full details from the full-screen map no longer locks the page; 2 m and 70 cm range fixed; contest dates, glossary and space-weather texts corrected for accuracy.
+
 ## 2.8.26 · 15/11/2026
 - El mapa ya no se traba. Cada añadido del mapa (relieve fino, ISS y satélites, etiquetas, pantalla completa, botones rápidos) envolvía el dibujo y, si otro lo envolvía después, volvía a envolverlo: en un minuto se apilaban decenas de capas y cada redibujado repetía el relieve fino, los satélites y las etiquetas decenas de veces. Ahora hay un único envoltorio que dibuja el mapa una vez y después cada añadido, en orden. Las etiquetas se recolocan al terminar el gesto de zoom, no en cada fotograma. Con todas las capas encendidas, cada dibujo tarda unos 30 ms en un móvil.
 - En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / The map no longer freezes: one single drawing wrapper instead of dozens stacked.

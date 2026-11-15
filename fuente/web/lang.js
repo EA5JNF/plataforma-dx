@@ -135,7 +135,7 @@ function dxInfoEn(d){const src=String(d.info||"")+" "+(d.qsx||"");let bands="";c
   return parts.length?parts.join(" · ")+".":""}
 window.ACRACB_trL=trL;window.ACRACB_tx2=tx;
 /* se aplica al cargar y cada vez que llegan datos nuevos */
-const hook=()=>{if(typeof window.normL!=="function"||window.normL.__tr)return false;const o=window.normL;const w=function(){const r=o.apply(this,arguments);trL(window.L||L);return r};w.__tr=1;window.normL=w;return true};
+const hook=()=>{if(window.__hkTr)return true;if(typeof window.normL!=="function")return false;window.__hkTr=1;const o=window.normL;const w=function(){const r=o.apply(this,arguments);trL(window.L||L);return r};w.__tr=1;window.normL=w;return true};
 const go=()=>{hook();trL(L);try{refresh()}catch(e){}};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else setTimeout(go,0);
 })();

@@ -32,7 +32,7 @@ setTheme(themeNow(),false);window.ACRACB_theme={isDay,qthPos,nextChange,themeNow
 setInterval(()=>{if(document.visibilityState!=="visible")return;const t=themeNow();if(document.documentElement.getAttribute("data-theme")!==t)setTheme(t,true)},60000);
 /* 2.6.8: al cambiar el locator (o cualquier ajuste que recalcula la plataforma) el tema se revisa en el acto, sin esperar al minuto */
 (function(){const chk=()=>{try{const t=themeNow();if(document.documentElement.getAttribute("data-theme")!==t)setTheme(t,true)}catch(e){}};
-  ["input","change"].forEach(ev=>document.addEventListener(ev,e=>{if(e.target&&e.target.id==="loc")setTimeout(chk,60)},true));let n=0;const h=setInterval(()=>{if(typeof refresh==="function"&&!refresh.__th){const r0=refresh;const w=function(){const v=r0.apply(this,arguments);chk();return v};w.__th=1;try{refresh=w}catch(e){window.refresh=w}clearInterval(h)}else if(++n>100)clearInterval(h)},100)})();
+  ["input","change"].forEach(ev=>document.addEventListener(ev,e=>{if(e.target&&e.target.id==="loc")setTimeout(chk,60)},true));let n=0;const h=setInterval(()=>{if(typeof refresh==="function"&&!window.__hkTh){window.__hkTh=1;const r0=refresh;const w=function(){const v=r0.apply(this,arguments);chk();return v};w.__th=1;try{refresh=w}catch(e){window.refresh=w}clearInterval(h)}else if(++n>100)clearInterval(h)},100)})();
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){const t=themeNow();if(document.documentElement.getAttribute("data-theme")!==t)setTheme(t,true)}});
 function themeBtn(){if($("thbtn"))return;const ck=document.querySelector(".brow1 .clock")||document.querySelector(".brow1");if(!ck)return;
   const b=document.createElement("button");b.id="thbtn";b.className="thbtn";b.type="button";
@@ -43,6 +43,8 @@ const LIM=260;let CT=null;const OPENED=new Set();const ckey=el=>(el.textContent|
 function clampAll(){CT=null;try{longVals();glue()}catch(e){}document.querySelectorAll(".page p, .page .note, .page .w").forEach(el=>{
   if(el.dataset.cl||el.closest("summary,.sp,.chip,.dx,button,.mpop,.srcrep,.kv,td,th,.tl,.tlh,.drop,.goal,.srcg,#heardbox,#qrpbox,.notifw,#metnote,#space")||el.id==="updst")return;
   const d=el.closest("details");if(d&&!d.classList.contains("fold"))return;
+  /* 2.8.27: solo textos sencillos; un bloque con desplegables, listas, tablas o párrafos dentro no se recorta (rompía los desplegables de «Cómo funciona») */
+  if(el.querySelector("details,ul,ol,table,p,div,h2,h3,h4,dl"))return;
   if((el.textContent||"").trim().length<LIM)return;el.dataset.cl="1";el.classList.add("clamp");if(OPENED.has(ckey(el))){el.classList.add("open");el.title=""}else el.title=window.ACRACB_LANG==="en"?"Tap to read it all":"Toca para leer todo"})}
 document.addEventListener("click",ev=>{const el=ev.target.closest(".clamp");if(!el||ev.target.closest("a,button,input,select,.cs"))return;el.classList.toggle("open");const op=el.classList.contains("open");if(op)OPENED.add(ckey(el));else OPENED.delete(ckey(el));el.title=op?"":(window.ACRACB_LANG==="en"?"Tap to read it all":"Toca para leer todo")},true);
 new MutationObserver(ms=>{if(!CT&&window.ACRACB_mut(ms))CT=setTimeout(clampAll,120)}).observe(document.documentElement,{childList:true,subtree:true});

@@ -116,8 +116,6 @@ li .lnk,p .lnk,.stl .lnk,td .lnk{display:inline!important;min-height:0!important
 .hbands{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:8px 0}
 .hbands .chip .k{font-weight:700}
 /* POTA/SOTA y notificaciones */
-.psob{margin:6px 0 8px;font-size:.78rem;min-height:36px;padding:4px 12px}
-.psob[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
 .notifw{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
 .notifw .btn[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
 .nfb summary{list-style:none;display:inline-block;cursor:pointer}.nfb summary::-webkit-details-marker{display:none}
@@ -1030,3 +1028,11 @@ html.bigt .chip .v{overflow-wrap:anywhere}
 /* 2.8.25: Bandas › Plataforma con los mismos colores que «Hora a hora» */
 .cotab .qsw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px;border:1px solid color-mix(in srgb,var(--fg) 15%,transparent)}
 .cotab .qsw.c0{background:var(--q0,#e5e8ee)}
+/* 2.8.27: «Actualizar» con el color de acento de la web (antes turquesa, el único elemento de ese color, y con poco contraste en el tema claro) */
+.updb{background:var(--accent)!important;color:#1b1003!important;box-shadow:none!important}
+.updb .ic{background:rgba(0,0,0,.14)!important}
+.updb:hover{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)!important}
+.updb.run{background:var(--panel2)!important;color:var(--accent)!important;box-shadow:0 0 0 1px var(--accent) inset!important}
+.updb.run .ic{background:color-mix(in srgb,var(--accent) 15%,transparent)!important}
+:root[data-theme="light"] .updb:not(.run){color:#fff!important}
+:root[data-theme="light"] .updb:not(.run) .ic{background:rgba(255,255,255,.18)!important}

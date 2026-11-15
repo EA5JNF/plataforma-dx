@@ -119,70 +119,10 @@ function renderHeard(){const el=$("heardbox");if(!el)return;const call=S.get("ac
 /* se vuelve a comprobar solo cada 5 minutos mientras tienes abierta la pestaña */
 setInterval(()=>{try{if(document.visibilityState==="hidden"||ART)return;const d=$("f_heard");if(!d||d.classList.contains("toff")||!d.offsetParent)return;if(S.get("acracb_mycall")&&Date.now()-HLAST>5*6e4)checkHeard(false)}catch(e){}},30000);
 
-/* =================== POTA / SOTA: filtro rápido en el clúster =================== */
-let PSO=false;
-function psoBtn(){const h=$("dxmodes");if(!h||$("psobtn"))return;const b=document.createElement("button");b.id="psobtn";b.type="button";b.className="btn psob";b.setAttribute("aria-pressed","false");
-  b.textContent="Solo parques y cumbres";b.title="Muestra solo actividades POTA, WWFF y SOTA";
-  b.onclick=()=>{PSO=!PSO;b.setAttribute("aria-pressed",String(PSO));try{refresh()}catch(e){}};h.insertAdjacentElement("afterend",b)}
-function wrapSpots(){try{const s0=SPOTS;if(s0.__x)return;const w=function(){const a=s0.apply(this,arguments);return PSO?a.filter(s=>/POTA|SOTA|WWFF/i.test(String(s.ref||"")+" "+String(s.c||"")+" "+String(s.src||""))):a};w.__x=1;SPOTS=w}catch(e){}}
-
-/* =================== notificaciones en el dispositivo =================== */
-/* 2.8.3: repaso para todos los aparatos.
-   - Se envían siempre a través del service worker (Android, iPhone, iPad y Chrome no admiten «new Notification»), esperando a que esté listo.
-   - Con las notificaciones activadas y sin silenciar, la plataforma sigue buscando avisos cada 3 minutos aunque esté en segundo plano
-     (en el ordenador y en Android mientras el navegador siga abierto; el iPhone y el iPad pausan las webs al poco de salir de ellas).
-   - Silencio (1 hora, hasta mañana a las 8:00 o hasta reactivarlo) y botón de prueba en el mismo sitio que el interruptor. */
-const TT=(es,en)=>window.ACRACB_LANG==="en"?en:es;
-const e2=s=>String(s==null?"":s).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-const canN="Notification" in window&&!ART;
-const canSW=!ART&&"serviceWorker" in navigator&&location.protocol==="https:";
-let SWR=null;
-if(canSW){navigator.serviceWorker.register("sw.js").then(r=>{SWR=r}).catch(()=>{})}
-function notifOn(){return canN&&Notification.permission==="granted"&&S.get("acracb_notif")==="1"}
-window.ACRACB_notifOn=notifOn;
-async function swReg(){if(SWR)return SWR;if(!canSW)return null;try{const r=await Promise.race([navigator.serviceWorker.ready,new Promise(ok=>setTimeout(()=>ok(null),4000))]);if(r)SWR=r;return r}catch(e){return null}}
-async function notify(title,body,tag){const ic=(document.querySelector('link[rel="apple-touch-icon"]')||{}).href;const o={body,tag:tag||("acracb-"+title),icon:ic,badge:ic,lang:window.ACRACB_LANG==="en"?"en":"es",renotify:false,data:{url:location.href.split("#")[0]}};
-  try{const r=await swReg();if(r&&r.showNotification){await r.showNotification(title,o);return true}}catch(e){}
-  try{new Notification(title,o);return true}catch(e){}return false}
-const IOSD=(()=>{try{return /iP(hone|ad|od)/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)}catch(e){return false}})();
-const STDA=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}})();
-let NHELP=false,NMSG="";
-function notifHelp(){return IOSD&&!STDA?`<p class="note nhelp">${TT("En el iPad y el iPhone, Safari solo deja enviar notificaciones a las webs guardadas en la pantalla de inicio. Toca Compartir (el cuadrado con la flecha hacia arriba), elige «Añadir a pantalla de inicio», abre la plataforma desde ese icono y pulsa aquí otra vez.","On iPad and iPhone, Safari only lets websites saved to the Home Screen send notifications. Tap Share (the square with the up arrow), choose «Add to Home Screen», open the platform from that icon and tap here again.")}</p>`:
-  IOSD?`<p class="note nhelp">${TT("Para recibir notificaciones de webs, el iPad y el iPhone necesitan iOS o iPadOS 16.4 o posterior. Actualízalo en Ajustes › General › Actualización de software.","To get website notifications, iPad and iPhone need iOS or iPadOS 16.4 or later. Update it in Settings › General › Software Update.")}</p>`:
-  `<p class="note nhelp">${TT("Este navegador no deja enviar notificaciones de webs. Abre la plataforma en Chrome, Edge, Firefox o Safari para activarlas.","This browser does not let websites send notifications. Open the platform in Chrome, Edge, Firefox or Safari to turn them on.")}</p>`}
-function deniedHelp(){return IOSD?TT("Las has bloqueado. Actívalas en Ajustes › Notificaciones › ACRACB DX.","You have blocked them. Turn them on in Settings › Notifications › ACRACB DX."):
-  /Android/i.test(navigator.userAgent)?TT("Las has bloqueado. Toca el candado junto a la dirección (o mantén pulsado el icono de la app › Información) › Notificaciones › Permitir.","You have blocked them. Tap the padlock next to the address (or long-press the app icon › App info) › Notifications › Allow."):
-  TT("Las has bloqueado. Haz clic en el candado junto a la dirección › Notificaciones › Permitir, y recarga la página.","You have blocked them. Click the padlock next to the address › Notifications › Allow, and reload the page.")}
-function scopeTxt(){return IOSD?TT("En el iPhone y el iPad llegan mientras la plataforma está abierta desde su icono y unos instantes después de salir: iOS pausa las webs en segundo plano.","On iPhone and iPad they arrive while the platform is open from its icon and for a short while after you leave it: iOS pauses websites in the background."):
-  TT("Llegan aunque estés en otra app o pestaña, mientras el navegador siga abierto; se busca cada 3 minutos.","They arrive even when you are in another app or tab, as long as the browser stays open; it checks every 3 minutes.")}
-function muteRow(){const m=window.ACRACB_alMuted&&ACRACB_alMuted();
-  /* silenciadas: ya lo dice el aviso de justo debajo, con su botón «Reactivar» */
-  return m?""
-   :`<span class="nmute">${TT("Silenciar:","Mute:")} <button type="button" class="lnk" data-mute="60">${TT("1 hora","1 hour")}</button> · <button type="button" class="lnk" data-mute="tom">${TT("hasta mañana a las 8:00","until 8:00 tomorrow")}</button> · <button type="button" class="lnk" data-mute="inf">${TT("hasta que las reactive","until I turn them back on")}</button></span>`}
-function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw");if(!w){w=document.createElement("div");w.id="notifw";w.className="notifw";host.insertAdjacentElement("beforebegin",w)}
-  const msg=NMSG?`<p class="note nmsg">${e2(NMSG)}</p>`:"";
-  if(!canN){w.innerHTML=`<button class="btn" id="notifb" aria-expanded="${NHELP}">${TT("Avisarme con una notificación","Notify me")}</button><span class="note"> ${TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>${NHELP?notifHelp():""}`;
-    $("notifb").onclick=()=>{NHELP=!NHELP;notifUI()};return}
-  const pm=Notification.permission,on=notifOn();
-  if(pm==="denied"){w.innerHTML=`<p class="note nhelp">${TT("Notificaciones desactivadas para esta web.","Notifications are off for this site.")} ${deniedHelp()}</p>`;return}
-  w.innerHTML=`<button class="btn" id="notifb" aria-pressed="${on}">${on?TT("Notificaciones activadas","Notifications on"):TT("Avisarme con una notificación","Notify me")}</button>`+
-    (on?`<button type="button" class="btn" id="notift">${TT("Probar","Test")}</button>`:"")+
-    `<span class="note nscope">${on?TT("Te avisará de las DXpediciones y entidades que te falten, con el modo y las bandas elegidos aquí abajo. ","It will alert you to DXpeditions and entities you need, in the mode and bands chosen below. ")+scopeTxt():TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>`+
-    (on?muteRow():"")+msg;
-  const b=$("notifb");if(b)b.onclick=async()=>{NMSG="";if(notifOn()){S.set("acracb_notif","0");notifUI();return}
-    if(IOSD&&!STDA){NHELP=true;w.insertAdjacentHTML("beforeend",notifHelp());return}
-    try{const p=await Notification.requestPermission();if(p==="granted"){S.set("acracb_notif","1");try{(L.alert&&L.alert.items||[]).forEach(x=>SEEN.add(x.call+"|"+x.band))}catch(e){}
-      const ok=await notify("ACRACB DX",TT("Notificaciones activadas: te avisaré de lo que te falte.","Notifications on: I will let you know about what you need."),"acracb-on");if(!ok)NMSG=TT("El permiso está concedido, pero este navegador no ha mostrado la notificación de prueba.","Permission is granted, but this browser did not show the test notification.")}}catch(e){}
-    notifUI();try{window.ACRACB_updSched&&ACRACB_updSched()}catch(e){}};
-  const t=$("notift");if(t)t.onclick=async()=>{const ok=await notify(TT("Prueba de ACRACB DX","ACRACB DX test"),TT("Si ves esto, las notificaciones funcionan en este aparato.","If you can see this, notifications work on this device."),"acracb-test");NMSG=ok?TT("Prueba enviada. Si no la ves, revisa el modo No molestar o Concentración del aparato.","Test sent. If you do not see it, check the device's Do Not Disturb or Focus mode."):TT("Este navegador no ha podido mostrarla.","This browser could not show it.");notifUI()}}
-const SEEN=new Set((()=>{try{return JSON.parse(S.get("acracb_nseen")||"[]")}catch(e){return []}})());
-function checkNotify(){if(!notifOn())return;if(window.ACRACB_alMuted&&ACRACB_alMuted())return;const al=L.alert;if(!al||!al.items)return;const fresh=al.items.filter(x=>{if(window.ACRACB_alOK&&!ACRACB_alOK(x))return false;const k=x.call+"|"+x.band;if(SEEN.has(k))return false;SEEN.add(k);return true});
-  if(fresh.length){const x=fresh[0];const EN=window.ACRACB_LANG==="en";notify(`${x.call} ${EN?"on":"en"} ${BANDS[x.band]||""} ${x.mode||""}`.trim(),`${x.f} · ${x.t} UTC · ${EN?"you need it":"te falta"}${x.need?" ("+x.need+")":""}${fresh.length>1?(EN?` · and ${fresh.length-1} more`:` · y ${fresh.length-1} más`):""}`,"acracb-"+x.call+"-"+x.band);S.set("acracb_nseen",JSON.stringify([...SEEN].slice(-300)))}}
-document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("#notifw [data-mute],#notifw [data-unmute]"))setTimeout(()=>{try{notifUI()}catch(e){}},30)});
-
+/* 2.8.27: se quita el antiguo botón «Solo parques y cumbres»: nunca llegaba a mostrarse y el buscador del clúster ya filtra POTA, SOTA y WWFF */
 /* =================== arranque =================== */
 function all(){try{meteorNote()}catch(e){}try{qrpCard()}catch(e){}try{renderHeard()}catch(e){}try{notifUI()}catch(e){}}
-function hook(){wrapSpots();
+function hook(){
   try{const r0=refresh;refresh=function(){const v=r0.apply(this,arguments);all();return v}}catch(e){}
   try{const a0=renderAlerts;renderAlerts=function(){const v=a0.apply(this,arguments);try{notifUI()}catch(e){}try{checkNotify()}catch(e){}return v}}catch(e){}
   all();try{checkNotify()}catch(e){}}
