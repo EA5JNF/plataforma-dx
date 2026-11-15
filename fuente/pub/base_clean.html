@@ -1077,8 +1077,27 @@ function locToLL(s){s=normLoc(s)||"IM98RI99";let lon=(s.charCodeAt(0)-65)*20-180
   if(s.length>=6){w/=24;h/=24;lon+=(s.charCodeAt(4)-65)*w;lat+=(s.charCodeAt(5)-65)*h}if(s.length>=8){w/=10;h/=10;lon+=(+s[6])*w;lat+=(+s[7])*h}if(s.length>=10){w/=24;h/=24;lon+=(s.charCodeAt(8)-65)*w;lat+=(s.charCodeAt(9)-65)*h}
   return [lon+w/2,lat+h/2]}
 const locName=()=>"Locator "+$("loc").value;
-function brgJS(a,b){const la1=a[1]*D2R,la2=b[1]*D2R,dl=(b[0]-a[0])*D2R;const y=Math.sin(dl)*Math.cos(la2),x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl);return (Math.atan2(y,x)/D2R+360)%360}
-function distJS(a,b){const la1=a[1]*D2R,la2=b[1]*D2R,dl=(b[0]-a[0])*D2R;return RE*Math.acos(Math.max(-1,Math.min(1,Math.sin(la1)*Math.sin(la2)+Math.cos(la1)*Math.cos(la2)*Math.cos(dl))))}
+function brgJS(a,b){const r=gVinc(a,b);if(r&&r.m>0)return r.az;return brgS(a,b)}
+function brgS(a,b){const la1=a[1]*D2R,la2=b[1]*D2R,dl=(b[0]-a[0])*D2R;const y=Math.sin(dl)*Math.cos(la2),x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl);return (Math.atan2(y,x)/D2R+360)%360}
+/* 2.8.38: distancias y rumbos sobre el elipsoide WGS84 (Vincenty) en toda la plataforma, iguales a los de las tarjetas;
+   la esfera queda solo como reserva cuando Vincenty no converge (casi antípodas) */
+const GWA=6378137,GWF=1/298.257223563,GWB=GWA*(1-GWF);
+function gVinc(p1,p2){const L=(p2[0]-p1[0])*D2R,U1=Math.atan((1-GWF)*Math.tan(p1[1]*D2R)),U2=Math.atan((1-GWF)*Math.tan(p2[1]*D2R));
+  const sU1=Math.sin(U1),cU1=Math.cos(U1),sU2=Math.sin(U2),cU2=Math.cos(U2);let l=L,lp,it=0,sS,cS,sg,sA,c2A,c2m;
+  do{const sl=Math.sin(l),cl=Math.cos(l);sS=Math.sqrt((cU2*sl)**2+(cU1*sU2-sU1*cU2*cl)**2);if(sS===0)return {m:0,az:0};
+    cS=sU1*sU2+cU1*cU2*cl;sg=Math.atan2(sS,cS);sA=cU1*cU2*sl/sS;c2A=1-sA*sA;c2m=c2A?cS-2*sU1*sU2/c2A:0;
+    const C=GWF/16*c2A*(4+GWF*(4-3*c2A));lp=l;l=L+(1-C)*GWF*sA*(sg+C*sS*(c2m+C*cS*(-1+2*c2m*c2m)))}while(Math.abs(l-lp)>1e-12&&++it<200);
+  if(it>=200)return null;
+  const u2=c2A*(GWA*GWA-GWB*GWB)/(GWB*GWB),A=1+u2/16384*(4096+u2*(-768+u2*(320-175*u2))),B=u2/1024*(256+u2*(-128+u2*(74-47*u2)));
+  const dS=B*sS*(c2m+B/4*(cS*(-1+2*c2m*c2m)-B/6*c2m*(-3+4*sS*sS)*(-3+4*c2m*c2m)));
+  const az=Math.atan2(cU2*Math.sin(l),cU1*sU2-sU1*cU2*Math.cos(l));return {m:GWB*A*(sg-dS),az:(az/D2R+360)%360}}
+function gLoop(p1,p2){const v=p=>{const la=p[1]*D2R,lo=p[0]*D2R;return [Math.cos(la)*Math.cos(lo),Math.cos(la)*Math.sin(lo),Math.sin(la)]};
+  const a=v(p1),b=v(p2);const n=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];const k=Math.hypot(...n);if(!k)return 2*Math.PI*6371008.8;
+  const nz2=(n[2]/k)**2,bg=1/Math.sqrt(nz2/(GWA*GWA)+(1-nz2)/(GWB*GWB)),h=((GWA-bg)/(GWA+bg))**2;return Math.PI*(GWA+bg)*(1+3*h/(10+Math.sqrt(4-3*h)))}
+function distS(a,b){const la1=a[1]*D2R,la2=b[1]*D2R,dl=(b[0]-a[0])*D2R;return RE*Math.acos(Math.max(-1,Math.min(1,Math.sin(la1)*Math.sin(la2)+Math.cos(la1)*Math.cos(la2)*Math.cos(dl))))}
+function distJS(a,b){const r=gVinc(a,b);return r?r.m/1000:distS(a,b)}
+/* camino largo: la vuelta completa por ese círculo máximo menos el corto */
+function lpKm(a,b){return Math.max(0,gLoop(a,b)/1000-distJS(a,b))}
 function dest(p,b,km){const la=p[1]*D2R,lo=p[0]*D2R,br=b*D2R,d=km/RE;const la2=Math.asin(Math.sin(la)*Math.cos(d)+Math.cos(la)*Math.sin(d)*Math.cos(br));const lo2=lo+Math.atan2(Math.sin(br)*Math.sin(d)*Math.cos(la),Math.cos(d)-Math.sin(la)*Math.sin(la2));return [((lo2/D2R)+540)%360-180,la2/D2R]}
 const PLA=80.8*D2R,PLO=-72.7*D2R;
 function gml(p){const la=p[1]*D2R,lo=p[0]*D2R;return Math.abs(Math.asin(Math.sin(la)*Math.sin(PLA)+Math.cos(la)*Math.cos(PLA)*Math.cos(lo-PLO))/D2R)}
@@ -1086,7 +1105,7 @@ function gm2geo(glat,glon){const a=glat*D2R,b=glon*D2R;const x=Math.cos(a)*Math.
 function gmax(tx,az,km){let m=0;for(let i=0;i<=30;i++)m=Math.max(m,gml(dest(tx,az,km*i/30)));return Math.round(m)}
 const TCACHE={};
 function TG(){const l=$("loc").value;if(TCACHE[l])return TCACHE[l];const tx=locToLL(l);
-  TCACHE[l]=V.meta.map((m,i)=>{const [id,name,dxcc,alias,lat,lon,cq,cont,act,rare,os,ol]=m;const p=[lon,lat],km=distJS(tx,p),az=brgJS(tx,p),laz=(az+180)%360,lkm=40030-km;
+  TCACHE[l]=V.meta.map((m,i)=>{const [id,name,dxcc,alias,lat,lon,cq,cont,act,rare,os,ol]=m;const p=[lon,lat],km=distJS(tx,p),az=brgJS(tx,p),laz=(az+180)%360,lkm=lpKm(tx,p);
     const hasL=ol>=0&&km>=9000;return {i,id,name,dxcc,alias,lat,lon,cq,cont,act,rare:!!rare,os,ol,l:hasL,km:Math.round(km),az:Math.round(az),laz:Math.round(laz),lkm:Math.round(lkm),gm:gmax(tx,az,km),lgm:hasL?gmax(tx,laz,lkm):0}});return TCACHE[l]}
 const T=id=>TG().find(x=>x.id===id);
 function nearestT(p,dxcc){let best=null,bd=1e9;for(const t of TG()){if(dxcc&&t.dxcc!==dxcc)continue;const d=distJS(p,[t.lon,t.lat]);if(d<bd){bd=d;best=t}}if(!best&&dxcc)return nearestT(p,0);return best}
@@ -1369,8 +1388,12 @@ const ageTxt=a=>a==null?"":a<90?`hace ${a} min`:a<1440?`hace ${Math.round(a/60)}
 /* «cercana» = la estación anunciada está en EA, CT, C3, ZB o CN (con sus islas); si no, se trata como DX o como indicador */
 const NEARCC=new Set(["ES","PT","AD","GI","MA"]);
 function spotKind(s){if(s.kind!=="near")return s.kind;const e=callEnt(s.call);if(e&&NEARCC.has(e.cc))return "near";return s.dx&&distJS(TXP,s.dx)>2500?"dx":"ind"}
-function spotEval(s,lh){const K=spotKind(s);const far=K==="ind"&&s.from&&s.from[0]?s.from[0]:s.dx;const t=K==="ind"?nearestT(far,0):tFor(s);if(!t)return null;const a=prob(t,lh,s.band,false),c=prob(t,lh,s.band,true),lp=c.p>a.p&&c.p>=.05;const p=[far[0],far[1]],az=Math.round(brgJS(TXP,p)),km=Math.round(distJS(TXP,p));
-  return {t,lp,p:lp?c.p:a.p,pSP:a.p,pLP:c.p,az,km,laz:(az+180)%360,lkm:40030-km}}
+/* 2.8.38: rumbo, distancia y probabilidad de un spot son SIEMPRE desde tu estación hasta la del indicativo.
+   Lo que indica que la oigan lejos (camino abierto hacia el que la oye) va aparte, en spotEvalFar. */
+function spotEval(s,lh){if(!s||!s.dx)return null;const t=tFor(s)||nearestT(s.dx,0);if(!t)return null;const a=prob(t,lh,s.band,false),c=prob(t,lh,s.band,true),lp=c.p>a.p&&c.p>=.05;const az=Math.round(brgJS(TXP,s.dx))%360,km=Math.round(distJS(TXP,s.dx));
+  return {t,lp,p:lp?c.p:a.p,pSP:a.p,pLP:c.p,az,km,laz:(az+180)%360,lkm:Math.round(lpKm(TXP,s.dx))}}
+function spotEvalFar(s,lh){const K=spotKind(s);const far=K==="ind"&&s.from&&s.from[0]?s.from[0]:s.dx;const t=K==="ind"?nearestT(far,0):tFor(s);if(!t)return null;const a=prob(t,lh,s.band,false),c=prob(t,lh,s.band,true),lp=c.p>a.p&&c.p>=.05;const p=[far[0],far[1]],az=Math.round(brgJS(TXP,p))%360,km=Math.round(distJS(TXP,p));
+  return {t,lp,p:lp?c.p:a.p,pSP:a.p,pLP:c.p,az,km,laz:(az+180)%360,lkm:Math.round(lpKm(TXP,p))}}
 const MBS=()=>{const s=(st.mbs||[]).filter(b=>BI0().includes(b));return s.length?s:null};
 function bestIn(t,lh,lp,bs){let r={p:0,b:bs[0],muf:0,lp:!!lp};for(const b of bs){const x=prob(t,lh,b,lp);if(x.p>r.p)r={...x,b,lp:!!lp}}return r}
 function mapProb(t,lh){const sel=MBS();const one=lp=>sel?bestIn(t,lh,lp,sel):best(t,lh,lp);
@@ -1543,13 +1566,13 @@ function renderPop(){const p=st.pop,el=$("mpop");if(!p){el.hidden=true;return}co
      (d.qsx&&MOD()==="ssb"?`<p style="margin:4px 0 0"><b>Frecuencias de fonía:</b> ${esc(d.qsx)}</p>`:`<p class="note" style="margin:4px 0 0">${MOD()==="ssb"?"Frecuencias de fonía no publicadas. ":""}Habituales en DXpediciones en ${MD().s}: ${MD().dxq}.${d.qsx&&MOD()!=="ssb"?" Anunciadas: "+esc(d.qsx)+".":""}</p>`)+
      (onc.length?`<p style="margin:4px 0 0;color:#ffd76a"><b>◆ En el clúster:</b> ${onc.map(s=>`${s.f} a las ${s.t} UTC`).join(", ")}</p>`:"")+
      `<p class="note" style="margin:4px 0 0">${d.pilot?"Piloto: "+esc(d.pilot)+" · ":""}<a href="https://clublog.org/livestream/${encodeURIComponent(d.call.split(" ")[0].split("/")[0]==="6W"?d.call.split(" ")[0]:d.call.split(" ")[0])}" target="_blank" rel="noopener">Log en vivo (Club Log)</a>${d.web?` · <a href="${esc(d.web)}" target="_blank" rel="noopener">Web</a>`:""}</p>
-     <p class="note" style="margin:4px 0 0">Su posición: corto ${az}° ${cab(az)} · ${fk(km)} km — largo ${(az+180)%360}° ${cab((az+180)%360)} · ${fk(40030-km)} km. Previsión con el destino más cercano: ${esc(t?t.name:"—")}.</p>`+(t?bandRows(t,lh)+calBtns(t):"")}
-  else if(p.k==="s"){const s=SPOTS()[p.i];if(!s){closePop();return}const ind=spotKind(s)==="ind",e=ind?spotEval(Object.assign({},s,{kind:"dx"}),lh):spotEval(s,lh),ei=ind?spotEval(s,lh):null;
+     <p class="note" style="margin:4px 0 0">Su posición: corto ${az}° ${cab(az)} · ${fk(km)} km — largo ${(az+180)%360}° ${cab((az+180)%360)} · ${fk(lpKm(TXP,[d.lon,d.lat]))} km. Previsión con el destino más cercano: ${esc(t?t.name:"—")}.</p>`+(t?bandRows(t,lh)+calBtns(t):"")}
+  else if(p.k==="s"){const s=SPOTS()[p.i];if(!s){closePop();return}const ind=spotKind(s)==="ind",e=spotEval(s,lh),ei=ind?spotEvalFar(s,lh):null;
     h=`<h3>◆ ${CS(s.call)} · ${esc(s.f)}</h3><p style="margin:0">${BANDS[s.band]} · ${esc(s.t)} UTC (${ageTxt(spotAge(s))}) · lo oye ${CSL(s.by)}</p><p class="note" style="margin:4px 0 0">${esc(s.c)}</p>`+
      (e?`<p style="margin:6px 0 0">Para ti: <b>${Math.round(e.p*100)} %</b> por ${e.lp?"paso largo":"paso corto"} (corto ${e.az}° ${cab(e.az)} · ${fk(e.km)} km · largo ${e.laz}° ${cab(e.laz)} · ${fk(e.lkm)} km).</p><p class="note" style="margin:4px 0 0"><i>Por qué:</i> ${explain(e.t,s.band,lh,e.lp,e.km)}</p>`:"")+
      (ei?`<p style="margin:8px 0 0;padding-top:6px;border-top:1px solid var(--line)">Que la oigan tan lejos indica que ${BANDS[s.band]} está abierta entre Europa y ${esc(ei.t.name)}. Para ti, hacia allí: <b>${Math.round(ei.p*100)} %</b> (${ei.lp?"paso largo":"paso corto"}, ${ei.az}° ${cab(ei.az)} · ${fk(ei.km)} km).</p>`:"")+(e?calBtns(e.t):"")}
   else if(p.k==="b"){const b=BCN[p.i];const t=nearestT([b[2],b[3]],0);const az=Math.round(brgJS(TXP,[b[2],b[3]])),km=Math.round(distJS(TXP,[b[2],b[3]]));const heard=(L.beacons||[]).filter(x=>x.call===b[0]);
-    h=`<h3>Baliza ${CS(b[0])}</h3><p style="margin:0">${esc(b[1])} · corto ${az}° ${cab(az)} · ${fk(km)} km — largo ${(az+180)%360}° ${cab((az+180)%360)} · ${fk(40030-km)} km</p><p class="note" style="margin:4px 0 0">Emite 10 s en cada frecuencia (14.100 → 18.110 → 21.150 → 24.930 → 28.200) y repite cada 3 min, bajando de 100 W a 10, 1 y 0,1 W. Si la oyes con la potencia más baja, el camino está muy abierto.</p>`+
+    h=`<h3>Baliza ${CS(b[0])}</h3><p style="margin:0">${esc(b[1])} · corto ${az}° ${cab(az)} · ${fk(km)} km — largo ${(az+180)%360}° ${cab((az+180)%360)} · ${fk(lpKm(TXP,[b[2],b[3]]))} km</p><p class="note" style="margin:4px 0 0">Emite 10 s en cada frecuencia (14.100 → 18.110 → 21.150 → 24.930 → 28.200) y repite cada 3 min, bajando de 100 W a 10, 1 y 0,1 W. Si la oyes con la potencia más baja, el camino está muy abierto.</p>`+
      (heard.length?`<p style="margin:4px 0 0"><b>Oída hoy:</b> ${heard.map(x=>`${esc(x.f)} a las ${esc(x.t)} UTC${x.by?" por "+CSL(String(x.by||"").split(/[ ,]+/)):""}`).join(", ")}</p>`:"")+
      `<table><tr><th>Frecuencia</th><th>Previsión (corto)</th></tr>${BFQ.map(([f,bi])=>{const q=prob(t,lh,bi,false);return `<tr><td>${f}</td><td class="${cls(q.p)}">${q.na?"—":pct(q.p)} %</td></tr>`}).join("")}</table>`}
   el.innerHTML=`<button class="x" aria-label="Cerrar" id="mpx">×</button>`+h;el.hidden=false;
@@ -1591,7 +1614,7 @@ function renderSide(){
   if(!sp.length)h+=`<p>No hay spots de fonía útiles en las bandas de este modo. ${L.spotsSrc?"(Leídos: "+esc(L.spotsSrc)+".)":""}</p>`;
   dxs.slice(0,6).forEach(({s,e,a})=>{const nb=bandNeed(e.t,s.band);const v=e.p>=.3?"Merece la pena ir ya":e.p>=.1?"Posible con paciencia: llama cuando baje el pile-up":"Poco según el modelo, pero el spot dice que hoy la banda va mejor: escucha un par de minutos";
     h+=`<p>◆ <b>${CS(s.call)}</b> en <b>${esc(s.f)}</b> (${BANDS[s.band]}), ${ageTxt(a)}: lo copian ${CSL(s.by," y ")}${nb===true?' <span class="need">· te falta en esta banda</span>':""}. Para ti, por ${e.lp?"paso largo":"paso corto"}: <b>${Math.round(e.p*100)} %</b> (rumbo ${e.lp?e.laz:e.az}° ${cab(e.lp?e.laz:e.az)}). ${v}.</p><details class="why"><summary>Por qué</summary><p>${explain(e.t,s.band,lh,e.lp)}</p></details>`});
-  ind.slice(0,3).forEach(({s,e,a})=>{h+=`<p><b>Indicador</b> ${ageTxt(a)}: ${esc(s.c)} (${esc(s.f)}). ${BANDS[s.band]} está abierta ahora en esa dirección. Tu modelo hacia ${esc(e.t.name)}: <b>${Math.round(e.p*100)} %</b>.</p>`});
+  ind.slice(0,3).forEach(({s,a})=>{const e=spotEvalFar(s,lh);if(!e)return;h+=`<p><b>Indicador</b> ${ageTxt(a)}: ${esc(s.c)} (${esc(s.f)}). ${BANDS[s.band]} está abierta ahora en esa dirección. Tu modelo hacia ${esc(e.t.name)}: <b>${Math.round(e.p*100)} %</b>.</p>`});
   if(bcnH.length)h+=`<p><b>Balizas oídas:</b> ${bcnH.slice(0,6).map(x=>`${CS(x.call)} en ${esc(x.f)} (${esc(x.t)} UTC)`).join(", ")}. Confirman que esas direcciones están abiertas.</p>`;
   const newest=sp.length?Math.min(...sp.map(x=>x.a??1e9)):null;
   if(sp.length&&!isNow)h+=`<p class="note">Los spots son de las ${esc((L.updatedUTC||"").slice(11,16))} UTC; estás viendo otra hora.</p>`;
@@ -2020,13 +2043,13 @@ function openCall(call){call=String(call||"").toUpperCase().trim();if(!call)retu
   const ref=sp[0]||(dxp?{dx:[dxp.lon,dxp.lat],dxcc:dxp.dxcc}:null);
   let t=ref?tFor(ref):null;if(!t&&e)t=TG().find(x=>x.dxcc===e.dxcc)||null;
   const p=ref&&ref.dx?ref.dx:(t?[t.lon,t.lat]:null);const lh=localNow();
-  const az=p?Math.round(brgJS(TXP,p)):null,km=p?Math.round(distJS(TXP,p)):null,laz=az!=null?(az+180)%360:null,lkm=km!=null?40030-km:null;
+  const az=p?Math.round(brgJS(TXP,p)):null,km=p?Math.round(distJS(TXP,p)):null,laz=az!=null?(az+180)%360:null,lkm=p?Math.round(lpKm(TXP,p)):null;
   const u=e&&flagURL(e.cc);const need=t?entNeed(t):null;
   let h=`<div class="cph"><div><div class="cpc">${esc(call)}</div><div class="cpe">${u?`<img class="fl" src="${u}" alt="" width="24" height="16"> `:""}${esc(e?e.name:"Entidad desconocida")}${t?` · ${esc(CONTN[t.cont]||t.cont)} · zona CQ ${t.cq}`:""}${e?` · DXCC ${e.dxcc}`:""}</div>
     <div class="cpb">${dxp?'<span class="agr ok">DXpedición activa</span>':""}${dxp&&dxp.mw?`<span class="agr dif">Club Log Most Wanted nº ${esc(dxp.mw)}</span>`:""}${t&&t.rare?'<span class="agr dif">Entidad rara</span>':""}${need===true?'<span class="agr dif">Te falta</span>':need===false?'<span class="agr">Ya confirmada</span>':""}${sp.some(s=>s.ns>1)?`<span class="agr ok">en ${Math.max(...sp.map(s=>s.ns||1))} clústeres</span>`:""}</div></div>
     <button class="btn cpx" id="cpx" aria-label="Cerrar">Cerrar</button></div>`;
   /* en el aire */
-  h+=`<h3>En el aire ahora</h3>`+(sp.length?sp.map(s=>{const a=spotAge(s);const ev=spotEval(s,lh);return `<div class="cps"><b style="color:${BC[s.band]}">${esc(s.f)} MHz</b> · ${BANDS[s.band]} · ${esc(String(spotMode(s)).toUpperCase())} · ${esc(s.t)} UTC${a!=null?` (${ageTxt(a)})`:""}${s.nw?' <span class="nwb">NUEVO</span>':""}<div class="note">Lo oye ${CSL(s.by)}${s.c?` · ${esc(s.c)}`:""}</div>${(()=>{const tt=spotKind(s)==="ind"?tFor(s):(ev&&ev.t);if(!tt)return "";const sp=prob(tt,lh,s.band,false).p,lp=tt.l?prob(tt,lh,s.band,true).p:0;return `<div class="note">Te llega con un <b>${Math.round(Math.max(sp,lp)*100)} %</b> de probabilidad${lp>sp?" por el camino largo":""}.</div>`})()}</div>`}).join(""):`<p class="note">No aparece en los clústeres de la última hora${L.spotsChecked?` (revisados a las ${esc(String(L.spotsChecked).slice(11,16))} UTC)`:""}.</p>`);
+  h+=`<h3>En el aire ahora</h3>`+(sp.length?sp.map(s=>{const a=spotAge(s);const ev=spotEval(s,lh);return `<div class="cps"><b style="color:${BC[s.band]}">${esc(s.f)} MHz</b> · ${BANDS[s.band]} · ${esc(String(spotMode(s)).toUpperCase())} · ${esc(s.t)} UTC${a!=null?` (${ageTxt(a)})`:""}${s.nw?' <span class="nwb">NUEVO</span>':""}<div class="note">Lo oye ${CSL(s.by)}${s.c?` · ${esc(s.c)}`:""}</div>${(()=>{const tt=ev&&ev.t;if(!tt)return "";const sp=prob(tt,lh,s.band,false).p,lp=tt.l?prob(tt,lh,s.band,true).p:0;return `<div class="note">Te llega con un <b>${Math.round(Math.max(sp,lp)*100)} %</b> de probabilidad${lp>sp?" por el camino largo":""}.</div>`})()}</div>`}).join(""):`<p class="note">No aparece en los clústeres de la última hora${L.spotsChecked?` (revisados a las ${esc(String(L.spotsChecked).slice(11,16))} UTC)`:""}.</p>`);
   /* DXpedición */
   if(dxp)h+=`<h3>DXpedición</h3><p>${esc(dxp.info||"")}</p><div class="cpg">${[["Hasta",dxp.until],["Modos",dxp.modes],["Escucha (QSX)",dxp.qsx],["Piloto",dxp.pilot],["QSL",dxp.qsl]].filter(x=>x[1]).map(([k,v])=>`<div><span class="note">${k}</span><b>${esc(String(v))}</b></div>`).join("")}</div>${dxp.web?`<p><a href="${esc(dxp.web)}" target="_blank" rel="noopener">Web de la expedición</a></p>`:""}`;
   /* camino */

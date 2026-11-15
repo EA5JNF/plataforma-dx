@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.38 · 15/11/2026
+- Distancia y rumbo de un indicativo, siempre desde tu estación hasta esa estación, en toda la plataforma:
+  - El cálculo de cada spot (rumbo, distancia, probabilidad y «Por qué») es siempre hacia la estación del indicativo, en el mapa, el clúster, los avisos, «Qué hacer», la búsqueda y la ficha de cada indicativo. Antes, en las estaciones cercanas oídas lejos (YU5R oída en EE. UU.), el porcentaje de algunas tarjetas se calculaba hacia el que la oía.
+  - Quién la oye se sigue mostrando, y lo que indica (camino abierto hacia allí) va aparte: al final de la ficha del mapa y en «Indicador» de «Qué hacer».
+  - Una sola forma de medir en toda la plataforma: el elipsoide WGS84 (Vincenty), con el camino largo como la vuelta real por ese círculo máximo. Antes el mapa medía sobre una esfera y las tarjetas sobre el elipsoide, y la misma estación salía con unos km de diferencia (YU5R 1.881 en el mapa y 1.884 en el clúster; JA1AAA 10.818 y 10.842).
+  - Comprobado leyendo todas las distancias de todas las tarjetas y fichas en español e inglés: todas coinciden con la de tu QTH a la estación.
+- En español e inglés. / Distance and bearing of a callsign are always from your station to that station, measured the same way everywhere.
+
 ## 2.8.37 · 15/11/2026
 - Mapa › ficha de un spot, rehecha para que todo lo que dice sea de esa estación:
   - «Para ti», rumbo, distancia y «Por qué» son siempre los de la estación del spot (YU5R: 61° ENE, 1.881 km), también cuando la oye alguien lejos.
