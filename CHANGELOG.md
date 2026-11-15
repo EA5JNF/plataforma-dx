@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.35 · 15/11/2026
+- Distancias y rumbos correctos en toda la plataforma (mapa, clúster, avisos, «Qué hacer», búsqueda y actividades en portable). Algunas fuentes dan como posición «exacta» de una estación la dirección de QRZ de su mánager (una DXpedición a Mozambique situada en Alemania) o el locator del que avisa escrito en el comentario. Ahora toda posición que cae lejos de la entidad del indicativo se descarta y se usa la de la entidad (o la de su zona en los países grandes). El límite es de 1.300 km, y más en los países grandes (EE. UU., Canadá, Rusia, Australia, Brasil, China…). También se corrigen al abrir la página los spots guardados de antes.
+- En español e inglés. / Wrong station positions (manager's address, spotter's grid) are discarded: distances and bearings are now correct everywhere.
+
 ## 2.8.34 · 15/11/2026
 - Mapa fiel al clúster y estable: cada estación sigue en el mismo sitio entre actualizaciones (si una vez ninguna fuente trae su posición exacta, se mantiene la anterior en lugar de saltar al centro del país), y los que la oyen se acumulan (hasta 4) en lugar de cambiar de una actualización a otra. Comprobado en cinco rondas con datos que cambian: el mapa muestra exactamente las estaciones del clúster, sin moverse ni parpadear.
 - En español e inglés. / Map spots now stay in place and match the cluster exactly across updates.

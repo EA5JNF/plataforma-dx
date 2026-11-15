@@ -19,6 +19,9 @@ const AREA={
  339:{re:/^(?:J[A-S]|7[J-N]|8[J-N])(\d)/,p:{1:[139.7,35.7],2:[137,35],3:[135.5,34.7],4:[132.5,34.4],5:[133.5,33.8],6:[130.5,32.8],7:[140.9,38.3],8:[141.3,43.1],9:[136.6,36.6],0:[138.2,36.6]}},
  108:{re:/^(?:P[P-Y]|Z[V-Z])(\d)/,p:{1:[-43.2,-22.9],2:[-46.6,-23.5],3:[-51.2,-30],4:[-44,-19.9],5:[-49.3,-25.4],6:[-38.5,-13],7:[-35.2,-8],8:[-48.5,-1.5],9:[-49.3,-16.7]}},
  318:{re:/^(?:B[A-Z]?)(\d)/,p:{1:[116.4,39.9],2:[126.6,45.8],3:[117.2,39.1],4:[121.5,31.2],5:[119.3,26.1],6:[114.3,30.6],7:[113.3,23.1],8:[104.1,30.7],9:[103.8,36.1],0:[87.6,43.8]}}};
+/* radio máximo (km) entre el centro de la entidad y una posición de la estación que se pueda creer; 1.300 km para el resto */
+const POSMAX={15:4500,54:2500,291:3500,1:3500,6:2000,150:3000,108:3000,100:2500,318:3000,324:2200,130:1800,237:2000,13:4000,112:2500,50:2000,327:3000,400:1500,436:1500,466:1500,414:1500,378:1500,330:1500,363:1500,136:1500,116:1500,104:1500,462:1500,266:1500,339:2000,284:1500,224:1500,281:1500,227:1500,248:1500,230:1500};
+function posOK(pos,e){return !(pos&&e&&e.pos&&distKm(pos,e.pos)>(POSMAX[e.dxcc]||1300))}
 function areaPos(call,e){try{if(!e||!AREA[e.dxcc])return e?e.pos:null;const A=AREA[e.dxcc];const c=String(call||"").toUpperCase();
   const sl=c.match(/\/(\d)$/);const d=sl?sl[1]:((c.split("/").find(x=>A.re.test(x))||"").match(A.re)||[])[1];return (d!=null&&A.p[d])||e.pos}catch(x){return e?e.pos:null}}
 window.ACRACB_areaPos=(call)=>{try{const e=callEnt(call);if(!e||!e.dxcc)return null;return areaPos(call,{dxcc:e.dxcc,pos:(()=>{try{const m=(V.meta||[]).find(x=>x[2]===e.dxcc);return m?[m[5],m[4]]:null}catch(x){return null}})()})}catch(e){return null}};
@@ -280,9 +283,9 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
       if(!o||tt>o._t){const n=o?o.n+1:1;o={call:dc,sc:call,f:fmtF(f),band:b,mode:md,t:new Date(tt).toISOString().slice(11,16),utc:iso(tt),by:by||"",c:String(s.c||"").replace(/\s+/g," ").trim().slice(0,60),n,_t:+tt};DXO.set(k,o)}else o.n++}}
     {const rm=String(s.ref||"").match(/^(POTA|SOTA|WWFF)\s+(\S+)/i)||String(s.c||"").match(/\b(POTA|SOTA|WWFF)[ :#-]*([A-Z0-9]{1,4}[\/-][A-Z0-9\/-]{2,10})\b/i);
       const rf0=rm?String(rm[2]).toUpperCase().match(/^[A-Z0-9][A-Z0-9\/-]{2,15}/):null;if(rm&&rf0&&age<=60){const pg=rm[1].toUpperCase(),rf=rf0[0],k=call+"|"+rf;let o=ACT.get(k);
-        if(!o||tt>o._t){let dx=s.dxpos&&s.dxpos[0]!=null&&s.dxpos[1]!=null?[s.dxpos[0],s.dxpos[1]]:(o&&o.dx)||areaPos(call,ed)||null;
+        if(!o||tt>o._t){let dx=s.dxpos&&s.dxpos[0]!=null&&s.dxpos[1]!=null&&posOK([s.dxpos[0],s.dxpos[1]],ed)?[s.dxpos[0],s.dxpos[1]]:(o&&o.dx)||areaPos(call,ed)||null;
           o={call,prog:pg,ref:rf,f:fmtF(f),band:b,mode:modeFrom(f,s.c,s.mode),t:new Date(tt).toISOString().slice(11,16),utc:iso(tt),by:by||"",c:String(s.c||"").replace(/\s+/g," ").trim().slice(0,50),dx,dxcc:ed?ed.dxcc:null,_t:+tt};ACT.set(k,o)}
-        else if(!o.dx&&s.dxpos&&s.dxpos[0]!=null)o.dx=[s.dxpos[0],s.dxpos[1]]}}
+        else if(!o.dx&&s.dxpos&&s.dxpos[0]!=null&&posOK([s.dxpos[0],s.dxpos[1]],ed))o.dx=[s.dxpos[0],s.dxpos[1]]}}
     if(age>(b>=10?120:60))continue;const key=call+"|"+Math.round(f*500);
     let g=groups.get(key);if(!g){g={call,f,band:b,t:tt,by:[],from:[],srcs:new Set(),c:[],ref:"",mode:null,ed,dxpos:null,skim:false,eu:false};groups.set(key,g)}
     g.srcs.add(s.src);if(s.src==="RBN"||s.src==="PSK Reporter")g.skim=true;if(tt>g.t)g.t=tt;
@@ -295,6 +298,9 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     /* 2.8.34: la misma estación sigue en el mismo sitio del mapa: si esta vez ninguna fuente trae su posición exacta, se usa la
        de la actualización anterior; y los que la oían antes se suman a los de ahora (hasta 4) */
     if(o0){if(!g.dxpos&&o0.dxp&&o0.dx)g.dxpos=o0.dx;(o0.by||[]).forEach((x,i)=>{if(g.by.length<4&&!g.by.includes(x)){g.by.push(x);g.from.push((o0.from||[])[i]||[0,0])}});if(o0.eu)g.eu=true}
+    /* 2.8.35: una posición «exacta» que cae lejos de la entidad del indicativo es falsa (la dirección de QRZ del mánager de una
+       DXpedición, el locator del que avisa escrito en el comentario...): se descarta y se usa la zona de la entidad */
+    if(g.dxpos&&!posOK(g.dxpos,e))g.dxpos=null;
     const dx=g.dxpos||areaPos(g.call,e);if(!dx)continue;const dxcc=e?e.dxcc:null,cont=e?e.cont:null;let kind;
     const far=()=>g.from.filter(p=>p[0]||p[1]).map(p=>distKm(dx,p));
     if(NEARDX.has(dxcc))kind="near";
@@ -310,7 +316,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
      (una fuente que no responde ya no hace desaparecer estaciones del mapa), y el tope se aplica por antigüedad: antes se
      daba prioridad a los «nuevos» y los demás salían y volvían a entrar en cada actualización */
   const got=new Set(spots.map(x=>x.call+"|"+Math.round(parseFloat(x.f)*500)));
-  for(const [k,p] of pm){if(got.has(k)||!p.utc)continue;const tt=ptime(p.utc);if(!tt)continue;const age=(t0-tt)/6e4;if(age<0||age>(p.band>=10?120:60))continue;spots.push(Object.assign({},p,{nw:false,_t:+tt}))}
+  for(const [k,p] of pm){if(got.has(k)||!p.utc)continue;const tt=ptime(p.utc);if(!tt)continue;const age=(t0-tt)/6e4;if(age<0||age>(p.band>=10?120:60))continue;const q=Object.assign({},p,{nw:false,_t:+tt});const pe=ent(p.call);if(pe&&!posOK(q.dx,pe)){q.dx=areaPos(p.call,pe)||q.dx;q.dxp=false}spots.push(q)}
   spots.sort((a,b)=>b._t-a._t);spots=spots.slice(0,150);
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);
   const heard=new Map();(prev.heard||[]).forEach(h=>{const l=ptime(h.last);if(l&&t0-l<=6*36e5)heard.set(h.dxcc,Object.assign({},h))});
@@ -393,7 +399,7 @@ function renderSrc(){let d=$("srcrep");const st=$("updst");if(!st)return;if(!d){
   const e=Object.entries(LAST);if(!e.length){d.hidden=true;return}d.hidden=false;
   d.innerHTML=`<summary>Fuentes de esta actualización</summary><div class="srcg">${e.sort((a,b)=>(b[1].ok-a[1].ok)||(!!b[1].nd-!!a[1].nd)||a[0].localeCompare(b[0],"es")).map(([n,v])=>`<span class="srci ${v.ok?"ok":v.nd?"nd":"ko"}"${v.nd?' title="La fuente responde, pero ahora no tiene datos útiles para tu zona"':""}>${v.ok?"✓":v.nd?"–":"✕"} ${n}<small>${v.ok?(v.cached?"dato reciente guardado":(v.ms/1000).toFixed(1).replace(".",",")+" s")+(v.note?" · "+v.note:""):v.err||"sin datos"}</small></span>`).join("")}</div><p class="note">Las marcadas con ✕ no dejan que una página las lea directamente o no respondieron: se mantiene su último dato bueno. Las marcadas con – responden, pero ahora no tienen datos para tu zona.</p>`}
 function boot(){const b=$("updbtn");if(!b)return;b.hidden=false;b.disabled=false;b.onclick=()=>updateAll(false);const c=$("updcl");if(c)c.hidden=true;
-  try{const c2=JSON.parse(S.get(KEY)||"null",SAFE);if(c2&&c2.updatedUTC&&(!L.updatedUTC||c2.updatedUTC>L.updatedUTC)){const al=c2.alert;delete c2.alert;applyLive(c2);if(al){L.alert=al;renderAlerts()}}}catch(e){}
+  try{const c2=JSON.parse(S.get(KEY)||"null",SAFE);if(c2&&c2.updatedUTC&&(!L.updatedUTC||c2.updatedUTC>L.updatedUTC)){(c2.spots||[]).forEach(q=>{const pe=ent(q.call);if(pe&&q.dx&&!posOK(q.dx,pe)){q.dx=areaPos(q.call,pe)||q.dx;q.dxp=false}});const al=c2.alert;delete c2.alert;applyLive(c2);if(al){L.alert=al;renderAlerts()}}}catch(e){}
   const age=(Date.now()-(Date.parse(L.updatedUTC)||Date.now()))/6e4;
   status(`Datos del ${madrid(L.updatedUTC||Date.now())}`+(age>180?` (hace ${age<1440?Math.round(age/60)+" h":Math.round(age/1440)+" días"}). Actualizando ahora…`:freqTxt()),age>180?"updst-err":"updst-ok");
   sched(age*6e4>=every()?1500:Math.max(1500,every()-age*6e4))}
