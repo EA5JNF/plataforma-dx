@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.9.1 · 15/11/2026
+- El alfabeto fonético, el código Q y el Morse para CW tienen pestaña propia: «Cómo funciona › Consulta», con las tablas abiertas. Antes estaban escondidos al final del glosario de Resumen; ahí queda un enlace directo, y otro en la Guía.
+- En español e inglés. / Phonetic alphabet, Q code and Morse moved to their own tab: How it works › Reference.
+
 ## 2.9.0 · 15/11/2026
 - «Qué hacer» pasa a estar dentro de «Ahora › Resumen», entre la mejor banda y la línea de 24 horas. Desaparece como pestaña aparte.
 - Con tu log cargado, en Avisos y en «Qué hacer» salen primero las entidades que te faltan y, entre ellas, las de estaciones que confirman por LoTW. Se indica con «te falta en esta banda y confirma por LoTW».

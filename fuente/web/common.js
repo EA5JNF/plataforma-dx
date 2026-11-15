@@ -263,6 +263,7 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
       T("En <b>DX</b> están el clúster, los avisos de DXpediciones y entidades raras, y los satélites.","<b>DX</b> holds the cluster, alerts for DXpeditions and rare entities, and satellites."),
       T("Sube tu log ADIF en <b>Países y log › Mi log</b> y la web te marcará lo que te falta.","Upload your ADIF log in <b>Countries &amp; log › My log</b> and the site will flag what you need."),
       T("En <b>DX › Avisos</b> puedes pedir que te avise con una notificación.","In <b>DX › Alerts</b> you can ask to be notified."),
+      T("El alfabeto fonético, el código Q y el Morse están en <b>Cómo funciona › Consulta</b>.","The phonetic alphabet, Q code and Morse are in <b>How it works › Reference</b>."),
       T("Instálala desde el menú del navegador («Añadir a pantalla de inicio»): se abre como una app y, sin conexión, muestra los últimos datos descargados.","Install it from the browser menu (“Add to Home Screen”): it opens like an app and, offline, shows the last data downloaded.")])}</ol>
       <h3>${T("Privacidad","Privacy")}</h3><ul>${li([
       T("Sin registro, sin cuentas y sin cookies, analítica ni seguimiento.","No sign-up, no accounts, and no cookies, analytics or tracking."),
