@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.17 · 15/11/2026
+- Vista compacta más compacta. Cada estación ocupa dos líneas: arriba el indicativo con su bandera, la frecuencia, el modo y hace cuánto; debajo la banda, las etiquetas en pequeño, el rumbo, el porcentaje y «¿Lo oyes?». El buscador del clúster cabe en una sola línea, con «Filtros» al lado. Los botones de filtro del clúster son más bajos y la leyenda de colores de los modos se oculta. La vista completa no cambia.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Tighter compact view: two lines per station, one-line cluster search, smaller cluster filters.
+
 ## 2.8.16 · 15/11/2026
 - «¿Lo oyes?» solo se abre al tocar ese texto, no al tocar cualquier parte de la tarjeta. El texto tiene una zona de toque cómoda en el móvil.
 - Las tarjetas de estaciones en las que ya has anotado si la oyes o si te oye se sombrean: en verde si la oyes o te oye, en rojo si no.
