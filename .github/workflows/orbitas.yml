@@ -1,11 +1,16 @@
 # Copia de las órbitas de los satélites de aficionado (TLE) dos veces al día en datos/tle-amateur.txt.
 # La plataforma la lee de su propia web, así que no depende de que CelesTrak deje descargar a cada navegador.
 # Fuente: CelesTrak (grupo «amateur»); si no responde, AMSAT (nasabare.txt). Datos públicos y gratuitos.
+# 2.8.29: también el estado de los satélites de la plataforma y de sus transmisores, de SatNOGS DB
+# (Libre Space Foundation, CC BY-SA 4.0, sin registro), en datos/satnogs.json. Los números NORAD son los de web/sats.js.
 name: Órbitas de satélites
 on:
   schedule:
     - cron: "41 5,17 * * *"   # 05:41 y 17:41 UTC
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [".github/workflows/orbitas.yml"]
 permissions:
   contents: write
 concurrency: orbitas
@@ -29,11 +34,42 @@ jobs:
           [ -n "$ok" ] || { echo "Ninguna fuente de órbitas responde"; exit 1; }
           echo "Fuente: $ok · $(grep -c '^1 ' t.txt) satélites"
           tr -d '\r' < t.txt > datos/tle-amateur.txt; rm -f t.txt
+      - name: Estado de los satélites (SatNOGS DB)
+        continue-on-error: true
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request
+          IDS = [25544, 27607, 43017, 43678, 44909, 24278, 7530, 53106]
+          UA = {"User-Agent": "ACRACB-PlataformaDX (+https://ea5jnf.github.io/plataforma-dx/)"}
+          def get(u):
+              return json.load(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=30))
+          sats = {}
+          for i in IDS:
+              try:
+                  s = get(f"https://db.satnogs.org/api/satellites/?format=json&norad_cat_id={i}")
+                  tx = get(f"https://db.satnogs.org/api/transmitters/?format=json&satellite__norad_cat_id={i}")
+                  sats[str(i)] = {"st": (s[0].get("status") if s else None),
+                                  "tx": [{"d": t.get("description"), "ul": t.get("uplink_low"), "uh": t.get("uplink_high"),
+                                          "dl": t.get("downlink_low"), "dh": t.get("downlink_high"), "m": t.get("mode"),
+                                          "s": t.get("status")} for t in tx if t.get("status") != "invalid"]}
+              except Exception as e:
+                  print("SatNOGS no responde para", i, e)
+          if len(sats) < len(IDS) // 2:
+              raise SystemExit("SatNOGS no responde bien: no se cambia nada")
+          p = "datos/satnogs.json"
+          old = json.load(open(p)) if os.path.exists(p) else {}
+          if old.get("sats") == sats:
+              print("SatNOGS sin cambios")
+          else:
+              json.dump({"at": time.strftime("%Y-%m-%dT%H:%MZ", time.gmtime()), "fuente": "SatNOGS DB (Libre Space Foundation), CC BY-SA 4.0",
+                         "sats": sats}, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
+              print("SatNOGS al día:", len(sats), "satélites")
+          PY
       - name: Guardar si ha cambiado
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add datos/tle-amateur.txt
+          git add datos/tle-amateur.txt datos/satnogs.json 2>/dev/null || git add datos/tle-amateur.txt
           git diff --cached --quiet && { echo "Sin cambios"; exit 0; }
-          git commit -qm "Órbitas de satélites al día"
+          git commit -qm "Órbitas y estado de los satélites al día"
           git pull -q --rebase && git push -q

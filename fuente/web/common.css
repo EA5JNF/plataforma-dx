@@ -1042,3 +1042,6 @@ html.bigt .chip .v{overflow-wrap:anywhere}
 .ptabs.eqw button{flex-grow:0!important}
 .ptabs.eqw{width:max-content!important;max-width:100%!important}
 .nav.eqm button,.ptabs.eqm button{flex:0 0 auto!important;min-width:0!important;width:auto!important}
+/* 2.8.29: indicativos que confirman por LoTW */
+.lotwt{display:inline-block;margin-left:6px;padding:0 5px;border-radius:4px;font:600 .62rem var(--f-m,monospace);letter-spacing:.06em;line-height:1.5;vertical-align:middle;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);cursor:help}
+.lotwt.old{color:var(--dim);border-color:var(--line)}

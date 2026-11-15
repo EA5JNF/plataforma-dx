@@ -117,6 +117,20 @@ SRC["GFZ Potsdam"]=async()=>{const d=new Date(),y=new Date(Date.now()-864e5),f=x
   const q=`/app/json/?start=${f(y)}T00:00:00Z&end=${f(d)}T23:59:59Z&index=Kp`;let j;
   /* GFZ se ha mudado a kp.gfz.de: primero por el intermediario; si el intermediario aún no la conoce, directamente */
   try{j=await J("https://kp.gfz.de"+q)}catch(e){j=await req1("https://kp.gfz.de"+q,"json",TOUT)}const v=(j.Kp||[]).filter(x=>x!=null);return v.length?v[v.length-1]:null};
+/* 2.8.29: índice Hp30 del GFZ (cada media hora, CC BY 4.0): avisa antes que el Kp de 3 horas */
+SRC["GFZ Hp30"]=async()=>{const d=new Date(),y=new Date(Date.now()-6*36e5),f=x=>x.toISOString().slice(0,19)+"Z";
+  const q=`/app/json/?start=${f(y)}&end=${f(d)}&index=Hp30`;let j;try{j=await J("https://kp.gfz.de"+q)}catch(e){j=await req1("https://kp.gfz.de"+q,"json",TOUT)}
+  const v=j.Hp30||[],t=j.datetime||[];for(let i=v.length-1;i>=0;i--)if(v[i]!=null&&v[i]>=0)return {v:+v[i],t:t[i]||null};return null};
+/* 2.8.29: absorción en la capa D (NOAA D-RAP): frecuencia más alta con 1 dB de absorción, rejilla de 2° × 4° */
+SRC["NOAA D-RAP"]=async()=>{const t=await T("https://services.swpc.noaa.gov/text/drap_global_frequencies.txt");const L=t.split(/\r?\n/);
+  let lons=null;const rows=[];let at=null;
+  for(const l of L){const m0=l.match(/Valid At\s*:\s*([0-9-]+\s+[0-9:]+)/i);if(m0)at=m0[1].trim().replace(" ","T")+"Z";if(/^\s*#/.test(l)||!l.trim())continue;
+    const m=l.match(/^\s*(-?\d+(?:\.\d+)?)\s*\|\s*(.+)$/);if(m){const vs=m[2].trim().split(/\s+/).map(Number);if(vs.every(x=>isFinite(x)))rows.push([+m[1],vs]);continue}
+    if(!lons&&/^[\s\-\d.]+$/.test(l)){const xs=l.trim().split(/\s+/).map(Number);if(xs.length>=20&&xs.every(x=>isFinite(x)))lons=xs}}
+  if(!lons||rows.length<10)return null;
+  const at2=(la,lo)=>{let br=rows[0],bd=1e9;for(const r of rows){const d=Math.abs(r[0]-la);if(d<bd){bd=d;br=r}}let bi=0,bl=1e9;lons.forEach((x,i)=>{let d=Math.abs(((x-lo+540)%360)-180);if(d<bl){bl=d;bi=i}});return br[1][bi]};
+  const P=(typeof TXP!=="undefined"&&TXP)?TXP:[-0.5,38.4];let mx=0;for(const r of rows)for(const v of r[1])if(v>mx)mx=v;
+  return {here:Math.round(at2(P[1],P[0])*10)/10,max:Math.round(mx*10)/10,at}};
 SRC["HamQSL"]=async()=>{const x=await T("https://www.hamqsl.com/solarxml.php");const tg=n=>{const m=x.match(new RegExp(`<${n}>\\s*([^<]*?)\\s*</${n}>`,"i"));return m?m[1].trim():null};
   const TR={Good:"Buena",Fair:"Regular",Poor:"Mala","Band Closed":"Cerrada","Band Open":"Abierta","50MHz ES":"Abierta (Es)",Closed:"Cerrada"};const cond={};
   for(const m of x.matchAll(/<band name="([^"]+)" time="(day|night)">([^<]+)<\/band>/gi)){(cond[m[1]]=cond[m[1]]||["",""])[m[2].toLowerCase()==="day"?0:1]=TR[m[3].trim()]||m[3].trim()}
@@ -302,14 +316,11 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     spotsChecked:iso(t0),spotsUTC:newest?iso(newest):prev.spotsUTC}}
 
 /* ================= ACTUALIZACIÓN COMPLETA ================= */
-const SOURCES=[["NOAA SWPC","https://services.swpc.noaa.gov/"],["HamQSL","https://www.hamqsl.com/solar.html"],["DRAO Penticton (NRCan)","https://www.spaceweather.gc.ca/forecast-prevision/solar-solaire/solarflux/sx-4-en.php"],
- ["GFZ Potsdam","https://kp.gfz-potsdam.de/"],["SILSO (Real Observatorio de Bélgica)","https://www.sidc.be/SILSO/"],["KC2G","https://prop.kc2g.com/"],["GIRO DIDBase (UMass Lowell)","https://giro.uml.edu/"],
- ["NASA CCMC DONKI","https://kauai.ccmc.gsfc.nasa.gov/DONKI/"],["WSPR.live","https://wspr.live/"],["NG3K ADXO","https://www.ng3k.com/misc/adxo.html"],["Club Log Most Wanted","https://clublog.org/mostwanted.php"],
- ["Spothole (M0TRT)","https://spothole.app/"],["DX Summit","https://www.dxsummit.fi/"],["HamQTH DX Cluster","https://www.hamqth.com/dxcluster.php"],["POTA","https://pota.app/"],["SOTAwatch","https://sotawatch.sota.org.uk/"],["WWFF Spots","https://spots.wwff.co/"]];
+const SOURCES=[["NOAA SWPC","https://services.swpc.noaa.gov/"],["HamQSL","https://www.hamqsl.com/solar.html"],["DRAO Penticton (NRCan)","https://www.spaceweather.gc.ca/forecast-prevision/solar-solaire/solarflux/sx-4-en.php"],["GFZ Potsdam","https://kp.gfz.de/"],["SILSO (Real Observatorio de Bélgica)","https://www.sidc.be/SILSO/"],["KC2G","https://prop.kc2g.com/"],["NASA CCMC DONKI","https://kauai.ccmc.gsfc.nasa.gov/DONKI/"],["WSPR.live","https://wspr.live/"],["PSK Reporter","https://pskreporter.info/"],["NG3K ADXO","https://www.ng3k.com/misc/adxo.html"],["Club Log Most Wanted","https://clublog.org/mostwanted.php"],["ARRL LoTW","https://lotw.arrl.org/"],["Spothole (M0TRT)","https://spothole.app/"],["DX Summit","https://www.dxsummit.fi/"],["HamQTH DX Cluster","https://www.hamqth.com/dxcluster.php"],["POTA","https://pota.app/"],["SOTAwatch","https://sotawatch.sota.org.uk/"],["WWFF Spots","https://spots.wwff.co/"],["CelesTrak","https://celestrak.org/"],["AMSAT","https://www.amsat.org/"],["SatNOGS DB","https://db.satnogs.org/"]];
 let BUSY=false;const LAST={};
 
 let LASTRUN=0;delete SRC["GIRO ionosondas"];delete SRC["SILSO ciclo"];
-const SLOW={"HamQSL":10,"DRAO Penticton":30,"GFZ Potsdam":10,"SILSO EISN":30,"SILSO ciclo":360,"KC2G ionosondas":2,"KC2G eSSN":10,"GIRO ionosondas":10,"NG3K":60,"Club Log":360,"NASA DONKI":20,"WSPR.live":5,"NOAA 27 días":30,"NOAA ciclo previsto":60,"NOAA ciclo observado":60,
+const SLOW={"GFZ Hp30":10,"NOAA D-RAP":5,"HamQSL":10,"DRAO Penticton":30,"GFZ Potsdam":10,"SILSO EISN":30,"SILSO ciclo":360,"KC2G ionosondas":2,"KC2G eSSN":10,"GIRO ionosondas":10,"NG3K":60,"Club Log":360,"NASA DONKI":20,"WSPR.live":5,"NOAA 27 días":30,"NOAA ciclo previsto":60,"NOAA ciclo observado":60,
  /* 2.4.6: más fuentes lentas que no hace falta pedir cada pocos minutos */
  "NOAA 3 días":30,"NOAA flujo":30,"NOAA manchas":60,"NOAA WWV":15,"NOAA aurora":10},MEMO={};
 for(const n in SLOW){if(!SRC[n])continue;const f=SRC[n];SRC[n]=async()=>{const m=MEMO[n];if(m&&Date.now()-m.t<SLOW[n]*6e4)return m.v;const v=await f();if(v!=null)MEMO[n]={t:Date.now(),v};return v}}
@@ -333,7 +344,7 @@ async function updateAll(auto){if(BUSY)return;BUSY=true;const t0=Date.now();LAST
   const OV=R["NOAA aurora"];if(OV&&OV[1]!=null)sp.aurora=OV[0]?`${Math.round(OV[0])} % ${window.ACRACB_LANG==="en"?"in northern Europe":"en el norte de Europa"} (${Math.round(OV[1])}° N)`:(window.ACRACB_LANG==="en"?"No aurora over Europe":"Sin aurora sobre Europa");N.space=sp;
   if(TD.blocks)N.kpfc={base:TD.base,issued:TD.issued||"NOAA",days:TD.days,blocks:TD.blocks};
   const rad=Object.assign({},N.radio||{});["r12","r3","s1"].forEach(k=>{const v=SC[k]!=null?SC[k]:TD[k];if(v!=null)rad[k]=r0(v)});N.radio=rad;if(rad.r12!=null)N.flare=`M ${rad.r12} % · X ${rad.r3||0} %`;
-  if(R["NOAA 27 días"])N.outlook27=R["NOAA 27 días"];if(R["NASA DONKI"])N.cme=R["NASA DONKI"];if(R["WSPR.live"])N.wspr={at:iso(t0),bands:R["WSPR.live"]};
+  if(R["GFZ Hp30"])N.hp30=R["GFZ Hp30"];if(R["NOAA D-RAP"])N.drap=R["NOAA D-RAP"];if(R["NOAA 27 días"])N.outlook27=R["NOAA 27 días"];if(R["NASA DONKI"])N.cme=R["NASA DONKI"];if(R["WSPR.live"])N.wspr={at:iso(t0),bands:R["WSPR.live"]};
   const fo=(vals.fof2||[]).map(x=>x[1]),mu=(vals.muf||[]).map(x=>x[1]);
   if(fo.length)N.iono={station:KC?KC.station:"Roquetes-Ebro (EB040)",fof2:r1(med(fo)),mufd:mu.length?r1(med(mu)):null,time:KC?KC.time:GI[0]};
   if(ES.essn!=null){N.essn=r1(ES.essn);const tt=ptime(ES.time);N.essnSrc="KC2G"+(tt?`, ${dm(tt)} ${tt.toISOString().slice(11,16)} UTC`:"")}

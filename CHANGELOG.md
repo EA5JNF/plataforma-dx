@@ -5,6 +5,21 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.29 · 15/11/2026
+- Cuatro fuentes nuevas, públicas, gratuitas y sin registro, con su crédito en la plataforma:
+  - **LoTW (ARRL)**: junto al indicativo de cada spot y de cada DXpedición sale «LoTW» si esa estación ha subido su log en el último año. Al tocarlo o pasar por encima se ve la fecha de la última subida; si fue hace más de 90 días, sale atenuado. La lista se copia cada semana en la propia web y solo se descargan los trozos de los indicativos que hay en pantalla.
+  - **Índice Hp30 del GFZ**: la actividad geomagnética de cada media hora, en «Kp ahora» y en la explicación del Kp. Avisa del comienzo de una tormenta antes que el Kp de tres horas.
+  - **D-RAP de NOAA**: hasta qué frecuencia absorbe ahora la capa D sobre tu QTH y qué bandas afecta, en la explicación de las llamaradas.
+  - **SatNOGS DB**: estado de cada satélite y de sus transmisores en DX › Satélites («SatNOGS: activo» o «inactivo»), copiado dos veces al día junto a las órbitas.
+- Créditos rehechos y revisados uno a uno:
+  - Solo figuran las fuentes que la plataforma usa de verdad. Se quitan las que ya no se leen (algunos clústeres, previsiones de tropo, webs de avisos y de DXpediciones) y se añaden las que faltaban: CelesTrak, AMSAT, SatNOGS DB, satellite.js, IMO (lluvias de meteoros), LoTW, Hp30 y D-RAP.
+  - Ordenados por temas: previsión; Sol y campo magnético; ionosfera y propagación real; clústeres y actividad; DXpediciones, entidades y confirmaciones; satélites; balizas, meteoros y concursos; mapa, programas y letras.
+  - «Cómo funciona › Cotejo de fuentes» dice ahora lo que se coteja de verdad (la MUF sale de KC2G y las DXpediciones de NG3K y Spothole).
+  - Las letras están alojadas en la propia web, no en Google Fonts.
+- La cabecera dice «Altura del sol» en lugar de «Sol en tu QTH», y los grados son la elevación del sol sobre el horizonte en tu QTH, también de noche (en negativo). Al pasar por encima se explica.
+- Versión inglesa: traducida la frase de las cuatro opiniones de «Bandas».
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / New free sources (LoTW, GFZ Hp30, NOAA D-RAP, SatNOGS DB), credits rebuilt, and the header now says the degrees are the sun's elevation.
+
 ## 2.8.28 · 15/11/2026
 - Menú principal y submenús con tamaños uniformes:
   - Todos los botones del menú principal miden lo mismo.

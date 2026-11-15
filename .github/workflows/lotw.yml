@@ -1,0 +1,70 @@
+# Copia semanal de la lista pública de usuarios de Logbook of The World (ARRL) en datos/lotw/.
+# Es un fichero público y gratuito, sin registro (lotw-user-activity.csv: indicativo y fecha de su última subida).
+# Se guardan los que han subido su log en el último año, repartidos en 64 trozos por indicativo, para que la
+# plataforma descargue solo los de las estaciones que hay en pantalla. El reparto es el mismo que en web/lotw.js.
+name: Usuarios de LoTW
+on:
+  schedule:
+    - cron: "23 4 * * 2"   # martes a las 04:23 UTC
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [".github/workflows/lotw.yml"]
+permissions:
+  contents: write
+concurrency: lotw
+jobs:
+  lotw:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: datos
+          fetch-depth: 1
+      - name: Descargar la lista de LoTW
+        run: |
+          curl -fsSL --max-time 180 -A "ACRACB-PlataformaDX (+https://ea5jnf.github.io/plataforma-dx/)" \
+            "https://lotw.arrl.org/lotw-user-activity.csv" -o u.csv
+          n=$(wc -l < u.csv); echo "Líneas: $n"
+          [ "$n" -gt 20000 ] || { echo "La lista es demasiado corta: no se cambia nada"; exit 1; }
+      - name: Repartir en 64 trozos
+        run: |
+          python3 - <<'PY'
+          import csv, datetime, os, shutil
+          hoy = datetime.date.today(); corte = hoy - datetime.timedelta(days=365)
+          trozos = [[] for _ in range(64)]; n = 0
+          for fila in csv.reader(open("u.csv", encoding="utf-8", errors="ignore")):
+              if len(fila) < 2:
+                  continue
+              c = fila[0].strip().upper()
+              if not c or not all(ch.isalnum() or ch == "/" for ch in c):
+                  continue
+              try:
+                  d = datetime.date.fromisoformat(fila[1].strip()[:10])
+              except ValueError:
+                  continue
+              if d < corte:
+                  continue
+              h = 0
+              for ch in c:
+                  h = (h * 31 + ord(ch)) % 64
+              trozos[h].append(f"{c} {d.strftime('%y%m%d')}"); n += 1
+          if n < 20000:
+              raise SystemExit(f"Solo {n} indicativos: no se cambia nada")
+          shutil.rmtree("datos/lotw", ignore_errors=True); os.makedirs("datos/lotw")
+          for i, t in enumerate(trozos):
+              open(f"datos/lotw/{i:02d}.txt", "w").write("\n".join(sorted(t)) + "\n")
+          open("datos/lotw/LEEME.txt", "w").write(f"Usuarios de LoTW (ARRL) con subidas desde {corte.isoformat()}: {n}. Copia del {hoy.isoformat()}.\n"
+                                                 "Fuente: https://lotw.arrl.org/lotw-user-activity.csv (pública y gratuita).\n")
+          print("Indicativos:", n)
+          PY
+          rm -f u.csv
+      - name: Guardar si ha cambiado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A datos/lotw
+          git diff --cached --quiet && { echo "Sin cambios"; exit 0; }
+          git commit -qm "Usuarios de LoTW al día"
+          git pull -q --rebase && git push -q
