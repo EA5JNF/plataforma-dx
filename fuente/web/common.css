@@ -984,3 +984,30 @@ html.vc .seg.clseg,html.vc .seg.mseg{margin-top:4px!important;margin-bottom:4px!
 .sc-f .xalt{background:var(--panel);border:1px solid var(--line);font:600 .74rem var(--f-m,monospace)}
 #spots>.llmore{display:block;margin:10px auto 0}
 html.vc .clfn{display:none}
+/* 2.8.21: pantalla completa del mapa: menús más transparentes y compactos, «Más ajustes» para ver el resto, y los dos botones de abajo centrados */
+.mapcard.fsm .mapctl{background:color-mix(in srgb,var(--panel) 52%,transparent)!important;padding:8px 10px!important}
+@media (hover:none),(pointer:coarse){.mapcard.fsm .mapctl,.mapcard.fsm .legend{background:color-mix(in srgb,var(--panel) 70%,transparent)!important}}
+.mapcard.fsm .legend{background:color-mix(in srgb,var(--panel) 55%,transparent)!important}
+.mapcard.fsm .mapctl .mrow{gap:4px!important;padding:4px 0!important;margin:0!important}
+.mapcard.fsm .mapctl .mrt{font-size:.68rem!important;margin:0!important}
+.mapcard.fsm .mapctl .mrt b{width:18px;height:18px;font-size:.66rem;line-height:18px}
+.mapcard.fsm .mapctl .seg{gap:4px!important}
+.mapcard.fsm .mapctl .seg button,.mapcard.fsm .mapctl .btn{min-height:30px!important;padding:3px 8px!important;font-size:.78rem!important}
+.mapcard.fsm .mapctl .segl{font-size:.64rem!important}
+.mapcard.fsm .mapctl .note{font-size:.72rem;margin:2px 0}
+.mapcard.fsm:not(.fsmore) .mapctl>.mrow~.mrow~.mrow,.mapcard.fsm:not(.fsmore) .mapctl>.note,.mapcard.fsm:not(.fsmore) .mapctl>p{display:none!important}
+.mapcard:not(.fsm) .fsmorebtn{display:none}
+.mapcard.fsm .fsmorebtn{display:block;width:100%;margin:6px 0 0;padding:6px 8px;min-height:30px;border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:8px;background:transparent;color:var(--accent);font:600 .78rem var(--f-b,inherit);cursor:pointer}
+.mapcard.fsm .mfloat{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:calc(max(14px,env(safe-area-inset-bottom)) + 6px)!important;gap:10px;justify-content:center;white-space:nowrap}
+.mapcard.fsm .mfloat .btn{min-height:36px;padding:6px 14px}
+.mapcard.fsm.idle .mfloat{transform:translateX(-50%)}
+.mapcard.fsm:not(.fsmore) .mapctl{max-height:none!important;overflow:visible!important}
+.mapcard.fsm.fsmore .mapctl{max-height:min(62vh,calc(100% - 150px))!important;overflow:auto!important}
+.mapcard.fsm #mfs{display:none!important}
+@media (hover:none),(pointer:coarse){.mapcard.fsm .mapctl,.mapcard.fsm .legend{background:color-mix(in srgb,var(--panel) 60%,transparent)!important}}
+:root[data-theme="light"] .mapcard.fsm .mapctl,:root[data-theme="light"] .mapcard.fsm .legend{background:color-mix(in srgb,#fff 55%,transparent)!important}
+.mapcard.fsm .legend{font-size:.7rem!important;padding:4px 8px!important;gap:1px 8px!important}
+@media (max-width:640px){.mapcard.fsm .legend{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 52px)!important}}
+.mapcard.fsm:not(.fsmore) .mstats{display:none!important}
+.mapcard.fsm.fsmore .fsmorebtn{position:sticky;bottom:-8px;background:color-mix(in srgb,var(--panel) 92%,transparent);border-style:solid}
+.mapcard.fsm .mapctl .note,.mapcard.fsm .mapctl p{font-size:.72rem!important;line-height:1.35!important}

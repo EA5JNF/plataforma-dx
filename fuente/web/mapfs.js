@@ -26,3 +26,13 @@ function wrap(){const o=window.drawMap;if(typeof o!=="function")return false;if(
   w.__ok=1;w.__iss=1;w.__fino=1;window.drawMap=w;return true}
 let n=0;const t=setInterval(()=>{if(wrap()||++n>100)clearInterval(t)},300);
 })();
+/* ---- 2.8.21: en pantalla completa se ven solo «Mapa» y «Qué ver»; «Más ajustes» despliega el resto ---- */
+(function(){
+"use strict";
+const EN=window.ACRACB_LANG==="en";
+function add(){const c=document.getElementById("mapcard"),ctl=c&&c.querySelector(".mapctl");if(!ctl)return setTimeout(add,400);if(ctl.querySelector(".fsmorebtn"))return;
+  const b=document.createElement("button");b.type="button";b.className="fsmorebtn";
+  const lab=()=>{const o=c.classList.contains("fsmore");b.textContent=o?(EN?"Fewer settings ▴":"Menos ajustes ▴"):(EN?"More settings: mode, bands, time… ▾":"Más ajustes: modo, bandas, hora… ▾");b.setAttribute("aria-expanded",String(o))};
+  b.onclick=()=>{c.classList.toggle("fsmore");lab()};ctl.appendChild(b);lab()}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",add);else add();
+})();

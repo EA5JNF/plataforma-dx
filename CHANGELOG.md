@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.21 · 15/11/2026
+- Mapa a pantalla completa:
+  - Los botones «Ocultar controles» y «Salir» van centrados abajo, separados del borde.
+  - Los menús son más transparentes y más compactos: se ven solo «Mapa» y «Qué ver», y «Más ajustes» despliega el modo, las bandas, la hora y la predicción, con «Menos ajustes» para recogerlos.
+  - Sale el botón repetido «Salir de pantalla completa» del panel y la leyenda de bandas es más pequeña.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / Full-screen map: centred bottom buttons, lighter and more compact panels with «More settings».
+
 ## 2.8.20 · 15/11/2026
 - Clúster mundial con menos entradas:
   - Una fila por estación: si sale en varias bandas, sus otras frecuencias van en la misma tarjeta.
