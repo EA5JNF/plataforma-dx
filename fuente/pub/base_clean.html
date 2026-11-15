@@ -819,7 +819,7 @@ body.noscroll{overflow:hidden}
     <details class="card fold" id="f_easy" data-tab="Resumen"><summary><h2>Qué banda y hacia dónde</h2></summary><div id="easy"></div></details>
     <details class="card fold" id="f_contra" data-tab="Bandas"><summary><h2>Tus bandas ahora</h2><span class="fsum" id="s_contra"></span></summary><div id="contra" class="fin"></div></details>
     <details class="card fold" id="f_tl" data-tab="Hora a hora"><summary><h2><span id="tlt">Tu día hora a hora</span></h2><span class="fsum" id="s_tl"></span></summary><div class="tl" id="tl"></div><div class="tlh" id="tlh"></div><div class="sun" id="sun"></div></details>
-    <details class="card fold" id="f_rec" data-tab="Qué hacer"><summary><h2><span id="rech">Qué hacer ahora</span></h2><span class="fsum" id="s_rec"></span></summary><div id="rec"></div></details>
+    <details class="card fold" id="f_rec" data-tab="Qué hacer" hidden><summary><h2><span id="rech">Qué hacer ahora</span></h2><span class="fsum" id="s_rec"></span></summary><div id="rec"></div></details>
     <details class="card fold" id="f_vhf" data-tab="V-UHF"><summary><h2>6 m, 2 m y 70 cm</h2><span class="fsum" id="s_vhf"></span></summary><div class="sgrid sx" id="vhfo"></div></details>
     <details class="card fold" id="f_qth" data-tab="Tu QTH"><summary><h2>Tu QTH</h2><span class="fsum" id="s_qth"></span></summary><div class="qth" id="qth"></div></details>
     <div hidden><div class="bands" id="bands"></div></div>
@@ -899,6 +899,7 @@ body.noscroll{overflow:hidden}
 
 
   <section class="page" data-pg="metodo">
+    <details class="card fold" id="f_guia" data-tab="Guía"><summary><h2>Primeros pasos y privacidad</h2><span class="fsum">Cómo empezar y qué pasa con tus datos</span></summary><div id="guia" class="guia"></div></details>
     <details class="card fold" id="f_met" data-tab="Cálculo"><summary><h2>Cómo se calcula y sus límites</h2><span class="fsum">VOACAP para tu estación, corregido con medidas del día y datos cotejados</span></summary>
       <div class="note mlist2">
         <details class="mdet"><summary>VOACAP real</summary><p>(voacapl 16.1207W) desde el este de España (Alicante, IM98) a <b>266 destinos</b> (todas las entidades DXCC que importan en DX, con las grandes divididas por regiones), cada hora, en 1.840 · 3.700 · 7.100 · 14.200 · 18.130 · 21.300 · 24.950 · 28.500 MHz, con SSN 20, 40, 60, 80 y 100. Paso largo con el método 21 (forzado a paso largo) para los destinos a más de 9.000 km, que es donde el paso largo tiene sentido. Para el locator que escribas se recalculan rumbos, distancias, saltos, sol y línea gris exactos. La ionosfera es la del cálculo desde Alicante: válida para la Península y Baleares; si el locator está a más de 400 km, la web te avisa de que la previsión pierde precisión. La página interpola según el SFI (SSN ≈ 1,14 × SFI − 73).</p></details>
@@ -1283,6 +1284,9 @@ function prob(t,lh,b,lp,extra){const RXM=extra==="rx";if(RXM)extra=0;const key=t
 let LOG=null;
 function bandNeed(t,b){if(!LOG||!t)return null;const e=LOG.e[t.dxcc];return !(e&&e[BKEY[b]]==="C")}
 function entNeed(t){if(!LOG||!t)return null;const e=LOG.e[t.dxcc];return !(e&&Object.values(e).includes("C"))}
+/* 2.9.0: con tu log cargado, primero lo que te falta y confirma por LoTW (2), luego lo que te falta (1), luego el resto (0) */
+function needRank(call,t,b){const n=b!=null?bandNeed(t,b):entNeed(t);if(n!==true)return 0;let v=null;try{v=window.ACRACB_lotw?window.ACRACB_lotw(call):null}catch(e){}return v?2:1}
+window.ACRACB_needRank=(call,t,b)=>{try{return needRank(call,t,b)}catch(e){return 0}};
 function dxNew(d){const t=tFor(d);const n=entNeed(t);return n===null?true:n}
 
 /* ---------- concursos ---------- */
@@ -1612,11 +1616,11 @@ function renderSide(){
   const dxNow=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,lh)}:null}).filter(x=>x&&x.p>=.1).sort((a,b)=>b.p-a.p);
   const isNow=lh===now,when=isNow?"Ahora":"A las "+hh(lh)+":00";
   const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e);
-  const dxs=sp.filter(x=>spotKind(x.s)==="dx").sort((a,b)=>b.e.p-a.e.p),ind=sp.filter(x=>spotKind(x.s)==="ind"),bcnH=(L.beacons||[]);
+  const dxs=sp.filter(x=>spotKind(x.s)==="dx").map(x=>(x.r=needRank(x.s.call,x.e.t,x.s.band),x)).sort((a,b)=>b.r-a.r||b.e.p-a.e.p),ind=sp.filter(x=>spotKind(x.s)==="ind"),bcnH=(L.beacons||[]);
   let h="<div><h3>Lo que dice el clúster</h3>";
   if(!sp.length)h+=`<p>No hay spots de fonía útiles en las bandas de este modo. ${L.spotsSrc?"(Leídos: "+esc(L.spotsSrc)+".)":""}</p>`;
-  dxs.slice(0,6).forEach(({s,e,a})=>{const nb=bandNeed(e.t,s.band);const v=e.p>=.3?"Merece la pena ir ya":e.p>=.1?"Posible con paciencia: llama cuando baje el pile-up":"Poco según el modelo, pero el spot dice que hoy la banda va mejor: escucha un par de minutos";
-    h+=`<p>◆ <b>${CS(s.call)}</b> en <b>${esc(s.f)}</b> (${BANDS[s.band]}), ${ageTxt(a)}: lo copian ${CSL(s.by," y ")}${nb===true?' <span class="need">· te falta en esta banda</span>':""}. Para ti, por ${e.lp?"paso largo":"paso corto"}: <b>${Math.round(e.p*100)} %</b> (rumbo ${e.lp?e.laz:e.az}° ${cab(e.lp?e.laz:e.az)}). ${v}.</p><details class="why"><summary>Por qué</summary><p>${explain(e.t,s.band,lh,e.lp,e.km)}</p></details>`});
+  dxs.slice(0,6).forEach(x=>{const {s,e,a}=x;const nb=bandNeed(e.t,s.band);const v=e.p>=.3?"Merece la pena ir ya":e.p>=.1?"Posible con paciencia: llama cuando baje el pile-up":"Poco según el modelo, pero el spot dice que hoy la banda va mejor: escucha un par de minutos";
+    h+=`<p>◆ <b>${CS(s.call)}</b> en <b>${esc(s.f)}</b> (${BANDS[s.band]}), ${ageTxt(a)}: lo copian ${CSL(s.by," y ")}${nb===true?(x.r===2?' <span class="need">· te falta en esta banda y confirma por LoTW</span>':' <span class="need">· te falta en esta banda</span>'):""}. Para ti, por ${e.lp?"paso largo":"paso corto"}: <b>${Math.round(e.p*100)} %</b> (rumbo ${e.lp?e.laz:e.az}° ${cab(e.lp?e.laz:e.az)}). ${v}.</p><details class="why"><summary>Por qué</summary><p>${explain(e.t,s.band,lh,e.lp,e.km)}</p></details>`});
   ind.slice(0,3).forEach(({s,a})=>{const e=spotEvalFar(s,lh);if(!e)return;h+=`<p><b>Indicador</b> ${ageTxt(a)}: ${esc(s.c)} (${esc(s.f)}). ${BANDS[s.band]} está abierta ahora en esa dirección. Tu modelo hacia ${esc(e.t.name)}: <b>${Math.round(e.p*100)} %</b>.</p>`});
   if(bcnH.length)h+=`<p><b>Balizas oídas:</b> ${bcnH.slice(0,6).map(x=>`${CS(x.call)} en ${esc(x.f)} (${esc(x.t)} UTC)`).join(", ")}. Confirman que esas direcciones están abiertas.</p>`;
   const newest=sp.length?Math.min(...sp.map(x=>x.a??1e9)):null;
@@ -1638,7 +1642,7 @@ function renderSide(){
   h+=steps.length?"<ol style='margin:4px 0 0;padding-left:20px'>"+steps.map(x=>`<li>${x}</li>`).join("")+"</ol>":"<p>Nada útil a esta hora.</p>";
   const k=kpAt(lh);if(k>=4)h+=`<p class="note" style="color:#ff8a80">Kp ${k}: caminos polares penalizados; los del sur aguantan.</p>`;
   if(sunEl(TXP,lh)>0&&L.radio)h+=`<p class="note">Apagón por llamarada: ${L.radio.r12} % (si todo se calla, espera 15–60 min).</p>`;
-  $("rec").innerHTML=`<div class="rec">${h}</div></div>`;$("rech").textContent=isNow?"Qué hacer ahora":"Qué hacer a las "+hh(lh)+":00";
+  {const R=$("rec")||(window.ACRACB_recEl&&ACRACB_recEl());if(R)R.innerHTML=`<div class="rec">${h}</div></div>`}const RH=$("rech")||(window.ACRACB_recEl&&ACRACB_recEl()?.parentNode?.querySelector("#rech"))||{};RH.textContent=isNow?"Qué hacer ahora":"Qué hacer a las "+hh(lh)+":00";
   // DX
   $("dxl").innerHTML=L.dx.map((d,i)=>{const t=tFor(d);if(!t)return "";const p=[d.lon,d.lat],az=Math.round(brgJS(TXP,p)),km=Math.round(distJS(TXP,p));let bh={p:0,h:0,b:0,lp:false};for(let x=0;x<24;x++){const r=bestAny(t,x);if(r.p>bh.p)bh={...r,h:x}}
     const n=bestAny(t,lh),onc=SPOTS().find(s=>d.call.includes(s.call)),nw=dxNew(d);
@@ -1801,7 +1805,7 @@ function renderBcn(){if(st.page!=="balizas"&&!st.ly.bcn)return;const {slot,left}
    <p class="bsum">Ahora mismo, en cada banda (cambian en <b>${left} s</b>):</p><div class="bnows">${nowOn}</div>
    <p class="bsum">Probabilidad de oír cada baliza a las ${hh(lh)}:00 · <b>${nOpen} de 18</b> con alguna banda ≥30 %${(L.beacons||[]).length?` · ${L.beacons.length} oídas hoy en Europa`:""}</p>
    <div class="scroll"><table class="bt btab"><tr><th>Baliza</th>${BFQ.map(([f,bi])=>`<th style="color:${BC[bi]}">${BANDS[bi]}</th>`).join("")}</tr>${data.map(d=>`<tr><td><b>${CS(d.b[0])}</b><div class="note">${esc(d.b[1])} · ${d.az}° ${cab(d.az)} · ${fk(d.km)} km${d.heard.length?` · <span class="agr ok">oída ${d.heard.map(x=>esc(x.f)+" "+esc(x.t)).join(", ")}</span>`:""}</div></td>${d.ps.map(q=>`<td class="bpc"><span class="bp ${cls(q.p)}${q.on?" bon":""}" title="${q.on?"Emitiendo ahora en esta banda":""}">${q.na?"—":Math.round(q.p*100)}</span></td>`).join("")}</tr>`).join("")}</table></div>
-   <p class="note">Cifras en %: probabilidad de que la baliza te llegue a esta hora con el mismo modelo que tus QSO. Recuadro blanco: la baliza está emitiendo ahora en esa banda. Cada baliza transmite 10 s por banda en un ciclo de 3 minutos.</p>`;
+   <p class="note">Cifras en %: probabilidad de que la baliza te llegue a esta hora. Recuadro blanco: emite ahora en esa banda (10 s por banda, ciclo de 3 minutos).</p>`;
   try{restoreWhy()}catch(e){}}
 setInterval(()=>{if(st.page==="balizas")renderBcn();if(st.page==="mapa"&&st.ly.bcn&&st.mapOn)updBcnMarks()},5000);
 /* ---------- fichas ---------- */
@@ -2022,7 +2026,7 @@ document.querySelectorAll("details.fold[id]").forEach(d=>{try{if(localStorage.ge
 {const d=$("f_contra");if(d){let pref=null;try{pref=localStorage.getItem("fold:f_contra")}catch(e){}if(window.matchMedia("(min-width:1000px)").matches&&pref!=="0")d.open=true}}
 
 /* ---------- pestañas dentro de cada sección ---------- */
-function selTab(pg,id,user){const sec=document.querySelector(`section.page[data-pg="${pg}"]`);if(!sec)return;
+function selTab(pg,id,user){if(pg==="ahora"&&id==="f_rec"){id="f_easy";setTimeout(()=>{const w=document.getElementById("recw");if(w&&user!==false)try{w.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}},120)}const sec=document.querySelector(`section.page[data-pg="${pg}"]`);if(!sec)return;
   sec.querySelectorAll(":scope > details[data-tab]").forEach(d=>d.classList.toggle("toff",d.id!==id));
   sec.querySelectorAll(".ptabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===id)));
   if(user){try{localStorage.setItem("tab:"+pg,id)}catch(e){}if(id==="f_cycle")renderCycle();if(pg==="fichas"&&st.page==="fichas")renderPage();try{foldSums()}catch(e){}}}
@@ -2222,7 +2226,7 @@ function parseADIF(txt){const recs=txt.split(/<eor>/i);const e={};let n=0,c=0;
     const conf=(f.APP_QRZLOG_STATUS||"").toUpperCase()==="C"||(f.LOTW_QSL_RCVD||"").toUpperCase()==="Y"||(f.QSL_RCVD||"").toUpperCase()==="Y";if(conf)c++;e[dx]=e[dx]||{};if(conf||!e[dx][band])e[dx][band]=conf?"C":(e[dx][band]||"W")}
   return {e,n,c,date:new Date().toISOString()}}
 function renderLog(){if(!$("logbox"))return;{const sl=$("s_log");if(sl)sl.textContent=LOG?`${fk(LOG.n)} QSO · ${Object.keys(LOG.e).length} entidades`:"Sube tu ADIF";}const tot=new Set(V.meta.map(m=>m[2])).size;let conf=0,wk=0;if(LOG)for(const v of Object.values(LOG.e)){if(Object.values(v).includes("C"))conf++;else wk++}
-  $("logbox").innerHTML=(LOG?`<div class="kv"><div class="chip"><div class="k">QSO leídos</div><div class="v">${fk(LOG.n)}</div><div class="t">${fk(LOG.c)} confirmados (QRZ, LoTW o QSL)</div></div><div class="chip"><div class="k">Entidades confirmadas</div><div class="v">${conf}</div><div class="t">${wk} trabajadas sin confirmar</div></div></div><p class="note">Cargado el ${new Date(LOG.date).toLocaleString("es-ES",{timeZone:"Europe/Madrid"})}. Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster y los avisos.</p>`+(window.ACRACB_goals?ACRACB_goals():""):`<p>Sube tu log para que la web sepa qué entidades y bandas te faltan. Cuenta como confirmado lo validado en QRZ, LoTW o por QSL en papel.</p>`)+
+  $("logbox").innerHTML=(LOG?`<div class="kv"><div class="chip"><div class="k">QSO leídos</div><div class="v">${fk(LOG.n)}</div><div class="t">${fk(LOG.c)} confirmados (QRZ, LoTW o QSL)</div></div><div class="chip"><div class="k">Entidades confirmadas</div><div class="v">${conf}</div><div class="t">${wk} trabajadas sin confirmar</div></div></div><p class="note">Cargado el ${new Date(LOG.date).toLocaleString("es-ES",{timeZone:"Europe/Madrid"})}. Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster, los avisos y «Qué hacer», y primero las estaciones que confirman por LoTW.</p>`+(window.ACRACB_goals?ACRACB_goals():""):`<p>Sube tu log para que la web sepa qué entidades y bandas te faltan. Cuenta como confirmado lo validado en QRZ, LoTW o por QSL en papel.</p>`)+
    `<div class="drop"><b>Sube tu log en ADIF</b> (QRZ: Logbook → Settings → Export; también vale el de LoTW, Club Log o tu programa de log). Se queda solo en este dispositivo<input type="file" id="adif" accept=".adi,.adif,.txt"></div><p class="note" id="adifst"></p>${LOG?'<button class="btn" id="logdel">Quitar el log</button>':""}`;
   $("adif").onchange=async e=>{const f=e.target.files[0];if(!f)return;$("adifst").textContent="Leyendo…";try{const txt=await f.text();const r=parseADIF(txt);if(!r.n){$("adifst").textContent="No he encontrado QSO en ese archivo. ¿Es un ADIF?";return}LOG=r;store.set("db_owner/log",JSON.stringify(r));$("adifst").textContent=`${fk(r.n)} QSO leídos. Guardado solo en este dispositivo: nadie más lo ve.`;CACHE.clear();refresh()}catch(err){$("adifst").textContent="No se pudo leer el archivo."}};
   if($("logdel"))$("logdel").onclick=async()=>{LOG=null;store.set("db_owner/log","");refresh()}}

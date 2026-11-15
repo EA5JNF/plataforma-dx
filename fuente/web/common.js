@@ -232,3 +232,45 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",later);else later();
   window.addEventListener("load",later);setTimeout(all,1500);
 })();
+/* ---- 2.9.0: «Qué hacer» dentro de Resumen ----
+   Antes eran dos pestañas que decían cosas parecidas. Ahora la recomendación («Qué hacer ahora», con lo que dice el clúster)
+   va en Resumen, justo debajo de la tarjeta principal y antes de las próximas 12 horas. La pestaña «Qué hacer» desaparece y los
+   enlaces que llevaban a ella llevan a Resumen, a esa parte. */
+(function(){
+  if(window.__hkRec)return;window.__hkRec=1;
+  let W=null;
+  function place(){const easy=document.getElementById("easy");if(!easy)return;const g=easy.querySelector(".ezg");if(!g)return;
+    if(!W){const rec=document.getElementById("rec");if(!rec)return;W=document.createElement("div");W.id="recw";W.className="ez ezrec";const h=document.createElement("div");h.className="ezt";
+      const sp=document.getElementById("rech");if(sp)h.appendChild(sp);else h.textContent=(window.ACRACB_LANG==="en"?"What to do now":"Qué hacer ahora");
+      W.appendChild(h);W.appendChild(rec);const fr=document.getElementById("f_rec");if(fr)fr.hidden=true;try{syncTabs()}catch(e){}}
+    const tl=g.querySelector(".eztl");if(W.parentNode!==g||(tl&&W.nextSibling!==tl)){if(tl)g.insertBefore(W,tl);else g.appendChild(W)}}
+  /* renderSide escribe en #rec justo después de rehacer el Resumen: se recoloca en el acto, sin esperar al observador */
+  window.ACRACB_recEl=()=>W?W.querySelector("#rec"):null;
+  function hookE(){if(typeof window.renderEasy!=="function"||window.renderEasy.__rw)return;const o=window.renderEasy;const w=function(){const r=o.apply(this,arguments);try{place()}catch(e){}return r};w.__rw=1;window.renderEasy=w}
+  function boot(){hookE();place();const e=document.getElementById("easy");if(e)try{new MutationObserver(place).observe(e,{childList:true})}catch(x){}}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,50));else setTimeout(boot,50);
+})();
+
+/* ---- ACRACB 2.9.0: «Guía» en «Cómo funciona»: primeros pasos y privacidad ---- */
+(function(){
+  if(window.__hkGuia)return;window.__hkGuia=1;
+  const EN=()=>window.ACRACB_LANG==="en",T=(es,en)=>EN()?en:es;
+  function fill(){const g=document.getElementById("guia");if(!g||g.dataset.ok)return;g.dataset.ok="1";
+    const li=a=>a.map(x=>`<li>${x}</li>`).join("");
+    g.innerHTML=`<h3>${T("Primeros pasos","Getting started")}</h3><ol>${li([
+      T("Pulsa <b>Cambiar</b> (arriba) y pon tu QTH, tu potencia, tu antena y tu modo. Todo se calcula para esa estación.","Tap <b>Change</b> (top) and enter your QTH, power, antenna and mode. Everything is worked out for that station."),
+      T("En <b>Ahora › Resumen</b> tienes la mejor banda, hacia dónde apuntar y qué hacer en este momento.","<b>Now › Summary</b> gives you the best band, where to point and what to do right now."),
+      T("En <b>DX</b> están el clúster, los avisos de DXpediciones y entidades raras, y los satélites.","<b>DX</b> holds the cluster, alerts for DXpeditions and rare entities, and satellites."),
+      T("Sube tu log ADIF en <b>Países y log › Mi log</b> y la web te marcará lo que te falta.","Upload your ADIF log in <b>Countries &amp; log › My log</b> and the site will flag what you need."),
+      T("En <b>DX › Avisos</b> puedes pedir que te avise con una notificación.","In <b>DX › Alerts</b> you can ask to be notified."),
+      T("Instálala desde el menú del navegador («Añadir a pantalla de inicio»): se abre como una app y, sin conexión, muestra los últimos datos descargados.","Install it from the browser menu (“Add to Home Screen”): it opens like an app and, offline, shows the last data downloaded.")])}</ol>
+      <h3>${T("Privacidad","Privacy")}</h3><ul>${li([
+      T("Sin registro, sin cuentas y sin cookies, analítica ni seguimiento.","No sign-up, no accounts, and no cookies, analytics or tracking."),
+      T("Tus ajustes, tu log ADIF y tus «lo oigo / no lo oigo» se guardan solo en este dispositivo, en el almacenamiento del navegador. Para borrarlos, usa «Quitar el log» o borra los datos de esta web en el navegador.","Your settings, your ADIF log and your “I hear it / I don’t” marks stay on this device only, in the browser’s storage. To erase them, use “Remove the log” or clear this site’s data in the browser."),
+      T("Los datos públicos se piden directamente a sus fuentes; algunas, a través de un intermediario propio en Cloudflare que no guarda nada. Las copias de LoTW y SatNOGS se sirven desde la propia web.","Public data is requested straight from its sources; some go through our own relay on Cloudflare, which stores nothing. The LoTW and SatNOGS copies are served from the site itself."),
+      T("La previsión VOACAP se descarga por zonas, no con tu posición exacta.","The VOACAP forecast is downloaded by area, not with your exact position."),
+      T("Tu indicativo solo sale del dispositivo cuando pulsas <b>Comprobar</b> en «¿Me oyen?», para buscarlo en las redes de escucha.","Your callsign only leaves the device when you tap <b>Check</b> in “Who hears me?”, to look it up on the listening networks."),
+      T("Las notificaciones las genera tu propio navegador; no hay ningún servidor de envío.","Notifications are generated by your own browser; there is no push server."),
+      T("Como en cualquier web, quien la aloja (GitHub Pages y Cloudflare) y las fuentes consultadas ven tu dirección IP al servirte los datos.","As with any website, the hosts (GitHub Pages and Cloudflare) and the sources queried see your IP address when they serve you data.")])}</ul>`}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fill);else fill();
+})();

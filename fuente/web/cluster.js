@@ -394,6 +394,7 @@ const AMODES=["SSB","AM","FM","CW","FT8","FT4","JT65","JS8","RTTY","PSK31","SSTV
 const ANAME={JS8:"JS8Call"};
 let AM=new Set(ld("acracb_almodes",x=>AMODES.includes(x))||[]),AB=new Set(ld("acracb_albands",x=>Number.isInteger(x)&&x>=0&&x<=12)||[]);/* vacío = todos */
 const mgrp=(m,f)=>{const x=mlab(m,f);return AMODES.includes(x)?x:(x==="JS8CALL"?"JS8":"OTROS")};
+window.ACRACB_alertCards=()=>{try{alertCards()}catch(e){}};
 function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.alert.items))return;
   const old=[...box.querySelectorAll(":scope>.sp")];let wrap=box.querySelector(":scope>.alc"),fb=box.querySelector(":scope>.alf");
   if(!wrap){if(!old.length)return;wrap=document.createElement("div");wrap.className="alc";old[0].before(wrap);old.forEach(o=>o.remove())}
@@ -406,8 +407,9 @@ function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.
     `<div class="seg clseg clbands albands" role="group" aria-label="${T("Banda de los avisos","Alert band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-alb="" aria-pressed="${!AB.size}">${T("Todas","All")}</button>${bl.map(b=>`<button type="button" data-alb="${b}" aria-pressed="${AB.has(b)}"${bc[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bc[b]?` <small>${bc[b]}</small>`:""}</button>`).join("")}</div>`;
   fb.querySelectorAll("[data-alm]").forEach(b=>b.onclick=()=>{const v=b.dataset.alm;if(v==="")AM.clear();else{if(AM.has(v))AM.delete(v);else AM.add(v);if(ml.every(m=>AM.has(m)))AM.clear()}S.set("acracb_almodes",JSON.stringify([...AM]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
   fb.querySelectorAll("[data-alb]").forEach(b=>b.onclick=()=>{const v=b.dataset.alb;if(v==="")AB.clear();else{const n=+v;if(AB.has(n))AB.delete(n);else AB.add(n);if(bl.every(x=>AB.has(x)))AB.clear()}S.set("acracb_albands",JSON.stringify([...AB]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
-  const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band))));
-  wrap.innerHTML=vis.length?vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});const need=String(x.need||"");
+  const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{let k=0;try{const t=r.sp.dx&&typeof tFor==="function"?tFor(r.sp):null;k=t&&window.ACRACB_needRank?ACRACB_needRank(r.x.call,t,r.band!=null?r.band:null):0}catch(e){}r.k=k;r.i=i;return r}).sort((a,b)=>b.k-a.k||a.i-b.i);
+  const kn=vis.some(r=>r.k>0)?`<p class="note alk">${T("Con tu log cargado, primero salen las entidades que te faltan, y entre ellas las que confirman por LoTW.","With your log loaded, entities you still need come first, led by those that confirm via LoTW.")}</p>`:"";
+  wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});const need=String(x.need||"");
     const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(st.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:st.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")

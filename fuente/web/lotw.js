@@ -12,7 +12,7 @@ const H=c=>{let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))%64;return h};
 const SH=new Map(),ASK=new Set();
 function load(k){if(SH.has(k)||ASK.has(k)||!BASE)return;ASK.add(k);
   fetch(BASE+String(k).padStart(2,"0")+".txt",{credentials:"omit",referrerPolicy:"no-referrer"}).then(r=>r.ok?r.text():"").then(t=>{const m=new Map();
-    for(const l of t.split("\n")){const i=l.indexOf(" ");if(i>0)m.set(l.slice(0,i),l.slice(i+1).trim())}SH.set(k,m);later()}).catch(()=>{SH.set(k,new Map())})}
+    for(const l of t.split("\n")){const i=l.indexOf(" ");if(i>0)m.set(l.slice(0,i),l.slice(i+1).trim())}SH.set(k,m);later();resort()}).catch(()=>{SH.set(k,new Map())})}
 /* null: aún no se sabe · "": no sube a LoTW · "aammdd": fecha de su última subida */
 function look(call){const c=String(call||"").toUpperCase().replace(/[^A-Z0-9/]/g,"");if(!c)return "";
   const cands=[c].concat(c.includes("/")?c.split("/").filter(x=>x.length>=3&&/\d/.test(x)).sort((a,b)=>b.length-a.length):[]);
@@ -24,6 +24,8 @@ function deco(){if(!BASE)return;document.querySelectorAll(".sc-call .stc[data-st
   s.setAttribute("aria-label",s.title);el.insertAdjacentElement("afterend",s)})}
 let q=0;function later(){if(q)return;q=setTimeout(()=>{q=0;try{deco()}catch(e){}},250)}
 window.ACRACB_lotw=look;
+/* 2.9.0: al llegar un trozo, si hay log cargado, se reordenan Avisos y «Qué hacer» (primero lo que te falta y confirma por LoTW) */
+let rq=0;function resort(){if(rq)return;rq=setTimeout(()=>{rq=0;try{if(typeof LOG==="undefined"||!LOG)return;if(window.ACRACB_alertCards)window.ACRACB_alertCards();if(typeof renderSide==="function"&&typeof st==="object"&&st.page==="ahora")renderSide()}catch(e){}},900)}
 function boot(){later();try{new MutationObserver(later).observe(document.body,{childList:true,subtree:true})}catch(e){}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();

@@ -60,7 +60,7 @@ function qrpCard(){const el=$("qrpbox");if(!el)return;const eq=$("eq"),low=eq&&+
   <div class="scroll"><table class="bt qrpt"><tr><th>Banda</th><th>CW</th><th>SSB</th></tr>${QRPF.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</table></div>
   <p class="note">Frecuencias en MHz. En FT8 y FT4 no hay frecuencia QRP: usa las normales, con 5 W llegan muy lejos.</p>
   <h3>Consejos para trabajar con poca potencia</h3><ul class="stl">
-  <li>Pon tu potencia real en «Cambiar» (arriba). ${low?"Ya la tienes en QRP: ":"Con la opción «QRP (≤5 W)» "}todas las previsiones, el mapa y la tabla por banda pasan a calcularse con esa potencia, y solo te dirá que una banda está abierta si llegas de verdad.</li>
+  <li>Pon tu potencia real en «Cambiar» (arriba). ${low?"Ya la tienes en QRP: ":"Con la opción «QRP (≤5 W)» "}todo se calcula con esa potencia: una banda sale abierta solo si de verdad llegas.</li>
   <li>Usa la pestaña <b>¿Me oyen?</b> del apartado DX: llama CQ dos o tres minutos y verás qué estaciones te han oído y con qué señal.</li>
   <li>Busca las bandas altas de día y la línea gris al amanecer y al atardecer: con poca potencia es cuando más lejos se llega.</li>
   <li>La CW gana unos 10–13 dB a la SSB y el FT8 más de 20: con 5 W en CW es como transmitir entre 50 y 100 W en SSB.</li></ul>`}
@@ -99,7 +99,7 @@ async function checkHeard(manual){const call=base(($("hcall")||{}).value||S.get(
   HR={call,at:Date.now(),list:[...best.values()],src:res.map(r=>[r.n,r.ok])};HBUSY=false;renderHeard()}
 function hStatus(t){const e=$("hst");if(e)e.textContent=t}
 function renderHeard(){const el=$("heardbox");if(!el)return;const call=S.get("acracb_mycall")||((typeof LOG!=="undefined"&&LOG&&LOG.call)||"");
-  if(!$("hcall")){el.innerHTML=`<p>Llama CQ dos o tres minutos y pulsa <b>Comprobar</b>: verás qué estaciones del mundo te han oído en la última hora, en qué banda y con qué señal. Busca tu indicativo en los clústeres DX (HamQTH, DX Summit y los que lee la plataforma), en Reverse Beacon (CW y RTTY), en PSK Reporter (FT8 y FT4) y en WSPRnet. <button class="lnk" id="hclub">Probar con el del club, EA5RKB</button></p>
+  if(!$("hcall")){el.innerHTML=`<p>Llama CQ dos o tres minutos y pulsa <b>Comprobar</b>: verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon, PSK Reporter y WSPRnet. <button class="lnk" id="hclub">Probar con el del club, EA5RKB</button></p>
     <div class="hcrow"><input id="hcall" type="text" autocomplete="off" spellcheck="false" maxlength="14" placeholder="Indicativo" aria-label="Tu indicativo" value="${esc2(call)}"><button class="btn" id="hgo">Comprobar</button></div><p class="note" id="hst"></p><div id="hres"></div>`;
     $("hgo").onclick=()=>checkHeard(true);$("hclub").onclick=()=>{const prev=S.get("acracb_mycall");$("hcall").value="EA5RKB";checkHeard(true).then(()=>{if(prev)S.set("acracb_mycall",prev)})};$("hcall").addEventListener("keydown",e=>{if(e.key==="Enter")checkHeard(true)});
     $("hcall").addEventListener("input",e=>{e.target.value=e.target.value.toUpperCase()})}

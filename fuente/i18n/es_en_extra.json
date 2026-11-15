@@ -355,5 +355,15 @@
 "MHz queda justo en la MUF media del camino": "MHz is right at the average MUF of the path",
 "MHz): unos días se refleja y otros no, y cuando abre lo hace con QSB": "MHz): some days it is reflected and others not, and when it opens there is QSB",
 ": unos días se refleja y otros no, y cuando abre lo hace con QSB": ": some days it is reflected and others not, and when it opens there is QSB",
-"está abierta entre Europa y": "is open between Europe and"
+"está abierta entre Europa y": "is open between Europe and",
+"· te falta en esta banda y confirma por LoTW": "· needed on this band, and confirms via LoTW",
+"DXpediciones activas y entidades raras de tu modo que aparecen en el clúster. Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.": "Active DXpeditions and rare entities for your mode that show up on the cluster. They are checked on every update. You are only alerted to those in the mode and bands you choose below.",
+"Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.": "They are checked on every update. You are only alerted to those in the mode and bands you choose below.",
+": verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon, PSK Reporter y WSPRnet.": ": you will see who heard you in the last hour, on which band and how strong, according to the DX clusters, Reverse Beacon, PSK Reporter and WSPRnet.",
+"todo se calcula con esa potencia: una banda sale abierta solo si de verdad llegas.": "everything is calculated with that power: a band shows as open only if you really get through.",
+"Cifras en %: probabilidad de que la baliza te llegue a esta hora. Recuadro blanco: emite ahora en esa banda (10 s por banda, ciclo de 3 minutos).": "Figures in %: chance that the beacon reaches you at this hour. White box: it is transmitting on that band now (10 s per band, 3-minute cycle).",
+". Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster, los avisos y «Qué hacer», y primero las estaciones que confirman por LoTW.": ". With this, ★ and «needed» show up automatically on the map, DXpeditions, cluster, alerts and «What to do», led by stations that confirm via LoTW.",
+"Guía": "Guide",
+"Primeros pasos y privacidad": "Getting started and privacy",
+"Cómo empezar y qué pasa con tus datos": "How to start and what happens to your data"
 }

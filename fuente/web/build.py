@@ -202,7 +202,7 @@ R('const ok=await dbSave("owner/log",r);$("adifst").textContent=`${fk(r.n)} QSO 
 R('if(DB&&upath("log")){try{await DB.doc(upath("log")).delete()}catch(e){}}refresh()}}',
   'refresh()}}')
 R('<p class="note">Cargado el ${new Date(LOG.date).toLocaleString("es-ES",{timeZone:"Europe/Madrid"})}. Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster y los avisos.</p>`:`<p>Sube tu log para que la web sepa qué entidades y bandas te faltan. Solo cuenta lo confirmado en QRZ.</p>`)+',
-  '<p class="note">Cargado el ${new Date(LOG.date).toLocaleString("es-ES",{timeZone:"Europe/Madrid"})}. Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster y los avisos.</p>`+(window.ACRACB_goals?ACRACB_goals():""):`<p>Sube tu log para que la web sepa qué entidades y bandas te faltan. Cuenta como confirmado lo validado en QRZ, LoTW o por QSL en papel.</p>`)+')
+  '<p class="note">Cargado el ${new Date(LOG.date).toLocaleString("es-ES",{timeZone:"Europe/Madrid"})}. Con esto, ★ y «te falta» salen solos en el mapa, las DXpediciones, el clúster, los avisos y «Qué hacer», y primero las estaciones que confirman por LoTW.</p>`+(window.ACRACB_goals?ACRACB_goals():""):`<p>Sube tu log para que la web sepa qué entidades y bandas te faltan. Cuenta como confirmado lo validado en QRZ, LoTW o por QSL en papel.</p>`)+')
 R('<b>Exporta tu log de QRZ en ADIF</b> (Logbook → Settings → Export) y súbelo aquí',
   '<b>Sube tu log en ADIF</b> (QRZ: Logbook → Settings → Export; también vale el de LoTW, Club Log o tu programa de log). Se queda solo en este dispositivo')
 if 'const sl=$("s_log")' not in s: R('function renderLog(){if(!$("logbox"))return;',
@@ -313,7 +313,7 @@ R('<span class="tag dx">★ ${esc(d.map(x=>x.call).join(", "))}</span>', '<span 
 # 2.1.10: actividad cercana con el modo junto a la frecuencia, como en el clúster; «ahora» en vez de «hace 0 min»
 R('return `<div class="sp ${a>60?"old":""}"><span class="f" style="color:${BC[s.band]}">${esc(s.f)}</span>', 'return `<div class="sp ${a>60?"old":""}"><span class="f" style="color:${BC[s.band]}">${esc(s.f)}${s.mode&&window.ACRACB_mb?" "+ACRACB_mb(s.mode):""}</span>')
 R('<b>${BANDS[s.band]||""}</b>${s.mode?" "+(window.ACRACB_mb?ACRACB_mb(s.mode):esc(s.mode)):""}</span></div>`}).join("")', '<b>${BANDS[s.band]||""}</b>${s.mode&&!window.ACRACB_mb?" "+esc(s.mode):""}</span></div>`}).join("")')
-R('const ageTxt=a=>a==null?"":a<90?', 'const ageTxt=a=>a==null?"":a<1?"ahora":a<90?')
+R('const ageTxt=a=>a==null?"":a<90?', 'const ageTxt=a=>a==null?"":a<1?(window.ACRACB_LANG==="en"?"just now":"ahora"):a<90?')
 # 2.1.19: círculos VOACAP más pequeños (4–10 px en vez de 6–15) para que no se amontonen; el porcentaje, desde el 50 %
 R('const on=d.p>=.05,r=on?6+d.p*9:4;', 'const on=d.p>=.05,r=on?4+d.p*6:3;')
 R('if(d.p>=.15&&r>=9)g.append("text").attr("class","ml")', 'if(d.p>=.5&&r>=7)g.append("text").attr("class","ml")')
@@ -348,15 +348,11 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
 """
 s = s.replace('(window.ACRACB_goals?ACRACB_goals():"")', '(window.ACRACB_logview?ACRACB_logview():"")+(window.ACRACB_goals?ACRACB_goals():"")', 1)
 assert "ACRACB_logview()" in s
-s_art = s.replace("la ionosfera calculada es la del este de España; la previsión pierde precisión.`", "la ionosfera calculada es la del este de España; la previsión pierde precisión. La versión web (ea5jnf.github.io/plataforma-dx) calcula VOACAP para tu zona.`", 1)
-assert s_art != s
-art = s_art.replace("</script>\n<script>\n" + common_js, "</script>\n" + ART_JS + "<script>\n" + common_js, 1)
-assert ART_JS in art
 
 # ---------------- versión web autónoma ----------------
 import datetime as _dt
 VER = open(os.path.join(W, "VERSION")).read().strip() + " · " + (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=1)).strftime("%d/%m/%Y")
-w = s.replace("Se revisan solo cuando pulsas Actualizar.", "Se revisan en cada actualización automática y al pulsar Actualizar. Solo te llegan, aquí, en la portada y en las notificaciones, los del modo y las bandas que elijas abajo.").replace("Se revisan solo cuando se pulsa Actualizar.", "Se revisan en cada actualización automática y al pulsar Actualizar. Solo te llegan, aquí, en la portada y en las notificaciones, los del modo y las bandas que elijas abajo.")
+w = s.replace("Se revisan solo cuando pulsas Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.").replace("Se revisan solo cuando se pulsa Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.")
 import hubbuild
 HUBS_JSON = os.path.join(SP, "ext", "hubs.json")
 if os.path.exists(HUBS_JSON):
@@ -373,8 +369,6 @@ w = w.replace(_mt, '<details class="mdet"><summary>Equilibrio con los clústeres
 # 2.5.9: «Todos los modos» junto al modo de la estación (el modo elegido sigue siendo la base de la previsión)
 _i = w.index('<select id="modesel"'); _j = w.index('</select></span>', _i) + len('</select>')
 w = w[:_j] + '<label class="allm" title="El clúster, los avisos y «Qué hacer» muestran todos los modos; la previsión se calcula en tu modo">' + '<input type="checkbox" id="allmodes"> Todos los modos</label>' + w[_j:]
-_i = art.index('<select id="modesel"'); _j = art.index('</select></span>', _i) + len('</select>')
-art = art[:_j] + '<label class="allm" title="El clúster, los avisos y «Qué hacer» muestran todos los modos; la previsión se calcula en tu modo">' + '<input type="checkbox" id="allmodes"> Todos los modos</label>' + art[_j:]
 def assemble(w, upd, LANG, TITLE):
     global man
     NM = os.path.join(SP, "pub", "node_modules")
@@ -574,13 +568,14 @@ for _f in _g.glob(os.path.join(W, "out", "lib", "*-" + "[0-9a-f]" * 10 + ".js"))
 # (clúster, mapa, tarjetas) usa MHz con tres decimales y punto. Se unifican en MHz en los dos idiomas.
 _FQ = re.compile(r'\b(\d{1,3}\.\d{3}(?:\s?[\u2013-]\s?\d{1,3}\.\d{3})?)(\s?)kHz')
 w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
+# 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
+w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
 w_es = webify(w_es, "es"); w_en = webify(w_en, "en")
 import shutil; shutil.copy(os.path.join(W, "sw.js"), os.path.join(W, "out", "sw.js"))
 print("traducciones", n1, n2)
 os.makedirs(os.path.join(W, "out"), exist_ok=True)
-open(os.path.join(W, "out", "artifact.html"), "w", encoding="utf-8").write(art)
 open(os.path.join(W, "out", "index.html"), "w", encoding="utf-8").write(w_es)
 open(os.path.join(W, "out", "en.html"), "w", encoding="utf-8").write(w_en)
 import subprocess as _sp
 _sp.run(["node", os.path.join(W, "minify.js"), os.path.join(W, "out", "lib")], check=True)
-print("artifact", len(art), "web", len(w_es), "en", len(w_en))
+print("web", len(w_es), "en", len(w_en))
