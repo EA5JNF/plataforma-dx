@@ -230,5 +230,9 @@
 "En el clúster: nadie de estos destinos ahora": "On the cluster: nobody from these destinations now",
 "destino abierto no sale": "open destination is not",
 "destinos abiertos no salen": "open destinations are not",
-"ahora en el clúster.": "on the cluster right now."
+"ahora en el clúster.": "on the cluster right now.",
+"Previsión de destinos que se abrirán en": "Forecast of destinations that will open on",
+"La lista de estaciones del clúster aparece cuando llega la hora, porque el clúster solo sabe quién sale ahora.": "The cluster station list appears when the time comes, because the cluster only knows who is on the air now.",
+"destinos más": "more destinations",
+"estaciones más": "more stations"
 }
