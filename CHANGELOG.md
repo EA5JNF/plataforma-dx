@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.8.31 · 15/11/2026
+- Optimización general, sin cambiar nada de lo que se ve ni de las cifras (comprobado: las 248.976 probabilidades de todos los destinos, horas y bandas salen idénticas):
+  - Cálculo de la previsión el doble de rápido: la caché de probabilidades usa claves numéricas y los valores que solo cambian cada minuto (modo, antenas, parámetros, Kp por hora, antena por banda) se guardan sin buscarlos en cada una de cientos de miles de llamadas. Recalcular todo el día pasa de 340 a 140 ms.
+  - D3 reducido a las partes que usa la plataforma (mapa, selección, zoom y transiciones): de 92 a 29 kB comprimidos.
+  - Hoja de estilos minimizada y datos de VOACAP y del ciclo solar en archivos aparte que se guardan en el dispositivo: la página que se descarga en cada visita baja de 72 a 53 kB comprimidos.
+  - En un móvil lento (procesador 4 veces más lento y red 3G): la primera carga baja de 935 a 867 kB, la página está lista en 4,3 s en lugar de 5 s y el tiempo con la pantalla bloqueada baja de 2,1 a 1,4 s.
+- En español e inglés, en todas las pantallas (también 8K), con los cinco tamaños de letra, en los dos temas y en las dos vistas. / General optimization: twice-as-fast forecast calculation, smaller D3 and lighter page, same results.
+
 ## 2.8.30 · 15/11/2026
 - DX › Satélites: SatNOGS DB indica «en órbita» en lugar de «vivo», y la etiqueta salía «inactivo» en todos. Ahora un satélite sale «activo» si tiene algún transmisor activo y no ha reentrado.
 - Primeras copias ya en la web: 81.935 usuarios de LoTW con subidas en el último año y el estado de los ocho satélites.

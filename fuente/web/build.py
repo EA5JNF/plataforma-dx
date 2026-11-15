@@ -176,6 +176,20 @@ R('<span class="dot ${WC[r.m]}"></span><span class="ww">${W[r.m]} </span><span s
 R('const W=["cerrada","floja","abierta"],WC=["cl","mx","ok"];','const W=["cerrada","floja","abierta"],WC=["cl","mx","ok"],QW=["cerrada","muy poco","poco","regular","bien","muy bien"];')
 R('<p>Tres opiniones independientes a las ${hh(lh)}:00: la predicción de esta plataforma para tu estación,','<p>Cuatro opiniones independientes a las ${hh(lh)}:00: la predicción de esta plataforma para tu estación (qué parte del mundo se oye en esa banda, igual que en «Hora a hora»),')
 R('HamQSL da una previsión general por grupos de bandas, no para tu antena.</p></details>`}','HamQSL da una previsión general por grupos de bandas, no para tu antena.</p><p class="note">La conclusión sale por mayoría: «Abierta» si la mayoría de las fuentes la ve bien y ninguna la da por cerrada, «Floja» si ninguna la da por cerrada pero no hay mayoría clara, «Cerrada» si casi todas la dan cerrada y «Dudosa» cuando se contradicen.</p><p class="note">Mejor destino de cada banda ahora: ${rows.map(r=>`<span style="white-space:nowrap"><b style="color:${BC[r.b]}">${BANDS[r.b]}</b> ${Math.round(r.mx*100)} %</span>`).join(" · ")}.</p></details>`}')
+# 2.8.31: clave numérica para la caché de probabilidades (antes una cadena de 5 trozos en cada llamada): mismas cifras, menos trabajo
+R('const key=t.id+"|"+lh+"|"+b+"|"+(lp?1:0)+"|"+(extra||0)+(RXM?"|rx":"")+(window.ACRACB_NOLIVE?"|nl":"");',
+  'let tn=PIDN.get(t.id);if(tn===undefined){tn=PIDN.size+1;PIDN.set(t.id,tn)}const key=(!extra&&lh===(lh|0)&&lh>=0&&lh<32)?(((tn*32+lh)*16+b)*8+(lp?1:0)+(RXM?2:0)+(window.ACRACB_NOLIVE?4:0)):t.id+"|"+lh+"|"+b+"|"+(lp?1:0)+"|"+(extra||0)+(RXM?"|rx":"")+(window.ACRACB_NOLIVE?"|nl":"");')
+R('function prob(t,lh,b,lp,extra){','const PIDN=new Map();function prob(t,lh,b,lp,extra){')
+# 2.8.31: memo rápido para los valores que no dependen de nada más que del minuto (modo, antenas, parámetros...):
+# una propiedad de objeto con contador de generación en lugar de buscar en el Map en cada una de cientos de miles de llamadas
+R('function memo(k,f){','let MZG=0;{const _c=MZ.clear;MZ.clear=function(){MZG++;return _c.call(MZ)}}const MC=Object.create(null);function memoC(k,f){const e=MC[k];if(e!==undefined&&e.g===MZG)return e.v;const v=f();MC[k]={g:MZG,v};return v}function memo(k,f){')
+R('function memoC(k,f){','const MN=Object.create(null);function memoN(p,n,f){if(n!==(n|0)||n<0||n>2047)return memo(p+n,f);let e=MN[p];if(e===undefined||e.g!==MZG)e=MN[p]={g:MZG,a:new Array(2048),h:new Uint8Array(2048)};if(e.h[n])return e.a[n];const v=f();e.a[n]=v;e.h[n]=1;return v}function memoC(k,f){')
+R('memo("iK"+lh,','memoN("iK",lh,')
+R('memo("kp"+lh,','memoN("kp",lh,')
+R('memo("la"+b,','memoN("la",b,')
+R('return memo("aP"+b+"|"+th,()=>antPick0(b,th))','return (th===(th|0)&&th>=0&&th<128)?memoN("aP",b*128+th,()=>antPick0(b,th)):memo("aP"+b+"|"+th,()=>antPick0(b,th))')
+for _k in ("blend","uMon","PRM","nzv","hzv","lNow","ANTS","MOD"):
+    R('memo("%s",' % _k, 'memoC("%s",' % _k)
 R('scaleExtent([1,10])','scaleExtent([1,41])')
 R('.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4)','.fitExtent([[8,8],[W-8,H-8]],{type:"Sphere"}).precision(.4/Math.max(1,Math.min((typeof ZT!=="undefined"&&ZT&&ZT.k)||1,12)))')
 R('if(n>1000)n/=1000;const s4=n.toFixed(4);return s4.endsWith("0")?n.toFixed(3):s4}','if(n>1000)n/=1000;return n.toFixed(3)}')
@@ -468,6 +482,11 @@ def webify(c, lang):
         src = open(os.path.join(NM, path), encoding="utf-8").read()
         inl = "<script>/* biblioteca incluida para funcionar sin conexión */\n" + src.replace("</script", "<\\/script") + "\n</script>"
         assert c.count(inl) == 1, name
+        if name.startswith("d3-"):
+            # 2.8.31: solo las partes de D3 que usa la plataforma (geo, selección, zoom y transiciones), hechas con
+            # esbuild desde web/d3entry.mjs: 280 kB -> 83 kB (92 -> 29 kB comprimidos). Mismo D3 7.8.5, misma API.
+            src = open(os.path.join(SP, "ext", "d3-acracb.min.js"), encoding="utf-8").read()
+            name = "d3c-%s.js" % hashlib.sha256(src.encode("utf-8")).hexdigest()[:10]
         c = c.replace(inl, '<script src="lib/%s"></script>' % name)
         open(os.path.join(OUT, "lib", name), "w", encoding="utf-8").write(src)
     def pngf(sz):
@@ -504,16 +523,27 @@ def webify(c, lang):
         open(os.path.join(OUT, fn), "w", encoding="utf-8").write(body); return fn
     satsrc = open(os.path.join(NM, "satellite.js/dist/satellite.min.js"), encoding="utf-8").read()
     open(os.path.join(OUT, "lib", "satellite-5.0.0.min.js"), "w", encoding="utf-8").write(satsrc)
-    k0 = c.index('<script src="lib/d3-7.8.5.min.js"></script>')
+    k0 = c.index('<script src="lib/d3c-')
     c = c[:k0] + '<script src="lib/satellite-5.0.0.min.js"></script>' + c[k0:]
     # 2.3.4: mapa detallado (1:50 millones) para cuando se amplía; se descarga solo al pasar de 2 aumentos
     w50 = json.dumps(json.load(open(os.path.join(SP, "ext", "countries-50m.json"))), separators=(",", ":"))
     w50fn = ext("window.ACRACB_W50=%s;\n" % w50, "world50")
-    for did in ("world", "dxccdata", "geolbl"):
+    # 2.8.31: la hoja de estilos grande sale a un archivo con huella, minimizada (sin reordenar reglas). La página que se
+    # pide en cada visita adelgaza y la hoja queda guardada en el dispositivo como el resto de lib/.
+    import subprocess
+    big = max(re.finditer(r'<style>(.*?)</style>', c, re.S), key=lambda m: len(m.group(1)))
+    if len(big.group(1)) > 20000:
+        css = subprocess.run(["node", os.path.join(W, "cssmin.js")], input=big.group(1), capture_output=True, text=True,
+                             env=dict(os.environ, CSSO="/tmp/claude-0/tools/node_modules/csso"), check=True).stdout
+        assert len(css) > 20000, "hoja minimizada vacía"
+        h = hashlib.sha256(css.encode("utf-8")).hexdigest()[:10]; cfn = "lib/app-%s.css" % h
+        open(os.path.join(OUT, cfn), "w", encoding="utf-8").write(css)
+        c = c[:big.start()] + ('<style>%s</style>' % css if not os.environ.get('CSSEXT') else '<link rel="stylesheet" href="%s">' % cfn) + c[big.end():]
+    for did in ("world", "dxccdata", "geolbl", "voa", "cycdata"):
         m = re.search(r'<script id="%s" type="application/json">(.*?)</script>' % did, c, re.S)
         assert m, did
         txt = m.group(1).replace("<\\/", "</")
-        fn = ext('(function(){var e=document.getElementById("%s");if(e)e.textContent=%s})();\n' % (did, json.dumps(txt, ensure_ascii=False)) + ('window.ACRACB_W50URL="%s";\n' % w50fn if did == "world" else ""), did + ('-' + lang if did == 'geolbl' else ''))
+        fn = ext('(function(){var e=document.getElementById("%s");if(e)e.textContent=%s})();\n' % (did, json.dumps(txt, ensure_ascii=False)) + ('window.ACRACB_W50URL="%s";\n' % w50fn if did == "world" else ""), did + ('-' + lang if did in ('geolbl', 'voa', 'cycdata') else ''))
         c = c[:m.start()] + '<script id="%s" type="application/json"></script><script src="%s"></script>' % (did, fn) + c[m.end():]
     out = []; last = 0; napp = 0
     for m in re.finditer(r'<script>(.*?)</script>', c, re.S):

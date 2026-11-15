@@ -12,7 +12,7 @@ self.addEventListener("activate", e => e.waitUntil((async () => {
 })()));
 /* archivos con huella (lib/app1-es-1a2b3c4d5e.js): al guardar uno nuevo se borran las versiones viejas del mismo nombre,
    para que lo guardado en el dispositivo no crezca con cada actualización */
-const HASHED = /\/lib\/([a-z0-9-]+)-[0-9a-f]{10}\.js$/;
+const HASHED = /\/lib\/([a-z0-9-]+)-[0-9a-f]{10}\.(?:js|css)$/;
 /* zonas VOACAP: se guardan como mucho las 6 últimas usadas (cada una ocupa ~1 MB por mes) */
 const ZONE = /\/hubs\/v\d+\/([A-Za-z0-9]+)\//, MAXZ = 6;
 async function pruneZones(c) {
