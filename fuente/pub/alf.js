@@ -7,6 +7,6 @@ await p.click('#alerts [data-alm="SSB"]');const r1=await p.evaluate(()=>document
 await p.click('#alerts [data-alm="CW"]');const r2=await p.evaluate(()=>document.querySelectorAll("#alerts .alc .sc").length);
 await p.click('#alerts [data-alb="6"]');const r3=await p.evaluate(()=>[...document.querySelectorAll("#alerts .alc .sc .cs")].map(e=>e.dataset.call));
 await p.evaluate(()=>renderAlerts());const r4=await p.evaluate(()=>({cards:document.querySelectorAll("#alerts .alc .sc").length,f:document.querySelectorAll("#alerts .alf").length}));
-await (await p.$("#f_al")).screenshot({path:`/tmp/claude-0/-home-claude/c42bec04-2b15-5db9-9b12-5aaee8490765/scratchpad/alf_${u}.png`});
+await (await p.$("#f_al")).screenshot({path:`/home/claude/work/alf_${u}.png`});
 await p.click('#alerts [data-alm=""]');await p.click('#alerts [data-alb=""]');const r5=await p.evaluate(()=>document.querySelectorAll("#alerts .alc .sc").length);
 console.log(u,JSON.stringify({r0,r1,r2,r3,r4,r5}),errs)}await b.close()})();

@@ -1050,3 +1050,57 @@ html.bigt .chip .v{overflow-wrap:anywhere}
 .ezrec #rec .rec{margin-top:4px}
 .alc>.alk{grid-column:1/-1;margin:0 0 4px}
 .glgo{margin:10px 0 0}
+/* 2.10.0 Hora a hora: leyenda arriba y lectura de casilla */
+#tl .hmleg2.hmtop{margin:0 0 8px}
+#tl .tlread{margin:8px 0 4px;padding:6px 10px;border-left:3px solid var(--accent);background:var(--panel2);border-radius:6px;font:500 .82rem var(--f-m,monospace);color:var(--fg,inherit);min-height:1.4em}
+.chq{margin-top:6px}.chq>summary{cursor:pointer;font:600 .74rem var(--f-m,monospace);color:var(--accent);list-style:none}.chq>summary::-webkit-details-marker{display:none}
+.chq>summary::before{content:"ⓘ ";}.chq[open]>summary{margin-bottom:4px}.chq p{margin:0;font-size:.85rem;color:var(--muted);line-height:1.4}
+/* 2.10.0: desplegables con diferencia clara entre abierto y cerrado en toda la plataforma (salvo pestañas, mapa y cajas propias) */
+details:not(.card):not(.mapctlw):not(.glr):not(.chq):not(.cfg)>summary{cursor:pointer}
+details:not(.card):not(.mapctlw):not(.glr):not(.chq):not(.cfg)[open]{border-left:3px solid var(--accent);padding-left:10px;padding-bottom:6px;background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 8px 8px 0}
+details:not(.card):not(.mapctlw):not(.glr):not(.chq):not(.cfg)[open]>summary{color:var(--accent);font-weight:700;margin-bottom:6px}
+/* 2.10.0: pie compacto: lo esencial a la vista y el resto en un desplegable */
+.foot.note{margin-bottom:6px}
+details.footmore{max-width:720px;margin:0 auto 24px;text-align:center}
+details.footmore>summary{list-style:none;display:inline-block;font-size:.85rem;color:var(--muted)}
+details.footmore>summary::-webkit-details-marker{display:none}
+details.footmore>summary::before{content:"▸ ";color:var(--accent)}details.footmore[open]>summary::before{content:"▾ "}
+details.footmore[open]{text-align:left}details.footmore p{margin:6px 0}
+/* 2.10.0: tarjetas de estación con el mismo formato: en cada fila, todas igual de altas y el «¿Lo oyes?» y sus resultados
+   siempre abajo, a la misma altura; las DXpediciones pasan de mural a rejilla */
+#dxl{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;column-width:auto;align-items:stretch}
+#dxl>.sc{margin:0!important;height:100%}
+#dxl>.llmore,#dxl>.note,#dxl>.dxoffh{grid-column:1/-1;column-span:none}
+.sc>.ohbox{margin-top:auto!important}
+.alc{align-items:stretch}
+@media (min-width:1100px){#spots,#near{align-items:stretch!important}}
+/* paneles del Resumen: cada uno ajustado a su contenido y alineados arriba */
+.ezg{align-items:start}
+/* 2.10.0: cabecera de las DXpediciones: el estado y la probabilidad, apilados a la derecha, dejan sitio al indicativo y la entidad */
+.sc.dxc .dxh-r{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none;text-align:right}
+.sc.dxc .dxh-r .sc-age{font-size:.74rem;white-space:nowrap}
+.sc.dxc .sc-h .sc-call{flex:1 1 auto;min-width:0}
+/* 2.10.0: otras frecuencias de la estación, con el mismo aspecto que la principal */
+.sc-d .xalts{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+.xalt2{white-space:nowrap;font-size:.86rem}.xalt2 b{font:700 1.02rem var(--f-m,monospace);letter-spacing:.01em}
+.xalt2 .xam{font:600 .72rem var(--f-m,monospace);color:var(--muted)}.xalt2 .xab{color:var(--muted)}
+/* 2.10.0: filtros del clúster plegados */
+details.clfilt{margin:6px 0 10px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--panel2)}
+details.clfilt>summary{list-style:none;cursor:pointer;font-size:.86rem;color:var(--muted)}details.clfilt>summary::-webkit-details-marker{display:none}
+details.clfilt>summary::before{content:"▸ ";color:var(--accent)}details.clfilt[open]>summary::before{content:"▾ "}
+details.clfilt .clft{font-weight:700;color:var(--accent)}
+details.clfilt[open]{border-left:3px solid var(--accent);padding-left:10px}
+/* 2.10.0: Resumen con fronteras claras: índice arriba, cada parte con su cabecera y «Qué hacer» sin título repetido */
+.eznav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.eznav button{font:600 .76rem var(--f-m,monospace);letter-spacing:.04em;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);color:var(--fg);cursor:pointer;min-height:32px}
+.eznav button:hover{border-color:var(--accent);color:var(--accent)}
+#recw .rqh{display:none}
+.ezg>.ez{border-top:3px solid var(--accent)}
+.ezg>.ez>.ezt{padding-bottom:6px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+#solsum{border-top:3px solid var(--accent2,var(--accent))}
+#recw .recmore{display:block;width:100%;margin:8px 0 4px}
+/* 2.10.0: etiquetas del mapa más legibles: junto a su punto, con más cuerpo y un borde oscuro (claro en el tema claro) */
+#map text.spotl{font:700 12px var(--f-m,monospace)!important;stroke-width:4px!important;stroke-linejoin:round;stroke-opacity:.9}
+#map text.dxx,#map text.skipl,#map text.txl{stroke-width:4px!important;stroke-linejoin:round;paint-order:stroke fill}
+#map text.txl{stroke:#000;stroke-opacity:.85}
+html[data-theme="light"] #map text.txl{stroke:#fff}

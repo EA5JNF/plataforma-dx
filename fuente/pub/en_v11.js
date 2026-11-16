@@ -15,7 +15,7 @@ console.log("tags clúster:",await p.evaluate(()=>[...document.querySelectorAll(
 console.log("tags aviso:",await p.evaluate(()=>[...document.querySelectorAll("#albar .xtag")].map(x=>x.textContent)));
 await p.locator("#albar").screenshot({path:"v_albar.png"});
 await p.evaluate(()=>{go("dx");selTab("dx","f_cl",true)});await p.waitForTimeout(300);await p.locator("#f_cl").screenshot({path:"v_cl.png"});
-await p.click('[data-clt="POTA"]');await p.waitForTimeout(300);console.log("POTA filtro:",await p.evaluate(()=>document.querySelectorAll("#spots .sp").length));await p.locator("#f_cl").screenshot({path:"v_clpota.png"});await p.click('[data-clt="dx"]');
+await p.evaluate(()=>{const d=document.getElementById("clfilt");if(d)d.open=true});await p.click('[data-clt="POTA"]');await p.waitForTimeout(300);console.log("POTA filtro:",await p.evaluate(()=>document.querySelectorAll("#spots .sp").length));await p.locator("#f_cl").screenshot({path:"v_clpota.png"});await p.click('[data-clt="dx"]');
 // heard
 await p.evaluate(()=>selTab("dx","f_heard",true));await p.waitForTimeout(300);await p.fill("#hcall","ea5jnf");await p.click("#hgo");await p.waitForTimeout(1500);console.log("fuentes:",await p.evaluate(()=>[...document.querySelectorAll("#hres .sp .w")].map(x=>x.textContent).join(" | ")));
 console.log(await p.$eval("#hst",e=>e.textContent));await p.locator("#f_heard").screenshot({path:"v_heard.png"});

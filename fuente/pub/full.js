@@ -19,4 +19,4 @@ for(const [nm,w,h,dpr,mob] of DEV){if(ONLY&&!ONLY.split(",").includes(nm))contin
     if(issues.length)out.push(pg+(t?"/"+t:"")+": "+[...new Set(issues)].slice(0,6).join(" | "))}}
   return out});
  report.push(`${nm} ${z}: ${r.length?"\n  "+r.join("\n  "):"OK"}${errs.length?" ERR "+errs.slice(0,2).join(";"):""}`);console.log(report[report.length-1]);await c.close()}}
-fs.writeFileSync(`/tmp/claude-0/-home-claude/c42bec04-2b15-5db9-9b12-5aaee8490765/scratchpad/full_${LANG}${process.argv[5]||""}.txt`,report.join("\n"));await b.close()})();
+fs.writeFileSync(`/home/claude/work/full_${LANG}${process.argv[5]||""}.txt`,report.join("\n"));await b.close()})();

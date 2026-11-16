@@ -157,7 +157,7 @@ R('<td>−0,5 a −1,5 dB</td>','<td>−0,5 a −1,5 dB</td>')
 # textos que vienen de los datos: tres decimales y, en inglés, traducidos al pintarlos
 R('<p class="note" style="margin:4px 0 0">${esc(d.info)}</p>','<p class="note" style="margin:4px 0 0">${esc(window.ACRACB_tx?ACRACB_tx(d.info):d.info)}</p>')
 R('<p class="note" style="margin:4px 0 0">${esc(L.nearNote)}</p>','<p class="note" style="margin:4px 0 0">${esc(window.ACRACB_tx?ACRACB_tx(L.nearNote):L.nearNote)}</p>')
-R('["Aurora",s.aurora,"",""','["Aurora",window.ACRACB_tx?ACRACB_tx(s.aurora):s.aurora,"",""')
+# 2.10.0: la aurora ya se traduce y se separa (cifra arriba, zona debajo) en la base
 # «Ver en el mapa» desde la ficha de un indicativo o de un destino: ruta y zoom, sin abrir la tarjeta de información
 R('if($("cpmap"))$("cpmap").onclick=()=>{closeCall();go("mapa");openPop({k:"t",id:t.id})};','if($("cpmap"))$("cpmap").onclick=()=>{closeCall();if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({call,id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
 R('$("zmap").onclick=()=>{go("mapa");openPop({k:"t",id:t.id})};','$("zmap").onclick=()=>{if(!(window.ACRACB_mapFocus&&ACRACB_mapFocus({id:t.id}))){go("mapa");openPop({k:"t",id:t.id})}};')
@@ -273,7 +273,7 @@ s = re.sub(r'<link rel="apple-touch-icon"[^>]*>', '<link rel="apple-touch-icon" 
 head_meta = ('<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="mobile-web-app-capable" content="yes">\n'
              '<meta name="apple-mobile-web-app-status-bar-style" content="black">\n<meta name="apple-mobile-web-app-title" content="ACRACB DX">\n'
              '<meta name="application-name" content="ACRACB DX">\n<meta name="theme-color" content="#0a0e13">\n')
-R('<title>ACRACB - Plataforma DX</title>', '<title>ACRACB - Plataforma DX</title>\n' + head_meta)
+R('<title>ACRACB - DX EA5RKB</title>', '<title>ACRACB - DX EA5RKB</title>\n' + head_meta)
 # ---------------- 2.1.0: clúster por bandas, POTA/SOTA/WWFF, paso largo, DXpediciones en el aire, modos con color ----------------
 R('${onc?`<b style="color:#ffd76a">◆ En el clúster: ${esc(onc.f)} a las ${esc(onc.t)} UTC</b><br>`:""}',
   '${window.ACRACB_dxon?ACRACB_dxon(d):(onc?`<b style="color:#ffd76a">◆ En el clúster: ${esc(onc.f)} a las ${esc(onc.t)} UTC</b><br>`:"")}')
@@ -357,7 +357,8 @@ import hubbuild
 HUBS_JSON = os.path.join(SP, "ext", "hubs.json")
 if os.path.exists(HUBS_JSON):
     w = hubbuild.apply(w, HUBS_JSON)
-w = w.replace("textos y código sin permiso escrito del club.<br>", "textos y código sin permiso escrito del club.<br><b>Versión " + VER + "</b><br>", 1)
+w = w.replace('<b class="fver">Versión</b>', '<b class="fver">Versión ' + VER + '</b>', 1)
+assert '<b class="fver">Versión ' + VER in w
 w = w.replace("Prohibida su copia, reproducción o adaptación sin permiso escrito del club.", "Prohibida su copia, reproducción o adaptación sin permiso escrito del club. Versión " + VER + ".", 1)
 # 2.5.0: nota de privacidad en el pie
 assert 'Fuentes y agradecimientos</button></p>' in w
@@ -394,7 +395,7 @@ def assemble(w, upd, LANG, TITLE):
     for m in range(1, 13):
         open(os.path.join(OUTV, "m%02d.json" % m), "w", encoding="utf-8").write(open(os.path.join(voa_dir, "m%02d.json" % m), encoding="utf-8").read().strip())
     # manifiesto para Android/escritorio (iPhone/iPad usan apple-touch-icon)
-    man = {"name": "ACRACB - Plataforma DX", "short_name": "ACRACB DX", "display": "standalone", "background_color": "#0a0e13", "theme_color": "#0a0e13",
+    man = {"name": "ACRACB - DX EA5RKB", "short_name": "ACRACB DX", "display": "standalone", "background_color": "#0a0e13", "theme_color": "#0a0e13",
            "start_url": ".", "icons": [{"src": "data:image/png;base64," + png(192), "sizes": "192x192", "type": "image/png"},
                                        {"src": "data:image/png;base64," + png(512), "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": "data:image/png;base64," + pngm(512), "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]}
     w = w.replace(head_meta, head_meta + '<link rel="manifest" href="data:application/manifest+json;base64,%s">\n<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,%s">\n'
@@ -414,7 +415,7 @@ def assemble(w, upd, LANG, TITLE):
     return w
 
 upd = open(os.path.join(W, "updater.js"), encoding="utf-8").read()
-w_es = assemble(w, upd, "es", "ACRACB - Plataforma DX")
+w_es = assemble(w, upd, "es", "ACRACB - DX EA5RKB")
 w_es = w_es.replace('<head>\n<meta charset="utf-8">', '<head>\n<meta charset="utf-8">\n<script>try{if(localStorage.getItem("acracb_lang")==="en"&&!/[?&]es\\b/.test(location.search))location.replace("en.html"+location.hash)}catch(e){}</script>', 1)
 assert 'location.replace("en.html"' in w_es
 # 2.8.27: cada idioma con su forma de escribir los decimales (coma en español, punto en inglés), salvo las
@@ -465,7 +466,7 @@ def en_data(c):
     return c
 w_en_src = en_data(en_fix(w_en_src)).replace("<script>\n/* ---- ACRACB: tema", '<script>window.ACRACB_LANG="en"</script>\n<script>\n/* ---- ACRACB: tema', 1)
 assert 'window.ACRACB_LANG="en"' in w_en_src
-w_en = assemble(w_en_src, en_fix(upd_en), "en", "ACRACB - DX Platform")
+w_en = assemble(w_en_src, en_fix(upd_en), "en", "ACRACB - DX EA5RKB")
 
 def webify(c, lang):
     """Web: bibliotecas, iconos y manifiesto como archivos aparte (el navegador los guarda y no se vuelven a descargar)."""
@@ -492,7 +493,7 @@ def webify(c, lang):
     c = re.sub(r'(<link rel="icon" type="image/png" href=")data:image/png;base64,[^"]+', lambda m: m.group(1) + "icon-192.png", c)
     mf = dict(man); mf["icons"] = [{"src": pngf(192), "sizes": "192x192", "type": "image/png"}, {"src": pngf(512), "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": pngmf(512), "sizes": "512x512", "type": "image/png", "purpose": "maskable"}]
     mfn = "manifest.webmanifest" if lang == "es" else "manifest-en.webmanifest"
-    if lang == "en": mf["name"] = "ACRACB - DX Platform"; mf["start_url"] = "en.html"
+    if lang == "en": mf["name"] = "ACRACB - DX EA5RKB"; mf["start_url"] = "en.html"
     mf["lang"] = lang
     open(os.path.join(OUT, mfn), "w", encoding="utf-8").write(json.dumps(mf, ensure_ascii=False))
     c = re.sub(r'<link rel="manifest" href="data:[^"]+">', '<link rel="manifest" href="%s">' % mfn, c, count=1)
@@ -570,6 +571,8 @@ _FQ = re.compile(r'\b(\d{1,3}\.\d{3}(?:\s?[\u2013-]\s?\d{1,3}\.\d{3})?)(\s?)kHz'
 w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 # 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
 w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
+w_en = re.sub(r'<b class="fver">Versión ([^<·]+) · (\d\d)/(\d\d)/(\d{4})', lambda m: '<b class="fver">Version %s · %s %d, %s' % (m.group(1).strip(), ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][int(m.group(3))-1], int(m.group(2)), m.group(4)), w_en)
+assert '<b class="fver">Version ' in w_en
 w_es = webify(w_es, "es"); w_en = webify(w_en, "en")
 import shutil; shutil.copy(os.path.join(W, "sw.js"), os.path.join(W, "out", "sw.js"))
 print("traducciones", n1, n2)

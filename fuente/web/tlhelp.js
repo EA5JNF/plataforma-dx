@@ -27,6 +27,15 @@ function enhance(){const el=document.getElementById("tl");if(!el)return;const hm
 <li>${T("Es una previsión media para este mes con la actividad solar de hoy: unos días irá mejor y otros peor. Lo que se oye de verdad está en DX › Clúster y en Balizas.","It is an average forecast for this month with today's solar activity: some days will be better and others worse. What is actually being heard is in DX › Cluster and in Beacons.")}</li></ul>`;
     const at=el.querySelectorAll(".hmleg2");(at[at.length-1]||hm).insertAdjacentElement("afterend",d);
     try{d.open=localStorage.getItem("acracb_tlhow")==="1"}catch(e){}d.addEventListener("toggle",()=>{try{localStorage.setItem("acracb_tlhow",d.open?"1":"")}catch(e){}})}}
-function boot(){const el=document.getElementById("tl");if(!el)return setTimeout(boot,300);enhance();try{new MutationObserver(()=>enhance()).observe(el,{childList:true})}catch(e){}}
+/* 2.10.0: leyenda de colores encima de la tabla (se lee antes que la tabla) y lectura de la casilla tocada o señalada,
+   para que en el móvil, donde no hay «title», se sepa qué dice cada color sin adivinar */
+let LAST="";
+function place(){const el=document.getElementById("tl");if(!el)return;const hm=el.querySelector(".hm2");if(!hm)return;
+  const lg=el.querySelector(".hmleg2");if(lg&&lg.nextElementSibling!==hm&&!lg.classList.contains("hmtop")){lg.classList.add("hmtop");hm.insertAdjacentElement("beforebegin",lg)}
+  let rd=el.querySelector(".tlread");if(!rd){rd=document.createElement("p");rd.className="tlread";rd.setAttribute("aria-live","polite");hm.insertAdjacentElement("afterend",rd)}
+  rd.textContent=LAST||T("Toca o señala una casilla para ver aquí qué dice.","Tap or point at a cell to see what it says here.")}
+function readCell(ev){const c=ev.target.closest&&ev.target.closest(".hm2 i[title]");if(!c)return;LAST=c.getAttribute("title");const rd=document.querySelector("#tl .tlread");if(rd)rd.textContent=LAST}
+function boot(){const el=document.getElementById("tl");if(!el)return setTimeout(boot,300);enhance();place();el.addEventListener("pointerover",readCell,{passive:true});el.addEventListener("pointerdown",readCell,{passive:true});
+  try{new MutationObserver(()=>{enhance();place()}).observe(el,{childList:true})}catch(e){}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();

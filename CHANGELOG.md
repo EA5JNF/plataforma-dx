@@ -5,6 +5,20 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.0 · 17/11/2026
+Primera fase de las mejoras del documento de errores. En español e inglés.
+- Nuevo nombre: «ACRACB - DX EA5RKB», con la bandera de España.
+- Hora a hora: la leyenda de colores va encima de la tabla, y al tocar o señalar una casilla una línea dice qué significa (banda, hora, destinos abiertos y porcentaje).
+- Sol: la aurora se ve con la cifra arriba y la zona debajo, bien alineada. En el ciclo solar, cada dato tiene un «Qué es» que lo explica.
+- Desplegables: en toda la plataforma, el abierto se distingue claramente del cerrado (borde y fondo de color y título resaltado).
+- Pie de página: a la vista solo el copyright y la versión; el aviso legal, las fuentes y la privacidad, en un desplegable.
+- Tarjetas de estación: en cada fila tienen la misma altura y el «¿Lo oyes?» y sus resultados quedan siempre abajo, alineados. Las DXpediciones pasan a una rejilla ordenada, con el estado y la probabilidad a la derecha.
+- Clúster: los filtros de modo, tipo y banda se pliegan en «Filtros», con un resumen de lo que se muestra. Se explica la diferencia entre «Para ti» y «Todos». Las otras frecuencias de una estación salen en la fila «También en», con el mismo aspecto que la principal.
+- Resumen: índice arriba para saltar a cada parte, cabeceras claras, «Qué hacer ahora» sin título repetido y con una recomendación a la vista y el resto en «Ver más». Los paneles se ajustan a su contenido.
+- Mapa: la etiqueta de cada spot va pegada a su punto (sin el rombo suelto que parecía otra estación) y todas las etiquetas tienen más cuerpo y borde. Al entrar en el mapa desde el menú arranca en «Ahora» y sin animación, y la animación se para al salir del mapa.
+- En inglés, la fecha del pie va al estilo de EE. UU.
+/ First phase of the bug-report improvements: new name, clearer hour-by-hour, solar cycle explanations, distinct open/closed panels, compact footer, aligned station cards, folded cluster filters, Summary index, better map labels and map always starting at "Now".
+
 ## 2.9.1 · 15/11/2026
 - El alfabeto fonético, el código Q y el Morse para CW tienen pestaña propia: «Cómo funciona › Consulta», con las tablas abiertas. Antes estaban escondidos al final del glosario de Resumen; ahí queda un enlace directo, y otro en la Guía.
 - En español e inglés. / Phonetic alphabet, Q code and Morse moved to their own tab: How it works › Reference.

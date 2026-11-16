@@ -242,11 +242,28 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   function place(){const easy=document.getElementById("easy");if(!easy)return;const g=easy.querySelector(".ezg");if(!g)return;
     if(!W){const rec=document.getElementById("rec");if(!rec)return;W=document.createElement("div");W.id="recw";W.className="ez ezrec";const h=document.createElement("div");h.className="ezt";
       const sp=document.getElementById("rech");if(sp)h.appendChild(sp);else h.textContent=(window.ACRACB_LANG==="en"?"What to do now":"Qué hacer ahora");
-      W.appendChild(h);W.appendChild(rec);const fr=document.getElementById("f_rec");if(fr)fr.hidden=true;try{syncTabs()}catch(e){}}
-    const tl=g.querySelector(".eztl");if(W.parentNode!==g||(tl&&W.nextSibling!==tl)){if(tl)g.insertBefore(W,tl);else g.appendChild(W)}}
+      W.appendChild(h);W.appendChild(rec);try{new MutationObserver(()=>{try{trim()}catch(e){}}).observe(rec,{childList:true})}catch(e){}const fr=document.getElementById("f_rec");if(fr)fr.hidden=true;try{syncTabs()}catch(e){}}
+    const tl=g.querySelector(".eztl");if(W.parentNode!==g||(tl&&W.nextSibling!==tl)){if(tl)g.insertBefore(W,tl);else g.appendChild(W)}try{trim();nav()}catch(e){}}
   /* renderSide escribe en #rec justo después de rehacer el Resumen: se recoloca en el acto, sin esperar al observador */
   window.ACRACB_recEl=()=>W?W.querySelector("#rec"):null;
   function hookE(){if(typeof window.renderEasy!=="function"||window.renderEasy.__rw)return;const o=window.renderEasy;const w=function(){const r=o.apply(this,arguments);try{place()}catch(e){}return r};w.__rw=1;window.renderEasy=w}
+  /* 2.10.0: «Qué hacer ahora» enseña la primera recomendación y el resto con «Ver más», para no alargar el Resumen */
+  let ALL=false;
+  function trim(){if(!W)return;const cs=[...W.querySelectorAll("#rec .sc")];let b=W.querySelector(".recmore");
+    if(cs.length<=1){if(b)b.remove();return}
+    cs.forEach((c,i)=>{c.hidden=!ALL&&i>0});
+    if(!b){b=document.createElement("button");b.type="button";b.className="btn llmore recmore";b.addEventListener("click",()=>{ALL=!ALL;trim()})}
+    const last=cs[cs.length-1];if(b.previousElementSibling!==last)last.insertAdjacentElement("afterend",b);
+    b.textContent=ALL?T2("Ver menos","Show less"):T2(`Ver ${cs.length-1} recomendaciones más`,`Show ${cs.length-1} more suggestions`)}
+  const T2=(es,en)=>window.ACRACB_LANG==="en"?en:es;
+  /* 2.10.0: índice del Resumen: salta a cada parte sin recorrer todo con el dedo */
+  function nav(){const fe=document.getElementById("f_easy"),easy=document.getElementById("easy");if(!fe||!easy)return;let n=fe.querySelector(".eznav");
+    const parts=[[".ezg>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg>.eztl",T2("Próximas horas","Next hours")],[".ezg>.ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Palabras","Words")]];
+    const ok=parts.filter(([q])=>fe.querySelector(q));const sig=ok.map(x=>x[0]).join();
+    if(n&&n.dataset.sig===sig)return;if(!n){n=document.createElement("nav");n.className="eznav";n.setAttribute("aria-label",T2("Partes del Resumen","Summary sections"));easy.insertAdjacentElement("beforebegin",n)}
+    n.dataset.sig=sig;n.innerHTML=ok.map(([q,t])=>`<button type="button" data-ezq="${q}">${t}</button>`).join("");
+    n.onclick=ev=>{const b=ev.target.closest("[data-ezq]");if(!b)return;const el=fe.querySelector(b.dataset.ezq);if(!el)return;if(el.tagName==="DETAILS")el.open=true;
+      const y=el.getBoundingClientRect().top+window.scrollY-((document.querySelector(".nav")||{}).offsetHeight||0)-12;try{window.scrollTo({top:y,behavior:"smooth"})}catch(e){window.scrollTo(0,y)}}}
   function boot(){hookE();place();const e=document.getElementById("easy");if(e)try{new MutationObserver(place).observe(e,{childList:true})}catch(x){}}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,50));else setTimeout(boot,50);
 })();

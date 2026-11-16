@@ -325,7 +325,7 @@ let LH=null;let CLALL=false,CLOPEN=false;try{CLALL=localStorage.getItem("acracb_
 document.addEventListener("click",ev=>{const f=ev.target.closest&&ev.target.closest("[data-clfor]");if(f){CLALL=f.dataset.clfor==="all";CLOPEN=false;try{localStorage.setItem("acracb_clall",CLALL?"1":"")}catch(_){}render();return}
   const m=ev.target.closest&&ev.target.closest("[data-clmore]");if(m){CLOPEN=true;render()}});
 function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS!=="function")return;if(LH==null)LH=st.mhour;
-  let bx=$("clbar");if(!bx){bx=document.createElement("div");bx.id="clbar";box.parentNode.insertBefore(bx,box)}
+  let bx=$("clbar");if(!bx){bx=document.createElement("div");bx.id="clbar";const cf=$("clfilt");if(cf)cf.appendChild(bx);else box.parentNode.insertBefore(bx,box)}
   const bs=bandsOK();
   /* DX */
   const sp=SPOTS().map(s=>({s,e:spotEval(s,LH),a:spotAge(s)})).filter(x=>x.e&&(spotKind(x.s)==="dx"||spotKind(x.s)==="ind"));
@@ -337,6 +337,9 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
   const cur=(TYPES.has("dx")?dxs.map(x=>x.s.band):[]).concat(pa.filter(o=>TYPES.has(o.prog)).map(o=>o.band));
   const bcounts={};cur.forEach(b=>bcounts[b]=(bcounts[b]||0)+1);
   bx.innerHTML=bar(counts,bcounts)+legend();wire(bx);
+  /* 2.10.0: los filtros van plegados; el resumen dice qué se está mostrando */
+  {const fs=$("clfs");if(fs){const ty=[...TYPES].map(t=>t==="dx"?"DX":t.toUpperCase());const bsl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);
+    fs.textContent=[CMSTXT(),bsl2.length?bsl2.join(", "):T("todas las bandas","all bands"),ty.length&&ty.length<1+PROGS.length?ty.join(", "):T("DX y actividades","DX and activations")].join(" · ")}}
   const inB=b=>!BSEL.size||BSEL.has(b),bsl=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);
   const bl=bsl.length?" "+T("en","on")+" "+(bsl.length>1?bsl.slice(0,-1).join(", ")+T(" y "," and ")+bsl[bsl.length-1]:bsl[0]):"";
   let h="";const srcs=[];
@@ -350,9 +353,12 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     const sel=CLALL?grp:yours;sel.sort((u,v)=>(v.nw-u.nw)||(v.pp-u.pp));
     const N=document.documentElement.classList.contains("vc")?6:8;
     h+=`<div class="seg clfor" role="group" aria-label="${T("Qué estaciones ver","Which stations to show")}"><button type="button" data-clfor="you" aria-pressed="${!CLALL}">${T("Para ti","For you")} <small>${yours.length}</small></button><button type="button" data-clfor="all" aria-pressed="${CLALL}">${T("Todos","All")} <small>${grp.length}</small></button></div>`;
-    if(!CLALL)h+=`<p class="note clfn">${T("Estaciones oídas en la última media hora y con al menos un 10 % para tu estación.","Stations heard in the last half hour with at least a 10 % chance for your station.")}</p>`;
-    const alt=g=>g.a.slice(1).map(x=>`<span class="xtag xalt" style="color:${BC[x.s.band]}">${e2(x.s.f)} · ${BANDS[x.s.band]}</span>`);
-    const one=g=>{const x=g.best;const sv=x.s;const tg=alt(g);if(!tg.length)return dxRow(sv,x.e,x.a);const o=Object.assign({},sv);const r=dxRow(o,x.e,x.a);return r.replace('<div class="sc-f">','<div class="sc-f">'+'').replace(/(<div class="sc-f">[\s\S]*?)(<\/div>)/,(m,a1,a2)=>a1+tg.join("")+a2)};
+    h+=`<p class="note clfn">${CLALL?T("<b>Todos:</b> todas las estaciones del clúster con tus filtros de modo y banda, aunque ahora no te lleguen.","<b>All:</b> every station on the cluster with your mode and band filters, even if it does not reach you now."):T("<b>Para ti:</b> solo las que puedes trabajar ahora: oídas en la última media hora y con al menos un 10 % de probabilidad desde tu estación.","<b>For you:</b> only those you can work now: heard in the last half hour and with at least a 10 % chance from your station.")}</p>`;
+    /* 2.10.0: las otras frecuencias de la misma estación, en una fila propia «También en», con el mismo aspecto que la
+       frecuencia principal (cifra en grande y color de su banda, modo y banda al lado) */
+    const alt=g=>g.a.slice(1).map(x=>`<span class="xalt2"><b style="color:${BC[x.s.band]}">${e2(x.s.f)}</b>${x.s.mode?` <span class="xam">${e2(x.s.mode)}</span>`:""} <span class="xab">${BANDS[x.s.band]}</span></span>`);
+    const one=g=>{const x=g.best;const sv=x.s;const tg=alt(g);if(!tg.length)return dxRow(sv,x.e,x.a);const o=Object.assign({},sv);const r=dxRow(o,x.e,x.a);
+      const row=`<dt>${T("También en","Also on")}</dt><dd class="xalts">${tg.join("")}</dd>`;return r.includes('class="sc-d">')?r.replace('class="sc-d">','class="sc-d">'+row):r.replace(/(<div class="sc-f">[\s\S]*?)(<\/div>)/,(m,a1,a2)=>a1+tg.join("")+a2)};
     const cards=sel.map(one);const open=CLOPEN||cards.length<=N+2;
     h+=cards.length?(open?cards:cards.slice(0,N)).join("")+(open?"":`<button type="button" class="btn llmore" data-clmore>${T(`Ver ${cards.length-N} estaciones más`,`Show ${cards.length-N} more stations`)}</button>`)
       :`<div class="empty">${CLALL||!grp.length?T(`Sin spots DX de ${CMSTXT()} útiles${bl} ahora.`,`No useful ${CMSTXT()} DX spots${bl} right now.`):T(`Ninguna estación que puedas trabajar ahora${bl}. Pulsa «Todos» para ver las ${grp.length} del clúster.`,`No stations you can work right now${bl}. Tap «All» to see the ${grp.length} on the cluster.`)}</div>`;
