@@ -5,6 +5,21 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.4 · 17/11/2026
+Fase 5 (VHF y UHF), QRP y arreglos de presentación. En español e inglés.
+- Resumen en dos columnas que aprovechan todo el ancho: a la izquierda «Ahora» y «Qué hacer»; a la derecha «Próximas 12 horas» y «Raras en el aire». En el móvil, una sola columna en ese orden.
+- V-UHF: panel de aperturas especiales (esporádica E, tropo, aurora, TEP, meteoros y rebote lunar) con su estado de un vistazo y una parte detallada de cada una:
+  - Esporádica E: mapa con las nubes vistas en PSK Reporter, los spots largos del clúster y el anillo hasta donde te llega un salto; previsión por horas según la temporada.
+  - Tropo: mapa de conductos en 2 m y 70 cm calculado con el modelo meteorológico de Open-Meteo (gratuito, sin registro), ahora y hasta 36 h, y la evolución en tu zona.
+  - Aurora y TEP: qué hace falta desde tu latitud y si se cumple ahora.
+  - Dispersión meteórica: lluvia activa, altura de su radiante en 24 h, mejores horas según la dirección del enlace y actividad real en MSK144.
+  - Rebote lunar: elevación y rumbo de la Luna, distancia, pérdidas del trayecto en 144, 432 y 1.296 MHz, ventanas en tu QTH y Luna común con otras zonas. Posición comprobada con una librería astronómica de referencia.
+  - Avisos de aperturas especiales con notificación, por tipo.
+- QRP: qué bandas abren ahora con 1, 5 o 10 W en CW, SSB y FT8 (mismo modelo que el resto), cuánto pierdes frente a tu potencia, y desplegables con frecuencias, antenas, operativa y lugares.
+- Señal prevista en las tarjetas: indicador de S-metro con barra de color (verde, clara; ámbar, justa; rojo, bajo el ruido).
+- Satélites: el desplegable de frecuencias y Doppler ya no se cierra solo y queda siempre al pie de la tarjeta.
+/ Phase 5 (VHF/UHF special openings panel, tropo map, meteor scatter, EME), richer QRP, two-column Summary, S-meter signal estimate and satellite panel fixes.
+
 ## 2.10.3 · 17/11/2026
 Fase 4: menos listas interminables. En español e inglés.
 - Mi log, por partes: Resumen, Países, Objetivos y Archivo, con un selector arriba que recuerda la última que viste.

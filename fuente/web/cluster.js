@@ -313,8 +313,10 @@ function PC(s,a){try{if(s.band==null)return {};const dx=s.dx&&s.dx[0]!=null?s.dx
 function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null;try{lh=localNow()}catch(_){}if(lh==null)return "";
   const g=ACRACB_sigEst(e.t,lh,s.band,!!sp.lp);if(!g)return "";const k=(()=>{try{return spotMode(s)}catch(_){return "ssb"}})();
   const dig=["ft8","ft4","jt65","js8","psk","rtty"].includes(k),cw=k==="cw";
-  const rep=x=>`<b>${dig?`${x.snr>0?"+":""}${x.snr} dB`:cw?`${x.r}${Math.min(9,x.s)}9`:`${x.r}${Math.min(9,x.s)}`}</b>`+(x.s>9&&!dig?` <span class="sgx">${sTxt(x.s)}</span>`:"")+(x.low&&!dig?` <span class="sgx">${T("bajo el ruido","below the noise")}</span>`:"");
-  let h=`<span class="sgl">${T("Le oirás","You hear them")}: ${rep(g.rx)}</span><span class="sgl">${T("Te oirá","They hear you")}: ${rep(g.tx)}</span><span class="note sgn">${T("Estimación del modelo","Model estimate")}</span>`;
+  /* 2.10.4: lectura de S-metro con una barra de color (rojo débil, ámbar media, verde fuerte) */
+  const rep=x=>{const v=Math.min(x.s,9+40),pc=Math.round(Math.min(1,v/13)*100),c=x.snr>=12?"sg-g":x.snr>=3?"sg-y":"sg-r";
+    return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b>`+` <span class="sgx">${x.low?T(`bajo el ruido (${sTxt(x.ns)})`,`below the noise (${sTxt(x.ns)})`):x.snr>=12?T("clara","clear"):T("justa","weak")}</span>`};
+  let h=`<span class="sgl"><span class="sgk">${T("Le oirás","You hear them")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","They hear you")}</span>${rep(g.tx)}</span><span class="note sgn">${T("Estimación del modelo","Model estimate")}</span>`;
   const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
   if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
   if(u&&u.h&&u.s!=null){const d=u.s-g.tx.s;cmp.push(T(`te oye a <b>${sTxt(u.s)}</b> y se preveía ${sTxt(g.tx.s)}`,`they hear you at <b>${sTxt(u.s)}</b>; ${sTxt(g.tx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}

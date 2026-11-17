@@ -55,15 +55,45 @@ function meteorNote(){const box=$("vhfo");if(!box)return;let p=$("metnote");if(!
 
 /* =================== QRP =================== */
 const QRPF=[["160 m","1.836","—"],["80 m","3.560","3.690"],["40 m","7.030","7.090"],["30 m","10.116","—"],["20 m","14.060","14.285"],["17 m","18.086","18.130"],["15 m","21.060","21.285"],["12 m","24.906","24.950"],["10 m","28.060","28.360"],["6 m","50.060","50.285"]];
-function qrpCard(){const el=$("qrpbox");if(!el)return;const eq=$("eq"),low=eq&&+eq.value<=5;
-  el.innerHTML=`<p>Frecuencias donde se reúnen las estaciones QRP (5 W o menos), según los centros de actividad de la IARU Región 1. Llama ahí o escucha primero: quien está en esas frecuencias espera señales débiles.</p>
-  <div class="scroll"><table class="bt qrpt"><tr><th>Banda</th><th>CW</th><th>SSB</th></tr>${QRPF.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</table></div>
-  <p class="note">Frecuencias en MHz. En FT8 y FT4 no hay frecuencia QRP: usa las normales, con 5 W llegan muy lejos.</p>
-  <h3>Consejos para trabajar con poca potencia</h3><ul class="stl">
-  <li>Pon tu potencia real en «Cambiar» (arriba). ${low?"Ya la tienes en QRP: ":"Con la opción «QRP (≤5 W)» "}todo se calcula con esa potencia: una banda sale abierta solo si de verdad llegas.</li>
-  <li>Usa la pestaña <b>¿Me oyen?</b> del apartado DX: llama CQ dos o tres minutos y verás qué estaciones te han oído y con qué señal.</li>
-  <li>Busca las bandas altas de día y la línea gris al amanecer y al atardecer: con poca potencia es cuando más lejos se llega.</li>
-  <li>La CW gana unos 10–13 dB a la SSB y el FT8 más de 20: con 5 W en CW es como transmitir entre 50 y 100 W en SSB.</li></ul>`}
+/* 2.10.4: QRP completo: qué bandas abren ahora con 5 W en cada modo (mismo modelo que el resto de la plataforma),
+   cuánto pierdes frente a tu potencia, antenas, operativa, lugares y trucos. */
+let QW=5;
+function qrpCard(){const el=$("qrpbox");if(!el)return;const EN=window.ACRACB_LANG==="en",T=(a,b)=>EN?b:a;const eq=$("eq");const P=Math.max(1,+(eq&&eq.value)||100);
+  let grid="",best=[];try{const lh=localNow(),TGM=TG().filter(t=>t.km>=800),bands=BI().filter(b=>b<=10),mods=[["cw","CW"],["ssb","SSB"],["ft8","FT8"]];
+    const dP=-10*Math.log10(P/QW);
+    const cell=(b,k)=>{const ex=(MODES[k].adj-MD().adj)+dP;let n=0,top=null,tp=0;for(const t of TGM){const r=prob(t,lh,b,false,ex);const p=r.p;if(p>=.3){n++;if(p>tp){tp=p;top=t}}}return {n,top}};
+    const rows=bands.map(b=>{const c=mods.map(([k])=>cell(b,k));return {b,c}}).filter(r=>r.c.some(x=>x.n));
+    const col=n=>n>=40?"c5":n>=20?"c4":n>=8?"c3":n>=1?"c2":"c0";
+    grid=rows.length?`<div class="scroll"><table class="bt qrpg"><tr><th>${T("Banda","Band")}</th>${mods.map(m=>`<th>${m[1]}</th>`).join("")}</tr>${rows.map(r=>`<tr><td><b style="color:${BC[r.b]}">${BANDS[r.b]}</b></td>${r.c.map(x=>`<td><span class="pill ${col(x.n)}">${x.n}</span>${x.top?` <small>${esc(x.top.name.split(" (")[0])}</small>`:""}</td>`).join("")}</tr>`).join("")}</table></div>`
+      :`<div class="empty">${T(`Ahora, con ${QW} W, ninguna banda llega con seguridad a más de 800 km. Prueba FT8 o espera a la línea gris.`,`Right now, with ${QW} W, no band reliably reaches beyond 800 km. Try FT8 or wait for the greyline.`)}</div>`;
+    rows.forEach(r=>r.c.forEach((x,i)=>{if(x.n)best.push({b:r.b,m:mods[i][1],n:x.n,t:x.top})}));best.sort((a,b)=>b.n-a.n)}catch(e){}
+  const loss=10*Math.log10(P/QW);const b0=best[0];
+  el.innerHTML=`<h3>${T("Qué puedes hacer ahora con poca potencia","What you can do now with low power")}</h3>
+  <div class="seg qrpw" role="group" aria-label="${T("Potencia QRP","QRP power")}"><span class="segl">${T("Potencia","Power")}</span>${[1,5,10].map(w=>`<button type="button" data-qw="${w}" aria-pressed="${QW===w}">${w} W</button>`).join("")}</div>
+  <p>${b0?T(`Lo mejor ahora: <b>${BANDS[b0.b]} en ${b0.m}</b>, con ${b0.n} destinos a más de 800 km${b0.t?`, por ejemplo ${esc(b0.t.name.split(" (")[0])}`:""}.`,`Best right now: <b>${BANDS[b0.b]} on ${b0.m}</b>, with ${b0.n} destinations beyond 800 km${b0.t?`, for example ${esc(b0.t.name.split(" (")[0])}`:""}.`):""} ${P>QW?T(`Con ${QW} W tu señal llega ${loss.toFixed(1).replace(".",",")} dB más débil que con tus ${P} W: unas ${Math.round(loss/6*10)/10} unidades S menos.`,`With ${QW} W your signal arrives ${loss.toFixed(1)} dB weaker than with your ${P} W: about ${Math.round(loss/6*10)/10} S-units less.`):""}</p>
+  ${grid}<p class="note">${T(`Destinos a más de 800 km con al menos un 30 % de probabilidad a esta hora, con ${QW} W y tu antena. Mismo modelo que el resto de la plataforma.`,`Destinations beyond 800 km with at least a 30 % chance at this hour, with ${QW} W and your antenna. Same model as the rest of the platform.`)}</p>
+  <details class="qrpd"><summary>${T("Frecuencias QRP (IARU Región 1)","QRP frequencies (IARU Region 1)")}</summary><div class="scroll"><table class="bt qrpt"><tr><th>${T("Banda","Band")}</th><th>CW</th><th>SSB</th></tr>${QRPF.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</table></div><p class="note">${T("En MHz. En FT8 y FT4 no hay frecuencia QRP: usa las normales.","In MHz. FT8 and FT4 have no QRP frequency: use the usual ones.")}</p></details>
+  <details class="qrpd"><summary>${T("Antenas que rinden con poca potencia","Antennas that pay off at low power")}</summary><ul class="stl">
+   <li>${T("<b>Dipolo o dipolo en V invertida</b> a media onda de altura o más: barato, sin acoplador y con poca pérdida. Es la referencia.","<b>Dipole or inverted V</b> at half a wavelength or higher: cheap, no tuner and low loss. It is the benchmark.")}</li>
+   <li>${T("<b>EFHW (media onda alimentada en un extremo)</b>: un solo hilo colgado de un árbol o una caña; ideal para portable y para SOTA.","<b>EFHW (end-fed half-wave)</b>: a single wire hung from a tree or a pole; ideal for portable and SOTA.")}</li>
+   <li>${T("<b>Vertical de cuarto de onda con radiales</b> junto al mar: el agua salada le da varios dB de ángulo bajo para el DX.","<b>Quarter-wave vertical with radials</b> by the sea: salt water gives it several dB of low angle for DX.")}</li>
+   <li>${T("<b>Directiva pequeña</b> (2 o 3 elementos) en 20–10 m: 5 W con 6 dB de ganancia equivalen a unos 20 W con un dipolo.","<b>Small Yagi</b> (2 or 3 elements) on 20–10 m: 5 W with 6 dB of gain is like about 20 W into a dipole.")}</li>
+   <li>${T("Evita lo que pierde potencia: cable largo y fino, acopladores con mucha ROE y antenas acortadas con bobinas.","Avoid what wastes power: long thin coax, tuners at high SWR and coil-shortened antennas.")}</li></ul>
+   <p class="note">${T("Puedes comparar tu antena con otras en «Cambiar» › Antena: toda la plataforma se recalcula.","You can compare your antenna with others in “Change” › Antenna: the whole platform recalculates.")}</p></details>
+  <details class="qrpd"><summary>${T("Cómo operar en QRP","How to operate QRP")}</summary><ul class="stl">
+   <li>${T("<b>Busca y contesta antes que llamar CQ</b>: quien llama CQ suele tener buena antena y oído; tú solo tienes que llegar a él.","<b>Search and pounce rather than calling CQ</b>: whoever calls CQ usually has a good antenna and ears; you only need to reach them.")}</li>
+   <li>${T("<b>Modo</b>: la CW gana unos 11 dB a la SSB y el FT8 unos 27: con 5 W en FT8 es como 2.500 W en SSB.","<b>Mode</b>: CW gains about 11 dB over SSB and FT8 about 27: 5 W on FT8 is like 2,500 W on SSB.")}</li>
+   <li>${T("<b>Horario</b>: bandas altas de día y línea gris al amanecer y al atardecer; evita las horas con Kp alto.","<b>Timing</b>: high bands by day and greyline at sunrise and sunset; avoid times with high Kp.")}</li>
+   <li>${T("<b>Llama corto y en el momento justo</b>: tu indicativo una o dos veces, cuando la otra estación acaba de escuchar.","<b>Call short and at the right moment</b>: your callsign once or twice, just when the other station starts listening.")}</li>
+   <li>${T("Comprueba quién te oye en <b>DX › ¿Me oyen?</b> tras dos minutos de CQ o FT8.","Check who hears you in <b>DX › Who hears me?</b> after two minutes of CQ or FT8.")}</li>
+   <li>${T("En SSB, el procesador de voz (compresor) da unos 3–6 dB de inteligibilidad: actívalo con mesura.","On SSB the speech processor gives about 3–6 dB of intelligibility: use it with care.")}</li></ul></details>
+  <details class="qrpd"><summary>${T("Lugares que ayudan","Places that help")}</summary><ul class="stl">
+   <li>${T("<b>Junto al mar</b>, sobre todo con la antena vertical en la playa: el mejor plano de tierra posible.","<b>By the sea</b>, especially with the vertical on the beach: the best possible ground plane.")}</li>
+   <li>${T("<b>Una cumbre despejada</b> (SOTA): el terreno que cae delante equivale a subir mucho la antena; y quien activa una cumbre recibe muchas llamadas.","<b>A clear summit</b> (SOTA): ground falling away in front is like raising the antenna a lot; and summit activators get many calls.")}</li>
+   <li>${T("<b>Un parque o espacio protegido</b> (POTA, WWFF): poco ruido eléctrico y estaciones buscándote.","<b>A park or protected area</b> (POTA, WWFF): little electrical noise and stations looking for you.")}</li>
+   <li>${T("<b>Lejos del ruido</b>: en ciudad, el ruido local (S7–S9) se come tu recepción; en el campo oyes señales que en casa no existen.","<b>Away from noise</b>: in town, local noise (S7–S9) eats your reception; in the country you hear signals that do not exist at home.")}</li></ul>
+   <p class="note">${T("Los activadores de SOTA, POTA y WWFF están en DX › Clúster.","SOTA, POTA and WWFF activators are in DX › Cluster.")}</p></details>`;
+  el.querySelectorAll("[data-qw]").forEach(b=>b.onclick=()=>{QW=+b.dataset.qw;qrpCard()})}
 
 /* =================== ¿Me oyen? =================== */
 let HR=null,HBUSY=false,HLAST=0;window.ACRACB_heardList=()=>HR?{at:HR.at,band:null,list:HR.list}:null;
@@ -138,6 +168,7 @@ async function swReg(){if(SWR)return SWR;if(!canSW)return null;try{const r=await
 async function notify(title,body,tag){const ic=(document.querySelector('link[rel="apple-touch-icon"]')||{}).href;const o={body,tag:tag||("acracb-"+title),icon:ic,badge:ic,lang:window.ACRACB_LANG==="en"?"en":"es",renotify:false,data:{url:location.href.split("#")[0]}};
   try{const r=await swReg();if(r&&r.showNotification){await r.showNotification(title,o);return true}}catch(e){}
   try{new Notification(title,o);return true}catch(e){}return false}
+window.ACRACB_notify=notify;
 const IOSD=(()=>{try{return /iP(hone|ad|od)/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)}catch(e){return false}})();
 const STDA=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}})();
 let NHELP=false,NMSG="";

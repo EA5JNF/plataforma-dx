@@ -243,7 +243,18 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
     if(!W){const rec=document.getElementById("rec");if(!rec)return;W=document.createElement("div");W.id="recw";W.className="ez ezrec";const h=document.createElement("div");h.className="ezt";
       const sp=document.getElementById("rech");if(sp)h.appendChild(sp);else h.textContent=(window.ACRACB_LANG==="en"?"What to do now":"Qué hacer ahora");
       W.appendChild(h);W.appendChild(rec);try{new MutationObserver(()=>{try{trim()}catch(e){}}).observe(rec,{childList:true})}catch(e){}const fr=document.getElementById("f_rec");if(fr)fr.hidden=true;try{syncTabs()}catch(e){}}
-    const tl=g.querySelector(".eztl");if(W.parentNode!==g||(tl&&W.nextSibling!==tl)){if(tl)g.insertBefore(W,tl);else g.appendChild(W)}try{trim();nav()}catch(e){}}
+    cols(g);try{trim();nav()}catch(e){}}
+  /* 2.10.4: el Resumen en dos columnas fijas: a la izquierda lo de ahora («Ahora» y «Qué hacer»), a la derecha lo que viene
+     («Próximas 12 horas» y «Raras en el aire»). En el móvil, una columna en ese mismo orden. */
+  function cols(g){let a=g.querySelector(":scope>.ezcol1"),b=g.querySelector(":scope>.ezcol2");
+    if(!a){a=document.createElement("div");a.className="ezcol ezcol1";b=document.createElement("div");b.className="ezcol ezcol2"}
+    const hero=[...g.querySelectorAll(":scope>.ez")].find(x=>!x.classList.contains("eztl")&&!x.classList.contains("ezdx")&&x!==W)||a.querySelector(".ez:not(.ezrec)");
+    const tl=g.querySelector(":scope>.eztl")||b.querySelector(".eztl"),dx=g.querySelector(":scope>.ezdx")||b.querySelector(".ezdx");
+    const rest=[...g.querySelectorAll(":scope>.ez")].filter(x=>x!==hero&&x!==W&&x!==tl&&x!==dx);
+    [hero,W].filter(Boolean).forEach((x,i)=>{if(a.children[i]!==x)a.insertBefore(x,a.children[i]||null)});
+    [tl,dx,...rest].filter(Boolean).forEach((x,i)=>{if(b.children[i]!==x)b.insertBefore(x,b.children[i]||null)});
+    if(a.parentNode!==g||g.firstElementChild!==a)g.insertBefore(a,g.firstChild);if(b.parentNode!==g||a.nextElementSibling!==b)a.insertAdjacentElement("afterend",b);
+    g.classList.add("ez2c")}
   /* renderSide escribe en #rec justo después de rehacer el Resumen: se recoloca en el acto, sin esperar al observador */
   window.ACRACB_recEl=()=>W?W.querySelector("#rec"):null;
   function hookE(){if(typeof window.renderEasy!=="function"||window.renderEasy.__rw)return;const o=window.renderEasy;const w=function(){const r=o.apply(this,arguments);try{place()}catch(e){}return r};w.__rw=1;window.renderEasy=w}
@@ -251,14 +262,14 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   let ALL=false;
   function trim(){if(!W)return;const cs=[...W.querySelectorAll("#rec .sc")];let b=W.querySelector(".recmore");
     if(cs.length<=1){if(b)b.remove();return}
-    cs.forEach((c,i)=>{c.hidden=!ALL&&i>0});
+    cs.forEach((c,i)=>{c.hidden=!ALL&&i>0});W.classList.toggle("recall",ALL);
     if(!b){b=document.createElement("button");b.type="button";b.className="btn llmore recmore";b.addEventListener("click",()=>{ALL=!ALL;trim()})}
     const last=cs[cs.length-1];if(b.previousElementSibling!==last)last.insertAdjacentElement("afterend",b);
     b.textContent=ALL?T2("Ver menos","Show less"):T2(`Ver ${cs.length-1} recomendaciones más`,`Show ${cs.length-1} more suggestions`)}
   const T2=(es,en)=>window.ACRACB_LANG==="en"?en:es;
   /* 2.10.0: índice del Resumen: salta a cada parte sin recorrer todo con el dedo */
   function nav(){const fe=document.getElementById("f_easy"),easy=document.getElementById("easy");if(!fe||!easy)return;let n=fe.querySelector(".eznav");
-    const parts=[[".ezg>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg>.eztl",T2("Próximas horas","Next hours")],[".ezg>.ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Palabras","Words")]];
+    const parts=[[".ezcol1>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg .eztl",T2("Próximas horas","Next hours")],[".ezg .ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Palabras","Words")]];
     const ok=parts.filter(([q])=>fe.querySelector(q));const sig=ok.map(x=>x[0]).join();
     if(n&&n.dataset.sig===sig)return;if(!n){n=document.createElement("nav");n.className="eznav";n.setAttribute("aria-label",T2("Partes del Resumen","Summary sections"));easy.insertAdjacentElement("beforebegin",n)}
     n.dataset.sig=sig;n.innerHTML=ok.map(([q,t])=>`<button type="button" data-ezq="${q}">${t}</button>`).join("");
