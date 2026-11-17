@@ -1209,3 +1209,13 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
 .cpxc{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:6px 0}.cpxc input[type=range]{vertical-align:middle;width:160px}
 /* 2.10.5: en la rejilla del clúster (normal y compacta), todo lo que no es tarjeta ocupa su propia fila */
 #spots>:not(.sc),#near>:not(.sc),#dxl>:not(.sc),.alc>:not(.sc){grid-column:1/-1!important}
+/* 2.10.6: modo DX / concursos siempre a la vista, en la barra de tu estación */
+.sline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.sline>.modes{flex:none;margin:0}
+.sline>.modes button{padding:7px 14px!important;font-size:.82rem!important;min-height:36px}
+.sline>.ssum{flex:1 1 260px;min-width:0}
+@media (max-width:600px){.sline>.modes{flex:1 1 100%;width:100%}.sline>.modes button{flex:1}}
+@media (max-width:700px){.sline>.modes{display:flex!important;flex-direction:row!important;flex:0 0 100%!important;width:100%!important;max-width:100%!important;order:-1}
+ .sline>.modes button{flex:1 1 50%!important;white-space:nowrap;letter-spacing:.06em!important;font-size:.78rem!important;padding:8px 6px!important}}
+.sline{flex-wrap:wrap!important}
+.qrpex{padding:8px 12px;border-left:3px solid var(--accent);background:var(--panel2);border-radius:0 8px 8px 0}

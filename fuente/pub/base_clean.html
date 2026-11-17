@@ -747,9 +747,9 @@ body.noscroll{overflow:hidden}
 <div class="wrap">
   <header class="top">
     <div class="brand"><div class="brow1"><h1><span class="lab">ACRACB</span> - DX <small class="h1c">EA5RKB <svg class="flag" viewBox="0 0 30 20" role="img" aria-label="España"><defs><linearGradient id="flg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient><clipPath id="flc"><rect width="30" height="20" rx="3"/></clipPath></defs><g clip-path="url(#flc)"><rect width="30" height="20" fill="#c60b1e"/><rect y="5" width="30" height="10" fill="#ffc400"/><rect width="30" height="20" fill="url(#flg)"/></g><rect x=".5" y=".5" width="29" height="19" rx="2.6" fill="none" stroke="rgba(255,255,255,.35)"/></svg></small></h1><div class="clock" aria-live="off"><span class="ck"><small>UTC</small><b id="cku">--:--:--</b></span><span class="ck"><small>Local</small><b id="ckl">--:--</b></span><span class="ck"><small>Altura del sol</small><b id="cks">—</b></span></div></div>
-    <div class="sline"><span class="ssum" id="ssum"></span><button class="btn stbtn" id="stbtn" aria-expanded="false" aria-controls="stpanel">Cambiar</button></div>
+    <div class="sline"><div class="modes" role="group" aria-label="Modo"><button data-m="dx" aria-pressed="true">MODO DX</button><button data-m="contest" aria-pressed="false">MODO CONCURSOS</button></div><span class="ssum" id="ssum"></span><button class="btn stbtn" id="stbtn" aria-expanded="false" aria-controls="stpanel">Cambiar</button></div>
     <div class="stpanel" id="stpanel" hidden>
-    <div class="modes" role="group" aria-label="Modo"><button data-m="dx" aria-pressed="true">MODO DX</button><button data-m="contest" aria-pressed="false">MODO CONCURSOS</button></div>
+    
     <p class="modenote" id="modenote"></p>
     <div class="hsel">
       <span class="grp loc" role="group" aria-label="Locator"><span class="gl">Locator</span><input id="locin" type="text" inputmode="text" autocomplete="off" spellcheck="false" maxlength="10" aria-label="Locator Maidenhead" placeholder="IM98RI99"><button id="locok">Aplicar</button></span>

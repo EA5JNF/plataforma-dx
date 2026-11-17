@@ -5,6 +5,12 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.6 · 17/11/2026
+En español e inglés.
+- «Modo DX» y «Modo concursos» siempre a la vista, en la barra de tu estación (antes estaban dentro de «Cambiar»). En el móvil, en una fila a todo el ancho.
+- QRP: cada casilla dice «N destinos al alcance» y cuál es el más fácil, con su probabilidad, y encima de la tabla hay un ejemplo de cómo leerla.
+/ DX and contest mode always visible in the station bar; clearer QRP table.
+
 ## 2.10.5 · 17/11/2026
 Fases 6 y 7. En español e inglés.
 - Concursos › En directo: la banda que más da ahora (puntos por multiplicadores con tu estación), dónde colocarte, cuándo toca cambiar de banda, comparativa de bandas y los multiplicadores del clúster de los últimos 30 minutos agrupados por banda, con frecuencia, probabilidad y puntos.
