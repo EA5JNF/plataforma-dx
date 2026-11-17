@@ -1282,6 +1282,20 @@ function prob(t,lh,b,lp,extra){const RXM=extra==="rx";if(RXM)extra=0;const key=t
   if(lp&&(!t.l||(useMonth()&&!MF[useMonth()]))){const r={p:0,muf:0};CACHE.set(key,r);return r}
   const M=marg(t,lh,b,lp,RXM);if(!M){const r={p:0,muf:0,na:true};CACHE.set(key,r);return r}
   const r={p:rel(M.m+PRM().cal+(extra||0),M.DL,M.DU,M.thr),muf:M.muf};CACHE.set(key,r);return r}
+/* 2.10.1: señal prevista en los dos sentidos, a partir de la mediana de VOACAP (SNR en 1 Hz) que usa el modelo.
+   SNR en 2,4 kHz = SNR(1 Hz) − 33,8 dB. Ruido en tu QTH: el S-meter que pusiste en «Ruido en tu QTH», llevado a cada banda
+   con la pendiente de ITU-R P.372 (como ya hace el modelo). Ruido en el destino: la categoría elegida para el DX.
+   S-meter: S9 = −73 dBm y 6 dB por unidad S. Es una estimación del modelo, no una medida: se dice así en la tarjeta. */
+function noiseDbm(Ftot){return Ftot-174+10*lg10(2400)}
+function myNoiseF(b,lh){const s=+(($("lnz")||{}).value||2),f=MHZ[b],n=sunElF(TXP,lh)<-6;const Fm=(-121+6*(s-1))+174-10*lg10(2400),f20=14.2,bg=psum(Fgal(f20),Fatm(f20,n));
+  const fam20=Fm>bg+.1?10*lg10(Math.pow(10,Fm/10)-Math.pow(10,bg/10)):bg-12;return Ntot(fam20-27.7*lg10(f/f20),f,n)}
+function dxNoiseF(t,b,lh){const f=MHZ[b],n=sunElF([t.lon,t.lat],lh)<-6;return Ntot(Fam(NZV(),f),f,n)}
+const sOf=dbm=>dbm<=-73?Math.max(1,Math.min(9,Math.round(1+(dbm+121)/6))):9+Math.min(60,Math.round((dbm+73)/10)*10);
+const rOf=snr=>snr>=15?5:snr>=8?4:snr>=3?3:snr>=0?2:1;
+function sigEst(t,lh,b,lp){if(!t||b==null||VUHF(b))return null;try{const cal=PRM().cal,a=marg(t,lh,b,lp,true),c=marg(t,lh,b,lp,false);if(!a||!c)return null;
+  const one=(M,F)=>{const snr=M.m+cal-33.8,nd=noiseDbm(F),dbm=nd+snr,meter=psum(nd,dbm);return {snr:Math.round(snr),dbm:Math.round(dbm),s:sOf(meter),r:rOf(snr),low:snr<3}};
+  return {rx:one(a,myNoiseF(b,lh)),tx:one(c,dxNoiseF(t,b,lh))}}catch(e){return null}}
+window.ACRACB_sigEst=sigEst;
 /* ---------- log QRZ ---------- */
 let LOG=null;
 function bandNeed(t,b){if(!LOG||!t)return null;const e=LOG.e[t.dxcc];return !(e&&e[BKEY[b]]==="C")}

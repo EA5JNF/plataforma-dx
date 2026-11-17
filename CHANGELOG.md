@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.1 · 17/11/2026
+Fase 2: tarjeta de estación. En español e inglés.
+- Línea gris común, explicada de forma visual: dos franjas de 24 horas (tú y el destino) con el día, la línea gris y la noche, y los ratos en que coinciden marcados encima. Debajo, cada rato con tu hora y qué coincide con qué: «Tú: anochece ⇄ Mozambique: amanece». En las tarjetas, la hora va primero en tu hora local.
+- Señal prevista en los dos sentidos en cada estación del clúster: cómo la oirás y cómo te oirá (RS en fonía, RST en CW y dB en los modos digitales), indicando cuándo queda bajo el ruido. Sale del mismo modelo que el porcentaje, con tu ruido local y tu potencia, y se presenta como estimación.
+- Cuando anotas «Lo oigo» o «Me oyen» (y la señal), la tarjeta compara lo que anotaste con lo previsto y muestra cómo cambia la probabilidad: del porcentaje del modelo al porcentaje con tus datos.
+/ Phase 2: visual shared greyline, expected signal both ways on each cluster station, and comparison between forecast and what you note.
+
 ## 2.10.0 · 17/11/2026
 Primera fase de las mejoras del documento de errores. En español e inglés.
 - Nuevo nombre: «ACRACB - DX EA5RKB», con la bandera de España.

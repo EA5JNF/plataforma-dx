@@ -308,8 +308,21 @@ window.ACRACB_spotProb=spotProb;
 function PC(s,a){try{if(s.band==null)return {};const dx=s.dx&&s.dx[0]!=null?s.dx:(window.ACRACB_areaPos&&ACRACB_areaPos(s.call));if(!dx)return {};
   const ss=Object.assign({},s,{dx,kind:"dx",from:Array.isArray(s.from)?s.from:[]});const e=spotEval(ss,localNow());if(!e||!e.t)return {};const r=spotProb(ss,e,a);
   return isFinite(r.p)?{p:Math.round(r.p*100),lpb:!!r.lp,oh:{t:e.t.id,b:ss.band,call:ss.call,mode:ss.mode}}:{}}catch(_){return {}}}
+/* 2.10.1: señal prevista en los dos sentidos (le oirás / te oirá) y, si ya anotaste lo que oyes o lo que te oyen,
+   la comparación con lo previsto y cómo cambia la probabilidad con tus datos */
+function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null;try{lh=localNow()}catch(_){}if(lh==null)return "";
+  const g=ACRACB_sigEst(e.t,lh,s.band,!!sp.lp);if(!g)return "";const k=(()=>{try{return spotMode(s)}catch(_){return "ssb"}})();
+  const dig=["ft8","ft4","jt65","js8","psk","rtty"].includes(k),cw=k==="cw";
+  const rep=x=>`<b>${dig?`${x.snr>0?"+":""}${x.snr} dB`:cw?`${x.r}${Math.min(9,x.s)}9`:`${x.r}${Math.min(9,x.s)}`}</b>`+(x.s>9&&!dig?` <span class="sgx">${sTxt(x.s)}</span>`:"")+(x.low&&!dig?` <span class="sgx">${T("bajo el ruido","below the noise")}</span>`:"");
+  let h=`<span class="sgl">${T("Le oirás","You hear them")}: ${rep(g.rx)}</span><span class="sgl">${T("Te oirá","They hear you")}: ${rep(g.tx)}</span><span class="note sgn">${T("Estimación del modelo","Model estimate")}</span>`;
+  const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
+  if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
+  if(u&&u.h&&u.s!=null){const d=u.s-g.tx.s;cmp.push(T(`te oye a <b>${sTxt(u.s)}</b> y se preveía ${sTxt(g.tx.s)}`,`they hear you at <b>${sTxt(u.s)}</b>; ${sTxt(g.tx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
+  if((o||u)&&sp.p0!=null&&Math.round(sp.p0*100)!==Math.round(sp.p*100))cmp.push(T(`la probabilidad pasa del <b>${Math.round(sp.p0*100)} %</b> que daba el modelo al <b>${Math.round(sp.p*100)} %</b>`,`the chance goes from the model's <b>${Math.round(sp.p0*100)} %</b> to <b>${Math.round(sp.p*100)} %</b>`));
+  if(cmp.length)h+=`<div class="sgcmp">${T("Con lo que has anotado","With what you noted")}: ${cmp.join("; ")}.</div>`;
+  return h}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
-  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60})}
+  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,secs:(()=>{const r=sigRow(s,e,sp);return r?[[T("Señal prevista","Expected signal"),r]]:[]})()})}
 function progRow(o){const tag=`<a class="xtag xr" href="${refUrl(o.prog,o.ref)}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(PNAME[o.prog][0],PNAME[o.prog][1])}">${e2(o.prog)} ${e2(o.ref)}</a>`;
   return card({...PC({call:o.call,band:o.band,mode:o.mode,f:o.f,dx:o.dx,t:o.t,c:o.c},o.a),call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(cTr(o.c)):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;

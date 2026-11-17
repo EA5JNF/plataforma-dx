@@ -27,16 +27,33 @@ const MEMO=new Map();
 function calc(p){const me=(typeof TXP!=="undefined"&&TXP)||[-0.67,38.63];const t0=Math.floor(Date.now()/6e5)*6e5;const k=me.join(",")+"|"+p.join(",")+"|"+t0;
   if(MEMO.has(k))return MEMO.get(k);if(MEMO.size>300)MEMO.clear();
   const r={w:windows(me,p,t0,24),me:events(me,t0,24),dx:events(p,t0,24)};MEMO.set(k,r);return r}
-/* texto corto para tarjetas */
+/* texto corto para tarjetas (2.10.1: primero tu hora y qué coincide con qué) */
+const kshort=w=>T(`${w.ka==="am"?"tu amanecer":"tu anochecer"} con su ${w.kb==="am"?"amanecer":"anochecer"}`,`your ${w.ka==="am"?"sunrise":"sunset"} with their ${w.kb==="am"?"sunrise":"sunset"}`);
 function short(p){if(!p||!isFinite(p[0])||!isFinite(p[1]))return "";const r=calc(p);const now=Date.now();
   if(!r.w.length)return "";const w=r.w[0];const live=w.a<=now&&w.b>now;
-  return live?T(`Línea gris común <b>ahora</b>, hasta las ${hm(w.b)} UTC`,`Shared greyline <b>now</b>, until ${hm(w.b)} UTC`):T(`Línea gris común: <b>${hm(w.a)}–${hm(w.b)} UTC</b> (${loc(w.a)} hora local)`,`Shared greyline: <b>${hm(w.a)}–${hm(w.b)} UTC</b> (${loc(w.a)} local time)`)}
-/* bloque completo para las fichas */
+  return live?T(`Línea gris común <b>ahora</b>, hasta las ${loc(w.b)} (tu hora) · ${kshort(w)}`,`Shared greyline <b>now</b>, until ${loc(w.b)} (your time) · ${kshort(w)}`)
+    :T(`Línea gris común: <b>${loc(w.a)}–${loc(w.b)}</b> tu hora (${hm(w.a)}–${hm(w.b)} UTC) · ${kshort(w)}`,`Shared greyline: <b>${loc(w.a)}–${loc(w.b)}</b> your time (${hm(w.a)}–${hm(w.b)} UTC) · ${kshort(w)}`)}
+/* 2.10.1: bloque completo para las fichas, didáctico: una franja de 24 h para ti y otra para el destino (día, línea gris
+   y noche) con los ratos comunes marcados encima de las dos, y debajo cada rato explicado con tu hora: qué te pasa a ti
+   (amanece o anochece), qué le pasa a él y qué bandas aprovechar */
+const seg=el=>el>HI?"d":el>=LO?"g":"n";
+function strip(p,t0){let h="";for(let i=0;i<96;i++){const t=t0+i*9e5+45e4;h+=`<i class="gls-${seg(sunEl(p,t))}"></i>`}return h}
 function block(p,name){if(!p||!isFinite(p[0])||!isFinite(p[1]))return "";const r=calc(p);const now=Date.now();
-  const ev=(a)=>a.slice(0,4).map(x=>`${x.k==="rise"?T("amanecer","sunrise"):T("anochecer","sunset")} ${hm(x.t)}`).join(" · ");
-  let w=r.w.length?`<ul class="glw">${r.w.map(x=>{const live=x.a<=now&&x.b>now;return `<li>${live?`<b>${T("AHORA","NOW")}</b> · `:""}<b>${hm(x.a)}–${hm(x.b)} UTC</b> <span class="note">(${loc(x.a)}–${loc(x.b)} ${T("hora local","local time")})</span> · ${kme(x.ka)} ${T("con","with")} ${kk(x.kb)}</li>`}).join("")}</ul>`
+  const me=(typeof TXP!=="undefined"&&TXP)||[-0.67,38.63];const t0=Math.floor(now/9e5)*9e5;const nm=name||T("Destino","Destination");
+  const pos=t=>Math.max(0,Math.min(100,(t-t0)/(864e5)*100));
+  const ov=r.w.map(x=>`<b class="glov" style="left:${pos(x.a).toFixed(2)}%;width:${Math.max(.6,pos(x.b)-pos(x.a)).toFixed(2)}%"></b>`).join("");
+  const ticks=[0,6,12,18].map(k=>{const t=t0+k*36e5;return `<span style="left:${(k/24*100).toFixed(2)}%">${loc(t)}</span>`}).join("");
+  const tl=`<div class="glbt" role="img" aria-label="${T("Franja de 24 horas con el día, la línea gris y la noche en tu QTH y en el destino","24-hour strip with day, greyline and night at your QTH and at the destination")}">
+    <div class="glrow"><span class="gll">${T("Tú","You")}</span><div class="gls">${strip(me,t0)}${ov}</div></div>
+    <div class="glrow"><span class="gll">${e2(nm)}</span><div class="gls">${strip(p,t0)}${ov}</div></div>
+    <div class="glrow"><span class="gll"></span><div class="glx2">${ticks}</div></div></div>
+    <p class="glleg"><span><i class="gls-d"></i>${T("día","day")}</span><span><i class="gls-g"></i>${T("línea gris","greyline")}</span><span><i class="gls-n"></i>${T("noche","night")}</span><span><i class="glovk"></i>${T("los dos en línea gris a la vez","both in greyline at once")}</span></p>`;
+  const sun=k=>k==="am"?"☀":"☾";
+  const w=r.w.length?`<ol class="glw2">${r.w.map(x=>{const live=x.a<=now&&x.b>now;return `<li>${live?`<b class="glnow">${T("AHORA","NOW")}</b> `:""}<b>${loc(x.a)}–${loc(x.b)}</b> ${T("tu hora","your time")} <span class="note">(${hm(x.a)}–${hm(x.b)} UTC)</span>
+      <div class="glpair"><span>${sun(x.ka)} ${T("Tú","You")}: <b>${x.ka==="am"?T("amanece","sunrise"):T("anochece","sunset")}</b></span><span class="glarr">⇄</span><span>${sun(x.kb)} ${e2(nm)}: <b>${x.kb==="am"?T("amanece","sunrise"):T("anochece","sunset")}</b></span></div></li>`}).join("")}</ol>`
     :`<p class="note">${T("En las próximas 24 h vuestras líneas grises no coinciden: no hay ningún rato en que los dos estéis a la vez entre el amanecer y el anochecer.","In the next 24 h your greylines do not overlap: there is no time when both of you are in twilight at once.")}</p>`;
-  return `<div class="glb"><h4>${T("Línea gris común","Shared greyline")}</h4>${w}<p class="note">${T("Tú","You")} (UTC): ${ev(r.me)||"—"}<br>${name?name:T("Destino","Destination")} (UTC): ${ev(r.dx)||"—"}</p><p class="note">${T("En esos ratos los dos estáis en la franja del amanecer o del anochecer; las bandas bajas (160, 80 y 40 m) suelen dar señales mucho más fuertes.","During those times both of you are in twilight; the low bands (160, 80 and 40 m) usually give much stronger signals.")}</p></div>`}
+  return `<div class="glb"><h4>${T("Línea gris común","Shared greyline")}</h4><p class="note">${T("Cuándo estáis los dos a la vez amaneciendo o anocheciendo. En esos ratos 160, 80 y 40 m suelen dar señales mucho más fuertes de lo normal.","When both of you are at sunrise or sunset at the same time. During those times 160, 80 and 40 m usually give much stronger signals than normal.")}</p>${tl}${w}</div>`}
+const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 window.ACRACB_grey={sunEl,windows,events,short,block};
 
 /* ficha de indicativo (ventana emergente) */

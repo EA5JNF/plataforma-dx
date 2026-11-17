@@ -1104,3 +1104,19 @@ details.clfilt[open]{border-left:3px solid var(--accent);padding-left:10px}
 #map text.dxx,#map text.skipl,#map text.txl{stroke-width:4px!important;stroke-linejoin:round;paint-order:stroke fill}
 #map text.txl{stroke:#000;stroke-opacity:.85}
 html[data-theme="light"] #map text.txl{stroke:#fff}
+/* 2.10.1: línea gris común didáctica */
+.glbt{margin:8px 0 4px;display:block}.glrow{display:grid;grid-template-columns:minmax(52px,92px) minmax(0,1fr);gap:8px;align-items:center;margin:3px 0}
+.gll{font:600 .74rem var(--f-m,monospace);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gls{position:relative;display:grid;grid-template-columns:repeat(96,minmax(0,1fr));height:16px;border-radius:4px;overflow:hidden}
+.gls i,.glleg i{display:block}.gls-d{background:#79c7ff}.gls-g{background:#9b7bff}.gls-n{background:#1b2533}
+:root[data-theme="light"] .gls-n{background:#c9d3de}
+.glov{position:absolute;top:0;bottom:0;min-width:4px;background:color-mix(in srgb,var(--accent) 55%,transparent);border:2px solid var(--accent);border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.glx2{position:relative;height:14px;font:500 .62rem var(--f-m,monospace);color:var(--dim)}.glx2 span{position:absolute;transform:translateX(-10%)}
+.glleg{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 8px;font-size:.76rem;color:var(--muted)}.glleg span{display:inline-flex;align-items:center;gap:5px}
+.glleg i{width:12px;height:10px;border-radius:2px}.glleg .glovk{background:color-mix(in srgb,var(--accent) 55%,transparent);border:2px solid var(--accent)}
+.glw2{margin:6px 0 0;padding-left:20px}.glw2 li{margin:0 0 8px}
+.glpair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:3px;font-size:.88rem}.glarr{color:var(--accent);font-weight:700}
+.glnow{color:var(--accent)}
+/* 2.10.1: señal prevista y comparación con lo anotado */
+.sc-d .sgn{font-size:.74rem}.sgcmp{margin-top:3px;font-size:.82rem;color:var(--muted)}.sgcmp b{color:var(--fg)}
+.sc-d .sgl{display:block}.sc-d .sgx{font-size:.78rem;color:var(--muted)}.sc-d .sgn{display:block;font-size:.72rem}
