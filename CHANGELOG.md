@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.9 · 17/11/2026
+- V-UHF: «Esporádica E ahora» deja de quedar suelto al final de la sección y pasa al principio de su desplegable, «Esporádica E: mapa y previsión». En español e inglés.
+/ V-UHF: “Sporadic E now” moved into its own panel.
+
 ## 2.10.8 · 17/11/2026
 - Barra de tu estación en el móvil y la tableta ordenada en tres filas: los dos modos, tu estación a todo el ancho y debajo «Mi log» y «Cambiar», a partes iguales. En español e inglés.
 / Station bar on phones and tablets in three tidy rows.
