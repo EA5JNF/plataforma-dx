@@ -1,7 +1,7 @@
 /* ---- ACRACB 1.2: visor del log (continentes, países, bandas, modos, mapa y diplomas) ---- */
 (function(){
 "use strict";
-const $=id=>document.getElementById(id);
+const $=id=>document.getElementById(id);const TT=(es,en)=>window.ACRACB_LANG==="en"?en:es;
 const e2=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CONT={EU:"Europa",AF:"África",AS:"Asia",NA:"Norteamérica",SA:"Sudamérica",OC:"Oceanía",AN:"Antártida"};
 const CC={EU:"AD AL AT AX BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GG GI GR HR HU IE IM IS IT JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SJ SK SM UA VA XK",
@@ -40,13 +40,22 @@ window.ACRACB_logview=function(){if(typeof LOG==="undefined"||!LOG||!LOG.e)retur
    <select id="lvct" aria-label="Continente"><option value="">Todos los continentes</option>${Object.entries(CONT).map(([k,n])=>`<option value="${k}"${F.ct===k?" selected":""}>${n}</option>`).join("")}</select>
    <input id="lvq" type="search" placeholder="Buscar país" aria-label="Buscar país" value="${e2(F.q)}"></div><div id="lvlist"></div>`;
   setTimeout(()=>{list();drawMap()},0);return h};
+/* 2.10.3: sin listas interminables: con el buscador vacío, los países van agrupados por continente en desplegables
+   cerrados con su recuento; dentro, fichas pequeñas que al tocarlas enseñan las bandas. Al buscar, lista directa. */
+let OPEN=new Set();
 function list(){const el=$("lvlist");if(!el)return;const q=F.q.trim().toLowerCase();
   const a=ents().filter(x=>{const s=stat(x.dx);if(F.st==="C"&&s!=="C")return false;if(F.st==="W"&&s!=="W")return false;if(F.st==="N"&&s)return false;if(F.ct&&x.cont!==F.ct)return false;if(q&&!x.name.toLowerCase().includes(q))return false;return true})
     .sort((p,r)=>p.name.localeCompare(r.name,"es"));
   const fl=cc=>{try{const f=DXDg().f[cc];return f?`<img class="fl" alt="" width="18" height="12" src="data:image/svg+xml,${encodeURIComponent(f)}">`:""}catch(e){return ""}};
-  el.innerHTML=`<p class="note">${a.length} ${a.length===1?"entidad":"entidades"}</p><div class="lvl">${a.slice(0,F.n).map(x=>{const v=LOG.e[x.dx]||{},s=stat(x.dx);
-    return `<div class="lvi ${s==="C"?"c":s==="W"?"w":"n"}"><span class="lvn2">${fl(x.cc)} <b>${e2(x.name)}</b> <small>${CONT[x.cont]||""}</small></span><span class="lvbs">${HF.map(b=>{const k=v[BKEY[b]];return k?`<i class="${k==="C"?"c":"w"}" title="${BANDS[b]}: ${k==="C"?"confirmada":"trabajada"}">${BANDS[b].replace(/\s+c?m$/,"")}</i>`:""}).join("")||'<i class="n">te falta</i>'}</span></div>`}).join("")}</div>
-    ${a.length>F.n?`<button class="btn" id="lvmore">Ver ${Math.min(60,a.length-F.n)} más</button>`:""}`;
+  const chip=x=>{const v=LOG.e[x.dx]||{},s=stat(x.dx);const bs=HF.map(b=>{const k=v[BKEY[b]];return k?`<i class="${k==="C"?"c":"w"}" title="${BANDS[b]}: ${k==="C"?"confirmada":"trabajada"}">${BANDS[b].replace(/\s+c?m$/,"")}</i>`:""}).join("");
+    const nb=HF.filter(b=>v[BKEY[b]]).length;
+    return `<details class="lvd ${s==="C"?"c":s==="W"?"w":"n"}"><summary>${fl(x.cc)} <b>${e2(x.name)}</b> <small>${s?nb+(nb===1?TT(" banda"," band"):TT(" bandas"," bands")):TT("te falta","needed")}</small></summary><div class="lvbs">${bs||`<i class="n">${TT("te falta en todas las bandas","needed on every band")}</i>`}</div></details>`};
+  const tot=`<p class="note">${a.length} ${a.length===1?TT("entidad","entity"):TT("entidades","entities")}${q||F.ct?"":TT(" · toca un continente para verlas"," · tap a continent to see them")}</p>`;
+  if(q||F.ct){el.innerHTML=tot+`<div class="lvchips">${a.slice(0,F.n).map(chip).join("")}</div>${a.length>F.n?`<button class="btn" id="lvmore">Ver ${Math.min(60,a.length-F.n)} más</button>`:""}`}
+  else{const g={};a.forEach(x=>{(g[x.cont||"?"]=g[x.cont||"?"]||[]).push(x)});
+    el.innerHTML=tot+Object.keys(CONT).filter(k=>g[k]).map(k=>{const xs=g[k];const c=xs.filter(x=>stat(x.dx)==="C").length,w=xs.filter(x=>stat(x.dx)==="W").length,n=xs.length-c-w;
+      return `<details class="lvgrp" data-ct="${k}"${OPEN.has(k)?" open":""}><summary><b>${CONT[k]}</b> <span class="lvgn">${xs.length}</span><span class="lvgs">${c?`<i class="c">${c}</i>`:""}${w?`<i class="w">${w}</i>`:""}${n?`<i class="n">${n}</i>`:""}</span></summary><div class="lvchips">${xs.map(chip).join("")}</div></details>`}).join("")}
+  el.querySelectorAll("details.lvgrp").forEach(d=>d.addEventListener("toggle",()=>{if(d.open)OPEN.add(d.dataset.ct);else OPEN.delete(d.dataset.ct)}));
   const m=$("lvmore");if(m)m.onclick=()=>{F.n+=60;list()}}
 function drawMap(){const el=$("lvmap");if(!el||typeof d3==="undefined"||typeof topojson==="undefined")return;
   try{const W=720,H=330;const topo=JSON.parse($("world").textContent);let land=topojson.feature(topo,topo.objects.countries||topo.objects.land);

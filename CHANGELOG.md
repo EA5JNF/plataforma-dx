@@ -5,6 +5,14 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.3 · 17/11/2026
+Fase 4: menos listas interminables. En español e inglés.
+- Mi log, por partes: Resumen, Países, Objetivos y Archivo, con un selector arriba que recuerda la última que viste.
+- Países del log agrupados por continente en desplegables cerrados con su recuento (confirmadas, trabajadas y que faltan); dentro, fichas pequeñas que al tocarlas enseñan las bandas. Al buscar o filtrar por continente, lista directa.
+- Tablas completas: 15 filas a la vista, buscador de destinos y «Ver más».
+- Balizas: mapa con las 18 balizas, las que emiten ahora marcadas con un anillo del color de su banda y su frecuencia, y cada punto coloreado según la probabilidad de oírla (en su mejor banda o en la que elijas). La tabla completa queda en un desplegable.
+/ Phase 4: log split into parts, countries grouped by continent, shorter tables with search, and a beacon map showing which beacon transmits now and how likely you are to hear it.
+
 ## 2.10.2 · 17/11/2026
 Fase 3: satélites e ISS. En español e inglés.
 - Cada pase tiene un desplegable «Frecuencias, Doppler y cómo configurarlo», con cada transmisor (subida, bajada, tono CTCSS, desplazamiento y estado según SatNOGS) y una tabla con el Doppler de ese pase calculado para tu locator: en qué frecuencia escuchar y en cuál transmitir al salir, en lo más alto y al ponerse.

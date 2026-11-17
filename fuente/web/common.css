@@ -1129,3 +1129,29 @@ table.satdop thead th{font:600 .7rem var(--f-m,monospace);letter-spacing:.04em;t
 table.satdop td b{font-family:var(--f-m,monospace)}
 .sathow{margin:4px 0 8px;padding-left:20px}.sathow li{margin:0 0 6px;font-size:.88rem}
 @media (max-width:520px){.satf .sc-d{grid-template-columns:minmax(0,1fr)!important}.satf .sc-d dt{margin-top:4px}}
+/* 2.10.3: países del log agrupados por continente y en fichas pequeñas */
+details.lvgrp{border:1px solid var(--line);border-radius:8px;margin:6px 0;padding:8px 12px;background:var(--panel2)}
+details.lvgrp>summary{display:flex;align-items:center;gap:10px;list-style:none;cursor:pointer}details.lvgrp>summary::-webkit-details-marker{display:none}
+details.lvgrp>summary::before{content:"▸";color:var(--accent)}details.lvgrp[open]>summary::before{content:"▾"}
+.lvgn{color:var(--muted);font:600 .8rem var(--f-m,monospace)}.lvgs{margin-left:auto;display:flex;gap:4px}
+.lvgs i{font:700 .72rem var(--f-m,monospace);font-style:normal;padding:1px 7px;border-radius:999px}
+.lvgs i.c,.lvd.c{--lvk:#2fbf71}.lvgs i.w,.lvd.w{--lvk:#e0a526}.lvgs i.n,.lvd.n{--lvk:#6b7b8d}
+.lvgs i{background:color-mix(in srgb,var(--lvk) 22%,transparent);color:var(--lvk)}
+.lvchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:6px;margin-top:8px}
+details.lvd{border:1px solid var(--line);border-left:3px solid var(--lvk);border-radius:6px;padding:4px 8px;background:var(--panel);margin:0!important;padding-left:8px!important}
+details.lvd>summary{list-style:none;cursor:pointer;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}details.lvd>summary::-webkit-details-marker{display:none}
+details.lvd>summary small{color:var(--muted)}details.lvd .lvbs{margin-top:4px}
+details.lvd[open]{background:var(--panel)!important;border-left:3px solid var(--lvk)!important}
+#logbox>.lgtabs{margin:0 0 12px}
+.tbbar{margin:0 0 8px}.tbbar input{width:100%;max-width:360px}
+#view .llmore{display:block;margin:10px auto 0}
+.tbbar input{height:36px;padding:0 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--fg);font:inherit;font-size:.88rem;box-sizing:border-box}
+/* 2.10.3: mapa de balizas */
+.bmh{margin:14px 0 6px;font-size:1rem}.bmseg{margin-bottom:8px}.bmseg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.bcnmap{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel2)}.bcnmap svg{display:block;width:100%;height:auto}
+.bcnmap .lvland{fill:#22303f;stroke:#33465a;stroke-width:.5}:root[data-theme="light"] .bcnmap .lvland{fill:#d7dee6;stroke:#b6c2cf}
+.bcnmap .bml{font:700 13px var(--f-m,monospace);paint-order:stroke;stroke:#000;stroke-width:4px;stroke-linejoin:round}
+.bmleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.76rem;color:var(--muted);margin:6px 0 10px}.bmleg span{display:inline-flex;align-items:center;gap:5px}
+.bmleg i{width:10px;height:10px;border-radius:50%;display:inline-block}.bmring{width:12px;height:12px;border-radius:50%;border:3px solid var(--accent);display:inline-block}
+details.bcntbl{margin-top:8px}details.bcntbl>summary{font-weight:600;color:var(--accent)}
+@media (max-width:600px){.bcnmap .bml{font-size:24px;stroke-width:6px}}

@@ -377,5 +377,19 @@
 "difieren en": "differ by",
 "Es lo que prevén para este mes las dos fuentes oficiales, la australiana BOM y la estadounidense NOAA. La cifra grande es la media de las dos.": "What the two official sources, Australia's BOM and the US NOAA, forecast for this month. The large figure is the average of both.",
 "Aviso legal, fuentes y privacidad": "Legal notice, sources and privacy",
-"Filtros": "Filters"
+"Filtros": "Filters",
+"Buscar destino": "Search destination",
+"· los destinos con más probabilidad, de mayor a menor.": "· destinations with the highest chance, from highest to lowest.",
+"toca un continente para verlas": "tap a continent to see them",
+"te falta en todas las bandas": "needed on every band",
+" bandas": " bands",
+" banda": " band",
+"Tabla de las 18 balizas, banda a banda": "Table of the 18 beacons, band by band",
+"Dónde están y cuáles emiten ahora": "Where they are and which are transmitting now",
+"Mejor banda": "Best band",
+"emite ahora (color de su banda)": "transmitting now (its band color)",
+"tú": "you",
+"Color": "Color",
+"Color de los puntos": "Dot color",
+"Mapa de las balizas NCDXF": "Map of the NCDXF beacons"
 }

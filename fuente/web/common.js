@@ -292,3 +292,26 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
       T("Como en cualquier web, quien la aloja (GitHub Pages y Cloudflare) y las fuentes consultadas ven tu dirección IP al servirte los datos.","As with any website, the hosts (GitHub Pages and Cloudflare) and the sources queried see your IP address when they serve you data.")])}</ul>`}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fill);else fill();
 })();
+
+/* ---- ACRACB 2.10.3: «Mi log» por partes (Resumen, Países, Objetivos, Archivo) en lugar de una página interminable ---- */
+(function(){
+  if(window.__hkLogTabs)return;window.__hkLogTabs=1;
+  const T=(es,en)=>window.ACRACB_LANG==="en"?en:es;let CUR="res";try{CUR=localStorage.getItem("acracb_logpart")||"res"}catch(e){}
+  const P=[["res",T("Resumen","Summary")],["pai",T("Países","Countries")],["obj",T("Objetivos","Goals")],["arc",T("Archivo","File")]];
+  function tag(box){let g="res";[...box.children].forEach(el=>{if(el.classList.contains("lgtabs"))return;
+      const tx=el.tagName==="H3"?el.textContent.trim():"";
+      if(el.classList.contains("drop")||el.id==="adifst"||el.id==="logdel")el.dataset.lp="arc";
+      else{if(/^(Países|Countries)$/.test(tx))g="pai";else if(/^(Tus objetivos ahora|Your goals now)$/.test(tx))g="obj";el.dataset.lp=g}})}
+  function show(box){box.querySelectorAll(":scope>[data-lp]").forEach(el=>{el.hidden=el.dataset.lp!==CUR});
+    box.querySelectorAll(".lgtabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lgp===CUR)))}
+  function apply(){const box=document.getElementById("logbox");if(!box)return;const has=!!box.querySelector(".lvaw");let bar=box.querySelector(":scope>.lgtabs");
+    if(!has){if(bar)bar.remove();box.querySelectorAll(":scope>[data-lp]").forEach(el=>{el.hidden=false;delete el.dataset.lp});return}
+    if(!bar){bar=document.createElement("div");bar.className="seg lgtabs";bar.setAttribute("role","group");bar.setAttribute("aria-label",T("Partes de tu log","Parts of your log"));
+      bar.innerHTML=P.map(([k,n])=>`<button type="button" data-lgp="${k}">${n}</button>`).join("");
+      bar.addEventListener("click",ev=>{const b=ev.target.closest("[data-lgp]");if(!b)return;CUR=b.dataset.lgp;try{localStorage.setItem("acracb_logpart",CUR)}catch(e){}show(box)});
+      box.insertBefore(bar,box.firstChild)}else if(bar!==box.firstElementChild)box.insertBefore(bar,box.firstChild);
+    tag(box);show(box)}
+  let mo={disconnect(){},observe(){}};
+  function boot2(){const box=document.getElementById("logbox");if(!box)return setTimeout(boot2,400);apply();try{mo=new MutationObserver(()=>{mo.disconnect();try{apply()}finally{mo.observe(box,{childList:true})}});mo.observe(box,{childList:true})}catch(e){}}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot2);else boot2();
+})();
