@@ -1219,3 +1219,11 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
  .sline>.modes button{flex:1 1 50%!important;white-space:nowrap;letter-spacing:.06em!important;font-size:.78rem!important;padding:8px 6px!important}}
 .sline{flex-wrap:wrap!important}
 .qrpex{padding:8px 12px;border-left:3px solid var(--accent);background:var(--panel2);border-radius:0 8px 8px 0}
+/* 2.10.7: fichas de cifras alineadas: el título reserva dos líneas y la cifra, la barra y la nota quedan a la misma altura */
+@media (min-width:600px){.lvaw .chip>.k,.cykv .chip>.k,#space .kv .chip>.k,.mastiles .chip>.k,#cscore .kv .chip>.k{min-height:2.7em;display:flex;align-items:flex-end}}
+.lvaw{align-items:stretch}.lvaw .chip{display:flex;flex-direction:column}
+.lvaw{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important}
+.vtiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))!important}
+.kv,.mastiles,.cpg,.bnows,.goal,.alc,.satl,.esl,.dxlw,.clvm,.lvchips{grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--gmin,200px)),1fr))}
+.alc,.satl,.esl,.dxlw,.goal{--gmin:300px}.clvm{--gmin:260px}.lvchips{--gmin:150px}.bnows{--gmin:170px}.kv,.mastiles{--gmin:220px}.cpg{--gmin:150px}
+.lvaw>.chip,.kv>.chip,.cykv>.chip{max-width:none!important;width:auto!important;justify-self:stretch!important}.lvaw{justify-content:stretch!important}

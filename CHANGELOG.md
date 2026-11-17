@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.7 · 17/11/2026
+En español e inglés.
+- V-UHF: el estado de 6 m, 2 m y 70 cm va arriba del todo de la sección; después, la nota de meteoros y el panel de aperturas especiales.
+- Fichas de cifras alineadas (Mi log, Sol, ciclo solar, concursos): el título reserva el mismo alto en todas, así que la cifra, la barra y la nota quedan a la misma altura aunque un título ocupe dos líneas.
+- Las rejillas de fichas y tarjetas se reparten todo el ancho, sin huecos a la derecha ni entre ellas.
+/ V-UHF band status on top; aligned stat tiles; card grids use the full width.
+
 ## 2.10.6 · 17/11/2026
 En español e inglés.
 - «Modo DX» y «Modo concursos» siempre a la vista, en la barra de tu estación (antes estaban dentro de «Cambiar»). En el móvil, en una fila a todo el ancho.
