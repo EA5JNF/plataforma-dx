@@ -20,6 +20,15 @@ Fase 5 (VHF y UHF), QRP y arreglos de presentación. En español e inglés.
 - Satélites: el desplegable de frecuencias y Doppler ya no se cierra solo y queda siempre al pie de la tarjeta.
 / Phase 5 (VHF/UHF special openings panel, tropo map, meteor scatter, EME), richer QRP, two-column Summary, S-meter signal estimate and satellite panel fixes.
 
+## 2.10.4 · 17/11/2026
+Fase 5 y arreglos. En español e inglés.
+- Resumen reorganizado: en ordenador y pantallas grandes, dos columnas que ocupan todo el ancho (a la izquierda «Ahora» y «Qué hacer»; a la derecha «Próximas 12 horas» y «Raras en el aire»); en el móvil, una columna en ese orden.
+- VHF y UHF a fondo, en Ahora › V-UHF: panel de aperturas especiales (esporádica E, tropo, aurora, TEP, meteoros y rebote lunar) y un desplegable de cada una. Mapa de esporádica E con las nubes vistas en PSK Reporter y los spots del clúster, y previsión por horas. Mapa de tropo para 2 m y 70 cm, con 48 horas de previsión calculadas con el modelo meteorológico de Open-Meteo. Dispersión meteórica con el radiante de la lluvia, las mejores horas según la dirección del enlace y la actividad MSK144. Rebote lunar con elevación, rumbo y distancia de la Luna, pérdida del trayecto en 144, 432 y 1.296 MHz, ventanas en tu QTH y Luna común con otras zonas. Avisos de aperturas especiales por notificación.
+- QRP: qué bandas abren ahora con 1, 5 o 10 W en CW, SSB y FT8 (mismo modelo que el resto), cuánto pierdes frente a tu potencia, antenas, cómo operar y lugares que ayudan.
+- Señal prevista como un S-metro con barra de color: el número es la señal de la estación y el color, si se entiende (verde, clara; ámbar, justa; rojo, bajo el ruido).
+- Satélites: el desplegable de frecuencias y Doppler ya no se cierra solo y va siempre al pie de la tarjeta.
+/ Phase 5 and fixes: two-column Summary, full VHF/UHF section (Es, tropo, aurora, TEP, meteor scatter, EME, alerts), complete QRP section, S-meter style expected signal, satellite panel fix.
+
 ## 2.10.3 · 17/11/2026
 Fase 4: menos listas interminables. En español e inglés.
 - Mi log, por partes: Resumen, Países, Objetivos y Archivo, con un selector arriba que recuerda la última que viste.
