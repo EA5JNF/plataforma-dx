@@ -1227,3 +1227,14 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
 .kv,.mastiles,.cpg,.bnows,.goal,.alc,.satl,.esl,.dxlw,.clvm,.lvchips{grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--gmin,200px)),1fr))}
 .alc,.satl,.esl,.dxlw,.goal{--gmin:300px}.clvm{--gmin:260px}.lvchips{--gmin:150px}.bnows{--gmin:170px}.kv,.mastiles{--gmin:220px}.cpg{--gmin:150px}
 .lvaw>.chip,.kv>.chip,.cykv>.chip{max-width:none!important;width:auto!important;justify-self:stretch!important}.lvaw{justify-content:stretch!important}
+/* 2.10.8: barra de la estación en el móvil: modos arriba, tu estación en medio y los dos botones juntos abajo, a partes iguales */
+@media (max-width:700px){.sline{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;align-items:stretch}
+ .sline>.modes{grid-column:1/-1!important}.sline>.ssum{grid-column:1/-1!important;-webkit-line-clamp:3!important}
+ .sline>.stbtn{width:100%!important;margin:0!important;justify-content:center}}
+/* 2.10.8: barra de la estación en el móvil y la tableta: modos, estación y botones en tres filas ordenadas */
+@media (max-width:760px){
+ .sline{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important;align-items:stretch}
+ .sline>.modes{grid-column:1/-1;order:0}
+ .sline>.ssum{grid-column:1/-1;order:1;-webkit-line-clamp:3!important}
+ .sline>.stbtn{order:2;width:100%;justify-content:center;min-height:44px;margin:0!important}
+}

@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.8 · 17/11/2026
+- Barra de tu estación en el móvil y la tableta ordenada en tres filas: los dos modos, tu estación a todo el ancho y debajo «Mi log» y «Cambiar», a partes iguales. En español e inglés.
+/ Station bar on phones and tablets in three tidy rows.
+
 ## 2.10.7 · 17/11/2026
 En español e inglés.
 - V-UHF: el estado de 6 m, 2 m y 70 cm va arriba del todo de la sección; después, la nota de meteoros y el panel de aperturas especiales.
