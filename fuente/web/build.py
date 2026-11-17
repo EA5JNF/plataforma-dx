@@ -571,6 +571,8 @@ _FQ = re.compile(r'\b(\d{1,3}\.\d{3}(?:\s?[\u2013-]\s?\d{1,3}\.\d{3})?)(\s?)kHz'
 w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 # 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
 w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
+# 2.10.2: comillas al estilo de EE. UU. en la versión inglesa
+w_en = w_en.replace('«', '“').replace('»', '”')
 w_en = re.sub(r'<b class="fver">Versión ([^<·]+) · (\d\d)/(\d\d)/(\d{4})', lambda m: '<b class="fver">Version %s · %s %d, %s' % (m.group(1).strip(), ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][int(m.group(3))-1], int(m.group(2)), m.group(4)), w_en)
 assert '<b class="fver">Version ' in w_en
 w_es = webify(w_es, "es"); w_en = webify(w_en, "en")

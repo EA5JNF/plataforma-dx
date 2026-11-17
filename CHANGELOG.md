@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.2 · 17/11/2026
+Fase 3: satélites e ISS. En español e inglés.
+- Cada pase tiene un desplegable «Frecuencias, Doppler y cómo configurarlo», con cada transmisor (subida, bajada, tono CTCSS, desplazamiento y estado según SatNOGS) y una tabla con el Doppler de ese pase calculado para tu locator: en qué frecuencia escuchar y en cuál transmitir al salir, en lo más alto y al ponerse.
+- Pasos sencillos para hacer el QSO con un walkie o con un equipo: memorias, tono, antena, potencia y cómo llamar; en los lineales, cómo corregir el Doppler y localizar tu propia señal.
+- ISS: repetidor de voz, contacto con la tripulación (Región 1) y APRS, cada uno con sus frecuencias.
+- Corregido: AO-91 ya no necesita tono CTCSS, según SatNOGS DB.
+- En inglés, las comillas pasan al estilo de EE. UU.
+/ Phase 3: expandable satellite passes with per-pass Doppler, CTCSS, offset and how to set up a handheld or rig; AO-91 tone corrected; US-style quotes in English.
+
 ## 2.10.1 · 17/11/2026
 Fase 2: tarjeta de estación. En español e inglés.
 - Línea gris común, explicada de forma visual: dos franjas de 24 horas (tú y el destino) con el día, la línea gris y la noche, y los ratos en que coinciden marcados encima. Debajo, cada rato con tu hora y qué coincide con qué: «Tú: anochece ⇄ Mozambique: amanece». En las tarjetas, la hora va primero en tu hora local.

@@ -518,7 +518,7 @@ function dCard(card){if(card.dataset.ohc)return dOf(card);const bt=card.querySel
 /* ---------- 2.8.1: buscador libre: indicativo, frecuencia, banda, modo, programa, referencia o país, combinables ----------
    Ejemplos: «EA5RKB», «EA5RKB/P», «VP8/G3ABC», «EA5*», «*-MM» (barra), «14.074», «14074», «20m FT8», «40 CW EA», «POTA», «US-1234», «Japón».
    Cada palabra se reconoce sola; si hay varias, se combinan (banda Y modo Y indicativo…). */
-const QT=x=>"\u00ab"+x+"\u00bb";
+const QT=x=>(window.ACRACB_LANG==="en"?"\u201c":"\u00ab")+x+(window.ACRACB_LANG==="en"?"\u201d":"\u00bb");
 const NOACC=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase();
 const MODEW={SSB:"SSB",LSB:"SSB",USB:"SSB",FONIA:"SSB",PHONE:"SSB",VOZ:"SSB",VOICE:"SSB",CW:"CW",MORSE:"CW",TELEGRAFIA:"CW",FT8:"FT8",FT4:"FT4",RTTY:"RTTY",PSK:"PSK",PSK31:"PSK",PSK63:"PSK",JS8:"JS8",AM:"AM",FM:"FM",SSTV:"SSTV",MSK144:"MSK144",Q65:"Q65",JT65:"JT65",FST4:"FST4",OLIVIA:"OLIVIA",DIGI:"DIGI",DIGITAL:"DIGI",DIGITALES:"DIGI",DATA:"DIGI",DV:"DV",DMR:"DV",DSTAR:"DV","D-STAR":"DV",C4FM:"DV",FREEDV:"DV"};
 const DIGIS=new Set(["FT8","FT4","RTTY","PSK","JS8","MSK144","Q65","JT65","FST4","OLIVIA","SSTV","DIGI"]);
