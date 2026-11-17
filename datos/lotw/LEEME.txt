@@ -1,2 +1,2 @@
-Usuarios de LoTW (ARRL) con subidas desde 2025-11-15: 81935. Copia del 2026-11-15.
+Usuarios de LoTW (ARRL) con subidas desde 2025-11-17: 82242. Copia del 2026-11-17.
 Fuente: https://lotw.arrl.org/lotw-user-activity.csv (pública y gratuita).
