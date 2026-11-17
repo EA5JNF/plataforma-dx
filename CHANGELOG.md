@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.5 · 17/11/2026
+Fases 6 y 7. En español e inglés.
+- Concursos › En directo: la banda que más da ahora (puntos por multiplicadores con tu estación), dónde colocarte, cuándo toca cambiar de banda, comparativa de bandas y los multiplicadores del clúster de los últimos 30 minutos agrupados por banda, con frecuencia, probabilidad y puntos.
+- Concursos › Pausas: descansos a medida. Eliges cuántas horas al día y en cuántos bloques, y la plataforma te dice cuándo descansar y cuántos QSO pierdes.
+- QRP: cada casilla de la tabla dice cuántos destinos tienes y cuál es el mejor; donde no hay nada, «cerrada».
+- Clúster en vista compacta: «Para ti / Todos», la nota y «Fuentes» ocupan su propia fila, sin quitar sitio a las tarjetas.
+- Batería: el reloj y las actualizaciones periódicas se paran mientras la plataforma está en segundo plano.
+/ Phases 6 and 7: live contest strategy with cluster multipliers by band, tailored breaks, clearer QRP table, compact cluster layout fix and lower battery use in the background.
+
 ## 2.10.4 · 17/11/2026
 Fase 5 (VHF y UHF), QRP y arreglos de presentación. En español e inglés.
 - Resumen en dos columnas que aprovechan todo el ancho: a la izquierda «Ahora» y «Qué hacer»; a la derecha «Próximas 12 horas» y «Raras en el aire». En el móvil, una sola columna en ese orden.

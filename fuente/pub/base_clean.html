@@ -861,6 +861,7 @@ body.noscroll{overflow:hidden}
 
   <section class="page" data-pg="concursos">
     <div class="card" id="cnone"></div>
+    <details class="card fold" id="c_live" data-tab="En directo"><summary><h2>Estrategia en directo</h2><span class="fsum" id="s_clive"></span></summary><div id="clive"></div></details>
     <details class="card fold" id="c_plan" data-tab="Plan"><summary><h2 id="cplanh">Plan de bandas</h2></summary><div class="dxl" id="cplan"></div></details>
     <details class="card fold" id="f_ccal" data-tab="Calendario"><summary><h2>Calendario de concursos</h2><span class="fsum" id="s_ccal"></span></summary><div id="ccal"></div></details>
     <details class="card fold" id="f_cscore" data-tab="Ritmo"><summary><h2>Ritmo y puntuación estimados</h2><span class="fsum" id="s_cscore"></span></summary><div id="cscore"></div></details>
@@ -994,7 +995,7 @@ body.noscroll{overflow:hidden}
 <script>
 /* © 2026 ACRACB. Idea original y realización de Alfredo, EA5JNF. Todos los derechos reservados. Prohibida su copia, reproducción o adaptación sin permiso escrito del club. */
 /* memo: se vacía cada minuto y cada vez que cambia una opción (CACHE.clear) */
-const MZ=new Map();let MZm=Math.floor(Date.now()/6e4);setInterval(()=>{const m=Math.floor(Date.now()/6e4);if(m!==MZm){MZm=m;MZ.clear()}},5000);
+const MZ=new Map();let MZm=Math.floor(Date.now()/6e4);setInterval(()=>{if(document.hidden)return;const m=Math.floor(Date.now()/6e4);if(m!==MZm){MZm=m;MZ.clear()}},5000);
 function memo(k,f){const v=MZ.get(k);if(v!==undefined||MZ.has(k))return v;const r=f();MZ.set(k,r);return r}
 const V=JSON.parse(document.getElementById('voa').textContent);
 const L=JSON.parse(document.getElementById('live').textContent);
@@ -1306,6 +1307,32 @@ window.ACRACB_needRank=(call,t,b)=>{try{return needRank(call,t,b)}catch(e){retur
 function dxNew(d){const t=tFor(d);const n=entNeed(t);return n===null?true:n}
 
 /* ---------- concursos ---------- */
+/* 2.10.5: estrategia en directo: qué banda da más ahora, qué multiplicadores hay en el clúster por banda y dónde colocarse */
+const TT=(a,b)=>window.ACRACB_LANG==="en"?b:a;
+function renderCLive(){const el=$("clive");if(!el||st.mode!=="contest")return;const c=CT(),lh=localNow();
+  const bands=BI().filter(b=>b<=10);const sc=bands.map(b=>{let a=0;for(const t of TG().filter(inMode))a+=cval(t,b,prob(t,lh,b).p);const m=cmults(lh,b).size;return {b,a,m,v:a*(1+.05*m)}}).sort((x,y)=>y.v-x.v);
+  const top=sc[0];const seg=(SEG().find(r=>r[0]===top.b)||[]);
+  const sp=SPOTS().filter(s=>spotKind(s)==="dx"&&bands.includes(s.band)).map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e&&x.e.t&&(x.a==null||x.a<=30));
+  const key=t=>c.mk==="cqdx"?TT("Zona ","Zone ")+t.cq:(t.name||"").split(" (")[0];
+  const byB={};sp.forEach(x=>{(byB[x.s.band]=byB[x.s.band]||[]).push(x)});
+  const rows=bands.filter(b=>byB[b]).map(b=>{const L0=byB[b].sort((u,v)=>v.e.p-u.e.p);const seen=new Set(),ms=[];L0.forEach(x=>{const k=key(x.e.t);if(seen.has(k))return;seen.add(k);ms.push(x)});return {b,ms,pts:ms.reduce((s,x)=>s+c.pts(x.e.t,b)*x.e.p,0)}}).sort((u,v)=>v.ms.length-u.ms.length||v.pts-u.pts);
+  const nxt=(()=>{const seq=contestPlan();const now=seq[lh].b;for(let k=1;k<24;k++){const x=(lh+k)%24;if(seq[x].b!==now&&seq[x].b>=0)return {h:x,b:seq[x].b}}return null})();
+  el.innerHTML=`<div class="clv"><div class="clvn"><span class="ezl">${hh(lh)}:00 · ${esc(c.n)}</span><b style="color:${BC[top.b]};font-size:1.6rem">${BANDS[top.b]}</b><span>${TT(`${top.m} multiplicadores posibles a esta hora`,`${top.m} possible multipliers at this hour`)}</span>${seg[1]?`<span class="note">${TT("Colócate en","Settle in")} ${esc(seg[1])}${seg[4]?" · "+seg[4]:""}</span>`:""}${nxt?`<span class="note">${TT("Próximo cambio: a las","Next change: at")} <b>${hh(nxt.h)}:00</b> ${TT("a","to")} <b style="color:${BC[nxt.b]}">${BANDS[nxt.b]}</b></span>`:""}</div>
+   <div class="clvb">${sc.slice(0,6).map((x,i)=>`<div class="clvr"><b style="color:${BC[x.b]}">${BANDS[x.b]}</b><i style="width:${Math.round(x.v/Math.max(top.v,1e-6)*100)}%;background:${BC[x.b]}"></i><span>${x.m} mult.</span></div>`).join("")}</div></div>
+   <h3>${TT("Multiplicadores en el clúster ahora (últimos 30 min)","Multipliers on the cluster now (last 30 min)")}</h3>
+   ${rows.length?`<div class="clvm">${rows.map(r=>`<div class="clvmb"><div class="clvmh"><b style="color:${BC[r.b]}">${BANDS[r.b]}</b> <span>${r.ms.length} ${r.ms.length===1?TT("multiplicador","multiplier"):TT("multiplicadores","multipliers")}</span></div>${r.ms.slice(0,8).map(x=>`<div class="clvmi"><span class="f" style="color:${BC[r.b]}">${esc(x.s.f)}</span> <b>${CS(x.s.call)}</b> <small>${esc(key(x.e.t))} · ${Math.round(x.e.p*100)} % · ${c.pts(x.e.t,r.b)} p.</small></div>`).join("")}</div>`).join("")}</div>`
+     :`<div class="empty">${TT(`Ningún multiplicador al alcance en el clúster en los últimos 30 minutos. Llama CQ en ${BANDS[top.b]}.`,`No multiplier within reach on the cluster in the last 30 minutes. Call CQ on ${BANDS[top.b]}.`)}</div>`}
+   <p class="note">${TT("Por qué esta banda: es la que más puntos por multiplicadores da a esta hora con tu estación (probabilidad de llegar × actividad típica × puntos del concurso). Los multiplicadores del clúster cuentan una vez por banda: trabaja primero la banda con más multiplicadores nuevos y vuelve a la del ritmo.","Why this band: it gives the most points times multipliers at this hour with your station (chance of getting through × typical activity × contest points). Cluster multipliers count once per band: work the band with most new multipliers first, then return to the rate band.")}</p>`}
+/* pausas a medida: horas de descanso que quieras y bloques que pierden menos QSO */
+let PZH=null,PZS=1;
+function renderPauseX(){const el=$("cpause");const R=window.CRATE;if(!el||!R)return;let box=$("cpx");if(!box){box=document.createElement("div");box.id="cpx";el.insertAdjacentElement("afterend",box)}
+  const rate=R.rate;if(PZH==null)PZH=Math.max(2,Math.min(10,Math.round(R.offH/R.days)||6));
+  const best=(L,n)=>{let pick=[];const used=new Set();const len=Math.ceil(L/n);for(let k=0;k<n;k++){let bs=1e9,bi=-1;for(let i=0;i<24;i++){let sm=0,ok=true;for(let j=0;j<len;j++){const x=(i+j)%24;if(used.has(x)){ok=false;break}sm+=rate[x]}if(ok&&sm<bs){bs=sm;bi=i}}if(bi<0)break;for(let j=0;j<len;j++)used.add((bi+j)%24);pick.push([bi,len,bs])}return {pick,used}};
+  const {pick,used}=best(PZH,PZS);const lost=Math.round(R.days*pick.reduce((s,p)=>s+p[2],0)),tot=Math.round(R.days*rate.reduce((s,r)=>s+r,0));
+  box.innerHTML=`<h3>${TT("Tus descansos a medida","Your breaks, tailored")}</h3><div class="cpxc"><label>${TT("Horas de descanso al día","Rest hours per day")} <input type="range" id="pzh" min="1" max="14" value="${PZH}"> <b>${PZH} h</b></label><div class="seg"><span class="segl">${TT("En","In")}</span>${[1,2,3].map(n=>`<button type="button" data-pzs="${n}" aria-pressed="${PZS===n}">${n} ${n===1?TT("bloque","block"):TT("bloques","blocks")}</button>`).join("")}</div></div>
+   <div class="tl cpxt">${rate.map((r,i)=>`<button style="background:${used.has(i)?"#1a2433":(R.c&&contestPlan()[i].b>=0?BC[contestPlan()[i].b]:"#1a2433")};opacity:${used.has(i)?.35:1}" title="${hh(i)}:00 · ≈${Math.round(r)} QSO/h">${used.has(i)?"z":Math.round(r)}</button>`).join("")}</div><div class="tlh">${Array.from({length:24},(_,x)=>`<span>${hh(x)}</span>`).join("")}</div>
+   <p>${TT("Descansa","Rest")} ${pick.sort((a,b)=>a[0]-b[0]).map(p=>TT(`de <b>${hh(p[0])}:00 a ${hh((p[0]+p[1])%24)}:00</b>`,`<b>${hh(p[0])}:00–${hh((p[0]+p[1])%24)}:00</b>`)).join(TT(" y "," and "))}. ${TT(`Pierdes unos <b>${fk(lost)} QSO</b> de ${fk(tot)} (${tot?Math.round(lost/tot*100):0} %): son las horas con menos actividad y peor propagación para ti.`,`You lose about <b>${fk(lost)} QSOs</b> of ${fk(tot)} (${tot?Math.round(lost/tot*100):0} %): these are the hours with the least activity and worst propagation for you.`)}</p>`;
+  const r=$("pzh");if(r)r.oninput=()=>{PZH=+r.value;renderPauseX()};box.querySelectorAll("[data-pzs]").forEach(b=>b.onclick=()=>{PZS=+b.dataset.pzs;renderPauseX()})}
 const CONTESTS={
  cqww:{modes:["ssb"],n:"CQ WW DX SSB",month:10,wk:"last",h:48,bands:[0,1,2,3,5,7],ok:t=>true,pts:(t,b)=>t.dxcc===281?0:t.cont==="EU"?1:3,mult:"zonas CQ y países, por banda",mk:"cqdx",
    tip:"Desde EA, Europa da 1 punto y el resto del mundo 3. Los multiplicadores (zona CQ y país) cuentan otra vez en cada banda: cambiar de banda para sumar multiplicadores compensa."},
@@ -1761,6 +1788,7 @@ function renderContest(){const on=st.mode==="contest";$("cnone").hidden=on;
   $("cscore").innerHTML=`<div class="kv"><div class="chip"><div class="k">QSO estimados</div><div class="v">${fk(qso)}</div><div class="t">${c.h} h${c.so?", operando "+c.so:""} con ${PWN()} y ${ANTL()}</div></div><div class="chip"><div class="k">Puntos por QSO</div><div class="v">${avgPts.toFixed(1)}</div><div class="t">media según de dónde saldrán</div></div><div class="chip"><div class="k">Multiplicadores</div><div class="v">${fk(mults)}</div><div class="t">${c.mk==="wpx"?"prefijos ≈ 55 % de los QSO":BI().map(b=>BANDS[b]+" "+(mb[b]||0)).join(" · ")}</div></div><div class="chip"><div class="k">Puntuación</div><div class="v">${fk(score)}</div><div class="t">orden de magnitud${c.mk==="wae"?" (sin contar QTC)":""}</div></div></div>
    <div class="tl" style="margin-top:10px">${rate.map((r,i)=>`<button style="background:${seq[i].b<0?"#1a2433":BC[seq[i].b]};opacity:${offSet.has(i)?.25:1}" title="${hh(i)}:00 · ≈${Math.round(r)} QSO/h">${Math.round(r)}<span>${seq[i].b<0?"–":BANDS[seq[i].b].replace(" m","")}</span></button>`).join("")}</div><div class="tlh">${Array.from({length:24},(_,x)=>`<span>${hh(x)}</span>`).join("")}</div>
    <p class="note">QSO por hora estimados (hora local) llamando y recorriendo la banda, según la probabilidad de llegar y la actividad típica de cada destino. Es una estimación propia para comparar horas, bandas, antenas y potencias, no una promesa.</p>`;
+  window.CRATE={rate,c,offH,days};try{renderPauseX()}catch(e){}try{renderCLive()}catch(e){}
   // pausas
   const blocks=[];let s0=-1;for(let x=0;x<=24;x++){const o=x<24&&offSet.has(x);if(o&&s0<0)s0=x;if(!o&&s0>=0){blocks.push([s0,x]);s0=-1}}
   const low=sorted.slice(0,5).map(x=>x.i).sort((a,b)=>a-b);
@@ -1842,7 +1870,7 @@ function renderBcn(){if(st.page!=="balizas"&&!st.ly.bcn)return;const {slot,left}
   {const d=document.querySelector("#bcn details.bcntbl");if(d){d.open=BCNTBL;d.addEventListener("toggle",()=>{BCNTBL=d.open})}}
   document.querySelectorAll("#bcn [data-bmb]").forEach(x=>x.onclick=()=>{BMB=+x.dataset.bmb;renderBcn()});
   try{restoreWhy()}catch(e){}}
-setInterval(()=>{if(st.page==="balizas")renderBcn();if(st.page==="mapa"&&st.ly.bcn&&st.mapOn)updBcnMarks()},5000);
+setInterval(()=>{if(document.hidden)return;if(st.page==="balizas")renderBcn();if(st.page==="mapa"&&st.ly.bcn&&st.mapOn)updBcnMarks()},5000);
 /* ---------- fichas ---------- */
 function head(hl){let h="<tr><th></th>";for(let x=0;x<24;x++)h+=`<th class="${x===hl?"now":""}">${hh(x)}</th>`;return h+"</tr>"}
 function zoneTable(t,hl){let h=`<div class="scroll"><table class="hm"><thead>${head(hl)}</thead><tbody>`;
@@ -2445,7 +2473,7 @@ function renderGlos(){const el=$("glos");if(!el)return;const want=new Set();if(k
   const pick=[...GLOS.filter(g=>want.has(g[0])).slice(0,2),...rest].slice(0,5);
   el.innerHTML=`<div class="ezt">Palabras que oirás en la radio</div><ul>${pick.map(([k,v])=>`<li><b>${k}</b>: ${v}</li>`).join("")}</ul><p class="note" style="margin:6px 0 0">Cambian cada minuto. <button class="btn" id="glosnext">Otras palabras</button></p>`;
   $("glosnext").onclick=()=>{GLSEED=Math.floor(Math.random()*1e6);renderGlos()}}
-setInterval(()=>{if(st.page==="ahora"){GLSEED=Math.floor(Math.random()*1e6);renderGlos()}},60000);
+setInterval(()=>{if(document.hidden)return;if(st.page==="ahora"){GLSEED=Math.floor(Math.random()*1e6);renderGlos()}},60000);
 /* ---------- tu QTH ---------- */
 function renderQTH(){const lhn=localNow()+new Date().getMinutes()/60,se=sunEvents(TXP),el=sunElF(TXP,lhn),fo=foF2est(localNow()),alt=+$("altin").value;
   const ib=TXP[1]>35.5&&TXP[1]<44&&TXP[0]>-10&&TXP[0]<4.5;const anti=[TXP[0]>0?TXP[0]-180:TXP[0]+180,-TXP[1]],an=nearestT(anti,0),ad=distJS(anti,[an.lon,an.lat]);
@@ -2505,7 +2533,7 @@ function renderCfg(){renderStSum();if($("cfg").open)renderCal();const P=+$("eq")
 /* ---------- reloj ---------- */
 function tick(){const n=new Date();$("cku").textContent=n.toISOString().slice(11,19);$("ckl").textContent=n.toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit"});
   const lhf=parseInt(n.toLocaleString("en-GB",{timeZone:"Europe/Madrid",hour:"2-digit",hour12:false}),10)%24+n.getMinutes()/60;const e=sunElF(TXP,lhf);$("cks").textContent=(e>-6&&e<6?"línea gris":e>0?"de día":"de noche")+" · "+(Math.round(e)<0?"−":"")+Math.abs(Math.round(e))+"°";$("cks").title=`Altura del sol en tu locator: ${Math.abs(Math.round(e))}° ${e>=0?"sobre":"bajo"} el horizonte. Línea gris = entre 6° bajo y 6° sobre el horizonte.`}
-setInterval(tick,1000);
+setInterval(()=>{if(!document.hidden)tick()},1000);
 /* ---------- arranque ---------- */
 $("sfi").value=L.sfi;$("kp").value=L.kp;
 $("eq").value="100";$("site").value="0";$("ant").value="steppir,hex,invv,d80,d160,vert";if(store.get("antv")!=="2"){store.set("c_ant","steppir,hex,invv,d80,d160,vert");store.set("antv","2")}["modesel","eq","site","thr","rx","nz","hz","ant","vh","hxh","sph","d80h","d160h","dph","efh","ybh","quh","ocfh","g5h","lwh","antsel","gnd","coax","coaxl","swr","proc","pile","lnz","opw"].forEach(id=>{const v=store.get("c_"+id);if(v!==null&&v!==""&&($(id).tagName!=="SELECT"||[...$(id).options].some(o=>o.value===v)))$(id).value=v});if(store.get("locv")!=="2"){store.set("c_loc","IM98RI99");store.set("c_alt","10");store.set("locv","2")}{const v=normLoc(store.get("c_loc"));$("loc").value=v||"IM98RI99"}{const h=+(store.get("c_alt")||10);$("altin").value=isFinite(h)?h:10;$("site").value=+$("altin").value>=700?"4":"0";$("altk").textContent=$("site").value==="4"?"alto":"normal"}
@@ -2573,7 +2601,7 @@ function applyLive(n){if(!n||!n.updatedUTC||(L.updatedUTC&&n.updatedUTC<L.update
         c==="server_unavailable"||c==="upstream_error"?"No hubo respuesta. Puede que se haya lanzado igualmente: espera unos minutos antes de pulsar otra vez.":
         "No se pudo pedir la actualización ("+(c||"error")+"). Inténtalo más tarde.","updst-err")}};
 })();
-setInterval(()=>{if(st.page==='ahora'){renderTL();renderQTH()}},60*1000);
+setInterval(()=>{if(document.hidden)return;if(st.page==='ahora'){renderTL();renderQTH()}},60*1000);
 
 {const b=$("tocred");if(b)b.onclick=()=>{go("metodo");setTimeout(()=>{const c=$("creditos");try{selTab("metodo","creditos",true)}catch(e){}if(c){c.open=true}if(c)c.scrollIntoView({behavior:"smooth"})},50)}}
 

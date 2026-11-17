@@ -1200,3 +1200,12 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
 .sgv{font:700 .9rem var(--f-m,monospace)}.sgv.sg-r{color:#ef4444}.sgv.sg-y{color:#d6a10a}.sgv.sg-g{color:#22c55e}
 /* 2.10.4: desplegable del satélite siempre al pie de la tarjeta */
 .satl{align-items:stretch}.sc.sat{height:100%}.sc.sat>details.satx{margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
+/* 2.10.5: concursos en directo y pausas a medida */
+.clv{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}@media (min-width:800px){.clv{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}}
+.clvn{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-left:4px solid var(--accent);background:var(--panel2);border-radius:0 8px 8px 0}
+.clvb{display:grid;gap:6px}.clvr{display:grid;grid-template-columns:52px minmax(0,1fr) 70px;align-items:center;gap:8px;font-size:.84rem}.clvr i{display:block;height:12px;border-radius:6px}
+.clvm{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:8px}.clvmb{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel2)}
+.clvmh{margin-bottom:4px}.clvmh span{color:var(--muted);font-size:.8rem}.clvmi{font-size:.84rem;margin:2px 0}.clvmi .f{font:700 .9rem var(--f-m,monospace)}.clvmi small{color:var(--muted)}
+.cpxc{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:6px 0}.cpxc input[type=range]{vertical-align:middle;width:160px}
+/* 2.10.5: en la rejilla del clúster (normal y compacta), todo lo que no es tarjeta ocupa su propia fila */
+#spots>:not(.sc),#near>:not(.sc),#dxl>:not(.sc),.alc>:not(.sc){grid-column:1/-1!important}

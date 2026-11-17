@@ -113,6 +113,6 @@ function visible(){const d=document.getElementById("f_sat");return d&&typeof st!
 function tick(){if(!document.getElementById("sats"))return;const P=(typeof TXP!=="undefined"&&TXP)?TXP.join(","):"";
   if(!busy&&(!PASSES&&!err||Date.now()-calcAt>6*36e5||P!==calcFor&&calcAt)){if(visible()||!PASSES)calc()}else if(visible())render()}
 window.ACRACB_sats={calc,render,getTLE,SATS,get passes(){return PASSES}};
-function boot(){render();setInterval(tick,20000);setTimeout(tick,1500);document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest('.ptabs button,[data-pg="dx"]'))setTimeout(tick,50)},true)}
+function boot(){render();setInterval(()=>{if(!document.hidden)tick()},20000);setTimeout(tick,1500);document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest('.ptabs button,[data-pg="dx"]'))setTimeout(tick,50)},true)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
