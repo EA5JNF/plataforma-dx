@@ -1,3 +1,3 @@
-Socios AG de eQSL.cc: 44451. Copia del 2026-11-21.
+Socios AG de eQSL.cc: 44479. Copia del 2026-11-21.
 Fuente: https://www.eqsl.cc/qslcard/DownloadedFiles/AGMemberListDated.txt (con fecha de última subida; solo subidas del último año) (pública y gratuita).
 Cada línea: huella SHA-256 (12 cifras hexadecimales) de «acracb-dx|INDICATIVO» y fecha de su última subida. No se guardan los indicativos.
