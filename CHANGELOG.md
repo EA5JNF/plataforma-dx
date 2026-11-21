@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.15 — 2026-11-21
+
+- ES: La línea de estado de «Actualizar» es coherente: los spots nuevos y los confirmados se cuentan entre los que se muestran (antes podía salir «150 spots (664 nuevos)»).
+- EN: The "Update" status line is consistent: new and confirmed spots are counted among those shown (it could previously say "150 spots (664 new)").
+
 ## 2.10.14 — 2026-11-21
 
 - ES: Vista compacta más ligera en toda la plataforma: sin las casillas de datos (el panel «Sol y propagación ahora» ya los resume), sin el índice del Resumen, sin 6 m/2 m/70 cm en el Resumen, «Qué hacer» sin consejos extra, «Próximas horas» con 3 tramos y sin el bloque «El Sol ahora» repetido. La vista completa no cambia.

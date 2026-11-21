@@ -319,6 +319,8 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
   const got=new Set(spots.map(x=>x.call+"|"+Math.round(parseFloat(x.f)*500)));
   for(const [k,p] of pm){if(got.has(k)||!p.utc)continue;const tt=ptime(p.utc);if(!tt)continue;const age=(t0-tt)/6e4;if(age<0||age>(p.band>=10?120:60))continue;const q=Object.assign({},p,{nw:false,_t:+tt});const pe=ent(p.call);if(pe&&!posOK(q.dx,pe)){q.dx=areaPos(p.call,pe)||q.dx;q.dxp=false}spots.push(q)}
   spots.sort((a,b)=>b._t-a._t);spots=spots.slice(0,150);
+  /* 2.10.15: «nuevos» y «confirmados» se cuentan entre los spots que se muestran, no entre todos los recibidos (antes salía «150 spots (664 nuevos)») */
+  nn=spots.filter(x=>x.nw).length;cf=spots.filter(x=>(+x.ns||1)>1).length;
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);
   const heard=new Map();(prev.heard||[]).forEach(h=>{const l=ptime(h.last);if(l&&t0-l<=6*36e5)heard.set(h.dxcc,Object.assign({},h))});
   for(const [e,call,b,m,tt,src] of heardRaw){let h=heard.get(e.dxcc);if(!h){h={dxcc:e.dxcc,ent:e.name,calls:[],b:[],m:[],n:0,last:iso(tt),src:[],pos:e.pos};heard.set(e.dxcc,h)}
