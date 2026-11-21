@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.25 — 2026-11-21
+
+- ES: «Hora a hora»: la hora actual destaca con relieve: su columna sale elevada, con borde y brillo del color de resalte, y la hora va en una pastilla. La hora elegida, si es otra, sigue marcada con un borde.
+- EN: "Hour by hour": the current hour stands out in relief: its column is raised, with a border and glow in the highlight colour, and the hour sits in a pill. The chosen hour, if different, is still outlined.
+
 ## 2.10.24 — 2026-11-21
 
 - ES: LLOTA (Lagos y Lagunas On The Air) con categoría propia en el clúster, el mapa y el buscador: Todos, DX, POTA, SOTA, WWFF, IOTA, LLOTA y Otros. Sus activaciones llegan por los clústeres (Spothole) y por el comentario de los spots.

@@ -1316,3 +1316,12 @@ html.vc .ctnowbn>span:not(.ctm){display:none}
 .ctnowbn .lnk{margin-right:12px}
 :root[data-theme="light"] .ptabs button[aria-selected="true"]{background:#e9eef5!important;color:#1d3350!important;box-shadow:inset 0 0 0 1px rgba(47,74,107,.35),0 1px 2px rgba(0,0,0,.12)!important}
 :root[data-theme="light"] section[data-pg="dx"] .cs[data-call]{text-decoration-color:rgba(47,74,107,.55)}
+/* 2.10.24: «Hora a hora»: la hora actual destaca con relieve (columna elevada y con brillo) y su etiqueta en una pastilla */
+.hm2 .hx.now{position:relative;z-index:3;background:var(--accent);color:var(--bg)!important;border-radius:5px;font-weight:700;padding:0 3px;box-shadow:0 2px 6px rgba(0,0,0,.35);text-align:center;justify-self:stretch}
+.hm2 i.now{position:relative;z-index:2;transform:scale(1.1);box-shadow:0 0 0 2px var(--accent),0 3px 10px rgba(0,0,0,.45),0 0 12px color-mix(in srgb,var(--accent) 55%,transparent)!important;filter:brightness(1.12) saturate(1.15);border-radius:4px}
+.hm2 i.sel:not(.now){outline:2px solid var(--fg);outline-offset:-1px}
+.hm2 i.now.sel{outline:none}
+@media (prefers-reduced-motion:no-preference){.hm2 i.now{transition:transform .2s}}
+@media (max-width:700px){.hm2 i.now{transform:scaleX(1.18);box-shadow:0 0 0 1.5px var(--accent),0 0 8px color-mix(in srgb,var(--accent) 60%,transparent)!important}.hm2 .hx.now{padding:0 1px;font-size:.92em}}
+.hm2 .hx.now{overflow:visible!important;white-space:nowrap;text-overflow:clip!important;min-width:max-content;justify-self:center}
+@media (max-width:700px){.hm2 .hx.now{font-size:.78em;padding:0 2px}}
