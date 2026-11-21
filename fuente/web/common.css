@@ -44,7 +44,7 @@ a.btn{color:var(--fg)}
 :root[data-theme="light"] .chip.y,:root[data-theme="light"] .pill.y{color:#7a4a00}
 :root[data-theme="light"] .chip.r,:root[data-theme="light"] .pill.r{color:#9b1c1c}
 :root[data-theme="light"] .clamp{-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
-:root[data-theme="light"] .seg button[aria-pressed="true"]{background:#e9eef5;color:#1d3350;border-color:var(--accent)}
+:root[data-theme="light"] .seg button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
 :root[data-theme="light"] .grp button[aria-pressed="true"]{color:#fff}
 :root[data-theme="light"] .modes button[aria-pressed="true"]{color:#fff}
 :root[data-theme="light"] svg text{stroke:#ffffff!important;stroke-opacity:.9}
@@ -1314,7 +1314,7 @@ html.vc .sc.ohc.scx .sc-h .sc-age::after{content:" ▴"}
 .ctnowc{margin:0 0 12px}.ctnowc .note{margin:6px 0 0}
 html.vc .ctnowbn>span:not(.ctm){display:none}
 .ctnowbn .lnk{margin-right:12px}
-:root[data-theme="light"] .ptabs button[aria-selected="true"]{background:#e9eef5!important;color:#1d3350!important;box-shadow:inset 0 0 0 1px rgba(47,74,107,.35),0 1px 2px rgba(0,0,0,.12)!important}
+:root[data-theme="light"] .ptabs button[aria-selected="true"]{background:var(--accent)!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(47,74,107,.35),0 1px 2px rgba(0,0,0,.12)!important}
 :root[data-theme="light"] section[data-pg="dx"] .cs[data-call]{text-decoration-color:rgba(47,74,107,.55)}
 /* 2.10.24: «Hora a hora»: la hora actual destaca con relieve (columna elevada y con brillo) y su etiqueta en una pastilla */
 .hm2 .hx.now{position:relative;z-index:3;background:var(--accent);color:var(--bg)!important;border-radius:5px;font-weight:700;padding:0 3px;box-shadow:0 2px 6px rgba(0,0,0,.35);text-align:center;justify-self:stretch}
@@ -1325,3 +1325,9 @@ html.vc .ctnowbn>span:not(.ctm){display:none}
 @media (max-width:700px){.hm2 i.now{transform:scaleX(1.18);box-shadow:0 0 0 1.5px var(--accent),0 0 8px color-mix(in srgb,var(--accent) 60%,transparent)!important}.hm2 .hx.now{padding:0 1px;font-size:.92em}}
 .hm2 .hx.now{overflow:visible!important;white-space:nowrap;text-overflow:clip!important;min-width:max-content;justify-self:center}
 @media (max-width:700px){.hm2 .hx.now{font-size:.78em;padding:0 2px}}
+/* 2.10.26: tema claro: sobre el fondo pizarra, el texto va en blanco (antes quedaba texto casi negro sobre pizarra, poco legible) */
+:root[data-theme="light"] :is(.updb,.grp button[aria-pressed="true"],.tab[aria-selected="true"],.modes button[aria-pressed="true"],.mrt b,.nwb,.hm2 .hx.now,.recm button[aria-pressed="true"],.rrow button[aria-pressed="true"],.almb:hover,.almb[aria-expanded="true"]){color:#fff!important}
+:root[data-theme="light"] .updb .ic{background:rgba(255,255,255,.18)!important}
+:root[data-theme="light"] .updb svg{stroke:#fff}
+
+:root[data-theme="light"] .seg button[aria-pressed="true"] small,:root[data-theme="light"] .seg button[aria-pressed="true"] i{color:#fff;opacity:.9}

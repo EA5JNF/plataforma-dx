@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.26 — 2026-11-21
+
+- ES: Tema claro: todo lo que va sobre fondo pizarra lleva el texto en blanco (botón Actualizar, modo elegido, botones y pestañas marcados, números de los pasos del mapa, «NUEVO», la hora actual de «Hora a hora»…); antes quedaba texto casi negro sobre pizarra. Los botones y pestañas marcados pasan a pizarra con texto blanco, que se distinguen mucho mejor de los no marcados.
+- EN: Light theme: everything on a slate background now has white text (Update button, chosen mode, selected buttons and tabs, map step numbers, "NEW", the current hour in "Hour by hour"…); before, near-black text sat on slate. Selected buttons and tabs become slate with white text, much easier to tell from unselected ones.
+
 ## 2.10.25 — 2026-11-21
 
 - ES: «Hora a hora»: la hora actual destaca con relieve: su columna sale elevada, con borde y brillo del color de resalte, y la hora va en una pastilla. La hora elegida, si es otra, sigue marcada con un borde.
