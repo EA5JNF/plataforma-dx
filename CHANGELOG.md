@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.24 — 2026-11-21
+
+- ES: LLOTA (Lagos y Lagunas On The Air) con categoría propia en el clúster, el mapa y el buscador: Todos, DX, POTA, SOTA, WWFF, IOTA, LLOTA y Otros. Sus activaciones llegan por los clústeres (Spothole) y por el comentario de los spots.
+- ES: El clúster explica de dónde salen los DX: cuántos de todos los spots son DX de tu modo y tus bandas, cuántos de otros modos o bandas, cuántas activaciones y cuántos cercanos; en modo concursos, avisa de que «Para ti» pide más señal.
+- EN: LLOTA (Lakes and Lagoons On The Air) has its own category in the cluster, the map and the search: All, DX, POTA, SOTA, WWFF, IOTA, LLOTA and Other. Its activations come through the clusters (Spothole) and spot comments.
+- EN: The cluster explains where the DX comes from: how many of all spots are DX in your mode and bands, how many in other modes or bands, how many activations and how many nearby; in contest mode, it notes that "For you" asks for a stronger signal.
+
 ## 2.10.23 — 2026-11-21
 
 - ES: El tema claro cambia el resalte marrón por pizarra (azul grisáceo): botones y pestañas elegidos, títulos, enlaces, bordes y el botón Actualizar. No se confunde con los colores de las bandas ni con el verde, ámbar y rojo de los estados. El tema oscuro no cambia.

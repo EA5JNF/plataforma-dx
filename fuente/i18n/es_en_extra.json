@@ -405,8 +405,8 @@
 "Toca un punto, ★, ◆, ▲ o ■ para más datos": "Tap a dot, ★, ◆, ▲ or ■ for details",
 "Qué spots ver": "Which spots to show",
 "Lo que falta en tu log, DXpediciones y DX raro que puedes trabajar ahora. Se revisan en cada actualización.": "What your log is missing, DXpeditions and rare DX you can work now. Checked on every update.",
-"◆ DX · ▲ POTA, SOTA, WWFF, IOTA u otros": "◆ DX · ▲ POTA, SOTA, WWFF, IOTA or other",
 "Desde EA: cada QSO con Bulgaria da 10 puntos, otro continente 3 y Europa 1. Envías RS o RST y tu zona ITU, 37 en la Península, y las estaciones LZ envían su distrito. Puedes trabajar a cada estación una vez en CW y otra en SSB en cada banda, pero zona y distrito cuentan una sola vez por banda. Sin 160 m. Bulgaria va dentro del destino Balcanes del mapa, así que el cálculo la cuenta como Europa: cada LZ que trabajes vale más de lo que dice la estimación. Los multiplicadores se estiman con las zonas CQ, parecidas pero no iguales a las ITU.": "From EA: each QSO with Bulgaria gives 10 points, another continent 3 and Europe 1. You send RS or RST and your ITU zone, 37 on the Iberian Peninsula, and LZ stations send their district. You may work each station once on CW and once on SSB on each band, but zone and district count only once per band. No 160 m. Bulgaria is inside the map’s Balkans destination, so the calculation counts it as Europe: each LZ you work is worth more than the estimate says. Multipliers are estimated with CQ zones, similar to but not the same as ITU zones.",
 "zonas ITU y los 28 distritos de Bulgaria, por banda, sea cual sea el modo": "ITU zones and the 28 districts of Bulgaria, per band, whatever the mode",
-"Multiplicadores": "Multipliers"
+"Multiplicadores": "Multipliers",
+"◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA u otros": "◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA or other"
 }

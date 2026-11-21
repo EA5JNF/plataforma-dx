@@ -1588,7 +1588,7 @@ function renderBandSeg(){
   document.querySelectorAll('[data-pa]').forEach(b=>b.setAttribute("aria-pressed",b.dataset.pa===st.path));
   document.querySelectorAll('[data-ly]').forEach(b=>b.setAttribute("aria-pressed",!!(st.ly[b.dataset.ly]&&(b.dataset.ly!=="dxp"||st.mapOn))));document.querySelectorAll('[data-dn]').forEach(b=>b.setAttribute("aria-pressed",b.dataset.dn===st.dens));
   $("mlegend").innerHTML=BI0().map(i=>`<span><i style="background:${BC[i]}"></i>${BANDS[i]}</span>`).join("")+
-   `<span>Toca un punto, ★, ◆, ▲ o ■ para más datos</span><span>◆ DX · ▲ POTA, SOTA, WWFF, IOTA u otros</span><span>— corto · - - largo</span><span>● blancos = saltos</span><span style="color:#b9a3ff">▮ línea gris</span><span>▮ noche</span><span style="color:#ff8a80">▮ óvalo auroral (Kp ≥ 4)</span>`;
+   `<span>Toca un punto, ★, ◆, ▲ o ■ para más datos</span><span>◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA u otros</span><span>— corto · - - largo</span><span>● blancos = saltos</span><span style="color:#b9a3ff">▮ línea gris</span><span>▮ noche</span><span style="color:#ff8a80">▮ óvalo auroral (Kp ≥ 4)</span>`;
 }
 function renderModeChips(ms,withPred){if(!ms)return;const cur=MOD(),sel=CMS();const grp={};Object.entries(MODES).forEach(([k,o])=>{(grp[o.g]=grp[o.g]||[]).push(k)});
   ms.innerHTML=`<span class="segl">Modos</span>`+Object.entries(grp).map(([g,ks])=>`<span class="mgrp"><span class="mgl">${g==="Fonía"?"Voz":g}</span>${ks.map(k=>`<button data-mm="${k}" aria-pressed="${sel.includes(k)}"${k===cur?' class="pm" title="Modo de la predicción"':""}>${MODES[k].s}</button>`).join("")}</span>`).join("")+
