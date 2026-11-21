@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.41 — 2026-11-21
+
+- ES: La fila o tarjeta que tocas para desplegarla se queda donde la tocaste. En el iPhone y el iPad, Safari no compensa los cambios de altura de lo que hay por encima y cualquier recolocación de la página la movía arriba o abajo; ahora, durante un segundo, se corrige cualquier desplazamiento, y si mueves tú la página se deja de corregir.
+- EN: The row or card you tap to expand stays where you tapped it. On iPhone and iPad, Safari does not compensate for height changes above it and any rearrangement of the page moved it up or down; now any shift is corrected for one second, and if you scroll the page yourself the correction stops.
+
 ## 2.10.40 — 2026-11-21
 
 - ES: Lo desplegado sigue desplegado: los listados se redibujan solos (en cada actualización, al llegar las fuentes lentas, cada minuto) y antes cada redibujado cerraba las filas y tarjetas abiertas, con lo que el contenido subía y perdías el sitio de lectura. Ahora se recuerdan las que tenías abiertas y se vuelven a abrir antes de pintar, sin saltos.

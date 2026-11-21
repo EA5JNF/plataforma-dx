@@ -805,12 +805,21 @@ if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout
 })();
 /* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
 document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;const vl=document.documentElement.classList.contains("vl");if(!document.documentElement.classList.contains("vc")&&!vl)return;
-  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=vl?t.closest(".sc"):t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx");
+  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=vl?t.closest(".sc"):t.closest(".sc.ohc");if(!c)return;const y0=c.getBoundingClientRect().top;c.classList.toggle("scx");pinAt(c,y0);
   const k=scKey(c);if(k){if(c.classList.contains("scx")){SCOPEN.delete(k);SCOPEN.add(k);while(SCOPEN.size>60)SCOPEN.delete(SCOPEN.values().next().value)}else SCOPEN.delete(k)}});
 /* 2.10.40: lo desplegado sigue desplegado. Los listados se redibujan solos (cada actualización, cuando llegan las fuentes
    lentas, cada minuto…) y antes cada redibujado cerraba las filas abiertas: el contenido de debajo subía y perdías el
    sitio donde leías. Ahora se recuerda qué filas tenías abiertas y se vuelven a abrir en el mismo instante, antes de pintar. */
 const SCOPEN=new Set();
+/* 2.10.41: la fila o tarjeta que tocas se queda donde la tocaste. Safari (iPhone y iPad) no compensa por su cuenta los
+   cambios de altura de lo que hay por encima, y cualquier recolocación de la página (tarjetas que se igualan, un
+   redibujado) movía la tarjeta recién abierta arriba o abajo. Durante un segundo se corrige cualquier desplazamiento;
+   si tú mueves la página, se deja de corregir. */
+let PINU=0;["touchstart","wheel","keydown"].forEach(e=>addEventListener(e,()=>{PINU=Date.now()},{passive:true,capture:true}));
+function pinAt(c,y0){const t0=Date.now(),k=scKey(c);
+  const fix=()=>{if(PINU>t0+50)return;let el=c;if(!el.isConnected&&k){el=[...document.querySelectorAll(".sc")].find(x=>scKey(x)===k)||null}if(!el)return;
+    const dy=el.getBoundingClientRect().top-y0;if(Math.abs(dy)>1)window.scrollBy(0,dy)};
+  requestAnimationFrame(()=>{fix();requestAnimationFrame(fix)});[120,300,600,1000].forEach(ms=>setTimeout(fix,ms))}
 function scKey(c){const box=c.closest("[id]");const st=c.querySelector("[data-stc]"),cs=c.querySelector("[data-call]");
   const who=c.dataset.dxi!=null?"dx"+(st?st.dataset.stc:c.dataset.dxi):(st?st.dataset.stc:cs?cs.dataset.call:"");if(!who)return "";
   const f=c.dataset.f||((c.querySelector(".l-f,.sc-fq,.f")||{}).textContent||"").trim();return (box?box.id:"")+"|"+who+"|"+f}
