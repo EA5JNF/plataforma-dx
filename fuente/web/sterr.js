@@ -30,13 +30,22 @@ function vhf(){try{const s=window.ACRACB_vuhf&&ACRACB_vuhf.state();if(!s)return 
    [T("Tropo (2 m y 70 cm)","Tropo (2 m and 70 cm)"),s.tro.l==="n"?["n",T("ábrela en V-UHF para calcularla","open it in V-UHF to calculate")]:L3(s.tro.l,T("conductos: llega lejos","ducts: reaches far"),T("algo mejor de lo normal","somewhat better than usual"),T("normal","normal"))],
    [T("Meteoros","Meteors"),L3(s.ms.l,T("buen momento","good time"),T("posible","possible"),T("poca actividad","little activity"))],
    [T("Rebote lunar","Moonbounce"),L3(s.eme.l,T("Luna alta","Moon high"),T("Luna baja","Moon low"),T("Luna bajo el horizonte","Moon below horizon"))]]}catch(e){return []}}
+function storms(){const sp=L.space||{};const kp=L.kp!=null?+L.kp:null;
+  const g=kp==null?null:kp>=9?5:kp>=8?4:kp>=7?3:kp>=6?2:kp>=5?1:0;
+  const xm=String(sp.xray||"").match(/^([ABCMX])\s*([\d.]+)/);let r=null;if(xm){const v=+xm[2];r=xm[1]==="X"?(v>=20?5:v>=10?4:3):xm[1]==="M"?(v>=5?2:1):0}
+  const pm=String(sp.proton||"").match(/S\s*([0-5])/);const sv=pm?+pm[1]:null;
+  return {g,r,s:sv}}
+function stM(k,n){if(n==null)return ["n","—"];if(!n)return ["g",T("no hay","none")];
+  const lv=[0,T("menor","minor"),T("moderada","moderate"),T("fuerte","strong"),T("severa","severe"),T("extrema","extreme")][n];
+  const ef={g:T("bandas bajas y rutas polares peor","low bands and polar paths worse"),r:T("de día, bandas bajas mudas un rato","by day, low bands silent for a while"),s:T("rutas polares cortadas","polar paths cut")}[k];
+  return [n>=3?"r":"y",`${lv}: ${ef}`]}
 function head(){if(typeof L==="undefined"||!L)return T("Sol y propagación ahora","Sun and propagation now");const kp=L.kp!=null?+L.kp:null;const H=hf();const best=H.filter(x=>x[1][0]==="g").map(x=>x[0]+" m");
-  return `<span class="sth-t">${T("Sol y propagación ahora","Sun and propagation now")}</span> <span class="sth-s">SFI <b>${nf(L.sfi,0)}</b> · Kp <b>${nf(kp,0)}</b> · ${best.length?T(`de día, buenas ${best.join(" y ")}`,`by day, good ${best.join(" and ")}`):T("HF floja","HF weak")}</span>`}
+  return `<span class="sth-t">${T("Sol y propagación ahora","Sun and propagation now")}</span> <span class="sth-s">SFI <b>${nf(L.sfi,0)}</b> · Kp <b>${nf(kp,0)}</b> · ${(()=>{const S=storms();const a=[];if(S.g)a.push("G"+S.g);if(S.r)a.push("R"+S.r);if(S.s)a.push("S"+S.s);return a.length?`<b class="st-r">${T("tormenta","storm")} ${a.join(" ")}</b>`:T("sin tormentas","no storms")})()} · ${best.length?T(`de día, buenas ${best.join(" y ")}`,`by day, good ${best.join(" and ")}`):T("HF floja","HF weak")}</span>`}
 function body(){if(typeof L==="undefined"||!L)return "";const sp=L.space||{};const kp=L.kp!=null?+L.kp:null;
   const row=(k,v,m)=>`<div class="st3r"><span class="st3k">${k}</span><b class="st3v st-${m[0]}">${v}</b><span class="st3m">${m[1]}</span></div>`;
-  const sun=[row(T("Flujo solar","Solar flux"),nf(L.sfi,0),sfiM(L.sfi)),row(T("Manchas solares","Sunspots"),nf(sp.ssn,0),ssnM(sp.ssn)),row(T("Índice A","A index"),nf(sp.a,0),aM(sp.a)),row(T("Índice K","K index"),nf(kp,0),kpM(kp)),
+  const S=storms(),stv=(c,n)=>n==null?"—":c+n;const sun=[row(T("Tormenta geomagnética","Geomagnetic storm"),stv("G",S.g),stM("g",S.g)),row(T("Apagón de radio","Radio blackout"),stv("R",S.r),stM("r",S.r)),row(T("Tormenta de protones","Proton storm"),stv("S",S.s),stM("s",S.s)),row(T("Flujo solar","Solar flux"),nf(L.sfi,0),sfiM(L.sfi)),row(T("Manchas solares","Sunspots"),nf(sp.ssn,0),ssnM(sp.ssn)),row(T("Índice A","A index"),nf(sp.a,0),aM(sp.a)),row(T("Índice K","K index"),nf(kp,0),kpM(kp)),
     row(T("Rayos X","X-rays"),e2(sp.xray||"—"),xrM(sp.xray)),row(T("Viento solar","Solar wind"),L.wind!=null?nf(L.wind,0)+" km/s":"—",wM(L.wind)),row("Bz",L.bz!=null?nf(L.bz,1)+" nT":"—",bzM(L.bz)),
-    row(T("Protones","Protons"),e2(String(sp.proton||"—").split(" ")[0]),prM(sp.proton)),row(T("Ruido geomagnético","Geomagnetic noise"),nzM(kp),["n",T("orientativo, según el Kp","a guide, from Kp")])].join("");
+    row(T("Ruido geomagnético","Geomagnetic noise"),nzM(kp),["n",T("orientativo, según el Kp","a guide, from Kp")])].join("");
   const V=vhf().map(([k,m])=>`<div class="st3r st3r2"><span class="st3k">${k}</span><b class="st3v st-${m[0]}">${m[1]}</b></div>`).join("");
   const H=hf();const hfT=`<div class="st3h"><span>${T("Bandas","Bands")}</span><span>${T("De día","By day")}</span><span>${T("De noche","At night")}</span></div>`+H.map(([b,d,n])=>`<div class="st3h st3hr"><span>${b} m</span><b class="st-${d[0]}">${d[1]}</b><b class="st-${n[0]}">${n[1]}</b></div>`).join("");
   return `<div class="st3"><section><h4>${T("Sol y campo magnético","Sun and magnetic field")}</h4>${sun}</section><section><h4>VHF ${T("y superiores","and up")}</h4>${V}</section><section><h4>HF ${T("para tu estación","for your station")}</h4>${hfT}<p class="st3n">${T("Buena: muchos destinos al alcance. Regular: algunos. Mala: casi ninguno.","Good: many destinations in reach. Fair: some. Poor: almost none.")}</p></section></div>
@@ -44,7 +53,7 @@ function body(){if(typeof L==="undefined"||!L)return "";const sp=L.space||{};con
 function mk(id){const d=document.createElement("details");d.className="sterr";d.id=id;d.innerHTML=`<summary></summary><div class="stb"></div>`;
   if(OPEN[id])d.open=true;d.addEventListener("toggle",()=>{OPEN[id]=d.open;try{localStorage.setItem("acracb_stopen",JSON.stringify(OPEN))}catch(e){}if(d.open)fill(d)});return d}
 function fill(d){const s=d.querySelector("summary");if(s)s.innerHTML=head();if(d.open){const b=d.querySelector(".stb");if(b)b.innerHTML=body()}}
-function place(){[["st_ahora","ahora"],["st_sol","sol"]].forEach(([id,pg])=>{const sec=document.querySelector(`section.page[data-pg="${pg}"]`);if(!sec)return;let d=document.getElementById(id);if(!d)d=mk(id);if(sec.firstElementChild!==d)sec.insertBefore(d,sec.firstChild);fill(d)})}
+function place(){const sw=document.getElementById("sw");if(sw){let d=document.getElementById("st_ahora");if(!d)d=mk("st_ahora");if(sw.nextElementSibling!==d)sw.after(d);fill(d)}const sec=document.querySelector('section.page[data-pg="sol"]');if(sec){let d=document.getElementById("st_sol");if(!d)d=mk("st_sol");if(sec.firstElementChild!==d)sec.insertBefore(d,sec.firstChild);fill(d)}}
 window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(()=>{try{place()}catch(e){}});
 function boot(){if(!document.querySelector('section.page[data-pg="sol"]'))return setTimeout(boot,500);place();setInterval(()=>{if(!document.hidden)try{place()}catch(e){}},60000)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();

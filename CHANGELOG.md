@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.13 — 2026-11-21
+
+- ES: El panel «Sol y propagación ahora» pasa de la sección Ahora al pie de los datos generales (SFI, SSN, Kp…) de la página principal; sigue también en Sol. Añade tormenta geomagnética (G), apagón de radio (R) y tormenta de protones (S) según las escalas de NOAA, y lo indica en la línea resumen.
+- EN: The "Sun and propagation now" panel moves from the Now section to the foot of the general data (SFI, SSN, Kp…) on the main page; it stays in Sun too. Adds geomagnetic storm (G), radio blackout (R) and proton storm (S) per NOAA scales, shown in the summary line.
+
 ## 2.10.12 · 21/11/2026
 - «Sol y propagación ahora» pasa arriba del todo en Ahora y en Sol, antes de las pestañas (deja de estar en el Resumen). Plegado, ya dice flujo solar, Kp y qué bandas van bien de día; desplegado, tres columnas al estilo de los paneles clásicos (Sol y campo magnético, VHF y superiores, HF para tu estación) y cada dato con una frase sencilla que explica qué significa. Con las fuentes de la plataforma. En español e inglés.
 / “Sun and propagation now” panel at the top of Now and Sun, with plain-language meaning for each value.
