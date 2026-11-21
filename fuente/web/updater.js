@@ -305,7 +305,9 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     if(g.dxpos&&!posOK(g.dxpos,e))g.dxpos=null;
     const dx=g.dxpos||areaPos(g.call,e);if(!dx)continue;const dxcc=e?e.dxcc:null,cont=e?e.cont:null;let kind;
     const far=()=>g.from.filter(p=>p[0]||p[1]).map(p=>distKm(dx,p));
-    if(NEARDX.has(dxcc))kind="near";
+    /* 2.10.29: la referencia DME del comentario manda sobre el prefijo (EA9 desde Ávila es España; EA1 desde Mallorca, Baleares) */
+    const dm=String(g.c.join(" ")).match(/\bDME[ :#-]*(\d{5})\b/i),dmp=dm?+dm[1].slice(0,2):null,dmx=dm?(dmp===7?21:(dmp===35||dmp===38)?29:(dmp===51||dmp===52)?32:281):null;
+    if(dmx!=null?dmx===281:NEARDX.has(dxcc))kind="near";
     else if(g.band>=10){const d=far();if(!d.length||Math.max(...d)<300)continue;kind="vhf"}
     /* 2.10.27: un DX fuera de Europa entra aunque no lo haya anunciado un europeo (antes se descartaba y el clúster de la
        plataforma enseñaba muchos menos DX que los clústeres); si lo oyen en Europa queda marcado (eu) y pesa más en «Para ti» */

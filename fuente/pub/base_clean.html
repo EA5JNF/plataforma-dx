@@ -1444,7 +1444,11 @@ const ageTxt=a=>a==null?"":a<90?`hace ${a} min`:a<1440?`hace ${Math.round(a/60)}
 /* «cercana» = la estación anunciada está en EA, CT, C3, ZB o CN (con sus islas); si no, se trata como DX o como indicador */
 const NEARCC=new Set(["ES","PT","AD","GI","MA"]);
 /* 2.10.28: todo lo que no es España (DXCC 281) es DX, en toda la plataforma */
-function spotKind(s){const e=callEnt(s.call);if(e&&e.dxcc!=null)return +e.dxcc===281?"near":"dx";return s.kind==="near"?"near":"dx"}
+/* 2.10.29: como el WebCluster de URE, la referencia DME manda sobre el prefijo: un EA9 que activa un municipio de Ávila
+   está en España, y un EA1 desde Mallorca está en Baleares. Provincia INE 07 Baleares, 35 y 38 Canarias, 51 y 52 Ceuta y Melilla. */
+function dmeDx(s){const m=String(s&&s.c||"").match(/\bDME[ :#-]*(\d{5})\b/i);if(!m)return null;const p=+m[1].slice(0,2);return p===7?21:(p===35||p===38)?29:(p===51||p===52)?32:281}
+window.ACRACB_dmeDx=dmeDx;
+function spotKind(s){const d=dmeDx(s);if(d!=null)return d===281?"near":"dx";const e=callEnt(s.call);if(e&&e.dxcc!=null)return +e.dxcc===281?"near":"dx";return s.kind==="near"?"near":"dx"}
 /* 2.8.38: rumbo, distancia y probabilidad de un spot son SIEMPRE desde tu estación hasta la del indicativo.
    Lo que indica que la oigan lejos (camino abierto hacia el que la oye) va aparte, en spotEvalFar. */
 function spotEval(s,lh){if(!s||!s.dx)return null;const t=tFor(s)||nearestT(s.dx,0);if(!t)return null;const a=prob(t,lh,s.band,false),c=prob(t,lh,s.band,true),lp=c.p>a.p&&c.p>=.05;const az=Math.round(brgJS(TXP,s.dx))%360,km=Math.round(distJS(TXP,s.dx));

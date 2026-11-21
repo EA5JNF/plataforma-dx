@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.29 — 2026-11-21
+
+- ES: Idea tomada del WebCluster de URE: la referencia DME del spot manda sobre el prefijo para decidir si es España o DX. Un EA9 que activa un municipio de Ávila cuenta como España, y un EA1 desde Mallorca como Baleares (DX).
+- EN: Idea taken from the URE WebCluster: the spot's DME reference overrides the prefix to decide whether it is Spain or DX. An EA9 activating a municipality in Ávila counts as Spain, and an EA1 from Majorca as the Balearic Islands (DX).
+
 ## 2.10.28 — 2026-11-21
 
 - ES: DX es todo lo que no es España, en toda la plataforma: clúster, mapa, avisos, «Qué hacer», previsión y modo DX. Baleares, Canarias, Ceuta y Melilla cuentan como DX porque son entidades DXCC propias. La pestaña «Cerca» pasa a ser «Actividad en España». El tope de spots sube a 250 por tipo de modo.
