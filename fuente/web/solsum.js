@@ -93,6 +93,9 @@ function render(){const box=document.getElementById("easy");if(!box||typeof L===
   const h=`<div class="solsum-h"><b>${T("El Sol ahora","The Sun now")}</b><span class="solsum-v">${verdict(it.concat(more()))}</span><button type="button" class="lnk" id="solgo">${T("Ir a la sección Sol","Go to the Sun section")}</button></div>`+
     chips(it)+(extra?`<details class="solmore"${SOLOPEN?" open":""}><summary>${T("Más datos: previsión, ciclo solar y explicaciones","More: forecast, solar cycle and explanations")}</summary>${extra}</details>`:"");
   if(!el){el=document.createElement("div");el.id="solsum";el.className="solsum";box.insertAdjacentElement("afterend",el)}
+  /* 2.10.18: los datos del Sol ya están arriba (casillas y panel «Sol y propagación ahora») y en la sección Sol: aquí no se repiten.
+     El elemento queda vacío y oculto solo como punto de anclaje del glosario. */
+  el.hidden=true;if(el.innerHTML){el.innerHTML=""}if(false)
   if(el.innerHTML!==h){el.innerHTML=h;const b=document.getElementById("solgo");if(b)b.onclick=()=>{try{go("sol");selTab("sol","f_space",true)}catch(e){}};
     const d=el.querySelector(".solmore");if(d)d.addEventListener("toggle",()=>{SOLOPEN=d.open})}
   /* 2.4.9: «Palabras y expresiones que conviene saber» va al final del resumen, después del Sol */

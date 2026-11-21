@@ -203,7 +203,7 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   document.addEventListener("click",e=>{const t=e.target;if(t&&t.closest&&t.closest('section[data-pg="mapa"]')&&!t.closest("#map")){inClick=true;setTimeout(()=>{inClick=false},0)}},true);
   const run=()=>{if(busy)return;busy=true;try{const on=typeof st!=="undefined"&&st.ly&&st.ly.voa;if(on)window.ACRACB_NOLIVE=true;try{base()}finally{if(on)window.ACRACB_NOLIVE=false}
     for(const f of window.ACRACB_afterDraw){try{f()}catch(e){console.error(e)}}}finally{busy=false}};
-  const w=function(){const ev=window.event;if(inClick||(ev&&(ev.type==="click"||ev.type==="change"||ev.type==="input"))){if(!pend)pend=requestAnimationFrame(()=>{pend=0;run()});return}run()};
+  const w=function(){const ev=window.event;if(inClick||(ev&&(ev.type==="click"||ev.type==="change"||ev.type==="input"))){/* 2.10.18: primero se pinta el botón pulsado y después se dibuja el mapa (antes el dibujo iba antes de pintar y el botón tardaba en responder) */if(!pend)pend=requestAnimationFrame(()=>setTimeout(()=>{pend=0;run()},0));return}run()};
   w.__core=w.__fast=w.__iss=w.__fino=w.__ok=w.__pure=1;window.drawMap=w})();
 /* ---- 2.8.28: menú principal y pestañas de los submenús del mismo ancho ----
    Todos los botones del menú principal miden lo mismo (el del texto más largo), y todas las pestañas de todos
@@ -270,7 +270,7 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   /* 2.10.0: índice del Resumen: salta a cada parte sin recorrer todo con el dedo */
   function nav(){const fe=document.getElementById("f_easy"),easy=document.getElementById("easy");if(!fe||!easy)return;let n=fe.querySelector(".eznav");
     const parts=[[".ezcol1>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg .eztl",T2("Próximas horas","Next hours")],[".ezg .ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Palabras","Words")]];
-    const ok=parts.filter(([q])=>fe.querySelector(q));const sig=ok.map(x=>x[0]).join();
+    const ok=parts.filter(([q])=>{const x=fe.querySelector(q);return x&&!x.hidden&&getComputedStyle(x).display!=="none"});const sig=ok.map(x=>x[0]).join();
     if(n&&n.dataset.sig===sig)return;if(!n){n=document.createElement("nav");n.className="eznav";n.setAttribute("aria-label",T2("Partes del Resumen","Summary sections"));easy.insertAdjacentElement("beforebegin",n)}
     n.dataset.sig=sig;n.innerHTML=ok.map(([q,t])=>`<button type="button" data-ezq="${q}">${t}</button>`).join("");
     n.onclick=ev=>{const b=ev.target.closest("[data-ezq]");if(!b)return;const el=fe.querySelector(b.dataset.ezq);if(!el)return;if(el.tagName==="DETAILS")el.open=true;

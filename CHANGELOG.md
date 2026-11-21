@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.18 — 2026-11-21
+
+- ES: El mapa dibuja lo mismo que el clúster: además de los spots DX, las activaciones POTA, SOTA, WWFF y de otros programas (▲). Antes solo salían los DX y por eso, con poca actividad, el mapa parecía vacío.
+- ES: Un solo filtro en toda la plataforma (clúster, mapa y buscador): Todos, DX, POTA, SOTA, WWFF y Otros (IOTA, GMA, castillos, faros, diplomas españoles…), sacados de los propios clústeres. Lo que eliges en un sitio vale en los demás.
+- ES: Los botones del mapa responden al momento: primero se marca el botón y después se dibuja. Cambiar la hora o pulsar «Ahora» ya no recalcula toda la plataforma.
+- ES: Sin información repetida: el Resumen ya no repite los datos del Sol, las bandas de 6 m/2 m/70 cm ni las DXpediciones en el aire; desaparecen la pestaña «Qué hacer» (está en el Resumen) y la pestaña «Hoy» de Sol (sus datos están en el panel, que ahora incluye la ionosonda); el panel de la portada no repite el SFI y el Kp de las casillas de encima.
+- EN: The map now shows the same as the cluster: besides DX spots, POTA, SOTA, WWFF and other program activations (▲). Before, only DX was drawn, so in quiet periods the map looked empty.
+- EN: One filter across the platform (cluster, map and search): All, DX, POTA, SOTA, WWFF and Other (IOTA, GMA, castles, lighthouses, Spanish awards…), taken from the clusters themselves. What you choose in one place applies everywhere.
+- EN: Map buttons respond at once: the button is marked first and the map is drawn afterwards. Changing the hour or pressing "Now" no longer recalculates the whole platform.
+- EN: No repeated information: the Summary no longer repeats the Sun data, the 6 m/2 m/70 cm bands or the DXpeditions on air; the "What to do" tab (it is in the Summary) and the Sun "Today" tab (its data is in the panel, which now includes the ionosonde) are gone; the home panel no longer repeats the SFI and Kp shown in the tiles above.
+
 ## 2.10.17 — 2026-11-21
 
 - ES: Avisos DX con un criterio único: solo lo que puedes trabajar ahora (como el clúster «Para ti») y, por orden, entidad nueva para tu log, DXpedición, banda nueva, modo nuevo y DX raro. Cada aviso dice el motivo.

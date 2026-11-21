@@ -5,10 +5,15 @@ const EN=()=>window.ACRACB_LANG==="en";
 const T=(es,en)=>EN()?en:es;
 const S={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const ORD=[0,1,8,2,9,3,4,5,6,7,10,11,12];
-const PROGS=["POTA","SOTA","WWFF"];
+const PROGS=["POTA","SOTA","WWFF","OTROS"];
+/* 2.10.18: una sola clasificación en toda la plataforma: DX, POTA, SOTA, WWFF y OTROS (IOTA, GMA, castillos, faros,
+   diplomas españoles…). Sale de los propios clústeres: referencia del spot o de su comentario. */
+const P3=["POTA","SOTA","WWFF"];const catOf=o=>P3.includes(String(o.prog||"").toUpperCase())?String(o.prog).toUpperCase():"OTROS";
+const RXA=/\b(POTA|SOTA|WWFF|IOTA|GMA|WCA|HEMA|WWBOTA|BOTA|LLOTA|ILLW|ARLHS|SIOTA|ZLOTA|DME|DVGE|DFE|DCE|DIE|DMVE|DEE)[ :#-]*([A-Z0-9]{1,5}[\/-][A-Z0-9\/-]{1,12})\b/i;
 /* filtros acumulativos, como las bandas del mapa: se pueden marcar varios tipos y varias bandas a la vez */
 const ld=(k,ok)=>{try{const v=JSON.parse(S.get(k)||"null");return Array.isArray(v)?v.filter(ok):null}catch(e){return null}};
-let TYPES=new Set(ld("acracb_cltypes",x=>x==="dx"||PROGS.includes(x))||[S.get("acracb_cltype")].filter(x=>x==="dx"||PROGS.includes(x)));if(!TYPES.size)TYPES.add("dx");
+let TYPES=new Set(ld("acracb_cltypes",x=>x==="dx"||PROGS.includes(x))||[S.get("acracb_cltype")].filter(x=>x==="dx"||PROGS.includes(x)));if(!TYPES.size)["dx"].concat(PROGS).forEach(x=>TYPES.add(x));
+/* quien tenía «Todos» marcado antes de existir OTROS sigue con todo */if(["dx","POTA","SOTA","WWFF"].every(x=>TYPES.has(x)))TYPES.add("OTROS");
 let BSEL=new Set(ld("acracb_clbands",x=>Number.isInteger(x)&&x>=0&&x<=12)||[]);/* vacío = todas */
 const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago=a=>a==null?"":a<1?T("ahora","now"):a<90?T(`hace ${a} min`,`${a} min ago`):a<1440?T(`hace ${Math.round(a/60)} h`,`${Math.round(a/60)} h ago`):T("hace más de un día","over a day ago");
@@ -31,24 +36,25 @@ function progAll(){
   if(Array.isArray(L.acts))return L.acts.map(o=>Object.assign({},o,{a:minsFrom(o.utc)}));
   /* copia sin datos propios de programas (Artifact o datos antiguos): se sacan de los spots del clúster */
   const out=[],seen=new Set();
-  for(const s of (L.spots||[])){const m=String(s.c||"").match(RX);if(!m)continue;const k=s.call+"|"+m[2].toUpperCase();if(seen.has(k))continue;seen.add(k);
+  for(const s of (L.spots||[])){const m=String(s.c||"").match(RXA);if(!m)continue;const k=s.call+"|"+m[2].toUpperCase();if(seen.has(k))continue;seen.add(k);
     out.push({call:s.call,prog:m[1].toUpperCase(),ref:m[2].toUpperCase(),f:s.f,band:s.band,mode:s.mode,t:s.t,by:Array.isArray(s.by)?s.by[0]:s.by,dx:s.dx,a:(()=>{try{return spotAge(s)}catch(e){return null}})(),c:""})}
   return out}
-function refUrl(p,r){if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
+function refUrl(p,r){if(!P3.includes(p))return "";if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
   if(p==="SOTA")return "https://www.sotadata.org.uk/en/summit/"+r.split("/").map(encodeURIComponent).join("/");
   return "https://wwff.co/directory/?showRef="+encodeURIComponent(r)}
 const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","reserve"]};
+const CATN=k=>k==="dx"?"DX":k==="OTROS"?T("Otros","Other"):k;
 
 /* ---------- barra de filtros ---------- */
 function bar(counts,bcounts){
   const bs=bandsOK(),list=ORD.filter(b=>bs.has(b));[...BSEL].forEach(b=>{if(!bs.has(b))BSEL.delete(b)});
-  const tb=[["dx","DX"]].concat(PROGS.map(p=>[p,p]));
+  const tb=[["dx","DX"]].concat(PROGS.map(p=>[p,CATN(p)]));
   return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)&&!tb.every(([z])=>TYPES.has(z))}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
     (list.length>1?`<div class="seg clseg clbands" role="group" aria-label="${T("Banda del clúster","Cluster band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-clb="" aria-pressed="${!BSEL.size}">${T("Todas","All")}</button>${list.map(b=>`<button type="button" data-clb="${b}" aria-pressed="${BSEL.has(b)}"${bcounts[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bcounts[b]?` <small>${bcounts[b]}</small>`:""}</button>`).join("")}</div>`:"")}
 function wire(box){
   /* cada botón se marca o se desmarca; siempre queda al menos un tipo */
   box.querySelectorAll("[data-clt]").forEach(b=>b.onclick=()=>{/* 2.7.1: como las bandas: «Todos» es la selección vacía; tocar un tipo con «Todos» activo deja solo ese; quitar el último vuelve a «Todos» */
-  const k=b.dataset.clt,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}S.set("acracb_cltypes",JSON.stringify([...TYPES]));render()});
+  const k=b.dataset.clt,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}S.set("acracb_cltypes",JSON.stringify([...TYPES]));render();catChanged()});
   /* «Todas» quita la selección; marcar todas las bandas equivale a «Todas» */
   box.querySelectorAll("[data-clb]").forEach(b=>b.onclick=()=>{const v=b.dataset.clb;if(v==="")BSEL.clear();else{const n=+v;if(BSEL.has(n))BSEL.delete(n);else BSEL.add(n);const all=ORD.filter(x=>bandsOK().has(x));if(all.every(x=>BSEL.has(x)))BSEL.clear()}
     S.set("acracb_clbands",JSON.stringify([...BSEL]));render()})}
@@ -192,7 +198,7 @@ const ctxD=el=>{const c=el.closest(".ohin");return c?dOf(c):DLG};
 function ohInline(d){return `<div class="ohin" data-t="${e2(d.t)}" data-b="${d.b}" data-call="${e2(d.call)}" data-mode="${e2(d.mode||"")}" data-f="${e2(d.f||"")}"><div class="ohin-t">${T("¿Lo oyes?","Do you hear it?")} <span class="ohin-s">${[d.f,d.mode,BANDS[d.b]].filter(Boolean).map(e2).join(" · ")}</span></div>${dlgHTML(d,true)}</div>`}
 window.ACRACB_ohInline=ohInline;
 (function(){let n=0;const h=setInterval(()=>{if(typeof calBtns==="function"&&!window.__hkOh){window.__hkOh=1;const o=calBtns;const w=function(t){try{if(!t)return o.apply(this,arguments);const P=st.pop;let call=null,b=null,mode="",f="";
-    if(P&&P.k==="s"){const s=SPOTS()[P.i];const e=s&&spotEval(s,st.mhour);const tf=s?tFor(s):null;if(s&&((e&&e.t&&e.t.id===t.id)||(tf&&tf.id===t.id))){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
+    if(P&&P.k==="s"){const s=(typeof MSPOTS==="function"?MSPOTS():SPOTS())[P.i];const e=s&&spotEval(s,st.mhour);const tf=s?tFor(s):null;if(s&&((e&&e.t&&e.t.id===t.id)||(tf&&tf.id===t.id))){call=s.call;b=s.band;mode=modeOf(s);f=s.f}}
     else if(P&&P.k==="d"){const d=L.dx[P.i];if(d&&tFor(d)&&tFor(d).id===t.id)call=dxTok(d.call)[0]||d.call}
     if(b==null)b=st.mband>=0?st.mband:bestAny(t,st.mhour).b;if(b==null||b<0||b>=10)return o.apply(this,arguments);
     if(!call)call=t.name;if(!mode){try{mode=MD().s}catch(_){}}
@@ -325,7 +331,7 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   return h}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
   return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,secs:(()=>{const r=sigRow(s,e,sp);return r?[[T("Señal prevista","Expected signal"),r]]:[]})()})}
-function progRow(o){const tag=`<a class="xtag xr" href="${refUrl(o.prog,o.ref)}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(PNAME[o.prog][0],PNAME[o.prog][1])}">${e2(o.prog)} ${e2(o.ref)}</a>`;
+function progRow(o){const u=refUrl(o.prog,o.ref),pn=PNAME[o.prog];const tag=u?`<a class="xtag xr" href="${u}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(pn[0],pn[1])}">${e2(o.prog)} ${e2(o.ref)}</a>`:`<span class="xtag xr">${e2(o.prog)} ${e2(o.ref)}</span>`;
   return card({...PC({call:o.call,band:o.band,mode:o.mode,f:o.f,dx:o.dx,t:o.t,c:o.c},o.a),call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(cTr(o.c)):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;
 function nearRow(s,a){const st=splitTags(s);const tags=[];if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
@@ -339,21 +345,46 @@ function renderNear(){const box=$("near");if(!box||typeof SPOTS!=="function")ret
 let LH=null;let CLALL=false,CLOPEN=false;try{CLALL=localStorage.getItem("acracb_clall")==="1"}catch(_){}
 document.addEventListener("click",ev=>{const f=ev.target.closest&&ev.target.closest("[data-clfor]");if(f){CLALL=f.dataset.clfor==="all";CLOPEN=false;try{localStorage.setItem("acracb_clall",CLALL?"1":"")}catch(_){}render();return}
   const m=ev.target.closest&&ev.target.closest("[data-clmore]");if(m){CLOPEN=true;render()}});
+/* un spot con referencia de programa es una activación: va en su categoría, no en DX */
+function actKeys(){const k=L.acts||[];if(actKeys.c&&actKeys.c[0]===k&&actKeys.c[1]===k.length)return actKeys.c[2];const m=new Set(k.map(o=>SK(o.call)+"|"+o.band));actKeys.c=[k,k.length,m];return m}
+function isActSpot(s){return actKeys().has(SK(s.call)+"|"+s.band)||RXA.test(String(s.c||""))}
+/* lo que el mapa dibuja: lo mismo que el clúster, con las mismas categorías (DX y activaciones con posición) */
+function mapSpots(){const ty=TYPES;const out=[];
+  if(ty.has("dx"))SPOTS().forEach(s=>{if(!isActSpot(s))out.push(s)});
+  let bs=null;try{bs=CMBANDS()}catch(_){}
+  progAll().forEach(o=>{const c=catOf(o);if(!ty.has(c)||!o.dx||o.band==null||(bs&&!bs.has(o.band))||!modeOK(o)||(o.a!=null&&o.a>60))return;
+    out.push({call:o.call,f:o.f,band:o.band,mode:o.mode,t:o.t,utc:o.utc,by:o.by?[o.by]:[],from:[],dx:o.dx,dxcc:o.dxcc,kind:"dx",c:(o.prog+" "+o.ref+(o.c?" · "+o.c:"")),act:{prog:o.prog,ref:o.ref,cat:c}})});
+  return out}
+let MSC=null;window.ACRACB_mapSpots=()=>{const k=[L.updatedUTC,L.actsUTC,(L.spots||[]).length,(L.acts||[]).length,[...TYPES].join(),CMS().join(),(()=>{try{return [...CMBANDS()].join()}catch(_){return ""}})()].join("|");if(MSC&&MSC[0]===k)return MSC[1];const v=mapSpots();MSC=[k,v];return v};
+window.ACRACB_cat={types:()=>new Set(TYPES),label:CATN,list:()=>["dx"].concat(PROGS)};
+function catChanged(){MSC=null;try{if(typeof st!=="undefined"&&st.page==="mapa")drawMap()}catch(_){}try{mapCat()}catch(_){}try{document.dispatchEvent(new Event("acracb:cat"))}catch(_){}}
+/* selector en el mapa, el mismo que en el clúster */
+function mapCat(){const sw=document.getElementById("mapsw");if(!sw)return;const row0=sw.closest(".mrow");if(!row0)return;let r=document.getElementById("mcatrow");
+  if(!r){r=document.createElement("div");r.className="mrow";r.id="mcatrow";row0.insertAdjacentElement("afterend",r)}
+  const on=typeof st!=="undefined"&&st.mapOn&&st.ly&&st.ly.spots;r.hidden=!on;if(!on)return;
+  const ms=window.ACRACB_mapSpots(),cnt={};ms.forEach(s=>{const c=s.act?s.act.cat:"dx";cnt[c]=(cnt[c]||0)+1});const ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));
+  const h=`<div class="mrt">${T("Clúster","Cluster")}</div><div class="seg" role="group" aria-label="${T("Qué spots ver","Which spots to show")}"><button type="button" data-mct="*" aria-pressed="${all}">${T("Todos","All")}</button>${ALL.map(k=>`<button type="button" data-mct="${k}" aria-pressed="${TYPES.has(k)&&!all}">${CATN(k)}${cnt[k]?` <small>${cnt[k]}</small>`:""}</button>`).join("")}</div>`;
+  if(r.innerHTML!==h)r.innerHTML=h}
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-mct]");if(!b)return;const k=b.dataset.mct,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));
+  if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}
+  S.set("acracb_cltypes",JSON.stringify([...TYPES]));b.parentElement.querySelectorAll("[data-mct]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.mct==="*"?ALL.every(y=>TYPES.has(y)):(TYPES.has(x.dataset.mct)&&!ALL.every(y=>TYPES.has(y))))));
+  MSC=null;try{render()}catch(_){}catChanged()});
+(window.ACRACB_afterDraw=window.ACRACB_afterDraw||[]).push(()=>{try{mapCat()}catch(_){}});
 function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS!=="function")return;if(LH==null)LH=st.mhour;
   let bx=$("clbar");if(!bx){bx=document.createElement("div");bx.id="clbar";const cf=$("clfilt");if(cf)cf.appendChild(bx);else box.parentNode.insertBefore(bx,box)}
   const bs=bandsOK();
   /* DX */
-  const sp=SPOTS().map(s=>({s,e:spotEval(s,LH),a:spotAge(s)})).filter(x=>x.e&&(spotKind(x.s)==="dx"||spotKind(x.s)==="ind"));
+  const sp=SPOTS().filter(s=>!isActSpot(s)).map(s=>({s,e:spotEval(s,LH),a:spotAge(s)})).filter(x=>x.e&&(spotKind(x.s)==="dx"||spotKind(x.s)==="ind"));
   sp.sort((x,y)=>(spotKind(x.s)==="dx")-(spotKind(y.s)==="dx")||0);
   const dxs=sp.filter(x=>spotKind(x.s)==="dx").sort((a,b)=>b.e.p-a.e.p).concat(sp.filter(x=>spotKind(x.s)==="ind"));
   /* programas */
   const pa=progAll().filter(o=>bs.has(o.band)&&modeOK(o)&&(o.a==null||o.a<=60));
-  const counts={dx:dxs.length};PROGS.forEach(p=>counts[p]=pa.filter(o=>o.prog===p).length);
-  const cur=(TYPES.has("dx")?dxs.map(x=>x.s.band):[]).concat(pa.filter(o=>TYPES.has(o.prog)).map(o=>o.band));
+  const counts={dx:dxs.length};PROGS.forEach(p=>counts[p]=pa.filter(o=>catOf(o)===p).length);
+  const cur=(TYPES.has("dx")?dxs.map(x=>x.s.band):[]).concat(pa.filter(o=>TYPES.has(catOf(o))).map(o=>o.band));
   const bcounts={};cur.forEach(b=>bcounts[b]=(bcounts[b]||0)+1);
   bx.innerHTML=bar(counts,bcounts)+legend();wire(bx);
   /* 2.10.0: los filtros van plegados; el resumen dice qué se está mostrando */
-  {const fs=$("clfs");if(fs){const ty=[...TYPES].map(t=>t==="dx"?"DX":t.toUpperCase());const bsl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);
+  {const fs=$("clfs");if(fs){const ty=["dx"].concat(PROGS).filter(t=>TYPES.has(t)).map(CATN);const bsl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);
     fs.textContent=[CMSTXT(),bsl2.length?bsl2.join(", "):T("todas las bandas","all bands"),ty.length&&ty.length<1+PROGS.length?ty.join(", "):T("DX y actividades","DX and activations")].join(" · ")}}
   const inB=b=>!BSEL.size||BSEL.has(b),bsl=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);
   const bl=bsl.length?" "+T("en","on")+" "+(bsl.length>1?bsl.slice(0,-1).join(", ")+T(" y "," and ")+bsl[bsl.length-1]:bsl[0]):"";
@@ -379,8 +410,8 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
       :`<div class="empty">${CLALL||!grp.length?T(`Sin spots DX de ${CMSTXT()} útiles${bl} ahora.`,`No useful ${CMSTXT()} DX spots${bl} right now.`):T(`Ninguna estación que puedas trabajar ahora${bl}. Pulsa «Todos» para ver las ${grp.length} del clúster.`,`No stations you can work right now${bl}. Tap «All» to see the ${grp.length} on the cluster.`)}</div>`;
     srcs.push(e2(L.spotsSrc||"—"))}
   const ps=PROGS.filter(p=>TYPES.has(p));
-  if(ps.length){const rows=pa.filter(o=>ps.includes(o.prog)&&inB(o.band)).sort((a,b)=>(a.a??1e9)-(b.a??1e9));const N=80;
-    const pl=ps.length>1?ps.slice(0,-1).join(", ")+T(" y "," and ")+ps[ps.length-1]:ps[0];
+  if(ps.length){const rows=pa.filter(o=>ps.includes(catOf(o))&&inB(o.band)).sort((a,b)=>(a.a??1e9)-(b.a??1e9));const N=80;
+    const psn=ps.map(p=>p==="OTROS"?T("otros programas (IOTA, GMA, castillos, faros…)","other programs (IOTA, GMA, castles, lighthouses…)"):p);const pl=psn.length>1?psn.slice(0,-1).join(", ")+T(" y "," and ")+psn[psn.length-1]:psn[0];
     bx.insertAdjacentHTML("beforeend",`<p class="note clnote">${T(`Activadores de ${pl} de todo el mundo en la última hora, en ${CMSTXT()}${bl}. Los más recientes, arriba.`,`${pl} activators worldwide in the last hour, in ${CMSTXT()}${bl}. Newest first.`)}</p>`);
     if(TYPES.has("dx"))h+=`<p class="note clsec">${pl}</p>`;
     h+=rows.length?rows.slice(0,N).map(progRow).join("")+(rows.length>N?`<p class="note">${T(`Y ${rows.length-N} más.`,`And ${rows.length-N} more.`)}</p>`:""):`<div class="empty">${T(`Ningún activador de ${pl} en ${CMSTXT()}${bl} en la última hora.`,`No ${pl} activators in ${CMSTXT()}${bl} in the last hour.`)}</div>`;
@@ -604,7 +635,7 @@ function cMatch(Q,call,ref,ent){const C=String(call||"").toUpperCase(),base=C.sp
   const callsOK=!Q.calls.length||Q.calls.some(one);
   const wordsOK=!Q.words.length||Q.words.every(w=>C.includes(w)||NOACC(ent).includes(w));return callsOK&&wordsOK}
 function sMatch(Q,o){if(Q.bands.size&&!Q.bands.has(o.band))return false;if(!mOK(Q,o.mode))return false;
-  if(Q.progs.size&&!Q.progs.has(o.prog||"dx"))return false;if(Q.f){const k=kHzOf(o.f);if(!isFinite(k)||Math.abs(k-Q.f.k)>Q.f.tol)return false}
+  if(Q.progs.size&&!Q.progs.has(o.prog?catOf(o):"dx"))return false;if(Q.f){const k=kHzOf(o.f);if(!isFinite(k)||Math.abs(k-Q.f.k)>Q.f.tol)return false}
   return cMatch(Q,o.call,o.ref,o.ent)}
 const CONTS=[["EU","Europa","Europe"],["AF","África","Africa"],["AS","Asia","Asia"],["NA","Norteamérica","North America"],["SA","Sudamérica","South America"],["OC","Oceanía","Oceania"],["AN","Antártida","Antarctica"]];
 const contName=k=>{const n=CONTS.find(x=>x[0]===k);return n?T(n[1],n[2]):k};
@@ -654,9 +685,9 @@ function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if
       <label><span>${T("Modo","Mode")}</span><select id="srm"><option value="">${T("Todos","All")}</option><option value="CW">CW</option><option value="PHONE">${T("Fonía (todas)","Phone (all)")}</option><option value="DIGI">${T("Digitales (todos)","Digital (all)")}</option><optgroup label="${T("Concretos","Specific")}"><option value="SSB">SSB</option><option value="AM">AM</option><option value="FM">FM</option><option value="FT8">FT8</option><option value="FT4">FT4</option><option value="RTTY">RTTY</option><option value="PSK">PSK</option></optgroup></select></label>
       <label><span>${T("Continente DX","DX continent")}</span><select id="srdx"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
       <label><span>${T("Continente del spotter","Spotter continent")}</span><select id="srcs"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
-      <label><span>${T("Tipo","Type")}</span><select id="srt"><option value="">${T("Todos","All")}</option><option value="dx">DX</option>${PROGS.map(x=>`<option value="${x}">${x}</option>`).join("")}</select></label>
+      <label><span>${T("Tipo","Type")}</span><select id="srt"><option value="">${T("Todos","All")}</option><option value="dx">DX</option>${PROGS.map(x=>`<option value="${x}">${CATN(x)}</option>`).join("")}</select></label>
       <label><span>${T("Antigüedad","Age")}</span><select id="sra"><option value="">${T("Todas","All")}</option><option value="15">${T("Últimos 15 min","Last 15 min")}</option><option value="30">${T("Últimos 30 min","Last 30 min")}</option><option value="60">${T("Última hora","Last hour")}</option></select></label>
-    </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA y WWFF y en las DXpediciones anunciadas. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
+    </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA, WWFF y otros programas (IOTA, GMA…) y en las DXpediciones anunciadas. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and other programs (IOTA, GMA…) and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
     <div id="srchres" hidden aria-live="polite"></div>`;
   {const pt=sec.querySelector(":scope>.ptabs");if(pt)pt.after(w);else sec.insertBefore(w,sec.firstElementChild)}let tm=0;const inp=$("srchq"),x=$("srchx");
   inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}

@@ -1293,3 +1293,6 @@ html.vc .page .card.fold>summary .fsum{font-size:.8rem}
 .alhave{margin-top:8px;align-self:flex-start;font:600 .82rem var(--f-s,inherit);padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
 .alhave:hover{border-color:var(--accent)}
 .eqslt{color:var(--fg);border-color:var(--line)}
+/* 2.10.18: sin repeticiones en el Resumen: 6 m/2 m/70 cm está en V-UHF y en el panel; las DXpediciones en el aire, en el Aviso DX y en DX */
+.ezvh,.ezdx{display:none!important}
+html:not(.vc) #st_ahora .stdup{display:none}

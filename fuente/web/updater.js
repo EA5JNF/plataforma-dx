@@ -282,7 +282,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     if(deEU&&ed&&age<=360)heardRaw.push([ed,call,b,modeFrom(f,s.c,s.mode),tt,s.src]);
     {const dc=age<=360?dxOf(call):null;if(dc){const md=modeFrom(f,s.c,s.mode),k=dc+"|"+b+"|"+md;let o=DXO.get(k);
       if(!o||tt>o._t){const n=o?o.n+1:1;o={call:dc,sc:call,f:fmtF(f),band:b,mode:md,t:new Date(tt).toISOString().slice(11,16),utc:iso(tt),by:by||"",c:String(s.c||"").replace(/\s+/g," ").trim().slice(0,60),n,_t:+tt};DXO.set(k,o)}else o.n++}}
-    {const rm=String(s.ref||"").match(/^(POTA|SOTA|WWFF)\s+(\S+)/i)||String(s.c||"").match(/\b(POTA|SOTA|WWFF)[ :#-]*([A-Z0-9]{1,4}[\/-][A-Z0-9\/-]{2,10})\b/i);
+    {/* 2.10.18: además de POTA, SOTA y WWFF, el resto de programas (IOTA, GMA, castillos, faros, diplomas españoles…) */const rm=String(s.ref||"").match(/^([A-Z][A-Z0-9]{1,7})\s+(\S+)/i)||String(s.c||"").match(/\b(POTA|SOTA|WWFF|IOTA|GMA|WCA|HEMA|WWBOTA|BOTA|LLOTA|ILLW|ARLHS|SIOTA|ZLOTA|DME|DVGE|DFE|DCE|DIE|DMVE|DEE)[ :#-]*([A-Z0-9]{1,5}[\/-][A-Z0-9\/-]{1,12})\b/i);
       const rf0=rm?String(rm[2]).toUpperCase().match(/^[A-Z0-9][A-Z0-9\/-]{2,15}/):null;if(rm&&rf0&&age<=60){const pg=rm[1].toUpperCase(),rf=rf0[0],k=call+"|"+rf;let o=ACT.get(k);
         if(!o||tt>o._t){let dx=s.dxpos&&s.dxpos[0]!=null&&s.dxpos[1]!=null&&posOK([s.dxpos[0],s.dxpos[1]],ed)?[s.dxpos[0],s.dxpos[1]]:(o&&o.dx)||areaPos(call,ed)||null;
           o={call,prog:pg,ref:rf,f:fmtF(f),band:b,mode:modeFrom(f,s.c,s.mode),t:new Date(tt).toISOString().slice(11,16),utc:iso(tt),by:by||"",c:String(s.c||"").replace(/\s+/g," ").trim().slice(0,50),dx,dxcc:ed?ed.dxcc:null,_t:+tt};ACT.set(k,o)}
