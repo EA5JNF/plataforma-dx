@@ -1305,3 +1305,11 @@ html.vc .sc.ohc .sc-h .sc-age::after{content:" ▾";color:var(--muted)}
 html.vc .sc.ohc.scx .sc-h .sc-age::after{content:" ▴"}
 .stalebn{margin:6px 0 2px;padding:8px 12px;border-radius:8px;border:1px solid var(--bad,#c62828);background:color-mix(in srgb,var(--bad,#c62828) 12%,transparent);color:var(--fg);font-weight:600;font-size:.92rem}
 .st3vt{font-family:inherit!important;font-size:.86rem!important}
+/* 2.10.22: concurso en marcha */
+.ctnowbn{margin:8px 0;padding:9px 13px;border-radius:10px;border:1px solid var(--accent);border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--panel));font-size:.92rem;line-height:1.45}
+.ctnowbn .ctm{font:600 .78rem var(--f-m,monospace);padding:1px 6px;border-radius:5px;border:1px solid var(--line)}
+.ctnowbn .btn{margin-left:6px;padding:4px 12px;min-height:0}
+.ctnowbn .ctoth{display:block;font-size:.82rem;color:var(--muted)}
+.ctnowc{margin:0 0 12px}.ctnowc .note{margin:6px 0 0}
+html.vc .ctnowbn>span:not(.ctm){display:none}
+.ctnowbn .lnk{margin-right:12px}

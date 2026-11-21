@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.22 — 2026-11-21
+
+- ES: Concurso en marcha: con el calendario de la plataforma, a la hora exacta de sus bases, sale arriba en todas las secciones un aviso con el concurso, su modo y cuándo termina, y otro al principio de Concursos con sus reglas. Si la plataforma tiene sus reglas, se pone sola en modo concursos con ese concurso (bandas, puntos, multiplicadores y estrategia en directo); «Volver a modo DX» lo respeta hasta el siguiente y, al terminar, vuelve sola a modo DX. Con las notificaciones activadas, avisa una vez por concurso.
+- ES: Nuevo concurso con reglas: LZ DX (80 a 10 m, CW y SSB, Bulgaria 10 puntos, otro continente 3, Europa 1; zonas ITU y distritos LZ por banda).
+- ES: En concursos, los multiplicadores del clúster dicen «Zona CQ» en vez de «Zona», que es lo que se calcula.
+- EN: Contest running: from the platform's calendar, at the exact time of its rules, a notice appears at the top of every section with the contest, its mode and when it ends, and another at the start of Contests with its rules. If the platform has its rules, it switches itself to contest mode for that contest (bands, points, multipliers and live strategy); "Back to DX mode" is respected until the next one and, when it ends, it returns to DX mode by itself. With notifications on, it alerts once per contest.
+- EN: New contest with rules: LZ DX (80 to 10 m, CW and SSB, Bulgaria 10 points, another continent 3, Europe 1; ITU zones and LZ districts per band).
+- EN: In contests, cluster multipliers say "CQ zone" instead of "Zone", which is what is calculated.
+
 ## 2.10.21 — 2026-11-21
 
 - ES: IOTA (islas) con categoría propia en todos los selectores: Todos, DX, POTA, SOTA, WWFF, IOTA y Otros, en el clúster, el mapa y el buscador.

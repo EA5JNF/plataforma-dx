@@ -1314,7 +1314,7 @@ function renderCLive(){const el=$("clive");if(!el||st.mode!=="contest")return;co
   const bands=BI().filter(b=>b<=10);const sc=bands.map(b=>{let a=0;for(const t of TG().filter(inMode))a+=cval(t,b,prob(t,lh,b).p);const m=cmults(lh,b).size;return {b,a,m,v:a*(1+.05*m)}}).sort((x,y)=>y.v-x.v);
   const top=sc[0];const seg=(SEG().find(r=>r[0]===top.b)||[]);
   const sp=SPOTS().filter(s=>spotKind(s)==="dx"&&bands.includes(s.band)).map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e&&x.e.t&&(x.a==null||x.a<=30));
-  const key=t=>c.mk==="cqdx"?TT("Zona ","Zone ")+t.cq:(t.name||"").split(" (")[0];
+  const key=t=>c.mk==="cqdx"?TT("Zona CQ ","CQ zone ")+t.cq:(t.name||"").split(" (")[0];
   const byB={};sp.forEach(x=>{(byB[x.s.band]=byB[x.s.band]||[]).push(x)});
   const rows=bands.filter(b=>byB[b]).map(b=>{const L0=byB[b].sort((u,v)=>v.e.p-u.e.p);const seen=new Set(),ms=[];L0.forEach(x=>{const k=key(x.e.t);if(seen.has(k))return;seen.add(k);ms.push(x)});return {b,ms,pts:ms.reduce((s,x)=>s+c.pts(x.e.t,b)*x.e.p,0)}}).sort((u,v)=>v.ms.length-u.ms.length||v.pts-u.pts);
   const nxt=(()=>{const seq=contestPlan();const now=seq[lh].b;for(let k=1;k<24;k++){const x=(lh+k)%24;if(seq[x].b!==now&&seq[x].b>=0)return {h:x,b:seq[x].b}}return null})();
@@ -1364,7 +1364,9 @@ const CONTESTS={
  wpxrtty:{modes:["rtty"],base:"wpx",n:"CQ WPX RTTY",month:2,wk:"second",h:48,so:30,bands:[1,2,3,5,7],ok:t=>true,pts:(t,b)=>{const lo=b<=2;return t.cont==="EU"?(lo?2:1):(lo?6:3)},mult:"prefijos (una vez en todo el concurso)",mk:"wpx",
    tip:"Como el WPX de fonía y CW: los prefijos cuentan una vez y las bandas bajas puntúan el doble. Compruébalo en sus bases."},
  rttyru:{modes:["rtty"],base:"arrl10",n:"ARRL RTTY Roundup",month:1,wk:"first",h:30,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"estados de EE. UU., provincias de Canadá y países DXCC (una vez)",mk:"wve",
-   tip:"1 punto por QSO y cada estado, provincia o país cuenta una sola vez. Son 30 h, de las que un monooperador opera 24."}};
+   tip:"1 punto por QSO y cada estado, provincia o país cuenta una sola vez. Son 30 h, de las que un monooperador opera 24."},
+ lzdx:{modes:["ssb","cw"],n:"LZ DX",month:11,wk:"penult",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:t=>t.cont==="EU"?1:3,mult:"zonas ITU y los 28 distritos de Bulgaria, por banda, sea cual sea el modo",mk:"cqdx",
+   tip:"Desde EA: cada QSO con Bulgaria da 10 puntos, otro continente 3 y Europa 1. Envías RS o RST y tu zona ITU, 37 en la Península, y las estaciones LZ envían su distrito. Puedes trabajar a cada estación una vez en CW y otra en SSB en cada banda, pero zona y distrito cuentan una sola vez por banda. Sin 160 m. Bulgaria va dentro del destino Balcanes del mapa, así que el cálculo la cuenta como Europa: cada LZ que trabajes vale más de lo que dice la estimación. Los multiplicadores se estiman con las zonas CQ, parecidas pero no iguales a las ITU."}};
 const CT=()=>CONTESTS[$("contest")?$("contest").value:"cqww"]||CONTESTS[CKEYS()[0]]||CONTESTS.cqww;
 const CKEYS=()=>Object.keys(CONTESTS).filter(k=>CONTESTS[k].modes.includes(MOD()));
 const BI0=()=>st.mode==="contest"?CT().bands:BALL.filter(b=>MD().bands.includes(b));
@@ -1378,7 +1380,7 @@ const isDXz=t=>t.km>=2500||rareOn(t);
 const inMode=t=>st.mode==="contest"?CT().ok(t):isDXz(t);
 function cmults(lh,b){const s=new Set();for(const t of TG().filter(inMode)){if(prob(t,lh,b).p>=.3)s.add(CT().mk==="cqdx"?t.cq:t.dxcc)}return s}
 function fullWeekends(y,m){const r=[];for(let d=1;d<=31;d++){const dt=new Date(Date.UTC(y,m-1,d));if(dt.getUTCMonth()!==m-1)break;if(dt.getUTCDay()===6){const su=new Date(Date.UTC(y,m-1,d+1));if(su.getUTCMonth()===m-1)r.push(dt)}}return r}
-function contestDate(c,y){const w=fullWeekends(y,c.month);return c.wk==="last"?w[w.length-1]:c.wk==="first"?w[0]:c.wk==="third"?w[2]:w[1]}
+function contestDate(c,y){const w=fullWeekends(y,c.month);return c.wk==="penult"?w[w.length-2]:c.wk==="last"?w[w.length-1]:c.wk==="first"?w[0]:c.wk==="third"?w[2]:w[1]}
 function nextDate(c){const n=new Date();let d=contestDate(c,n.getUTCFullYear());if(d.getTime()+2*864e5<n.getTime())d=contestDate(c,n.getUTCFullYear()+1);return d}
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const fdate=d=>d.getUTCDate()+" de "+MESES[d.getUTCMonth()]+" de "+d.getUTCFullYear();
@@ -2162,7 +2164,7 @@ const CAL=[["ARRL RTTY Roundup","RTTY",1,1,"18:00 sáb – 23:59 dom"],["CQ WW 1
  ["EU HF Championship","CW/SSB",8,1,"12:00–23:59 sáb (solo el sábado)",2],["WAE DX CW","CW",8,2,"00:00 sáb – 23:59 dom",0,"waecw"],["YO DX HF","CW/SSB",8,-1,"12:00 sáb – 11:59 dom"],["WW Digi DX","FT4/FT8",8,-1,"12:00 sáb – 12:00 dom"],
  ["All Asian DX Phone","SSB",9,1,"00:00 sáb – 24:00 dom"],["WAE DX SSB","SSB",9,2,"00:00 sáb – 23:59 dom",0,"wae"],["SAC CW (Escandinavia)","CW",9,3,"12:00 sáb – 12:00 dom"],["CQ WW RTTY","RTTY",9,-1,"00:00 sáb – 24:00 dom",0,"cqwwrtty"],
  ["Oceania DX Phone","SSB",10,1,"06:00 sáb – 06:00 dom"],["Oceania DX CW","CW",10,2,"06:00 sáb – 06:00 dom"],["SAC SSB (Escandinavia)","SSB",10,2,"12:00 sáb – 12:00 dom"],["WAG (DARC)","CW/SSB",10,3,"15:00 sáb – 14:59 dom"],["CQ WW DX SSB","SSB",10,-1,"00:00 sáb – 24:00 dom",0,"cqww"],
- ["WAE DX RTTY","RTTY",11,2,"00:00 sáb – 23:59 dom"],["JIDX Phone","SSB",11,2,"07:00 sáb – 13:00 dom"],["OK/OM DX CW","CW",11,2,"12:00 sáb – 12:00 dom"],["LZ DX","CW/SSB",11,-2,"12:00 sáb – 12:00 dom"],["CQ WW DX CW","CW",11,-1,"00:00 sáb – 24:00 dom",0,"cqwwcw"],
+ ["WAE DX RTTY","RTTY",11,2,"00:00 sáb – 23:59 dom"],["JIDX Phone","SSB",11,2,"07:00 sáb – 13:00 dom"],["OK/OM DX CW","CW",11,2,"12:00 sáb – 12:00 dom"],["LZ DX","CW/SSB",11,-2,"12:00 sáb – 12:00 dom",0,"lzdx"],["CQ WW DX CW","CW",11,-1,"00:00 sáb – 24:00 dom",0,"cqwwcw"],
  ["ARRL 160 m","CW",12,1,"22:00 vie – 16:00 dom",1],["ARRL 10 m","CW/SSB",12,2,"00:00 sáb – 23:59 dom",0,"arrl10"]];
 function calDate(y,m,n){const sats=[];for(let d=1;d<=31;d++){const x=new Date(Date.UTC(y,m-1,d));if(x.getUTCMonth()!==m-1)break;if(x.getUTCDay()===6){const s=new Date(Date.UTC(y,m-1,d+1));if(s.getUTCMonth()===m-1)sats.push(x)}}return n<0?sats[sats.length+n]:sats[n-1]}
 function calNext(c){const now=new Date();for(const y of [now.getUTCFullYear(),now.getUTCFullYear()+1]){const sat=calDate(y,c[2],c[3]);if(!sat)continue;const st=new Date(sat.getTime()-(c[5]===1?864e5:0)),en=new Date(sat.getTime()+(c[5]===2?1:2)*864e5);if(en>now)return {st,sat,en}}return null}
