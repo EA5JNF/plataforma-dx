@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.12 · 21/11/2026
+- «Sol y propagación ahora» pasa arriba del todo en Ahora y en Sol, antes de las pestañas (deja de estar en el Resumen). Plegado, ya dice flujo solar, Kp y qué bandas van bien de día; desplegado, tres columnas al estilo de los paneles clásicos (Sol y campo magnético, VHF y superiores, HF para tu estación) y cada dato con una frase sencilla que explica qué significa. Con las fuentes de la plataforma. En español e inglés.
+/ “Sun and propagation now” panel at the top of Now and Sun, with plain-language meaning for each value.
+
 ## 2.10.11 · 21/11/2026
 - Nuevo desplegable «Estado solar-terrestre», al final del Resumen y al principio de Sol › Hoy, con nuestro estilo y nuestras fuentes. Sol y geomagnetismo (flujo, manchas, A, Kp, rayos X, viento solar, Bz, protones, aurora, llamaradas, estado del campo y ruido geomagnético orientativo), VHF (aurora, esporádica E en 6 y 2 m, tropo, meteoros y rebote lunar, del panel de aperturas especiales) y HF de día y de noche por pares de bandas, calculado para tu estación. En español e inglés.
 / New “Solar-terrestrial status” panel in Summary and Sun, built from the platform's own sources and model.
