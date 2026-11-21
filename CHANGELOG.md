@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.39 — 2026-11-21
+
+- ES: Concursos › Ritmo: los QSO por hora se ven en casillas con la hora, el ritmo y la banda, sin números montados: 24 en una fila en el ordenador, 12 por fila en tableta y móvil y 8 en pantallas muy estrechas. La hora actual se marca y las horas de pausa se atenúan.
+- ES: Vista de lista: lo que se despliega al tocar una fila se ordena en fichas que aprovechan el ancho (quién la oye, rumbo, distancia y señal prevista), en vez de una columna estrecha. El comentario solo aparece si tiene texto, porque las etiquetas ya se ven en la fila.
+- EN: Contests › Rate: QSOs per hour are shown in boxes with the hour, rate and band, with no overlapping numbers: 24 in a row on a computer, 12 per row on tablets and phones and 8 on very narrow screens. The current hour is marked and break hours are dimmed.
+- EN: List view: what expands when you tap a row is arranged in cards that use the full width (heard by, bearing, distance and expected signal) instead of a narrow column. The comment only appears when it has text, because the tags are already shown in the row.
+
 ## 2.10.38 — 2026-11-21
 
 - ES: Notificaciones más fiables: se espera a que el service worker esté activo antes de enviarlas (antes, si aún no lo estaba, en el iPhone, el iPad y Android fallaban en silencio). Un aviso solo se da por notificado si la notificación sale de verdad, y se recuerda 6 horas en lugar de para siempre: una estación que vuelve otro día vuelve a avisar. Al volver a la plataforma se comprueba enseguida lo pendiente.

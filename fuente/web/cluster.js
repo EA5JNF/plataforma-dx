@@ -151,7 +151,9 @@ function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
     `<span class="l-p">${o.p!=null?`<b>${o.p}</b>%`:""}</span>`+
     `<span class="l-oh">${oh}</span>`+
     `<span class="l-x" aria-hidden="true"></span>`+
-    `<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec(T("Comentario","Comment"),com?`<span class="l-cfull">${com}</span>`:"")}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>`+
+    /* 2.10.39: lo desplegado, en fichas que llenan el ancho (antes una columna estrecha); el comentario solo si hay texto
+       libre, porque las etiquetas ya se ven en la fila */
+    `<div class="sc-d ld">${[[o.byLbl||T("Le oyen","Heard by"),o.by],[T("Comentario","Comment"),(o.xs||o.note)?`<span class="l-cfull">${o.xs?`<span class="l-ct">${o.xs}</span>`:""}${o.note?`<span class="l-ct">${e2(o.note)}</span>`:""}</span>`:""],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist]].concat(o.secs||[]).filter(([,v])=>v).map(([l,v])=>`<div class="ldi"><span class="ldl">${l}</span><div class="ldv">${v}</div></div>`).join("")}</div>`+
     (oh?`<div class="l-ohx">${oh}</div>`:"")+`</div>`}
 window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-age">${T("Hace","Ago")}</span><span class="l-f">${T("Frec.","Freq.")}</span><span class="l-m">${T("Modo","Mode")}</span><span class="l-b">${T("Banda","Band")}</span><span class="l-call">DX</span><span class="l-cty">${T("País","Country")}</span><span class="l-tags">${T("Comentario","Comment")}</span><span class="l-by">${T("Le oyen","Heard by")}</span><span class="l-az">${T("Rumbo","Bearing")}</span><span class="l-km">km</span><span class="l-p">QSO</span><span class="l-oh"></span><span class="l-x"></span></div>`;
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:

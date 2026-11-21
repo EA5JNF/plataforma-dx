@@ -1485,3 +1485,24 @@ ul.ctul li.ctnote{padding-left:0;margin-top:10px;font-style:italic}
 html.vc .ctcat{padding:6px 8px;gap:6px 10px}html.vc .ctcat .ctseg button{min-height:32px;padding:.35em .6em}
 @media (pointer:coarse){.ctcat .ctseg button{min-height:42px}}
 @media (max-width:420px){.ctcat{grid-template-columns:1fr}.ctcat .ctl{margin-bottom:-4px}}
+/* 2.10.39: QSO por hora del concurso: cada hora en su casilla con hora, ritmo y banda; 24 en una fila si caben,
+   12 por fila en tableta y móvil y 8 por fila en pantallas muy estrechas. Las horas de pausa se atenúan. */
+.crate{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:3px;margin-top:10px;container-type:inline-size}
+.crate .crh{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 0 5px;border-radius:5px;background:var(--bc);color:#06101c;min-width:0;font-variant-numeric:tabular-nums;line-height:1.1}
+.crate .crh .h{font:600 .66rem var(--f-m,monospace);opacity:.75}
+.crate .crh b{font:700 .95rem var(--f-m,monospace)}
+.crate .crh .bd{font:600 .62rem var(--f-m,monospace);opacity:.8;white-space:nowrap}
+.crate .crh.off{opacity:.3}
+.crate .crh.now{outline:2px solid var(--fg);outline-offset:1px}
+@media (max-width:1100px){.crate{grid-template-columns:repeat(12,minmax(0,1fr));gap:4px}.crate .crh b{font-size:1rem}.crate .crh .h{font-size:.7rem}.crate .crh .bd{font-size:.66rem}}
+@media (max-width:400px){.crate{grid-template-columns:repeat(8,minmax(0,1fr))}}
+html.vc .crate .crh{padding:2px 0 3px}
+/* 2.10.39: lo desplegado de cada fila de la lista, en fichas que aprovechan el ancho */
+.scl .sc-d.ld{display:none;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px 22px;align-items:start;margin:8px 0 6px;padding:12px 14px;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;background:color-mix(in srgb,var(--fg) 4.5%,transparent);cursor:default}
+.scl.scx .sc-d.ld{display:grid}
+.scl .ld .ldi{min-width:0}
+.scl .ld .ldl{display:block;margin-bottom:4px;font:600 .68rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.scl .ld .ldv{font-size:.92rem;line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+.scl .ld .ldv .nw{white-space:nowrap}
+.scl .ld .ldv .sc-sep{margin:0 4px}
+@container (max-width:560px){.scl .sc-d.ld{grid-template-columns:1fr 1fr;gap:10px 14px;padding:10px 12px}.scl .ld .ldi:has(.smtr,.sgl,[class*="sig"]){grid-column:1/-1}}
