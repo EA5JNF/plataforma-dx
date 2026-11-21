@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.23 — 2026-11-21
+
+- ES: El tema claro cambia el resalte marrón por pizarra (azul grisáceo): botones y pestañas elegidos, títulos, enlaces, bordes y el botón Actualizar. No se confunde con los colores de las bandas ni con el verde, ámbar y rojo de los estados. El tema oscuro no cambia.
+- EN: The light theme replaces the brown highlight with slate (greyish blue): selected buttons and tabs, headings, links, borders and the Update button. It does not clash with the band colours or the green, amber and red of the statuses. The dark theme is unchanged.
+
 ## 2.10.22 — 2026-11-21
 
 - ES: Concurso en marcha: con el calendario de la plataforma, a la hora exacta de sus bases, sale arriba en todas las secciones un aviso con el concurso, su modo y cuándo termina, y otro al principio de Concursos con sus reglas. Si la plataforma tiene sus reglas, se pone sola en modo concursos con ese concurso (bandas, puntos, multiplicadores y estrategia en directo); «Volver a modo DX» lo respeta hasta el siguiente y, al terminar, vuelve sola a modo DX. Con las notificaciones activadas, avisa una vez por concurso.

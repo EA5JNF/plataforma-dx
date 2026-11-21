@@ -44,7 +44,7 @@ a.btn{color:var(--fg)}
 :root[data-theme="light"] .chip.y,:root[data-theme="light"] .pill.y{color:#7a4a00}
 :root[data-theme="light"] .chip.r,:root[data-theme="light"] .pill.r{color:#9b1c1c}
 :root[data-theme="light"] .clamp{-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
-:root[data-theme="light"] .seg button[aria-pressed="true"]{background:#fff3e3;color:#7a3f00;border-color:var(--accent)}
+:root[data-theme="light"] .seg button[aria-pressed="true"]{background:#e9eef5;color:#1d3350;border-color:var(--accent)}
 :root[data-theme="light"] .grp button[aria-pressed="true"]{color:#fff}
 :root[data-theme="light"] .modes button[aria-pressed="true"]{color:#fff}
 :root[data-theme="light"] svg text{stroke:#ffffff!important;stroke-opacity:.9}
@@ -218,7 +218,7 @@ html.bigz .wrap{max-width:96%!important}
 .mopts.off .msub{opacity:1!important}
 .mopts.off .msub .seg button:not([aria-pressed="true"]),.mopts.off .msub .segl{opacity:.45}
 .tabs .tab[aria-selected="true"]{background:#1e2733;border-color:var(--accent);color:var(--fg);box-shadow:none}
-:root[data-theme="light"] .tabs .tab[aria-selected="true"]{background:#fff3e3;border-color:var(--accent);color:#7a3f00}
+:root[data-theme="light"] .tabs .tab[aria-selected="true"]{background:#e9eef5;border-color:var(--accent);color:#1d3350}
 /* 2.1.10: tarjetas de spots alineadas igual en toda la plataforma
    fila 1: frecuencia + modo | indicativo · bandera · país ............ hace X min
    fila 2: etiquetas (NUEVO, en N clústeres, POTA/SOTA/WWFF) bajo el indicativo
@@ -611,7 +611,8 @@ details.glosw #glos li{break-inside:avoid;margin:0 0 8px}
 .glt>span.mc{overflow-wrap:normal}
 .privn{margin:6px auto 0;max-width:760px;font-size:.8rem;color:var(--muted)}
 /* 2.5.0: accesibilidad: textos secundarios, etiquetas y color de acento con contraste suficiente (WCAG AA) en los dos temas */
-html[data-theme="light"],:root[data-theme="light"]{--dim:#56657a;--accent:#9a520a}
+/* 2.10.23: resalte del tema claro en pizarra (antes marrón) */
+html[data-theme="light"],:root[data-theme="light"]{--dim:#56657a;--accent:#2f4a6b}
 html[data-theme="dark"],:root[data-theme="dark"]{--dim:#8b9db0}
 .sc.old{opacity:.8}
 html[data-theme="dark"] .hb>i{filter:brightness(1.9) saturate(1.1)}
@@ -765,7 +766,7 @@ html[data-theme="light"] .issg :is(.issico,.satico):hover .sathit{fill:rgba(0,0,
 .issg :is(.issico,.satico) :is(.ip,.ib,.it){vector-effect:non-scaling-stroke}
 .issg :is(.issico,.satico):is(:hover,:focus-visible) .satbg{stroke-width:2.6}
 html[data-theme="light"] .issg .satbg{fill:rgba(255,255,255,.94)}
-html[data-theme="light"] .issg .issico .satbg{stroke:#9a520a}
+html[data-theme="light"] .issg .issico .satbg{stroke:#2f4a6b}
 html[data-theme="light"] .issg .satico .satbg{stroke:#0369a1}
 html[data-theme="light"] .issg .satico.on .satbg{stroke:#15803d}
 html[data-theme="light"] .issg .issico .ib,html[data-theme="light"] .issg .satico .ib{fill:#ffffff;stroke:#1e293b}
@@ -1313,3 +1314,5 @@ html.vc .sc.ohc.scx .sc-h .sc-age::after{content:" ▴"}
 .ctnowc{margin:0 0 12px}.ctnowc .note{margin:6px 0 0}
 html.vc .ctnowbn>span:not(.ctm){display:none}
 .ctnowbn .lnk{margin-right:12px}
+:root[data-theme="light"] .ptabs button[aria-selected="true"]{background:#e9eef5!important;color:#1d3350!important;box-shadow:inset 0 0 0 1px rgba(47,74,107,.35),0 1px 2px rgba(0,0,0,.12)!important}
+:root[data-theme="light"] section[data-pg="dx"] .cs[data-call]{text-decoration-color:rgba(47,74,107,.55)}
