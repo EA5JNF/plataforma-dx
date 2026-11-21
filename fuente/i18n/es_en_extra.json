@@ -408,5 +408,21 @@
 "Desde EA: cada QSO con Bulgaria da 10 puntos, otro continente 3 y Europa 1. Envías RS o RST y tu zona ITU, 37 en la Península, y las estaciones LZ envían su distrito. Puedes trabajar a cada estación una vez en CW y otra en SSB en cada banda, pero zona y distrito cuentan una sola vez por banda. Sin 160 m. Bulgaria va dentro del destino Balcanes del mapa, así que el cálculo la cuenta como Europa: cada LZ que trabajes vale más de lo que dice la estimación. Los multiplicadores se estiman con las zonas CQ, parecidas pero no iguales a las ITU.": "From EA: each QSO with Bulgaria gives 10 points, another continent 3 and Europe 1. You send RS or RST and your ITU zone, 37 on the Iberian Peninsula, and LZ stations send their district. You may work each station once on CW and once on SSB on each band, but zone and district count only once per band. No 160 m. Bulgaria is inside the map’s Balkans destination, so the calculation counts it as Europe: each LZ you work is worth more than the estimate says. Multipliers are estimated with CQ zones, similar to but not the same as ITU zones.",
 "zonas ITU y los 28 distritos de Bulgaria, por banda, sea cual sea el modo": "ITU zones and the 28 districts of Bulgaria, per band, whatever the mode",
 "Multiplicadores": "Multipliers",
-"◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA u otros": "◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA or other"
+"◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA u otros": "◆ DX · ▲ POTA, SOTA, WWFF, IOTA, LLOTA or other",
+"Altura de la Hex Beam o directiva de 2 elementos": "Height of the Hex Beam or 2-element beam",
+"Hex Beam": "Hex Beam",
+"Hex Beam de 6 bandas": "6-band Hex Beam",
+"Directiva de 2 elementos: Moxon o similar": "2-element beam: Moxon or similar",
+"Hex Beam de 6 bandas para 20, 17, 15, 12, 10 y 6 m: unos 5,6 dBi en espacio libre, cerca de 3,5 dBd, ligera y con buen rechazo trasero": "6-band Hex Beam for 20, 17, 15, 12, 10 and 6 m: about 5.6 dBi in free space, close to 3.5 dBd, light and with good front-to-back",
+"Actividad en España": "Activity in Spain",
+": todo lo que no es España.": ": everything that is not Spain.",
+"todo lo que no es España.": "everything that is not Spain.",
+"Loop magnético Ciro Mazzoni Baby Loop": "Ciro Mazzoni Baby Loop magnetic loop",
+"Loop magnético Ciro Mazzoni Midi Loop": "Ciro Mazzoni Midi Loop magnetic loop",
+"Baby Loop": "Baby Loop",
+"Midi Loop": "Midi Loop",
+"loop magnético Ciro Mazzoni Baby Loop: 1 m de diámetro, tubo de aluminio de 50 mm, de 40 a 10 m sin huecos, hasta 250 W, montado a unos 3 m": "Ciro Mazzoni Baby Loop magnetic loop: 1 m diameter, 50 mm aluminium tube, 40 to 10 m with no gaps, up to 250 W, mounted at about 3 m",
+"frente a una λ/4 completa, unos 10 dB menos en 40 m, 3 dB menos en 20 m y 1 dB menos en 10 m": "compared with a full λ/4, about 10 dB less on 40 m, 3 dB less on 20 m and 1 dB less on 10 m",
+"loop magnético Ciro Mazzoni Midi Loop: 2 m de diámetro, tubo de aluminio de 75 mm, de 80 a 20 m sin huecos, 300 W hasta 8 MHz y 800 W por encima, montado a 2,5–3,5 m": "Ciro Mazzoni Midi Loop magnetic loop: 2 m diameter, 75 mm aluminium tube, 80 to 20 m with no gaps, 300 W up to 8 MHz and 800 W above, mounted at 2.5–3.5 m",
+"frente a una λ/4 completa, unos 9,5 dB menos en 80 m, 3 dB menos en 40 m y 1 dB menos en 20 m": "compared with a full λ/4, about 9.5 dB less on 80 m, 3 dB less on 40 m and 1 dB less on 20 m"
 }

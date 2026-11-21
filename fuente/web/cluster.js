@@ -359,7 +359,7 @@ function nearRow(s,a){const st=splitTags(s);const tags=[];if(s.nw)tags.push(`<sp
   return card({...PC(s,a),call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),old:a>60})}
 function renderNear(){const box=$("near");if(!box||typeof SPOTS!=="function")return;const keep=[...box.children].filter(x=>x.matches&&x.matches("p.note"));
   const nr=SPOTS().filter(s=>spotKind(s)==="near").map(s=>({s,a:spotAge(s)})).sort((x,y)=>(x.a??1e9)-(y.a??1e9));
-  box.innerHTML=(nr.length?nr.map(({s,a})=>nearRow(s,a)).join(""):`<div class="empty">${T(`Sin spots cercanos de ${CMSTXT()} ahora.`,`No nearby ${CMSTXT()} spots right now.`)}</div>`);keep.forEach(k=>box.appendChild(k))}
+  box.innerHTML=(nr.length?nr.map(({s,a})=>nearRow(s,a)).join(""):`<div class="empty">${T(`Sin spots de España en ${CMSTXT()} ahora.`,`No spots from Spain in ${CMSTXT()} right now.`)}</div>`);keep.forEach(k=>box.appendChild(k))}
 
 /* ---------- clúster ---------- */
 let LH=null;let CLALL=false,CLOPEN=false;try{CLALL=localStorage.getItem("acracb_clall")==="1"}catch(_){}
@@ -414,7 +414,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     /* 2.10.24: de dónde salen (y por qué faltan) los DX: el recuento de todos los spots del clúster */
     try{const all=L.spots||[];let oM=0,oB=0,ac=0,nr=0,dx0=0;const bsx=CMBANDS(),ms=CMS();
       for(const z of all){if(isActSpot(z)){ac++;continue}if(!ms.includes(spotMode(z))){oM++;continue}if(!bsx.has(z.band)||!inB(z.band)){oB++;continue}const k=spotKind(z);if(k!=="dx"&&k!=="ind"){nr++;continue}dx0++}
-      const bits=[T(`<b>${dx0}</b> DX con tu modo y tus bandas`,`<b>${dx0}</b> DX in your mode and bands`)];if(oM)bits.push(T(`${oM} de otros modos`,`${oM} in other modes`));if(oB)bits.push(T(`${oB} de otras bandas`,`${oB} on other bands`));if(ac)bits.push(T(`${ac} activaciones (POTA, SOTA…)`,`${ac} activations (POTA, SOTA…)`));if(nr)bits.push(T(`${nr} cercanos o de VHF`,`${nr} nearby or VHF`));
+      const bits=[T(`<b>${dx0}</b> DX con tu modo y tus bandas`,`<b>${dx0}</b> DX in your mode and bands`)];if(oM)bits.push(T(`${oM} de otros modos`,`${oM} in other modes`));if(oB)bits.push(T(`${oB} de otras bandas`,`${oB} on other bands`));if(ac)bits.push(T(`${ac} activaciones (POTA, SOTA…)`,`${ac} activations (POTA, SOTA…)`));if(nr)bits.push(T(`${nr} de España`,`${nr} from Spain`));
       h+=`<p class="note clwhy">${T(`De los ${all.length} spots del clúster`,`Of the ${all.length} cluster spots`)}: ${bits.join(" · ")}.${st.mode==="contest"?" "+T("En modo concursos «Para ti» pide más señal, porque tienen que copiarte a la primera.","In contest mode «For you» asks for a stronger signal, because they must copy you first time."):""}</p>`}catch(_){}
     /* 2.8.20: una fila por estación (sus otras frecuencias al lado), por defecto solo lo que puedes trabajar
        (oída en la última media hora y con al menos un 10 %), lo nuevo arriba y pocas filas con «Ver N más» */

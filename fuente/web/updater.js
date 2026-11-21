@@ -88,7 +88,8 @@ const DPOS={21:[2.9,39.6],29:[-15.5,28.2],32:[-5.3,35.9],149:[-27,38.5],256:[-16
 function ent(call){try{const e=callEnt(call);if(!e||e.mm||!e.dxcc)return null;const t=tgm()[e.dxcc];let cont=t?t.cont:(EUCC.has(e.cc)?"EU":({MA:"AF",DZ:"AF",TN:"AF",LY:"AF",EG:"AF",IL:"AS"})[e.cc]||null);
   const pos=t?t.pos:(DPOS[e.dxcc]||CPOS[e.cc]||null);
   if(e.dxcc===54||e.dxcc===15)cont=e.dxcc===54?"EU":"AS";return {dxcc:e.dxcc,cc:e.cc,cont,pos,name:e.name}}catch(x){return null}}
-const NEARDX=new Set([281,21,29,32,149,256,272,203,233,446]);
+/* 2.10.28: «cercano» es solo España peninsular (DXCC 281); todo lo demás es DX */
+const NEARDX=new Set([281]);
 const clean=c=>String(c||"").toUpperCase().trim().replace(/-\d+(-#)?$|-#$/,"").replace(/[^A-Z0-9/]/g,"");
 
 /* ---------------- modo por la frecuencia (plan IARU Región 1) ---------------- */
@@ -308,8 +309,8 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     else if(g.band>=10){const d=far();if(!d.length||Math.max(...d)<300)continue;kind="vhf"}
     /* 2.10.27: un DX fuera de Europa entra aunque no lo haya anunciado un europeo (antes se descartaba y el clúster de la
        plataforma enseñaba muchos menos DX que los clústeres); si lo oyen en Europa queda marcado (eu) y pesa más en «Para ti» */
-    else if(cont&&cont!=="EU"){kind="dx"}
-    else{const d=far();if(!d.length||Math.max(...d)<2500)continue;kind="ind"}
+    /* 2.10.28: todo lo que no es España (281) es DX, también el resto de Europa, Baleares, Canarias, Ceuta y Melilla */
+    else kind="dx";
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
     if(g.skim&&[...g.srcs].every(x=>x==="RBN"||x==="PSK Reporter"))note.push(g.srcs.has("RBN")?"oído por skimmer (RBN)":"decodificado (PSK Reporter)");
@@ -323,7 +324,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
   spots.sort((a,b)=>b._t-a._t);
   /* 2.10.27: tope por tipo de modo (fonía, CW y digitales, 150 cada uno) en vez de 150 en total: los skimmers de CW y FT8
      llenaban el tope y dejaban fuera casi toda la fonía */
-  {const cnt={},grp=x=>{const m=String(x.mode||"").toUpperCase();return m==="CW"?"cw":/^(SSB|USB|LSB|AM|FM|PHONE|DV)$/.test(m)?"ph":"dg"};spots=spots.filter(x=>{const g=grp(x);cnt[g]=(cnt[g]||0)+1;return cnt[g]<=150})}
+  {const CAP=250,cnt={},grp=x=>{const m=String(x.mode||"").toUpperCase();return m==="CW"?"cw":/^(SSB|USB|LSB|AM|FM|PHONE|DV)$/.test(m)?"ph":"dg"};spots=spots.filter(x=>{const g=grp(x);cnt[g]=(cnt[g]||0)+1;return cnt[g]<=CAP})}
   /* 2.10.15: «nuevos» y «confirmados» se cuentan entre los spots que se muestran, no entre todos los recibidos (antes salía «150 spots (664 nuevos)») */
   nn=spots.filter(x=>x.nw).length;cf=spots.filter(x=>(+x.ns||1)>1).length;
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);

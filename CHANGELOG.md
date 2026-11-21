@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.28 — 2026-11-21
+
+- ES: DX es todo lo que no es España, en toda la plataforma: clúster, mapa, avisos, «Qué hacer», previsión y modo DX. Baleares, Canarias, Ceuta y Melilla cuentan como DX porque son entidades DXCC propias. La pestaña «Cerca» pasa a ser «Actividad en España». El tope de spots sube a 250 por tipo de modo.
+- ES: Nuevas antenas: Hex Beam de 6 bandas (20–6 m), y los loops magnéticos Ciro Mazzoni Baby Loop (40–10 m, 1 m, tubo de 50 mm) y Midi Loop (80–20 m, 2 m, tubo de 75 mm), con su rendimiento banda a banda calculado con la física del loop pequeño. La antigua «Hex Beam o Moxon» pasa a «Moxon o similar».
+- EN: DX is everything that is not Spain, across the platform: cluster, map, alerts, "What to do", forecast and DX mode. The Balearic and Canary Islands, Ceuta and Melilla count as DX because they are DXCC entities of their own. The "Nearby" tab becomes "Activity in Spain". The spot cap rises to 250 per mode type.
+- EN: New antennas: 6-band Hex Beam (20–6 m), and the Ciro Mazzoni Baby Loop (40–10 m, 1 m, 50 mm tube) and Midi Loop (80–20 m, 2 m, 75 mm tube) magnetic loops, with band-by-band performance calculated from small-loop physics. The former "Hex Beam or Moxon" becomes "Moxon or similar".
+
 ## 2.10.27 — 2026-11-21
 
 - ES: Muchos más DX en toda la plataforma (clúster, mapa, avisos y «Qué hacer»), sobre todo en fonía: 1) los DX de fuera de Europa entran aunque no los haya anunciado un europeo (antes se descartaban); los oídos en Europa siguen pesando más en «Para ti»; 2) el tope de spots es de 150 por tipo de modo (fonía, CW y digitales) en vez de 150 en total, porque los skimmers de CW y FT8 llenaban el tope y dejaban fuera casi toda la SSB.
