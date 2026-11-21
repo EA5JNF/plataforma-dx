@@ -1238,3 +1238,4 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
  .sline>.ssum{grid-column:1/-1;order:1;-webkit-line-clamp:3!important}
  .sline>.stbtn{order:2;width:100%;justify-content:center;min-height:44px;margin:0!important}
 }
+.gtkv .chip.lv-g .v{color:#22c55e}.gtkv .chip.lv-r .v{color:#ef4444}.gtkv .chip.lv-y .v{color:#d6a10a}

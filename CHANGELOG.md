@@ -5,6 +5,10 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.10 · 21/11/2026
+- Nueva fuente: GloTEC de NOAA SWPC (gratuita, sin registro). En Ahora › Tu QTH, «Ionosfera medida sobre tu QTH»: foF2 sobre tu estación, MUF estimada para saltos de 3.000 km, TEC y comparación con los últimos 30 días. Se descarga solo al abrir el panel y se guarda 15 minutos. Añadida a los créditos. En español e inglés.
+/ New source: NOAA SWPC GloTEC — ionosphere measured over your QTH (foF2, estimated MUF, TEC and 30-day anomaly).
+
 ## 2.10.9 · 17/11/2026
 - V-UHF: «Esporádica E ahora» deja de quedar suelto al final de la sección y pasa al principio de su desplegable, «Esporádica E: mapa y previsión». En español e inglés.
 / V-UHF: “Sporadic E now” moved into its own panel.

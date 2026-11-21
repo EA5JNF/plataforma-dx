@@ -393,5 +393,7 @@
 "Color de los puntos": "Dot color",
 "Mapa de las balizas NCDXF": "Map of the NCDXF beacons",
 "Estrategia en directo": "Live strategy",
-"En directo": "Live"
+"En directo": "Live",
+"), ionosfera sobre tu QTH con el modelo ": "), ionosphere over your QTH from the ",
+" (TEC, foF2 y altura de la capa F2) y ciclo solar observado y previsto.": " model (TEC, foF2 and F2-layer height) and the observed and predicted solar cycle."
 }
