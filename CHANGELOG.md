@@ -5,6 +5,21 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.34 — 2026-11-21
+
+- ES: Actualización más rápida: los datos se pintan en unos 4,5 s como mucho con todo lo que haya llegado, en vez de esperar a la fuente más lenta (hasta 21 s). Las fuentes lentas siguen buscando por detrás y se añaden solas al llegar, sin volver a pedir nada; la línea de estado dice cuántas faltan.
+- ES: La estación, a un toque: en la línea de la estación, el modo, la banda, la potencia y la antena se cambian tocándolos, con el selector del propio móvil o tableta, sin abrir el panel entero. Lo demás sigue en «Editar estación».
+- ES: Avisos y notificaciones de DX raro, curioso y lejano: entidades raras (las 100 más buscadas de Club Log), indicativos curiosos (móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales) y DX a 15.000 km o más de tu estación, cada uno con su interruptor en DX › Avisos. Van después de lo que te falta en tu log y de las DXpediciones, y la notificación dice el motivo.
+- ES: Los avisos de concurso en marcha se pueden cerrar como los demás; no vuelven hasta el siguiente concurso y cerrarlos no cambia el modo.
+- ES: Coherencia: «Sol y propagación ahora» usa para la HF el mismo cálculo que Ahora › Resumen (destinos de tu modo con al menos un 30 % con tu estación), ahora, a las 13 h y a la 1 h, y la misma mejor banda.
+- ES: Corregido: en inglés, la línea de estado de la actualización salía a medio traducir.
+- EN: Faster update: data is shown within about 4.5 s with whatever has arrived, instead of waiting for the slowest source (up to 21 s). Slow sources keep searching in the background and are added automatically when they arrive, without requesting anything again; the status line says how many are still missing.
+- EN: One-tap station: on the station line, mode, band, power and antenna change by tapping them, with the phone's or tablet's own picker, without opening the whole panel. Everything else stays in "Edit station".
+- EN: Alerts and notifications for rare, unusual and far DX: rare entities (Club Log's 100 most wanted), unusual calls (maritime or aeronautical mobile, Antarctic bases and special event calls) and DX 15,000 km or more from your station, each with its own switch in DX › Alerts. They come after what your log is missing and DXpeditions, and the notification says why.
+- EN: Running-contest notices can be closed like the others; they do not come back until the next contest and closing them does not change the mode.
+- EN: Consistency: "Sun and propagation now" uses the same HF calculation as Now › Summary (destinations in your mode with at least a 30 % chance with your station), now, at 1 PM and at 1 AM, and the same best band.
+- EN: Fixed: in English, the update status line was half translated.
+
 ## 2.10.33 — 2026-11-21
 
 - ES: La vista de lista vale para todas las tarjetas de la plataforma (DXpediciones, satélites y cualquier otra): cada tarjeta pasa a ser una fila y lo secundario se despliega al tocarla.

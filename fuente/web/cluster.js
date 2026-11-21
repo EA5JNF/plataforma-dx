@@ -505,7 +505,7 @@ function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch
   {const bl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);let hb=null;try{hb=HB()}catch(_){}
    fb.innerHTML=`<p class="note alfn">${T("Modo y bandas","Mode and bands")}: <b>${e2(CMSTXT())}</b> · <b>${e2(hb!=null?BANDS[hb]:bl2.length?bl2.join(", "):T("todas las bandas","all bands"))}</b>. ${T("Son los mismos de tu estación, el clúster y el mapa: cámbialos en cualquiera de ellos.","Same as your station, the cluster and the map: change them in any of them.")}</p>`}
   const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{r.i=i;return r});
-  const kn=`<p class="note alk">${LOG?T("Por orden: entidad nueva para tu log, DXpedición, banda nueva y modo nuevo. Solo lo que puedes trabajar ahora, como en el clúster «Para ti».","In order: new entity for your log, DXpedition, new band and new mode. Only what you can work now, as in the cluster's «For you».") :T("DXpediciones y entidades raras que puedes trabajar ahora, como en el clúster «Para ti». Sube tu ADIF y te avisará también de lo que te falta.","DXpeditions and rare entities you can work now, as in the cluster's «For you». Upload your ADIF to be alerted to what you still need.")}</p>`;
+  const kn=`<p class="note alk">${LOG?T("Por orden: entidad nueva para tu log, DXpedición, banda nueva, modo nuevo y, después, lo raro, lo curioso y lo lejano que elijas aquí. Solo lo que puedes trabajar ahora, como en el clúster «Para ti».","In order: new entity for your log, DXpedition, new band, new mode and then the rare, unusual and far DX you choose here. Only what you can work now, as in the cluster's «For you».") :T("DXpediciones y, después, lo raro, lo curioso y lo lejano que elijas aquí, que puedes trabajar ahora, como en el clúster «Para ti». Sube tu ADIF y te avisará también de lo que te falta.","DXpeditions and then the rare, unusual and far DX you choose here that you can work now, as in the cluster's «For you». Upload your ADIF to be alerted to what you still need.")}</p>`+alXRow();
   wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});
     const tag=alTag(x);
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
@@ -522,6 +522,21 @@ function alHave(){try{const o=JSON.parse(localStorage.getItem(ALHK)||"{}"),n=Dat
 const mgOf=(mode,f)=>{const g=mgrp(mode,f);return g==="CW"?"CW":(g==="SSB"||g==="AM"||g==="FM")?"PH":"DG"};
 const MGN={CW:["CW","CW"],PH:["fonía","phone"],DG:["digital","digital"]};
 function dxpInfo(call){const k=SK(call);for(const d of (L.dx||[])){if(dxTok(d.call).includes(k))return d}return null}
+/* qué más avisa, aparte de tu log y las DXpediciones: entidades raras (las 100 más buscadas de Club Log), indicativos curiosos
+   (móvil marítimo o aeronáutico, bases en la Antártida, indicativos especiales) y DX lejano (a 15.000 km o más de tu estación) */
+const ALXK="acracb_alx",RAREN=100,FARKM=15000;
+function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:o.rare!==0,cur:o.cur!==0,far:o.far!==0}}
+function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
+  if(suf==="MM")return ["Móvil marítimo","Maritime mobile"];if(suf==="AM")return ["Móvil aeronáutico","Aeronautical mobile"];
+  if(+dxcc===13)return ["Base en la Antártida","Antarctic base"];
+  const core=p.reduce((a,x)=>x.length>a.length?x:a,"");
+  if(/\d{3,}/.test(core)||/^[A-Z]{2}\d{2,}[A-Z]/.test(core)||(core.length>=7&&/^[A-Z0-9]+$/.test(core)&&/\d/.test(core)))return ["Indicativo especial","Special event call"];
+  return null}
+function alXRow(){const X=alX(),b=(k,es,en,tl,tle)=>`<button type="button" class="btn alxb" data-alx="${k}" aria-pressed="${X[k]}" title="${e2(T(tl,tle))}">${T(es,en)}</button>`;
+  return `<div class="alxr"><span class="note">${T("Avisar también de","Also alert me to")}:</span>${b("rare","Entidades raras","Rare entities","Las 100 entidades más buscadas de Club Log","Club Log's 100 most wanted entities")}${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}</div>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alx]");if(!b)return;const X=alX(),k=b.dataset.alx;X[k]=!X[k];
+  try{localStorage.setItem(ALXK,JSON.stringify({rare:X.rare?1:0,cur:X.cur?1:0,far:X.far?1:0}))}catch(_){}
+  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}});
 function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st.mhour;
   const H=alHave(),mw=L.mwm||{};(L.dx||[]).forEach(d=>{if(d.mw&&d.dxcc&&!mw[d.dxcc])mw[d.dxcc]=d.mw});
   const best=new Map();
@@ -542,15 +557,19 @@ function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st
       else if(LOG.m&&mS!=="C"){rk=2;why=(mS?"Sin confirmar en ":"Modo nuevo: ")+MGN[mg][0];whyEn=(mS?"Not confirmed in ":"New mode: ")+MGN[mg][1];sub="mode"}
     }
     if(dp&&!dpDone&&rk<4){rk=4;if(!why){why="DXpedición";whyEn="DXpedition";sub="dxp"}}
-    if(!rk&&!LOG&&dxcc&&mw[dxcc]&&mw[dxcc]<=100){rk=1;why="DX posible · Most Wanted nº "+mw[dxcc];whyEn="Possible DX · Most Wanted #"+mw[dxcc];sub="rare"}
     if(!rk&&!LOG&&dp&&!dpDone){rk=4;why="DXpedición";whyEn="DXpedition";sub="dxp"}
+    /* 2.10.34: también lo raro, lo curioso y lo lejano, cada uno con su interruptor */
+    if(!rk){const X=alX(),km=e.km||0,cu=X.cur?curOf(s.call,dxcc):null;
+      if(X.rare&&dxcc&&mw[dxcc]&&mw[dxcc]<=RAREN){rk=1;why="Entidad rara · Most Wanted nº "+mw[dxcc];whyEn="Rare entity · Most Wanted #"+mw[dxcc];sub="rare"}
+      else if(cu){rk=1;why=cu[0];whyEn=cu[1];sub="cur"}
+      else if(X.far&&km>=FARKM){rk=1;why="DX lejano · "+km.toLocaleString("es-ES")+" km";whyEn="Far DX · "+km.toLocaleString("en-US")+" km";sub="far"}}
     if(!rk)continue;
     const it={call:s.call,f:s.f,band:s.band,mode:s.mode,t:s.t,by:s.by,c:s.c||"",need:sub==="dxp"?"DXpedición":why,why,whyEn,sub,rk,pp,dxp:!!(dp&&!dpDone),dxcc,ek,ck,end:dp&&dp.end||null};
     const k=SK(s.call),o=best.get(k);if(!o||rk>o.rk||(rk===o.rk&&pp>o.pp))best.set(k,it)}
   return [...best.values()].sort((a,b)=>b.rk-a.rk||(b.dxp-a.dxp)||b.pp-a.pp).slice(0,20)}
 window.ACRACB_buildAlerts=()=>{try{return buildAlerts()}catch(e){console.error(e);return null}};
 function alRefresh(){if(!L.alert)L.alert={at:L.spotsUTC||L.updatedUTC||new Date().toISOString(),items:[]};const it=window.ACRACB_buildAlerts();if(it)L.alert.items=it}
-function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":sub==="rare"?"xr":"xr allog";
+function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":(sub==="rare"||sub==="cur"||sub==="far")?"xr":"xr allog";
   const tx=x.why?T(x.why,x.whyEn||x.why):(sub==="dxp"?T("DXpedición","DXpedition"):T("entidad rara","rare entity"));
   return `<span class="xtag ${cls}">${e2(tx)}</span>`+(x.dxp&&sub!=="dxp"?`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`:"")}
 function alHaveBtn(x){return `<button type="button" class="alhave" data-alhave="${e2(SK(x.call))}">${T("Ya la tengo","Got it already")}</button>`}
@@ -592,7 +611,7 @@ function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;
   {const fa=$("f_al");if(typeof st!=="undefined"&&st.page==="dx"&&fa&&fa.getClientRects().length){el.hidden=true;return}}
   const shown=rows.slice(0,3);
   el.hidden=false;el.classList.add("albar2");
-  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc((x=>{try{return fmtT(x)}catch(e){const d=new Date(x);return isNaN(d)?"":d.toLocaleTimeString(T("es-ES","en-US"),{hour:"2-digit",minute:"2-digit"})}})(al.at))}</span></b><span class="alb"><span class="almw"><button type="button" class="almb" id="almb" aria-haspopup="menu" aria-expanded="false" title="${T("Silenciar avisos","Mute alerts")}">${BELL_OFF}<span>${T("Silenciar","Mute")}</span></button><span class="almenu" id="almenu" role="menu" hidden><button type="button" role="menuitem" data-mute="60">${T("1 hora","1 hour")}</button><button type="button" role="menuitem" data-mute="tom">${T("Hasta mañana a las 8:00","Until tomorrow 8:00")}</button><button type="button" role="menuitem" data-mute="inf">${T("Hasta que los reactive","Until I turn them back on")}</button></span></span><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div><p class="alsub">${T("Lo que puedes trabajar tú ahora y te interesa: lo que falta en tu log, DXpediciones y DX raro. Todo lo que se anuncia en el mundo está en DX › Clúster.","What you can work right now and is worth it: what your log is missing, DXpeditions and rare DX. Everything spotted worldwide is in DX › Cluster.")}</p>
+  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc((x=>{try{return fmtT(x)}catch(e){const d=new Date(x);return isNaN(d)?"":d.toLocaleTimeString(T("es-ES","en-US"),{hour:"2-digit",minute:"2-digit"})}})(al.at))}</span></b><span class="alb"><span class="almw"><button type="button" class="almb" id="almb" aria-haspopup="menu" aria-expanded="false" title="${T("Silenciar avisos","Mute alerts")}">${BELL_OFF}<span>${T("Silenciar","Mute")}</span></button><span class="almenu" id="almenu" role="menu" hidden><button type="button" role="menuitem" data-mute="60">${T("1 hora","1 hour")}</button><button type="button" role="menuitem" data-mute="tom">${T("Hasta mañana a las 8:00","Until tomorrow 8:00")}</button><button type="button" role="menuitem" data-mute="inf">${T("Hasta que los reactive","Until I turn them back on")}</button></span></span><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div><p class="alsub">${T("Lo que puedes trabajar tú ahora y te interesa: lo que falta en tu log, DXpediciones y DX raro, curioso o lejano. Todo lo que se anuncia en el mundo está en DX › Clúster.","What you can work right now and is worth it: what your log is missing, DXpeditions and rare, unusual or far DX. Everything spotted worldwide is in DX › Cluster.")}</p>
   <div class="alc">${shown.map(({x,sp,band,mode})=>{const stg=splitTags({c:cTr(x.c||sp.c||"")});
     const tag=alTag(x);let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return withHave(card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))}),x)}).join("")}</div>`;

@@ -350,9 +350,25 @@ const SLOW={"GFZ Hp30":10,"NOAA D-RAP":5,"HamQSL":10,"DRAO Penticton":30,"GFZ Po
  /* 2.4.6: más fuentes lentas que no hace falta pedir cada pocos minutos */
  "NOAA 3 días":30,"NOAA flujo":30,"NOAA manchas":60,"NOAA WWV":15,"NOAA aurora":10},MEMO={};
 for(const n in SLOW){if(!SRC[n])continue;const f=SRC[n];SRC[n]=async()=>{const m=MEMO[n];if(m&&Date.now()-m.t<SLOW[n]*6e4)return m.v;const v=await f();if(v!=null)MEMO[n]={t:Date.now(),v};return v}}
-async function updateAll(auto){if(BUSY)return;BUSY=true;const t0=Date.now();LASTRUN=t0;setBtn(true,auto);status(auto?"Actualización automática en curso…":"Buscando datos en todas las fuentes a la vez…","updst-run");
-  const run=async(tab,n)=>{const s=Date.now();try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"),ms:Date.now()-s,note:v&&v.__note||""};return [n,v]}catch(e){if(e&&e.nd){LAST[n]={ok:false,nd:true,ms:Date.now()-s,err:e.nd};return [n,null]}LAST[n]={ok:false,ms:Date.now()-s,err:e&&e.name==="AbortError"?"sin respuesta":/^HTTP \d+/.test(e&&e.message||"")?"respondió "+e.message.replace("HTTP ","error "):(e instanceof TypeError?"conexión rechazada":"datos no válidos")};return [n,null]}};
-  for(const k in LAST)delete LAST[k];
+/* 2.10.34: rapidez. Antes se esperaba a la fuente más lenta (hasta 21 s si había que pasar por el intermediario).
+   Ahora se pintan los datos a los DL ms con todo lo que haya llegado; las fuentes lentas siguen buscando por detrás y,
+   cuando terminan, se vuelve a montar todo sin pedir nada otra vez (con los resultados ya recibidos en esta vuelta).
+   Una fuente que aún sigue buscando de la vuelta anterior no se pide dos veces: se mantiene su último dato bueno. */
+const DL=4500,RES={},PEND={};let MERGEQ=false;
+function lateMerge(){if(MERGEQ)return;const ps=Object.values(PEND);if(!ps.length)return;MERGEQ=true;
+  Promise.allSettled(ps).then(()=>{const go=()=>{if(BUSY)return setTimeout(go,500);MERGEQ=false;updateAll(true,true)};go()})}
+async function updateAll(auto,merge){if(BUSY)return;BUSY=true;const t0=merge?LASTRUN:Date.now();if(!merge){LASTRUN=t0;setBtn(true,auto);status(auto?"Actualización automática en curso…":"Buscando datos en todas las fuentes a la vez…","updst-run")}
+  const dl=new Promise(ok=>setTimeout(ok,DL,RES));
+  const run=async(tab,n)=>{if(merge){const r=RES[n];return [n,r?r.v:null]}
+    if(PEND[n]){LAST[n]={ok:false,late:true,ms:0,err:"sigue buscando"};return [n,null]}
+    const s=Date.now();
+    const p=(async()=>{try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"),ms:Date.now()-s,note:v&&v.__note||""};RES[n]={v};return v}
+      catch(e){if(e&&e.nd)LAST[n]={ok:false,nd:true,ms:Date.now()-s,err:e.nd};else LAST[n]={ok:false,ms:Date.now()-s,err:e&&e.name==="AbortError"?"sin respuesta":/^HTTP \d+/.test(e&&e.message||"")?"respondió "+e.message.replace("HTTP ","error "):(e instanceof TypeError?"conexión rechazada":"datos no válidos")};RES[n]={v:null};return null}
+      finally{delete PEND[n]}})();
+    PEND[n]=p;const r=await Promise.race([p,dl]);
+    if(r===RES&&PEND[n]){LAST[n]={ok:false,late:true,ms:DL,err:"sigue buscando"};return [n,null]}
+    return [n,r===RES?null:r]};
+  if(!merge){for(const k in LAST)delete LAST[k];for(const k in RES)delete RES[k]}
   const [a,b]=await Promise.all([Promise.all(Object.keys(SRC).map(n=>run(SRC,n))),Promise.all(Object.keys(SP).map(n=>run(SP,n)))]);
   const R=Object.fromEntries(a),C=Object.fromEntries(b);
   const N=JSON.parse(JSON.stringify(L));delete N.alert;const vals={},add=(k,s,v)=>{if(v!=null&&v!=="")(vals[k]=vals[k]||[]).push([s,v])};
@@ -399,8 +415,11 @@ async function updateAll(auto){if(BUSY)return;BUSY=true;const t0=Date.now();LAST
   N.upd={at:iso(t0),ok:okn,tot,secs,src:Object.fromEntries(Object.entries(LAST).map(([k,v])=>[k,v.ok]))};
   N.mwm=mwm;try{applyLive(N)}catch(e){console.error(e)}L.mwm=mwm;let items2=null;try{items2=window.ACRACB_buildAlerts?ACRACB_buildAlerts():null}catch(e){}L.alert={at:iso(t0),items:items2||items};try{renderAlerts()}catch(e){}
   S.set(KEY,JSON.stringify(Object.assign({},N,{alert:L.alert})));
-  status(`${auto?"Actualización automática":"Actualizado"} a las ${hmLocal(t0)} en ${secs} s · ${okn} de ${tot} fuentes respondieron${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} nuevos)`:" · clúster sin respuesta"}`,okn?"updst-ok":"updst-err");
-  renderSrc();setBtn(false);BUSY=false;sched()}
+  const late=Object.values(LAST).filter(x=>x.late).length;
+  {const EN=window.ACRACB_LANG==="en",hm=hmLocal(merge?Date.now():t0);
+   status(EN?`${merge?"Completed with the slow sources":auto?"Automatic update":"Updated"} at ${hm}${merge?"":` in ${secs.replace(",",".")} s`} · ${okn} of ${tot} sources responded${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} new)`:" · cluster not responding"}${late?` · ${late} slow ${late===1?"source is still searching: it will be added when it arrives":"sources are still searching: they will be added when they arrive"}`:""}`
+     :`${merge?"Completado con las fuentes lentas":auto?"Actualización automática":"Actualizado"} a las ${hm}${merge?"":` en ${secs} s`} · ${okn} de ${tot} fuentes respondieron${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} nuevos)`:" · clúster sin respuesta"}${late?` · ${late} ${late===1?"fuente lenta sigue buscando: se añadirá al llegar":"fuentes lentas siguen buscando: se añadirán al llegar"}`:""}`,okn?"updst-ok":"updst-err")}
+  renderSrc();setBtn(false);BUSY=false;if(!merge)sched();lateMerge()}
 const hmLocal=t=>new Date(t).toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit"});
 
 /* ---------------- interfaz ---------------- */
@@ -408,7 +427,7 @@ function status(t,cl){const e=$("updst");if(!e)return;e.hidden=false;e.className
 function setBtn(on,auto){const b=$("updbtn");if(!b)return;b.hidden=false;b.disabled=on;b.classList.toggle("run",on);const x=b.querySelector(".tx");if(x)x.textContent=on?"Actualizando…":"Actualizar"}
 function renderSrc(){let d=$("srcrep");const st=$("updst");if(!st)return;if(!d){d=document.createElement("details");d.id="srcrep";d.className="mdet srcrep";st.insertAdjacentElement("afterend",d)}
   const e=Object.entries(LAST);if(!e.length){d.hidden=true;return}d.hidden=false;
-  d.innerHTML=`<summary>Fuentes de esta actualización</summary><div class="srcg">${e.sort((a,b)=>(b[1].ok-a[1].ok)||(!!b[1].nd-!!a[1].nd)||a[0].localeCompare(b[0],"es")).map(([n,v])=>`<span class="srci ${v.ok?"ok":v.nd?"nd":"ko"}"${v.nd?' title="La fuente responde, pero ahora no tiene datos útiles para tu zona"':""}>${v.ok?"✓":v.nd?"–":"✕"} ${n}<small>${v.ok?(v.cached?"dato reciente guardado":(v.ms/1000).toFixed(1).replace(".",",")+" s")+(v.note?" · "+v.note:""):v.err||"sin datos"}</small></span>`).join("")}</div><p class="note">Las marcadas con ✕ no dejan que una página las lea directamente o no respondieron: se mantiene su último dato bueno. Las marcadas con – responden, pero ahora no tienen datos para tu zona.</p>`}
+  d.innerHTML=`<summary>Fuentes de esta actualización</summary><div class="srcg">${e.sort((a,b)=>(b[1].ok-a[1].ok)||(!!b[1].nd-!!a[1].nd)||a[0].localeCompare(b[0],"es")).map(([n,v])=>`<span class="srci ${v.ok?"ok":v.nd||v.late?"nd":"ko"}"${v.nd?' title="La fuente responde, pero ahora no tiene datos útiles para tu zona"':""}>${v.ok?"✓":v.late?"…":v.nd?"–":"✕"} ${n}<small>${v.ok?(v.cached?"dato reciente guardado":(v.ms/1000).toFixed(1).replace(".",",")+" s")+(v.note?" · "+v.note:""):v.err||"sin datos"}</small></span>`).join("")}</div><p class="note">Las marcadas con ✕ no dejan que una página las lea directamente o no respondieron: se mantiene su último dato bueno. Las marcadas con – responden, pero ahora no tienen datos para tu zona.</p>`}
 function boot(){const b=$("updbtn");if(!b)return;b.hidden=false;b.disabled=false;b.onclick=()=>updateAll(false);const c=$("updcl");if(c)c.hidden=true;
   try{const c2=JSON.parse(S.get(KEY)||"null",SAFE);if(c2&&c2.updatedUTC&&(!L.updatedUTC||c2.updatedUTC>L.updatedUTC)){(c2.spots||[]).forEach(q=>{const pe=ent(q.call);if(pe&&q.dx&&!posOK(q.dx,pe)){q.dx=areaPos(q.call,pe)||q.dx;q.dxp=false}});const al=c2.alert;delete c2.alert;applyLive(c2);if(al){L.alert=al;renderAlerts()}}}catch(e){}
   const age=(Date.now()-(Date.parse(L.updatedUTC)||Date.now()))/6e4;

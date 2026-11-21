@@ -1377,3 +1377,26 @@ html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-h{justify-content:flex-start!impor
 html.vl :is(div,section):not(#zz1):not(#zz2):has(> .sc){display:block!important;columns:auto!important;grid-template-columns:none!important}
 html.vl .sc:not(.scl):not(#zz1):not(#zz2)>*{justify-content:flex-start!important;text-align:left!important;width:auto!important;max-width:none!important}html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-h{flex:0 1 auto!important}html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-f{flex:1 1 auto!important}
 html.vl .sc:not(.scl):not(#zz1):not(#zz2){flex-direction:row!important;align-items:center!important;flex-wrap:wrap!important}
+.st3h4{grid-template-columns:1fr 1.3fr 1.3fr 1.3fr!important}.st3h4>b{font-size:.82rem}
+.st-o{color:#ea7a2a}:root[data-theme="light"] .st-o{color:#b45309}
+/* 2.10.35: la estación, a un toque (modo, banda, potencia, antena) */
+#ssum .qs{position:relative;display:inline-block;white-space:nowrap;border-bottom:1px dashed color-mix(in srgb,currentColor 55%,transparent);cursor:pointer;border-radius:3px}
+#ssum .qs .qsc{font-size:.7em;margin-left:2px;opacity:.75}
+#ssum .qs select{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;cursor:pointer;-webkit-appearance:none;appearance:none;border:0;padding:0;margin:0;background:transparent;color:inherit}
+#ssum .qs:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+@media (hover:hover){#ssum .qs:hover{background:color-mix(in srgb,var(--accent) 18%,transparent)}}
+@media (pointer:coarse){#ssum .qs{padding:3px 0}}
+#ssum .qs[data-qs="antsel"]{white-space:normal;max-width:100%}
+/* 2.10.34: avisar también de lo raro, lo curioso y lo lejano */
+.alxr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px}.alxr .note{margin:0}
+.alxr .alxb{padding:4px 10px;font-size:.82rem;min-height:32px}
+@media (pointer:coarse){.alxr .alxb{min-height:40px}}
+html.vc .alxr{margin:2px 0 4px}html.vc .alxr .alxb{padding:2px 8px;min-height:28px}
+.alxr .alxb[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:#1e2733;color:var(--fg)}
+.alxr .alxb[aria-pressed="false"]{color:var(--dim)}
+:root[data-theme="light"] .alxr .alxb[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:none}
+/* 2.10.34: los avisos de concurso se cierran como los demás */
+.ctnowbn{position:relative;padding-right:40px!important}
+.ctnowbn .ctx{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;background:transparent;color:inherit;font-size:1.3rem;line-height:1;cursor:pointer;border-radius:6px;opacity:.8}
+.ctnowbn .ctx:hover,.ctnowbn .ctx:focus-visible{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+@media (pointer:coarse){.ctnowbn .ctx{width:40px;height:40px;top:2px;right:2px}.ctnowbn{padding-right:44px!important}}

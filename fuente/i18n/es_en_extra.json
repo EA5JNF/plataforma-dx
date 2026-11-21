@@ -426,5 +426,7 @@
 "loop magnético Ciro Mazzoni Midi Loop: 2 m de diámetro, tubo de aluminio de 75 mm, de 80 a 20 m sin huecos, 300 W hasta 8 MHz y 800 W por encima, montado a 2,5–3,5 m": "Ciro Mazzoni Midi Loop magnetic loop: 2 m diameter, 75 mm aluminium tube, 80 to 20 m with no gaps, 300 W up to 8 MHz and 800 W above, mounted at 2.5–3.5 m",
 "frente a una λ/4 completa, unos 9,5 dB menos en 80 m, 3 dB menos en 40 m y 1 dB menos en 20 m": "compared with a full λ/4, about 9.5 dB less on 80 m, 3 dB less on 40 m and 1 dB less on 20 m",
 "Segmentos de cada banda: dónde puedes transmitir tú y dónde los de EE. UU.": "Band segments: where you can transmit and where US stations can",
-"Balizas NCDXF/IARU": "NCDXF/IARU beacons"
+"Balizas NCDXF/IARU": "NCDXF/IARU beacons",
+"Lo que falta en tu log, DXpediciones y DX raro, curioso o lejano que puedes trabajar ahora. Se revisan en cada actualización.": "What your log is missing, DXpeditions and rare, unusual or far DX you can work now. Checked on every update.",
+"Te avisará de lo que te falte, de las DXpediciones y del DX raro, curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ": "It will alert you to what you need, DXpeditions and the rare, unusual or far DX you choose below, in your mode and bands. "
 }

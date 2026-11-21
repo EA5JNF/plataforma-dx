@@ -23,6 +23,7 @@ function list(){const out=[];if(typeof CAL==="undefined"||typeof calDate!=="func
     if(now>=w.st&&now<w.en)out.push({c,st:w.st,en:w.en,key:c[0]+"|"+w.st.toISOString(),plan:c[6]&&typeof CONTESTS!=="undefined"&&CONTESTS[c[6]]?c[6]:null})}}
   return out.sort((a,b)=>(!!b.plan-!!a.plan)||(a.en-b.en))}
 window.ACRACB_ctNow=list;
+const XB=()=>`<button type="button" class="ctx" data-ctclose aria-label="${T("Cerrar aviso del concurso","Close contest notice")}" title="${T("Cerrar","Close")}">×</button>`;
 const hm=d=>d.toLocaleTimeString(EN()?"en-US":"es-ES",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Madrid"});
 const utc=d=>d.toISOString().slice(11,16);
 function whenEnd(d){const now=new Date(),same=d.toDateString()===now.toDateString(),tom=new Date(+now+864e5).toDateString()===d.toDateString();
@@ -40,23 +41,26 @@ function draw(){const L0=list();let b=document.getElementById("ctnowbn");const x
   const au=LS.get("acracb_ctauto");if(au&&!L0.some(y=>y.key===au)){LS.set("acracb_ctauto",null);try{if(st.mode==="contest"){setMode("dx",true);refresh()}}catch(e){}}
   if(!x){if(b)b.remove();renderCt(null);return}
   if(x.plan&&!inIt(x)&&LS.get("acracb_ctdecl")!==x.key&&LS.get("acracb_ctauto")!==x.key){join(x,false);return}
+  /* 2.10.34: se puede cerrar como los demás avisos; no vuelve hasta el siguiente concurso y no cambia el modo */
+  if(LS.get("acracb_ctclose")===x.key){if(b)b.remove();renderCt(x);return}
   if(!b){b=document.createElement("div");b.id="ctnowbn";b.className="ctnowbn";b.setAttribute("role","status");const ref=document.getElementById("albar")||document.querySelector(".updrow");if(!ref)return;ref.insertAdjacentElement("beforebegin",b)}
   const on=inIt(x),others=L0.slice(1).map(y=>y.c[0]);
   const h=`<b>${T("Concurso en marcha","Contest running")}: ${e2(x.c[0])}</b> <span class="ctm">${e2(x.c[1])}</span> · ${whenEnd(x.en)}`+
     (x.plan?(on?` · <span>${T("La plataforma está trabajando para este concurso: bandas, puntos, multiplicadores y estrategia.","The platform is working for this contest: bands, points, multipliers and strategy.")}</span> <button type="button" class="lnk" data-ctgo>${T("Ver la estrategia","See the strategy")}</button> <button type="button" class="lnk" data-ctleave>${T("Volver a modo DX","Back to DX mode")}</button>`
       :` <button type="button" class="btn" data-ctjoin>${T("Participar","Take part")}</button>`)
       :` · <span>${T("La plataforma aún no tiene sus reglas, así que no calcula su estrategia.","The platform does not have its rules yet, so it does not calculate its strategy.")}</span>`)+
-    (others.length?` <span class="ctoth">${T("También en marcha","Also running")}: ${e2(others.join(", "))}</span>`:"");
+    (others.length?` <span class="ctoth">${T("También en marcha","Also running")}: ${e2(others.join(", "))}</span>`:"")+XB();
   if(b.innerHTML!==h)b.innerHTML=h;renderCt(x)}
 /* en la sección Concursos, arriba */
 function renderCt(x){const sec=document.querySelector('section.page[data-pg="concursos"]');if(!sec)return;let c=document.getElementById("ctnowc");
-  if(!x){if(c)c.remove();return}if(!c){c=document.createElement("div");c.id="ctnowc";c.className="ctnowbn ctnowc";sec.insertBefore(c,sec.firstChild)}
+  if(!x||LS.get("acracb_ctclose")===x.key){if(c)c.remove();return}if(!c){c=document.createElement("div");c.id="ctnowc";c.className="ctnowbn ctnowc";sec.insertBefore(c,sec.firstChild)}
   const K=x.plan?CONTESTS[x.plan]:null;
-  const h=`<b>${T("En marcha ahora","Running now")}: ${e2(x.c[0])}</b> <span class="ctm">${e2(x.c[1])}</span> · ${whenEnd(x.en)}`+(K?`<p class="note">${e2(T(K.tip,K.tip))}</p><p class="note">${T("Multiplicadores","Multipliers")}: ${e2(K.mult)}.</p>`+(inIt(x)?"":`<button type="button" class="btn" data-ctjoin>${T("Participar","Take part")}</button>`):"");
+  const h=`<b>${T("En marcha ahora","Running now")}: ${e2(x.c[0])}</b> <span class="ctm">${e2(x.c[1])}</span> · ${whenEnd(x.en)}`+(K?`<p class="note">${e2(T(K.tip,K.tip))}</p><p class="note">${T("Multiplicadores","Multipliers")}: ${e2(K.mult)}.</p>`+(inIt(x)?"":`<button type="button" class="btn" data-ctjoin>${T("Participar","Take part")}</button>`):"")+XB();
   if(c.innerHTML!==h)c.innerHTML=h}
 document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;const x=list()[0];if(!x)return;
   if(t.closest("[data-ctjoin]")){join(x,true);return}
   if(t.closest("[data-ctleave]")){leave(x);return}
+  if(t.closest("[data-ctclose]")){LS.set("acracb_ctclose",x.key);draw();return}
   if(t.closest("[data-ctgo]")){try{go("concursos");selTab("concursos","c_live",true)}catch(e){}return}
   /* pasar a modo DX a mano durante el concurso cuenta como «no participo» */
   const mb=t.closest('.modes button[data-m="dx"]');if(mb&&x.plan){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);setTimeout(draw,50)}
