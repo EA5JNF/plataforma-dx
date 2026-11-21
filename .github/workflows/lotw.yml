@@ -1,4 +1,6 @@
 # Copia semanal de la lista pública de usuarios de Logbook of The World (ARRL) en datos/lotw/.
+# 2.10.43: no se guarda el indicativo sino su huella SHA-256 (12 cifras hexadecimales de «acracb-dx|INDICATIVO»): la web
+# puede comprobar si un indicativo está, pero el fichero no es una lista legible de indicativos (protección de datos).
 # Es un fichero público y gratuito, sin registro (lotw-user-activity.csv: indicativo y fecha de su última subida).
 # Se guardan los que han subido su log en el último año, repartidos en 64 trozos por indicativo, para que la
 # plataforma descargue solo los de las estaciones que hay en pantalla. El reparto es el mismo que en web/lotw.js.
@@ -31,7 +33,7 @@ jobs:
       - name: Repartir en 64 trozos
         run: |
           python3 - <<'PY'
-          import csv, datetime, os, shutil
+          import csv, datetime, hashlib, os, shutil
           hoy = datetime.date.today(); corte = hoy - datetime.timedelta(days=365)
           trozos = [[] for _ in range(64)]; n = 0
           for fila in csv.reader(open("u.csv", encoding="utf-8", errors="ignore")):
@@ -49,14 +51,15 @@ jobs:
               h = 0
               for ch in c:
                   h = (h * 31 + ord(ch)) % 64
-              trozos[h].append(f"{c} {d.strftime('%y%m%d')}"); n += 1
+              trozos[h].append(f"{hashlib.sha256(('acracb-dx|' + c).encode()).hexdigest()[:12]} {d.strftime('%y%m%d')}"); n += 1
           if n < 20000:
               raise SystemExit(f"Solo {n} indicativos: no se cambia nada")
           shutil.rmtree("datos/lotw", ignore_errors=True); os.makedirs("datos/lotw")
           for i, t in enumerate(trozos):
-              open(f"datos/lotw/{i:02d}.txt", "w").write("\n".join(sorted(t)) + "\n")
+              open(f"datos/lotw/{i:02d}.txt", "w").write("\n".join(sorted(set(t))) + "\n")
           open("datos/lotw/LEEME.txt", "w").write(f"Usuarios de LoTW (ARRL) con subidas desde {corte.isoformat()}: {n}. Copia del {hoy.isoformat()}.\n"
-                                                 "Fuente: https://lotw.arrl.org/lotw-user-activity.csv (pública y gratuita).\n")
+                                                 "Fuente: https://lotw.arrl.org/lotw-user-activity.csv (pública y gratuita).\n"
+                                                 "Cada línea: huella SHA-256 (12 cifras hexadecimales) de «acracb-dx|INDICATIVO» y fecha de su última subida. No se guardan los indicativos.\n")
           print("Indicativos:", n)
           PY
           rm -f u.csv

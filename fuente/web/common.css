@@ -1506,3 +1506,6 @@ html.vc .crate .crh{padding:2px 0 3px}
 .scl .ld .ldv .nw{white-space:nowrap}
 .scl .ld .ldv .sc-sep{margin:0 4px}
 @container (max-width:560px){.scl .sc-d.ld{grid-template-columns:1fr 1fr;gap:10px 14px;padding:10px 12px}.scl .ld .ldi:has(.smtr,.sgl,[class*="sig"]){grid-column:1/-1}}
+/* 2.10.43: aviso legal ordenado */
+.legal h4{margin:12px 0 4px;font:600 .74rem var(--f-m,monospace);letter-spacing:.07em;text-transform:uppercase;color:var(--fg)}
+.legal ul{margin:4px 0 8px;padding-left:18px}.legal li{margin:3px 0}.legal p{margin:4px 0}

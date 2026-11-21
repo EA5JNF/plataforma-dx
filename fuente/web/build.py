@@ -329,7 +329,7 @@ R('    arcs.append("path").attr("class",d.lp?"lparc":"arc")', '    if(st.ly.arcs
 # 2.2.0: pestaña «Satélites» en DX
 R('<div class="dxl dxlw" id="dxl"></div></details>', '<div class="dxl dxlw" id="dxl"></div></details>\n    <details class="card fold" id="f_sat" data-tab="Satélites"><summary><h2>Satélites de aficionado</h2></summary><div id="sats"></div></details>')
 common_js = open(os.path.join(W, "common.js"), encoding="utf-8").read()
-common_js += "\n" + open(os.path.join(W, "extras.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "logview.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "lang.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "cluster.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "lotw.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "hscroll.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "eqcards.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "sats.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "greyline.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "esporadica.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "vuhf.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "glotec.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "sterr.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "ctnow.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "quickst.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "viewmenu.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "ctricks.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "stmore.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "iss.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "tlhelp.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "map50.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "mapfs.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "solsum.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "mapfast.js"), encoding="utf-8").read()
+common_js += "\n" + open(os.path.join(W, "extras.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "logview.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "lang.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "cluster.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "lotw.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "hscroll.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "eqcards.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "sats.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "greyline.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "esporadica.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "vuhf.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "glotec.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "sterr.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "ctnow.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "quickst.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "viewmenu.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "ctricks.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "legal.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "stmore.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "iss.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "tlhelp.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "map50.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "mapfs.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "solsum.js"), encoding="utf-8").read() + "\n" + open(os.path.join(W, "mapfast.js"), encoding="utf-8").read()
 i = s.rfind("</script>") + len("</script>")
 s = s[:i] + "\n<script>\n" + common_js + "\n</script>\n" + s[i:]
 # datos más recientes
@@ -362,7 +362,7 @@ assert '<b class="fver">Versión ' + VER in w
 w = w.replace("Prohibida su copia, reproducción o adaptación sin permiso escrito del club.", "Prohibida su copia, reproducción o adaptación sin permiso escrito del club. Versión " + VER + ".", 1)
 # 2.5.0: nota de privacidad en el pie
 assert 'Fuentes y agradecimientos</button></p>' in w
-w = w.replace('Fuentes y agradecimientos</button></p>', 'Fuentes y agradecimientos</button></p><p class="privn">Privacidad: sin registro, sin cookies y sin seguimiento. Tus ajustes y tu log ADIF se guardan solo en este dispositivo y no se envían a ningún sitio.</p>', 1)
+# 2.10.43: la nota corta de privacidad se quita: la completa está ahora en el aviso legal, justo encima
 # 2.5.3: explicación del equilibrio VOACAP + clústeres en Método
 _mt = '<details class="mdet"><summary>VOACAP real</summary>'
 assert _mt in w
@@ -484,6 +484,13 @@ def webify(c, lang):
             # esbuild desde web/d3entry.mjs: 280 kB -> 83 kB (92 -> 29 kB comprimidos). Mismo D3 7.8.5, misma API.
             src = open(os.path.join(SP, "ext", "d3-acracb.min.js"), encoding="utf-8").read()
             name = "d3c-%s.js" % hashlib.sha256(src.encode("utf-8")).hexdigest()[:10]
+        # 2.10.43: cada biblioteca lleva su aviso de licencia (ISC/MIT exigen conservarlo en las copias)
+        _lic = {"d3c": "D3.js · Copyright 2010-2023 Mike Bostock · ISC License", "topojson-client": "TopoJSON client 3.1.0 · Copyright 2012-2019 Michael Bostock · ISC License", "fflate": "fflate 0.8.2 · Copyright 2023 Arjun Barrett · MIT License"}
+        _k = next((k for k in _lic if name.startswith(k)), None)
+        if _k and not src.startswith("/*!"):
+            src = "/*! %s · texto completo en licencias/ */\n" % _lic[_k] + src
+            if name.startswith("d3c-"):
+                name = "d3c-%s.js" % hashlib.sha256(src.encode("utf-8")).hexdigest()[:10]
         c = c.replace(inl, '<script src="lib/%s"></script>' % name)
         open(os.path.join(OUT, "lib", name), "w", encoding="utf-8").write(src)
     def pngf(sz):
@@ -508,6 +515,11 @@ def webify(c, lang):
     c, k = re.subn(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">', lambda m: pre + "<style>" + faces + "</style>", c)
     assert k == 1, k
     import shutil as _sh
+    # 2.10.43: textos completos de las licencias de terceros (licencias/) y la de las letras junto a ellas
+    _ld = os.path.join(SP, "ext", "licencias"); _lo = os.path.join(W, "out", "licencias"); os.makedirs(_lo, exist_ok=True)
+    import subprocess as _sp0; _sp0.run(["python3", os.path.join(_ld, "gen.py")], check=True)
+    for _f in os.listdir(_ld):
+        if _f.endswith((".txt", ".html")): _sh.copy(os.path.join(_ld, _f), _lo)
     os.makedirs(os.path.join(W, "out", "fonts"), exist_ok=True)
     for fam, fn, ws in FF:
         for wt in ws:
@@ -519,6 +531,7 @@ def webify(c, lang):
         h = hashlib.sha256(body.encode("utf-8")).hexdigest()[:10]; fn = "lib/%s-%s.js" % (stem, h)
         open(os.path.join(OUT, fn), "w", encoding="utf-8").write(body); return fn
     satsrc = open(os.path.join(NM, "satellite.js/dist/satellite.min.js"), encoding="utf-8").read()
+    satsrc = satsrc if satsrc.startswith("/*!") else "/*! satellite.js 5.0.0 · Copyright (C) 2013 Shashwat Kandadai y colaboradores · MIT License · texto completo en licencias/ */\n" + satsrc
     open(os.path.join(OUT, "lib", "satellite-5.0.0.min.js"), "w", encoding="utf-8").write(satsrc)
     k0 = c.index('<script src="lib/d3c-')
     c = c[:k0] + '<script src="lib/satellite-5.0.0.min.js"></script>' + c[k0:]
@@ -574,6 +587,7 @@ w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 # 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
 w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
 w_en = w_en.replace('<optgroup label="Ver todo">', '<optgroup label="Show all">')
+w_en = w_en.replace('<meta name="copyright" content="© 2026 Alfredo, EA5JNF · Plataforma DX de ACRACB (EA5RKB). Todos los derechos reservados.">', '<meta name="copyright" content="© 2026 Alfredo, EA5JNF · ACRACB (EA5RKB) DX Platform. All rights reserved.">')
 # 2.10.2: comillas al estilo de EE. UU. en la versión inglesa
 w_en = w_en.replace('«', '“').replace('»', '”')
 w_en = w_en.replace('ionosfera sobre tu QTH con el modelo <b>GloTEC</b> (TEC, foF2 y altura de la capa F2)', 'ionosphere over your QTH from the <b>GloTEC</b> model (TEC, foF2 and F2-layer height)')

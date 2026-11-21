@@ -1,6 +1,6 @@
 # Código fuente de la Plataforma DX ACRACB
 
-Idea original y realización: Alfredo, EA5JNF. © ACRACB.
+Idea original y realización: Alfredo, EA5JNF. © 2026 Alfredo, EA5JNF, todos los derechos reservados sobre el código propio; el radioclub ACRACB (EA5RKB) la usa con su permiso. Las bibliotecas, letras y datos de terceros siguen bajo sus licencias (ver licencias/).
 
 La web publicada (raíz del repositorio: `index.html`, `en.html`, `lib/`, `sw.js`) se genera a partir de esta carpeta.
 No se edita a mano: se cambia aquí y se vuelve a montar.

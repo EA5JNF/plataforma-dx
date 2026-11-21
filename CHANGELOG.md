@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.43 — 2026-11-22
+
+- ES: Aviso legal completo al pie de la página: titular y contacto, propiedad intelectual (derechos de autor de Alfredo, EA5JNF; el club usa la plataforma con su permiso), excepción para lo de terceros, exención de responsabilidad y privacidad conforme al RGPD (responsable, qué se guarda en el dispositivo y por qué no necesita consentimiento, quién ve la dirección IP, base legal, derechos y reclamación ante la AEPD).
+- ES: Nueva página «Licencias» (licencias/) con el texto completo de las licencias de las bibliotecas, letras, banderas y datos de terceros; cada biblioteca lleva además su aviso de licencia.
+- ES: Las listas de LoTW y eQSL ya no se publican como indicativos legibles: solo la huella SHA-256 de cada uno, con la fecha de su última subida. La comprobación «confirma por LoTW / eQSL» funciona igual.
+- ES: La nota de los segmentos de concurso cita la normativa (47 CFR 97.301 y 97.305 de la FCC; Orden IET/1311/2013 y Cuadro Nacional de Atribución de Frecuencias, Orden TDF/732/2026).
+- EN: Full legal notice at the foot of the page: owner and contact, intellectual property (copyright of Alfredo, EA5JNF; the club uses the platform with his permission), exception for third-party material, disclaimer and GDPR privacy notice (controller, what is stored on the device and why it needs no consent, who sees the IP address, legal basis, rights and complaint to the Spanish Data Protection Agency).
+- EN: New "Licenses" page (licencias/) with the full text of the licenses of third-party libraries, typefaces, flags and data; each library also carries its license notice.
+- EN: The LoTW and eQSL lists are no longer published as readable callsigns: only each one's SHA-256 fingerprint, with the date of its last upload. The "confirms via LoTW / eQSL" check works the same.
+- EN: The contest segments note cites the regulations (FCC 47 CFR 97.301 and 97.305; Orden IET/1311/2013 and the Spanish National Frequency Allocation Table, Orden TDF/732/2026).
+
 ## 2.10.42 — 2026-11-21
 
 - ES: Sin trabarse: al abrir el mapa, las etiquetas de los spots se medían una y otra vez en cada sitio posible (más de 1.700 medidas con muchos spots, casi 2 s de bloqueo en un móvil). Ahora se mide cada una una sola vez y el resto se calcula: el mapa abre unas tres veces más rápido.

@@ -1,4 +1,6 @@
 # Copia semanal de la lista pública de socios «Authenticity Guaranteed» de eQSL.cc en datos/eqsl/.
+# 2.10.43: no se guarda el indicativo sino su huella SHA-256 (12 cifras hexadecimales de «acracb-dx|INDICATIVO»): la web
+# puede comprobar si un indicativo está, pero el fichero no es una lista legible de indicativos (protección de datos).
 # Es un fichero público y gratuito, sin registro. Se usa la versión con fecha (AGMemberListDated.txt: indicativo
 # y fecha de su última subida) y se guardan los que han subido su log en el último año. Si esa versión no
 # responde, se usa la lista sin fechas (AGMemberList.txt). Mismo reparto en 64 trozos que datos/lotw/ y web/lotw.js.
@@ -35,7 +37,7 @@ jobs:
       - name: Repartir en 64 trozos
         run: |
           python3 - <<'PY'
-          import datetime, os, re, shutil
+          import datetime, hashlib, os, re, shutil
           tipo = open("tipo").read().strip()
           hoy = datetime.date.today(); corte = hoy - datetime.timedelta(days=365)
           ok = re.compile(r"^[A-Z0-9/]{3,15}$")
@@ -62,7 +64,7 @@ jobs:
               h = 0
               for ch in c:
                   h = (h * 31 + ord(ch)) % 64
-              trozos[h].append(f"{c} {v}"); n += 1
+              trozos[h].append(f"{hashlib.sha256(('acracb-dx|' + c).encode()).hexdigest()[:12]} {v}"); n += 1
           if n < 20000:
               raise SystemExit(f"Solo {n} indicativos: no se cambia nada")
           shutil.rmtree("datos/eqsl", ignore_errors=True); os.makedirs("datos/eqsl")
@@ -70,7 +72,8 @@ jobs:
               open(f"datos/eqsl/{i:02d}.txt", "w").write("\n".join(sorted(set(t))) + "\n")
           fuente = "AGMemberListDated.txt (con fecha de última subida; solo subidas del último año)" if tipo == "dated" else "AGMemberList.txt (sin fechas)"
           open("datos/eqsl/LEEME.txt", "w").write(f"Socios AG de eQSL.cc: {n}. Copia del {hoy.isoformat()}.\n"
-                                                 f"Fuente: https://www.eqsl.cc/qslcard/DownloadedFiles/{fuente} (pública y gratuita).\n")
+                                                 f"Fuente: https://www.eqsl.cc/qslcard/DownloadedFiles/{fuente} (pública y gratuita).\n"
+                                                 "Cada línea: huella SHA-256 (12 cifras hexadecimales) de «acracb-dx|INDICATIVO» y fecha de su última subida. No se guardan los indicativos.\n")
           print("Indicativos:", n, "· tipo:", tipo)
           PY
           rm -f u.txt tipo
