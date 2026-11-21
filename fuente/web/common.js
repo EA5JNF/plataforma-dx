@@ -326,3 +326,8 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   function boot2(){const box=document.getElementById("logbox");if(!box)return setTimeout(boot2,400);apply();try{mo=new MutationObserver(()=>{mo.disconnect();try{apply()}finally{mo.observe(box,{childList:true})}});mo.observe(box,{childList:true})}catch(e){}}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot2);else boot2();
 })();
+
+/* ---- 2.10.14: la línea de la estación también abre «Editar estación» (lápiz junto al texto) ---- */
+(function(){function go(){var s=document.getElementById("ssum"),b=document.getElementById("stbtn");if(!s||!b)return setTimeout(go,300);
+ s.setAttribute("role","button");s.tabIndex=0;s.title=window.ACRACB_LANG==="en"?"Edit station":"Editar estación";
+ s.addEventListener("click",function(){b.click()});s.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();b.click()}})}go()})();

@@ -1266,3 +1266,23 @@ details.sterr>summary::before{content:"▸";color:var(--accent)}details.sterr[op
 .st-g{color:#22c55e}.st-y{color:#d6a10a}.st-r{color:#ef4444}.st-n{color:var(--muted)}
 .st3r2{grid-template-columns:auto minmax(0,1fr)}.st3r2 .st3v{max-width:none!important;text-align:right}
 #st_ahora{flex:1 1 100%;width:100%;box-sizing:border-box;margin:10px 0 0;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;background:var(--panel2)}
+/* 2.10.14: editar estación con lápiz */
+#stbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+#stbtn .pen{width:16px;height:16px;flex:none}
+#ssum[role=button]{cursor:pointer}
+#ssum[role=button]::after{content:"";display:inline-block;width:.95em;height:.95em;margin-left:6px;vertical-align:-.1em;background:var(--accent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3Cpath d='M13.5 6.5l4 4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3Cpath d='M13.5 6.5l4 4'/%3E%3C/svg%3E") center/contain no-repeat}
+#ssum[role=button]:hover{text-decoration:underline;text-decoration-color:var(--line)}
+.bandtoast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9999;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.92rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+.bandtoast.on{opacity:1;transform:translate(-50%,0)}
+/* 2.10.14: vista compacta más ligera en toda la plataforma: solo lo esencial; la completa no cambia */
+html.vc #sw,html.vc #srcrep,html.vc #logbtn,html.vc .eznav,html.vc .ezvh,html.vc #solsum,html.vc #rec ol,html.vc #rec .rec>div>p.note,html.vc .clexp,html.vc .alsub{display:none!important}
+html.vc #updst{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.8rem}
+html.vc .updrow{gap:6px 10px}
+html.vc #ssum{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
+html.vc #st_ahora{margin-top:8px}
+html.vc .eztl details.ezd:nth-of-type(n+4){display:none}
+html.vc .ez{padding-top:10px;padding-bottom:10px}
+html.vc .ezd0,html.vc .ezalt{margin-top:4px}
+html.vc .page .card.fold>summary .fsum{font-size:.8rem}
+.alsub{margin:2px 0 6px;font-size:.82rem;color:var(--muted);line-height:1.35}
+.clexp{margin:2px 0 10px!important;font-size:.88rem}

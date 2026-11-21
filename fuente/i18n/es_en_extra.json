@@ -395,5 +395,9 @@
 "Estrategia en directo": "Live strategy",
 "En directo": "Live",
 "), ionosfera sobre tu QTH con el modelo ": "), ionosphere over your QTH from the ",
-" (TEC, foF2 y altura de la capa F2) y ciclo solar observado y previsto.": " model (TEC, foF2 and F2-layer height) and the observed and predicted solar cycle."
+" (TEC, foF2 y altura de la capa F2) y ciclo solar observado y previsto.": " model (TEC, foF2 and F2-layer height) and the observed and predicted solar cycle.",
+"Editar estación": "Edit station",
+"pulsa «Editar estación» arriba y pon tu locator, modo, potencia y antena. Todo se recalcula para ti.": "press “Edit station” above and enter your locator, mode, power and antenna. Everything is recalculated for you.",
+"Solo lo que puedes trabajar tú ahora, con tu estación, tu modo y tu banda.": "Only what you can work right now, with your station, your mode and your band.",
+"Todo lo que se anuncia ahora en el mundo, lo puedas oír o no. Lo que es para ti está en «Avisos».": "Everything being spotted worldwide right now, whether you can hear it or not. What is for you is in “Alerts”."
 }

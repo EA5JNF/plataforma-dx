@@ -747,7 +747,7 @@ body.noscroll{overflow:hidden}
 <div class="wrap">
   <header class="top">
     <div class="brand"><div class="brow1"><h1><span class="lab">ACRACB</span> - DX <small class="h1c">EA5RKB <svg class="flag" viewBox="0 0 30 20" role="img" aria-label="España"><defs><linearGradient id="flg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient><clipPath id="flc"><rect width="30" height="20" rx="3"/></clipPath></defs><g clip-path="url(#flc)"><rect width="30" height="20" fill="#c60b1e"/><rect y="5" width="30" height="10" fill="#ffc400"/><rect width="30" height="20" fill="url(#flg)"/></g><rect x=".5" y=".5" width="29" height="19" rx="2.6" fill="none" stroke="rgba(255,255,255,.35)"/></svg></small></h1><div class="clock" aria-live="off"><span class="ck"><small>UTC</small><b id="cku">--:--:--</b></span><span class="ck"><small>Local</small><b id="ckl">--:--</b></span><span class="ck"><small>Altura del sol</small><b id="cks">—</b></span></div></div>
-    <div class="sline"><div class="modes" role="group" aria-label="Modo"><button data-m="dx" aria-pressed="true">MODO DX</button><button data-m="contest" aria-pressed="false">MODO CONCURSOS</button></div><span class="ssum" id="ssum"></span><button class="btn stbtn" id="stbtn" aria-expanded="false" aria-controls="stpanel">Cambiar</button></div>
+    <div class="sline"><div class="modes" role="group" aria-label="Modo"><button data-m="dx" aria-pressed="true">MODO DX</button><button data-m="contest" aria-pressed="false">MODO CONCURSOS</button></div><span class="ssum" id="ssum"></span><button class="btn stbtn" id="stbtn" aria-expanded="false" aria-controls="stpanel"><svg class="pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span>Editar estación</span></button></div>
     <div class="stpanel" id="stpanel" hidden>
     
     <p class="modenote" id="modenote"></p>
@@ -853,8 +853,8 @@ body.noscroll{overflow:hidden}
   </section>
 
   <section class="page" data-pg="dx">
-    <details class="card fold" id="f_cl" data-tab="Clúster"><summary><h2 id="clh">Clúster del planeta</h2></summary><div class="live-links"><span>En directo, al segundo:</span><a class="btn" data-ext href="https://webcluster.ure.es/" target="_blank" rel="noopener noreferrer">WebCluster URE</a><a class="btn" data-ext href="https://www.dxsummit.fi/#/" target="_blank" rel="noopener noreferrer">DX Summit</a></div><div class="note" id="extfb" hidden></div><details class="clfilt" id="clfilt"><summary><span class="clft">Filtros</span> <span id="clfs"></span></summary><div class="seg mseg" id="dxmodes" role="group" aria-label="Modos del clúster"></div></details><div id="spots"></div></details>
-    <details class="card fold" id="f_al" data-tab="Avisos"><summary><h2>Avisos DX</h2><span class="fsum" id="s_al"></span></summary><div id="notifw" class="notifw"><details class="nfb"><summary class="btn">Avisarme con una notificación</summary><p class="note nhelp">Este navegador no ha podido abrir la plataforma completa. Para recibir avisos, ábrela en Chrome, Edge, Firefox o Safari actualizados.</p></details></div><div id="alerts"></div></details>
+    <details class="card fold" id="f_cl" data-tab="Clúster"><summary><h2 id="clh">Clúster del planeta</h2></summary><p class="note clexp">Todo lo que se anuncia ahora en el mundo, lo puedas oír o no. Lo que es para ti está en «Avisos».</p><div class="live-links"><span>En directo, al segundo:</span><a class="btn" data-ext href="https://webcluster.ure.es/" target="_blank" rel="noopener noreferrer">WebCluster URE</a><a class="btn" data-ext href="https://www.dxsummit.fi/#/" target="_blank" rel="noopener noreferrer">DX Summit</a></div><div class="note" id="extfb" hidden></div><details class="clfilt" id="clfilt"><summary><span class="clft">Filtros</span> <span id="clfs"></span></summary><div class="seg mseg" id="dxmodes" role="group" aria-label="Modos del clúster"></div></details><div id="spots"></div></details>
+    <details class="card fold" id="f_al" data-tab="Avisos"><summary><h2>Avisos DX</h2><span class="fsum" id="s_al"></span></summary><p class="note clexp">Solo lo que puedes trabajar tú ahora, con tu estación, tu modo y tu banda.</p><div id="notifw" class="notifw"><details class="nfb"><summary class="btn">Avisarme con una notificación</summary><p class="note nhelp">Este navegador no ha podido abrir la plataforma completa. Para recibir avisos, ábrela en Chrome, Edge, Firefox o Safari actualizados.</p></details></div><div id="alerts"></div></details>
     <details class="card fold" id="f_near" data-tab="Cerca"><summary><h2>Actividad cercana (EA y alrededores)</h2><span class="fsum" id="s_near"></span></summary><div id="near"></div></details>
     <details class="card fold dxexp" id="f_dxp" data-tab="DXpediciones"><summary><h2><span id="dxh">DXpediciones activas</span></h2><span class="fsum" id="s_dxp"></span></summary><div class="dxl dxlw" id="dxl"></div></details>
   </section>
@@ -2039,14 +2039,14 @@ const PGHELP={facil:"Lo esencial en un vistazo: qué banda usar ahora, cuándo s
 function renderPgHelp(){}
 function initStart(){const e=$("start");if(!e)return;if(store.get("startOk")==="1"){e.hidden=true;return}e.hidden=false;
   e.innerHTML=`<div class="stt"><b>Empieza en 2 pasos</b><button class="lnk" id="stx">Entendido, no mostrar más</button></div><ol class="stl">
-   <li><b>Tu estación:</b> pulsa «Cambiar» arriba y pon tu locator, modo, potencia y antena. Todo se recalcula para ti.</li>
+   <li><b>Tu estación:</b> pulsa «Editar estación» arriba y pon tu locator, modo, potencia y antena. Todo se recalcula para ti.</li>
    <li><b>Mira el resultado:</b> <button class="lnk" data-go="ahora">Ahora</button> te dice qué banda usar y hacia dónde apuntar; <button class="lnk" data-go="dx">DX</button>, quién está en el aire.</li></ol>`;
   $("stx").onclick=()=>{store.set("startOk","1");e.hidden=true};e.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go))}
 
 /* ---------- cabecera en una línea ---------- */
 function renderSum(){const e=$("ssum");if(!e)return;const loc=String($("loc").value||"").slice(0,6);const h=HB();
   e.innerHTML=`<b>${esc(loc)}</b> · ${esc(MD().s)} · ${h!=null?esc(BANDS[h]):"Todas las bandas"} · ${esc(PWN().split(" ")[0]+" "+PWN().split(" ")[1])} · ${esc(ANTL())}${st.mode==="contest"?" · <b>Concursos</b>":""}`}
-{const b=$("stbtn"),p=$("stpanel");if(b&&p)b.onclick=()=>{p.hidden=!p.hidden;b.setAttribute("aria-expanded",String(!p.hidden));b.textContent=p.hidden?"Cambiar":"Cerrar";if(!p.hidden)p.scrollIntoView({block:"nearest"})}}
+{const b=$("stbtn"),p=$("stpanel");if(b&&p)b.onclick=()=>{p.hidden=!p.hidden;b.setAttribute("aria-expanded",String(!p.hidden));b.innerHTML=p.hidden?'<svg class="pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span>Editar estación</span>':"<span>Cerrar</span>";if(!p.hidden)p.scrollIntoView({block:"nearest"})}}
 /* ---------- solo la conclusión: el resto, plegado ---------- */
 function foldAfter(el,keep,label){if(!el||el.querySelector(":scope > details.why"))return;const kids=[...el.children].slice(keep);if(!kids.length)return;const d=document.createElement("details");d.className="why";d.innerHTML=`<summary>${label||"Ver por qué"}</summary>`;kids.forEach(k=>d.appendChild(k));el.appendChild(d)}
 
@@ -2613,7 +2613,11 @@ $("mpan").onclick=()=>{const c=$("mapcard"),on=!c.classList.contains("nopan");c.
 
 function fillBandSel(){const s=$("bandsel");if(!s)return;const keep=s.value||store.get("c_bandsel")||"";s.innerHTML=`<option value="">Todas</option>`+BI0().map(b=>`<option value="${b}">${BANDS[b]}</option>`).join("");s.value=[...s.options].some(o=>o.value===keep)?keep:""}
 fillBandSel();
-$("bandsel").addEventListener("change",()=>{const v=$("bandsel").value;store.set("c_bandsel",v);st.mbs=v===""?[]:[+v];CACHE.clear();renderBandSeg();refresh()});
+$("bandsel").addEventListener("change",()=>{const v=$("bandsel").value;store.set("c_bandsel",v);st.mbs=v===""?[]:[+v];
+  /* 2.10.14: aviso inmediato mientras se recalcula; el cálculo espera a que el aviso se vea */
+  const EN_=window.ACRACB_LANG==="en";const nm=v===""?(EN_?"all bands":"todas las bandas"):BANDS[+v];let tb=$("bandtoast");if(!tb){tb=document.createElement("div");tb.id="bandtoast";tb.className="bandtoast";tb.setAttribute("role","status");document.body.appendChild(tb)}
+  tb.textContent=(EN_?"Recalculating for ":"Recalculando para ")+nm+"…";tb.classList.add("on");clearTimeout(tb._t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{CACHE.clear();renderBandSeg();refresh();try{document.dispatchEvent(new Event("acracb:band"))}catch(e){}tb.textContent=(EN_?"Done: everything calculated for ":"Listo: todo calculado para ")+nm+".";tb._t=setTimeout(()=>tb.classList.remove("on"),1800)}))});
 {const v=$("bandsel").value;if(v!=="")st.mbs=[+v]}
 $("modesel").addEventListener("change",()=>{fillBandSel();if(st.mode==="contest")setMode("contest");CMS();renderAlBar();renderBandSeg();if(st.page==="mapa")drawMap()});
 

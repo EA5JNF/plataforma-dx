@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.14 — 2026-11-21
+
+- ES: Vista compacta más ligera en toda la plataforma: sin las casillas de datos (el panel «Sol y propagación ahora» ya los resume), sin el índice del Resumen, sin 6 m/2 m/70 cm en el Resumen, «Qué hacer» sin consejos extra, «Próximas horas» con 3 tramos y sin el bloque «El Sol ahora» repetido. La vista completa no cambia.
+- ES: «Cambiar» pasa a «Editar estación» con un lápiz, y la línea de la estación también se puede tocar para editarla.
+- ES: Explicación de la diferencia entre el Aviso DX y los Avisos (lo que puedes trabajar tú) y el Clúster del planeta (todo lo que se anuncia).
+- ES: Al cambiar de banda aparece al momento «Recalculando para…» y luego «Listo»; el Aviso DX de la portada respeta la banda elegida.
+- EN: Lighter compact view across the platform: no data tiles (the "Sun and propagation now" panel summarizes them), no Summary index, no 6 m/2 m/70 cm in the Summary, "What to do" without extra tips, "Next hours" with 3 slots and no repeated "The Sun now" block. The full view is unchanged.
+- EN: "Change" becomes "Edit station" with a pencil, and the station line can also be tapped to edit it.
+- EN: Explains the difference between the DX alert and Alerts (what you can work) and the worldwide Cluster (everything spotted).
+- EN: Changing band now shows "Recalculating for…" at once and then "Done"; the home-page DX alert follows the chosen band.
+
 ## 2.10.13 — 2026-11-21
 
 - ES: El panel «Sol y propagación ahora» pasa de la sección Ahora al pie de los datos generales (SFI, SSN, Kp…) de la página principal; sigue también en Sol. Añade tormenta geomagnética (G), apagón de radio (R) y tormenta de protones (S) según las escalas de NOAA, y lo indica en la línea resumen.
