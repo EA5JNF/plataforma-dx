@@ -306,7 +306,9 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const far=()=>g.from.filter(p=>p[0]||p[1]).map(p=>distKm(dx,p));
     if(NEARDX.has(dxcc))kind="near";
     else if(g.band>=10){const d=far();if(!d.length||Math.max(...d)<300)continue;kind="vhf"}
-    else if(cont&&cont!=="EU"){if(!g.eu)continue;kind="dx"}
+    /* 2.10.27: un DX fuera de Europa entra aunque no lo haya anunciado un europeo (antes se descartaba y el clúster de la
+       plataforma enseñaba muchos menos DX que los clústeres); si lo oyen en Europa queda marcado (eu) y pesa más en «Para ti» */
+    else if(cont&&cont!=="EU"){kind="dx"}
     else{const d=far();if(!d.length||Math.max(...d)<2500)continue;kind="ind"}
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
@@ -318,7 +320,10 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
      daba prioridad a los «nuevos» y los demás salían y volvían a entrar en cada actualización */
   const got=new Set(spots.map(x=>x.call+"|"+Math.round(parseFloat(x.f)*500)));
   for(const [k,p] of pm){if(got.has(k)||!p.utc)continue;const tt=ptime(p.utc);if(!tt)continue;const age=(t0-tt)/6e4;if(age<0||age>(p.band>=10?120:60))continue;const q=Object.assign({},p,{nw:false,_t:+tt});const pe=ent(p.call);if(pe&&!posOK(q.dx,pe)){q.dx=areaPos(p.call,pe)||q.dx;q.dxp=false}spots.push(q)}
-  spots.sort((a,b)=>b._t-a._t);spots=spots.slice(0,150);
+  spots.sort((a,b)=>b._t-a._t);
+  /* 2.10.27: tope por tipo de modo (fonía, CW y digitales, 150 cada uno) en vez de 150 en total: los skimmers de CW y FT8
+     llenaban el tope y dejaban fuera casi toda la fonía */
+  {const cnt={},grp=x=>{const m=String(x.mode||"").toUpperCase();return m==="CW"?"cw":/^(SSB|USB|LSB|AM|FM|PHONE|DV)$/.test(m)?"ph":"dg"};spots=spots.filter(x=>{const g=grp(x);cnt[g]=(cnt[g]||0)+1;return cnt[g]<=150})}
   /* 2.10.15: «nuevos» y «confirmados» se cuentan entre los spots que se muestran, no entre todos los recibidos (antes salía «150 spots (664 nuevos)») */
   nn=spots.filter(x=>x.nw).length;cf=spots.filter(x=>(+x.ns||1)>1).length;
   const newest=spots.length?spots[0]._t:null,oldest=spots.length?spots[spots.length-1]._t:null;spots.forEach(s=>delete s._t);

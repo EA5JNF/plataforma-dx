@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.27 — 2026-11-21
+
+- ES: Muchos más DX en toda la plataforma (clúster, mapa, avisos y «Qué hacer»), sobre todo en fonía: 1) los DX de fuera de Europa entran aunque no los haya anunciado un europeo (antes se descartaban); los oídos en Europa siguen pesando más en «Para ti»; 2) el tope de spots es de 150 por tipo de modo (fonía, CW y digitales) en vez de 150 en total, porque los skimmers de CW y FT8 llenaban el tope y dejaban fuera casi toda la SSB.
+- EN: Many more DX across the platform (cluster, map, alerts and "What to do"), especially on phone: 1) DX outside Europe is kept even when no European spotted it (it used to be dropped); those heard in Europe still weigh more in "For you"; 2) the spot cap is 150 per mode type (phone, CW and digital) instead of 150 in total, because CW and FT8 skimmers filled the cap and left out almost all SSB.
+
 ## 2.10.26 — 2026-11-21
 
 - ES: Tema claro: todo lo que va sobre fondo pizarra lleva el texto en blanco (botón Actualizar, modo elegido, botones y pestañas marcados, números de los pasos del mapa, «NUEVO», la hora actual de «Hora a hora»…); antes quedaba texto casi negro sobre pizarra. Los botones y pestañas marcados pasan a pizarra con texto blanco, que se distinguen mucho mejor de los no marcados.
