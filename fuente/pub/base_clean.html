@@ -2273,7 +2273,12 @@ function renderHeard(){const el=$("explo");if(!el)return;const now=Date.now(),lh
 const WHY=new Set();const isSub=d=>d instanceof HTMLDetailsElement&&!d.classList.contains("fold")&&!d.classList.contains("mapctlw")&&d.id!=="cfg";
 const whyKey=d=>{const h=d.parentElement&&d.parentElement.closest("[id]");const s=d.querySelector(":scope > summary");const t=s?s.textContent.trim().replace(/\d+/g,"#"):"";const sib=h?[...h.querySelectorAll("details")].filter(x=>{const y=x.querySelector(":scope > summary");return y&&y.textContent.trim().replace(/\d+/g,"#")===t}):[];return (h?h.id:"")+"|"+t+"|"+sib.indexOf(d)};
 document.addEventListener("toggle",ev=>{const d=ev.target;if(!isSub(d))return;const k=whyKey(d);if(d.open)WHY.add(k);else WHY.delete(k)},true);
-function restoreWhy(){if(!WHY.size)return;document.querySelectorAll("section.page details:not([open])").forEach(d=>{if(isSub(d)&&WHY.has(whyKey(d)))d.open=true})}
+/* 2.10.42: lo mismo que whyKey, pero leyendo una sola vez los desplegables de cada bloque (antes se releían todos para
+   cada uno: cientos de búsquedas en cada redibujado del mapa) */
+function restoreWhy(){if(!WHY.size)return;const C=new Map(),tx=x=>{const y=x.querySelector(":scope > summary");return y?y.textContent.trim().replace(/\d+/g,"#"):null};
+  document.querySelectorAll("section.page details:not([open])").forEach(d=>{if(!isSub(d))return;const h=d.parentElement&&d.parentElement.closest("[id]");const t=tx(d)||"";
+    let L=h?C.get(h):null;if(h&&!L){L=[...h.querySelectorAll("details")].map(x=>[x,tx(x)]);C.set(h,L)}
+    const i=L?L.filter(z=>z[1]===t).findIndex(z=>z[0]===d):-1;if(WHY.has((h?h.id:"")+"|"+t+"|"+i))d.open=true})}
 
 /* concursos: el cálculo del plan se hace por partes para no congelar la pantalla */
 let CWG=0;function renderContestLazy(){const g=++CWG;if(st.mode!=="contest"){renderContest();renderCCal();return}

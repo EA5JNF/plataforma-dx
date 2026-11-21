@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.42 — 2026-11-21
+
+- ES: Sin trabarse: al abrir el mapa, las etiquetas de los spots se medían una y otra vez en cada sitio posible (más de 1.700 medidas con muchos spots, casi 2 s de bloqueo en un móvil). Ahora se mide cada una una sola vez y el resto se calcula: el mapa abre unas tres veces más rápido.
+- ES: La probabilidad de cada spot buscaba sus vecinos comparando todos los spots con todos en cada redibujado; ahora se busca una vez por tanda de spots (de unas 49.000 comparaciones a 3.000 al pasar a DX).
+- ES: Recordar qué «Por qué» y desplegables tenías abiertos ya no relee todos los desplegables de la página para cada uno.
+- EN: No more freezing: when opening the map, spot labels were measured again and again at every possible position (over 1,700 measurements with many spots, almost 2 s blocked on a phone). Each one is now measured once and the rest is calculated: the map opens about three times faster.
+- EN: Each spot's chance looked for its neighbors by comparing every spot with every other on every redraw; it is now done once per batch of spots (from about 49,000 comparisons to 3,000 when switching to DX).
+- EN: Remembering which "Why" and other folds you had open no longer rereads every fold on the page for each one.
+
 ## 2.10.41 — 2026-11-21
 
 - ES: La fila o tarjeta que tocas para desplegarla se queda donde la tocaste. En el iPhone y el iPad, Safari no compensa los cambios de altura de lo que hay por encima y cualquier recolocación de la página la movía arriba o abajo; ahora, durante un segundo, se corrige cualquier desplazamiento, y si mueves tú la página se deja de corregir.

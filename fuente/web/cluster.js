@@ -323,7 +323,7 @@ function spotIndex(){const k=(L.updatedUTC||"")+"|"+(L.spotsUTC||"")+"|"+(L.spot
 /* un spot en un modo que pasa con menos señal que el tuyo prueba menos: FT8 frente a SSB cuenta una cuarta parte */
 function modeW(spMode,myAdj){let k="ssb";try{k=spotMode({mode:spMode})}catch(_){}const d=((MODES[k]&&MODES[k].adj)||0)-myAdj;return d>0?Math.exp(-d/20):1}
 /* lo que dicen ahora los clústeres de una zona (destino) en una banda, visto desde tu locator */
-let ZEV=new Map(),ZEVK="";
+let ZEV=new Map(),ZEVK="",NBM=new Map(),NBK="";
 /* 2.10.36: rapidez. El margen del modo (myAdj) va en la clave de cada destino y no en la de toda la caché: antes, al
    consultarse con márgenes distintos (tu modo, concurso…), la caché se vaciaba en cada llamada y se recalculaba todo.
    Las distancias de estas comparaciones (¿está cerca?, ¿se parece el camino?) usan la esfera, mucho más rápida; las
@@ -359,7 +359,10 @@ function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
   if(s.dx&&s.dx[0]!=null&&!lp){const myMid=mid(TXP,s.dx),myLen=distS(TXP,s.dx);let miss=1;
     /* el propio spot (aunque sea algo antiguo) y los demás de la misma zona */
     const own={dx:s.dx,from:(s.from||[]).filter(f=>f&&f[0]!=null),wA:Math.exp(-Math.max(0,a==null?60:a)/30),fs:snrF(s),same:true};
-    const cand=[own].concat(spotIndex().filter(x=>x.band===s.band&&x.call!==s.call&&distS(x.dx,s.dx)<1200));
+    /* 2.10.42: los vecinos de cada spot se buscan una vez por tanda de spots (antes, todos contra todos en cada redibujado) */
+    const ix=spotIndex();if(NBK!==SIXK){NBK=SIXK;NBM=new Map()}const nk=s.call+"|"+s.band+"|"+s.dx[0]+","+s.dx[1];let nb=NBM.get(nk);
+    if(!nb){nb=ix.filter(x=>x.band===s.band&&x.call!==s.call&&distS(x.dx,s.dx)<1200);NBM.set(nk,nb)}
+    const cand=[own].concat(nb);
     let spAdj=0;try{spAdj=(MODES[k]&&MODES[k].adj)||0}catch(_){}
     for(const x of cand)for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*(x.same?1:.7*modeW(x.mode,spAdj));if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs;if(x.same&&w>.25)self=true}
     E=1-miss}

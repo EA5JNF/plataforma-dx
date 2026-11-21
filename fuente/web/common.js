@@ -140,15 +140,29 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
      if(hitC){o.c.setAttribute("r",3.2*o.sc);o.c.dataset.shr="1";small.add(o.x+"|"+o.y)}else{o.c.setAttribute("r",o.R);o.c.dataset.shr="";kept.push(o)}}
    svg.querySelectorAll("text.ml").forEach(t=>{if(small.has(t.getAttribute("x")+"|"+t.getAttribute("y")))t.style.display="none"})}
   /* porcentajes VOACAP: del más probable al menos */
-  const ml=[...svg.querySelectorAll("text.ml")].map(t=>({t,v:parseFloat(t.textContent)||0})).sort((a,b)=>b.v-a.v);const mk=[];
-  for(const {t} of ml){if(t.style.display==="none")continue;const r=t.getBoundingClientRect();if(!r.width)continue;if(mk.some(k=>r.left<k.right&&r.right>k.left&&r.top<k.bottom&&r.bottom>k.top)){t.style.display="none";continue}mk.push(r)}
+  /* 2.10.42: sin tirones al abrir el mapa. Antes cada etiqueta se movía a cada sitio posible y se medía allí (hasta 8
+     medidas por etiqueta, con la página recalculada en cada una: más de 1.700 con muchos spots, casi 2 s en un móvil).
+     Ahora se mide cada etiqueta una sola vez, todas a la vez, y los demás sitios se calculan; al final se escribe el elegido. */
+  const ml=[...svg.querySelectorAll("text.ml")].filter(t=>t.style.display!=="none").map(t=>({t,v:parseFloat(t.textContent)||0})).sort((a,b)=>b.v-a.v);const mk=[];
+  const mlr=ml.map(o=>o.t.getBoundingClientRect());const mlHide=[];
+  ml.forEach((o,i)=>{const r=mlr[i];if(!r.width)return;if(mk.some(k=>r.left<k.right&&r.right>k.left&&r.top<k.bottom&&r.bottom>k.top)){mlHide.push(o.t);return}mk.push(r)});
+  mlHide.forEach(t=>t.style.display="none");
   const all=[...svg.querySelectorAll("text.dxx"),...svg.querySelectorAll("text.spotl")];
-  for(const t of all){const d=t.dataset;if(d.ox===undefined){d.ox=t.getAttribute("x");d.oy=t.getAttribute("y");d.oa=t.getAttribute("text-anchor")||"start"}
-   t.style.display="";const ax=+d.ax,ay=+d.ay,dx=Math.abs(+d.ox-ax)||8,dy=+d.oy-ay,ady=Math.abs(dy)||7;
-   const pos=[[dx,dy,d.oa],[dx,ady+9,"start"],[-dx,dy,"end"],[-dx,ady+9,"end"],[0,-ady-6,"middle"],[0,ady+14,"middle"],[dx,-ady-8,"start"],[-dx,-ady-8,"end"]];
-   const k=key(t),prev=LAST.get(k);const order=prev!=null&&prev<pos.length?[pos[prev]].concat(pos.filter((_,i)=>i!==prev)):pos;let ok=false;
-   for(const q of order){const [x,y,an]=q;t.setAttribute("x",ax+x);t.setAttribute("y",ay+y);t.setAttribute("text-anchor",an);const r=t.getBoundingClientRect();if(!hit(r,2)){keep.push(r);LAST.set(k,pos.indexOf(q));ok=true;break}}
-   if(!ok){t.setAttribute("x",d.ox);t.setAttribute("y",d.oy);t.setAttribute("text-anchor",d.oa);t.style.display="none";LAST.delete(k)}}
+  const AF=an=>an==="end"?1:an==="middle"?.5:0;
+  const L0=all.map(t=>{const d=t.dataset;if(d.ox===undefined){d.ox=t.getAttribute("x");d.oy=t.getAttribute("y");d.oa=t.getAttribute("text-anchor")||"start"}
+    const ax=+d.ax,ay=+d.ay,dx=Math.abs(+d.ox-ax)||8,dy=+d.oy-ay,ady=Math.abs(dy)||7;
+    const pos=[[dx,dy,d.oa],[dx,ady+9,"start"],[-dx,dy,"end"],[-dx,ady+9,"end"],[0,-ady-6,"middle"],[0,ady+14,"middle"],[dx,-ady-8,"start"],[-dx,-ady-8,"end"]];
+    t.style.display="";t.setAttribute("x",ax+pos[0][0]);t.setAttribute("y",ay+pos[0][1]);t.setAttribute("text-anchor",pos[0][2]);return {t,d,ax,ay,pos}});
+  let sc=1;try{const m=svg.getScreenCTM();if(m&&m.a)sc=m.a}catch(e){}
+  const R0=L0.map(o=>o.t.getBoundingClientRect());
+  const out=L0.map((o,i)=>{const r=R0[i],w=r.width,h=r.height,p0=o.pos[0];if(!w)return {o,q:null};
+    const bx=r.left+w*AF(p0[2]),by=r.top;
+    const k=key(o.t),prev=LAST.get(k);const order=prev!=null&&prev<o.pos.length?[o.pos[prev]].concat(o.pos.filter((_,j)=>j!==prev)):o.pos;
+    for(const q of order){const left=bx+sc*(q[0]-p0[0])-w*AF(q[2]),top=by+sc*(q[1]-p0[1]);const rr={left,right:left+w,top,bottom:top+h};
+      if(!hit(rr,2)){keep.push(rr);LAST.set(k,o.pos.indexOf(q));return {o,q}}}
+    LAST.delete(k);return {o,q:false}});
+  out.forEach(({o,q})=>{const t=o.t,d=o.d;if(q===null)return;if(q===false){t.setAttribute("x",d.ox);t.setAttribute("y",d.oy);t.setAttribute("text-anchor",d.oa);t.style.display="none";return}
+    t.setAttribute("x",o.ax+q[0]);t.setAttribute("y",o.ay+q[1]);t.setAttribute("text-anchor",q[2])});
   if(LAST.size>2000)LAST.clear();
   /* si «Caminos» o «Saltos» están encendidos pero no hay nada que dibujar, se dice por qué en vez de dejar el mapa sin nada */
   try{const wrap=svg.parentNode;let n=wrap.querySelector(".mnote");const ly=(typeof st!=="undefined"&&st.ly)||{};const en=window.ACRACB_LANG==="en";
