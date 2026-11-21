@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.33 — 2026-11-21
+
+- ES: La vista de lista vale para todas las tarjetas de la plataforma (DXpediciones, satélites y cualquier otra): cada tarjeta pasa a ser una fila y lo secundario se despliega al tocarla.
+- ES: Corregido: en el tema claro, el botón «Actualizar» mientras actualiza salía con el texto en blanco sobre fondo claro y no se veía.
+- EN: List view now applies to every card on the platform (DXpeditions, satellites and any other): each card becomes a row and the secondary details expand when tapped.
+- EN: Fixed: in the light theme, the "Update" button showed white text on a light background while updating and could not be seen.
+
 ## 2.10.32 — 2026-11-21
 
 - ES: Más rápida: en un móvil medio, el trabajo pesado al abrir baja de unos 3,1 s a 1,6 s y la página queda lista antes (de 2,3 s a 1,7 s); cambiar a DX pasa de 0,64 s a 0,37 s, al mapa de 0,75 s a 0,55 s y a Concursos de 1,2 s a 0,9 s. Se guardan cálculos que se repetían miles de veces (fines de semana de concurso, previsión de manchas, distancias exactas, multiplicadores) y el repaso de textos solo mira la sección que está a la vista.

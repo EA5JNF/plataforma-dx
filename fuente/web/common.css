@@ -1326,9 +1326,9 @@ html.vc .ctnowbn>span:not(.ctm){display:none}
 .hm2 .hx.now{overflow:visible!important;white-space:nowrap;text-overflow:clip!important;min-width:max-content;justify-self:center}
 @media (max-width:700px){.hm2 .hx.now{font-size:.78em;padding:0 2px}}
 /* 2.10.26: tema claro: sobre el fondo pizarra, el texto va en blanco (antes quedaba texto casi negro sobre pizarra, poco legible) */
-:root[data-theme="light"] :is(.updb,.grp button[aria-pressed="true"],.tab[aria-selected="true"],.modes button[aria-pressed="true"],.mrt b,.nwb,.hm2 .hx.now,.recm button[aria-pressed="true"],.rrow button[aria-pressed="true"],.almb:hover,.almb[aria-expanded="true"]){color:#fff!important}
-:root[data-theme="light"] .updb .ic{background:rgba(255,255,255,.18)!important}
-:root[data-theme="light"] .updb svg{stroke:#fff}
+:root[data-theme="light"] :is(.updb:not(.run),.grp button[aria-pressed="true"],.tab[aria-selected="true"],.modes button[aria-pressed="true"],.mrt b,.nwb,.hm2 .hx.now,.recm button[aria-pressed="true"],.rrow button[aria-pressed="true"],.almb:hover,.almb[aria-expanded="true"]){color:#fff!important}
+:root[data-theme="light"] .updb:not(.run) .ic{background:rgba(255,255,255,.18)!important}
+:root[data-theme="light"] .updb:not(.run) svg{stroke:#fff}
 
 :root[data-theme="light"] .seg button[aria-pressed="true"] small,:root[data-theme="light"] .seg button[aria-pressed="true"] i{color:#fff;opacity:.9}
 /* 2.10.31: vista de lista */
@@ -1360,3 +1360,20 @@ html.vl :is(div,section):has(> .sc.scl){display:block!important;columns:auto!imp
 html.vl :is(div,section):has(> .sc.scl)>.sclh{margin:0}
 @media (max-width:760px){.scl .l-f,.scl .l-m,.scl .l-b,.scl .l-p{min-width:max-content!important;overflow:visible!important}.scl .l-age{justify-self:start!important}}
 #f_bcn #bcn>h2:first-child{display:none}
+/* 2.10.33: en vista de lista, TODAS las tarjetas se muestran como filas (DXpediciones, satélites y cualquier otra);
+   lo secundario se despliega al tocar la fila */
+html.vl :is(div,section):has(> .sc){display:block!important;columns:auto!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2){display:flex!important;flex-wrap:wrap;align-items:center;gap:2px 14px;padding:6px 10px!important;margin:0!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer;min-height:34px}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2):nth-of-type(even){background:color-mix(in srgb,var(--fg) 3%,transparent)!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2):hover{background:color-mix(in srgb,var(--accent) 8%,transparent)!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-h{flex:0 1 auto;display:flex;align-items:center;gap:10px;margin:0}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-f{flex:1 1 auto;margin:0}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.ohbox{margin:0 0 0 auto!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2):not(.scx)>:not(.sc-h):not(.sc-f):not(.ohbox){display:none!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2).scx>:not(.sc-h):not(.sc-f):not(.ohbox){flex:1 1 100%}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2).scx>.sc-d{display:grid!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2){text-align:left!important;justify-content:flex-start!important;grid-template-columns:none!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-h{justify-content:flex-start!important;text-align:left!important}
+html.vl :is(div,section):not(#zz1):not(#zz2):has(> .sc){display:block!important;columns:auto!important;grid-template-columns:none!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2)>*{justify-content:flex-start!important;text-align:left!important;width:auto!important;max-width:none!important}html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-h{flex:0 1 auto!important}html.vl .sc:not(.scl):not(#zz1):not(#zz2)>.sc-f{flex:1 1 auto!important}
+html.vl .sc:not(.scl):not(#zz1):not(#zz2){flex-direction:row!important;align-items:center!important;flex-wrap:wrap!important}

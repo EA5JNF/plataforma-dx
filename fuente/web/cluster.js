@@ -753,8 +753,8 @@ function hook(){if(window.__hkSide)return true;if(typeof window.renderSide!=="fu
 if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout(()=>clearInterval(t),15000)}
 })();
 /* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
-document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;if(!document.documentElement.classList.contains("vc")&&!t.closest(".scl"))return;
-  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});
+document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;const vl=document.documentElement.classList.contains("vl");if(!document.documentElement.classList.contains("vc")&&!vl)return;
+  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=vl?t.closest(".sc"):t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});
 /* 2.10.20: se recuerda el último modo concreto (base de la previsión) antes de cambiar a «Todos los modos» */
 (function(){const sv=()=>{const m=document.getElementById("modesel");if(m&&m.value&&m.value!=="all"){try{store.set("c_modebase",m.value)}catch(_){}}};
   document.addEventListener("focusin",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);document.addEventListener("pointerdown",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);setTimeout(sv,1500)})();
