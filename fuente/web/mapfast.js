@@ -48,7 +48,7 @@ function bal(el){const kids=[...el.children].filter(c=>c.getClientRects().length
   if(c>=2&&n%c===1){const l=kids[n-1];l.style.gridColumn="1 / -1";l.dataset.balspan="1"}}
 let raf=0;const all=()=>{raf=0;document.querySelectorAll(SEL).forEach(el=>{if(el.getClientRects().length)try{bal(el)}catch(e){}})};
 const later=()=>{if(!raf)raf=requestAnimationFrame(all)};
-function boot(){all();addEventListener("resize",later,{passive:true});
+function boot(){all();addEventListener("resize",window.ACRACB_rz?ACRACB_rz(later):later,{passive:true});
   try{new MutationObserver(ms=>{if(window.ACRACB_mut&&!ACRACB_mut(ms))return;later()}).observe(document.body,{childList:true,subtree:true})}catch(e){}
   document.addEventListener("click",()=>setTimeout(later,60),true)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();

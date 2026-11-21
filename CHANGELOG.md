@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.37 — 2026-11-21
+
+- ES: Corregido: «Cerrar» en la ficha de una estación no hacía nada con el modo concursos puesto (su botón compartía nombre interno con la caja de pausas del concurso).
+- ES: Corregido: el aviso de concurso en marcha no llegaba como notificación al iPhone, el iPad ni Android; ahora va por el mismo camino que el resto y solo se da por enviado si sale de verdad.
+- ES: Las bases en la Antártida se reconocen también por la entidad del indicativo (antes alguna salía como «DX lejano»).
+- ES: Scroll más fino en el móvil: al esconderse y aparecer la barra del navegador ya no se recolocan tarjetas, pestañas y tablas a mitad del gesto, y la página deja de reescribir cada pocos segundos textos que no han cambiado.
+- ES: Trucos de concurso a tu medida: en Concursos › Trucos eliges categoría (monooperador, asistido o multi), potencia (QRP, baja o alta), bandas (todas o una sola) y, en los concursos con varios modos, el modo. Los trucos se agrupan en «De este concurso», «Para tu categoría y potencia» y «Para tu modo». El LZ DX tiene ya sus propias jugadas.
+- EN: Fixed: "Close" on a station's card did nothing with contest mode on (its button shared an internal name with the contest breaks box).
+- EN: Fixed: the running-contest notice did not arrive as a notification on iPhone, iPad or Android; it now goes the same way as the rest and is only marked as sent if it really appears.
+- EN: Antarctic bases are also recognized by the callsign's entity (some showed up as "Far DX").
+- EN: Smoother scrolling on phones: when the browser bar hides and reappears, cards, tabs and tables are no longer rearranged mid-gesture, and the page stops rewriting unchanged text every few seconds.
+- EN: Contest tips tailored to you: in Contests › Tips you choose category (single operator, assisted or multi), power (QRP, low or high), bands (all or a single one) and, in multi-mode contests, the mode. Tips are grouped into "For this contest", "For your category and power" and "For your mode". LZ DX now has its own plays.
+
 ## 2.10.36 — 2026-11-21
 
 - ES: Mucho más rápida al tocar botones (Modo DX / Modo concursos, «Mi modo» / «Todos los modos» de Qué hacer, el menú Vista y el resto): con muchos spots, redibujar pasaba de unos 3 s a 0,3–0,5 s en un móvil lento. La caché de lo que dicen los clústeres de cada destino se vaciaba sin necesidad en cada consulta, y el destino más cercano a cada spot se recalculaba una y otra vez; ahora se guardan. Las distancias que se enseñan siguen siendo las exactas.

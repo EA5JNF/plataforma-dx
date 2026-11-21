@@ -65,9 +65,11 @@ document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;co
   /* pasar a modo DX a mano durante el concurso cuenta como «no participo» */
   const mb=t.closest('.modes button[data-m="dx"]');if(mb&&x.plan){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);setTimeout(draw,50)}
   const mc=t.closest('.modes button[data-m="contest"]');if(mc){LS.set("acracb_ctdecl",null);setTimeout(draw,50)}},true);
-function notif(){try{const x=list()[0];if(!x)return;if(!(window.ACRACB_notifOn&&ACRACB_notifOn())||typeof Notification==="undefined"||Notification.permission!=="granted")return;
-  if(LS.get("acracb_ctnotif")===x.key)return;LS.set("acracb_ctnotif",x.key);
-  new Notification(T("Concurso en marcha: ","Contest running: ")+x.c[0],{body:x.c[1]+" · "+whenEnd(x.en),tag:"ctnow"})}catch(e){}}
+/* 2.10.37: se envía por el mismo camino que el resto (service worker): «new Notification» no funciona en el iPhone, el iPad
+   ni Android, y la marca de «ya avisado» solo se guarda si la notificación ha salido de verdad */
+function notif(){try{const x=list()[0];if(!x)return;if(!(window.ACRACB_notifOn&&ACRACB_notifOn())||!window.ACRACB_notify)return;
+  if(LS.get("acracb_ctnotif")===x.key)return;
+  Promise.resolve(ACRACB_notify(T("Concurso en marcha: ","Contest running: ")+x.c[0],x.c[1]+" · "+whenEnd(x.en),"ctnow")).then(ok=>{if(ok)LS.set("acracb_ctnotif",x.key)}).catch(()=>{})}catch(e){}}
 function boot(){if(typeof CAL==="undefined"||typeof setMode!=="function"||!document.querySelector(".updrow"))return setTimeout(boot,400);
   try{draw();notif()}catch(e){console.error(e)}setInterval(()=>{if(!document.hidden)try{draw();notif()}catch(e){}},60000)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();

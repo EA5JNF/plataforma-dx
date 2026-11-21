@@ -15,6 +15,6 @@ function scan(){if(busy)return;busy=true;try{
     if((KEEP.has(k)||k.startsWith("seg:"))&&POS[k]!=null&&Math.abs(e.scrollLeft-POS[k])>1&&e.scrollWidth>e.clientWidth)e.scrollLeft=Math.min(POS[k],e.scrollWidth-e.clientWidth);
     edges(e)})}finally{busy=false}}
 let raf=0;const later=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;scan()})};
-function start(){scan();try{new MutationObserver(ms=>{if(window.ACRACB_mut(ms))later()}).observe(document.body,{childList:true,subtree:true})}catch(e){}addEventListener("resize",later,{passive:true})}
+function start(){scan();try{new MutationObserver(ms=>{if(window.ACRACB_mut(ms))later()}).observe(document.body,{childList:true,subtree:true})}catch(e){}addEventListener("resize",window.ACRACB_rz?ACRACB_rz(later):later,{passive:true})}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();

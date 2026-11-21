@@ -1463,3 +1463,25 @@ html.vl .sc.scl.alr{--lx:3.4em}
 .dxhv .dxgot{display:inline-flex;align-items:center;gap:6px;color:color-mix(in srgb,var(--ok,#22c55e) 80%,var(--fg));font:600 .8rem var(--f-m,monospace)}
 .dxhv .dxgot svg{width:1.15em;height:1.15em}
 html.vl .sc.dxc:not(.scx)>.dxhv{display:none!important}
+/* 2.10.37: trucos de concurso según cómo participas */
+.ctcat{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;margin:4px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,transparent)}
+.ctcat .cth{grid-column:1/-1;margin:0;font:600 .72rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ctcat .ctg{display:contents}
+.ctcat .ctl{font-weight:600;font-size:.9rem}
+.ctcat .ctseg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:420px}
+.ctcat .ctseg button{border:0;background:var(--panel2);color:var(--fg);padding:.5em .7em;font:600 .85rem var(--f-m,monospace);cursor:pointer;min-height:38px}
+.ctcat .ctseg button+button{border-left:1px solid var(--border)}
+.ctcat .ctseg button[aria-checked="true"]{background:var(--accent);color:#0b1220}
+:root[data-theme="light"] .ctcat .ctseg button[aria-checked="true"]{color:#fff}
+.ctcat .ctseg button:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.ctcat select{max-width:220px}
+ul.ctul{list-style:none;padding-left:0!important}
+ul.ctul li{position:relative;padding-left:18px;margin:4px 0}
+ul.ctul li::before{content:"";position:absolute;left:4px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+ul.ctul li.ctgh{padding-left:0;margin:12px 0 4px;font:600 .74rem var(--f-m,monospace);letter-spacing:.07em;text-transform:uppercase;color:var(--fg)}
+ul.ctul li.ctgh:first-child{margin-top:2px}
+ul.ctul li.ctgh::before,ul.ctul li.ctnote::before{display:none}
+ul.ctul li.ctnote{padding-left:0;margin-top:10px;font-style:italic}
+html.vc .ctcat{padding:6px 8px;gap:6px 10px}html.vc .ctcat .ctseg button{min-height:32px;padding:.35em .6em}
+@media (pointer:coarse){.ctcat .ctseg button{min-height:42px}}
+@media (max-width:420px){.ctcat{grid-template-columns:1fr}.ctcat .ctl{margin-bottom:-4px}}

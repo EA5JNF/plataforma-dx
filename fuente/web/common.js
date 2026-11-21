@@ -1,5 +1,10 @@
 /* ---- ACRACB: tema, textos plegados, entidades y log (común a todas las versiones) ---- */
 /* 2.4.1: solo cuentan los cambios de contenido real; el reloj y el mapa no despiertan a los observadores */
+/* 2.10.37: scroll fino en el móvil. Al desplazarte, el navegador del móvil esconde y enseña su barra y eso dispara «resize»
+   sin que cambie el ancho; antes cada uno de esos avisos recolocaba tarjetas, pestañas y tablas a mitad del gesto (tirones).
+   Ahora en pantallas táctiles solo se recoloca si cambia el ancho (girar el aparato, partir la pantalla). */
+window.ACRACB_rz=fn=>{let w=innerWidth;const coarse=(()=>{try{return matchMedia("(pointer:coarse)").matches}catch(e){return false}})();
+  return function(){const nw=innerWidth;if(coarse&&nw===w)return;w=nw;return fn.apply(this,arguments)}};
 window.ACRACB_mut=ms=>ms.some(m=>!(m.target instanceof SVGElement)&&!/^ck[uls]$/.test(m.target.id||""));
 (function(){
 "use strict";
@@ -110,7 +115,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   var b=document.createElement("button");b.id="zoombtn";b.type="button";b.className="thbtn zoombtn";b.innerHTML='<span aria-hidden="true">Aa</span><small></small>';
   b.onclick=function(){var i=STEPS.indexOf(uf());try{localStorage.setItem("acracb_zoom",String(STEPS[(i+1)%STEPS.length]))}catch(e){}fit()};
   th.parentElement.insertBefore(b,th);fit();return true}
- fit();window.addEventListener("resize",fit);if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fit);
+ fit();window.addEventListener("resize",ACRACB_rz(fit));if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fit);
  (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
 
 /* ---- mapa: etiquetas de spots y DXpediciones sin amontonarse ----
@@ -159,7 +164,7 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   const z0=zoomMarks;window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(()=>run());
   /* durante el zoom, una sola vez al terminar el gesto (antes en cada fotograma del gesto) */
   window.zoomMarks=function(){const r=z0.apply(this,arguments);later();return r};
-  window.addEventListener("resize",later);watch();later()}
+  window.addEventListener("resize",ACRACB_rz(later));watch();later()}
  hook()})();
 
 /* 2.1.9: indicativo con su bandera, versión compacta (sin el nombre de la entidad) para etiquetas y listas cortas */
@@ -240,7 +245,7 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   let q=0;function later(){if(q)return;q=requestAnimationFrame(()=>{q=0;all()})}
   window.ACRACB_eqTabs=all;
   document.addEventListener("click",()=>{later();setTimeout(all,350)},true);
-  window.addEventListener("resize",later);
+  window.addEventListener("resize",ACRACB_rz(later));
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(later);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",later);else later();
   window.addEventListener("load",later);setTimeout(all,1500);

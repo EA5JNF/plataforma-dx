@@ -14,7 +14,7 @@ function fit(){const z=parseFloat(getComputedStyle(document.documentElement).zoo
   for(const cs of gs){if(cs.length<2)continue;const rows=new Map();cs.forEach(c=>{const k=Math.round(c.getBoundingClientRect().top);if(!rows.has(k))rows.set(k,[]);rows.get(k).push(c)});
     rows.forEach(r=>{if(r.length<2)return;const h=Math.max(...r.map(c=>c.getBoundingClientRect().height));r.forEach(c=>c.style.minHeight=Math.ceil(h/z)+"px")})}})}
 let raf=0,busy=false;const later=()=>{if(raf||busy)return;raf=requestAnimationFrame(()=>{raf=0;busy=true;try{fit()}finally{busy=false}})};
-function start(){fit();try{new MutationObserver(m=>{if(window.ACRACB_mut(m))later()}).observe(document.body,{childList:true,subtree:true})}catch(e){}addEventListener("resize",later,{passive:true});
+function start(){fit();try{new MutationObserver(m=>{if(window.ACRACB_mut(m))later()}).observe(document.body,{childList:true,subtree:true})}catch(e){}addEventListener("resize",window.ACRACB_rz?ACRACB_rz(later):later,{passive:true});
   document.addEventListener("toggle",later,true);document.addEventListener("click",()=>setTimeout(later,60),true)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();

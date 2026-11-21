@@ -2144,7 +2144,7 @@ function openCall(call){call=String(call||"").toUpperCase().trim();if(!call)retu
   const u=e&&flagURL(e.cc);const need=t?entNeed(t):null;
   let h=`<div class="cph"><div><div class="cpc">${esc(call)}</div><div class="cpe">${u?`<img class="fl" src="${u}" alt="" width="24" height="16"> `:""}${esc(e?e.name:"Entidad desconocida")}${t?` · ${esc(CONTN[t.cont]||t.cont)} · zona CQ ${t.cq}`:""}${e?` · DXCC ${e.dxcc}`:""}</div>
     <div class="cpb">${dxp?'<span class="agr ok">DXpedición activa</span>':""}${dxp&&dxp.mw?`<span class="agr dif">Club Log Most Wanted nº ${esc(dxp.mw)}</span>`:""}${t&&t.rare?'<span class="agr dif">Entidad rara</span>':""}${need===true?'<span class="agr dif">Te falta</span>':need===false?'<span class="agr">Ya confirmada</span>':""}${sp.some(s=>s.ns>1)?`<span class="agr ok">en ${Math.max(...sp.map(s=>s.ns||1))} clústeres</span>`:""}</div></div>
-    <button class="btn cpx" id="cpx" aria-label="Cerrar">Cerrar</button></div>`;
+    <button class="btn cpx" id="cpclose" type="button" aria-label="Cerrar">Cerrar</button></div>`;
   /* en el aire */
   h+=`<h3>En el aire ahora</h3>`+(sp.length?sp.map(s=>{const a=spotAge(s);const ev=spotEval(s,lh);return `<div class="cps"><b style="color:${BC[s.band]}">${esc(s.f)} MHz</b> · ${BANDS[s.band]} · ${esc(String(spotMode(s)).toUpperCase())} · ${esc(s.t)} UTC${a!=null?` (${ageTxt(a)})`:""}${s.nw?' <span class="nwb">NUEVO</span>':""}<div class="note">Lo oye ${CSL(s.by)}${s.c?` · ${esc(s.c)}`:""}</div>${(()=>{const tt=ev&&ev.t;if(!tt)return "";const sp=prob(tt,lh,s.band,false).p,lp=tt.l?prob(tt,lh,s.band,true).p:0;return `<div class="note">Te llega con un <b>${Math.round(Math.max(sp,lp)*100)} %</b> de probabilidad${lp>sp?" por el camino largo":""}.</div>`})()}</div>`}).join(""):`<p class="note">No aparece en los clústeres de la última hora${L.spotsChecked?` (revisados a las ${esc(String(L.spotsChecked).slice(11,16))} UTC)`:""}.</p>`);
   /* DXpedición */
@@ -2165,7 +2165,7 @@ function openCall(call){call=String(call||"").toUpperCase().trim();if(!call)retu
   let ov=$("cpop");if(!ov){ov=document.createElement("div");ov.id="cpop";ov.className="cpop";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");document.body.appendChild(ov);
     ov.addEventListener("click",ev=>{if(ev.target===ov)closeCall()});document.addEventListener("keydown",ev=>{if(ev.key==="Escape")closeCall()})}
   ov.innerHTML=`<div class="cpan" tabindex="-1">${h}</div>`;ov.hidden=false;document.body.classList.add("noscroll");
-  $("cpx").onclick=closeCall;if($("cpmap"))$("cpmap").onclick=()=>{closeCall();go("mapa");openPop({k:"t",id:t.id})};
+  /* 2.10.37: «cpx» era también el id de la caja de pausas del modo concurso: con él puesto, «Cerrar» no hacía nada */ov.querySelector("#cpclose").onclick=closeCall;if($("cpmap"))$("cpmap").onclick=()=>{closeCall();go("mapa");openPop({k:"t",id:t.id})};
   ov.querySelectorAll(".cpan .cs[data-call]").forEach(x=>x.onclick=ev=>{ev.stopPropagation();openCall(x.dataset.call)});
   ov.querySelector(".cpan").focus()}
 function closeCall(){const ov=$("cpop");if(ov&&!ov.hidden){ov.hidden=true;document.body.classList.remove("noscroll")}}
@@ -2557,8 +2557,8 @@ function renderCfg(){renderStSum();if($("cfg").open)renderCal();const P=+$("eq")
    <li><b>Tu calibración</b>: ${c?(c>0?"+":"")+c+" dB":"ninguna todavía en este cuadro con esta antena"}.</li>
    <li><b>Modo</b>: ${st.mode==="contest"?CT().n+", bandas "+BI().map(b=>BANDS[b]).join(", "):"DX, todas las bandas"}.</li></ul></div>`}
 /* ---------- reloj ---------- */
-function tick(){const n=new Date();$("cku").textContent=n.toISOString().slice(11,19);$("ckl").textContent=n.toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit"});
-  const lhf=parseInt(n.toLocaleString("en-GB",{timeZone:"Europe/Madrid",hour:"2-digit",hour12:false}),10)%24+n.getMinutes()/60;const e=sunElF(TXP,lhf);$("cks").textContent=(e>-6&&e<6?"línea gris":e>0?"de día":"de noche")+" · "+(Math.round(e)<0?"−":"")+Math.abs(Math.round(e))+"°";$("cks").title=`Altura del sol en tu locator: ${Math.abs(Math.round(e))}° ${e>=0?"sobre":"bajo"} el horizonte. Línea gris = entre 6° bajo y 6° sobre el horizonte.`}
+function tick(){const n=new Date();const W=(id,v)=>{const e=$(id);if(e&&e.textContent!==v)e.textContent=v};W("cku",n.toISOString().slice(11,19));W("ckl",n.toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit"}));
+  const lhf=parseInt(n.toLocaleString("en-GB",{timeZone:"Europe/Madrid",hour:"2-digit",hour12:false}),10)%24+n.getMinutes()/60;const e=sunElF(TXP,lhf);W("cks",(e>-6&&e<6?"línea gris":e>0?"de día":"de noche")+" · "+(Math.round(e)<0?"−":"")+Math.abs(Math.round(e))+"°");{const tt=`Altura del sol en tu locator: ${Math.abs(Math.round(e))}° ${e>=0?"sobre":"bajo"} el horizonte. Línea gris = entre 6° bajo y 6° sobre el horizonte.`;if($("cks").title!==tt)$("cks").title=tt}}
 setInterval(()=>{if(!document.hidden)tick()},1000);
 /* ---------- arranque ---------- */
 $("sfi").value=L.sfi;$("kp").value=L.kp;

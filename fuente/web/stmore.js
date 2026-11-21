@@ -14,7 +14,7 @@ function sum(){const d=document.getElementById("stmore");if(!d)return;const out=
   const g=document.getElementById("gnd");if(g){const v=g.value;out.push(v==="rock"?T("suelo seco","dry ground"):v==="avg"?T("tierra normal","average ground"):v==="coast"?T("junto al mar","by the sea"):T("agua salada","salt water"))}
   const al=document.getElementById("altin");if(al&&al.value!=="")out.push(T("altitud ","altitude ")+al.value+" m");
   const b=txt("bandsel");out.push(document.getElementById("bandsel")&&document.getElementById("bandsel").value?b:T("todas las bandas","all bands"));
-  d.querySelector(".stsum").textContent=out.join(" · ")}
+  {const e=d.querySelector(".stsum"),v=out.join(" · ");if(e._v!==v){e._v=v;e.textContent=v}}}
 function build(){if(document.getElementById("stmore"))return true;const box=document.querySelector(".hsel");if(!box||!document.getElementById("gnd"))return false;
   const parts=["bandsel","eq","antsel","altin","gnd"].map(grp).filter(Boolean);if(!parts.length)return false;
   const d=document.createElement("details");d.id="stmore";d.className="stmore";

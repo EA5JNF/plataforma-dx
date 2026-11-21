@@ -545,7 +545,7 @@ const ALXK="acracb_alx",RAREN=100,FARKM=15000;
 function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:o.rare!==0,cur:o.cur!==0,far:o.far!==0}}
 function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
   if(suf==="MM")return ["Móvil marítimo","Maritime mobile"];if(suf==="AM")return ["Móvil aeronáutico","Aeronautical mobile"];
-  if(+dxcc===13)return ["Base en la Antártida","Antarctic base"];
+  {let en=null;try{en=callEnt(c)}catch(_){}if(+dxcc===13||(en&&/^(Antártida|Antarctica)$/i.test(en.name||"")))return ["Base en la Antártida","Antarctic base"]}
   const core=p.reduce((a,x)=>x.length>a.length?x:a,"");
   if(/\d{3,}/.test(core)||/^[A-Z]{2}\d{2,}[A-Z]/.test(core)||(core.length>=7&&/^[A-Z0-9]+$/.test(core)&&/\d/.test(core)))return ["Indicativo especial","Special event call"];
   return null}
