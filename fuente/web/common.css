@@ -1239,3 +1239,14 @@ details.qrpd{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding
  .sline>.stbtn{order:2;width:100%;justify-content:center;min-height:44px;margin:0!important}
 }
 .gtkv .chip.lv-g .v{color:#22c55e}.gtkv .chip.lv-r .v{color:#ef4444}.gtkv .chip.lv-y .v{color:#d6a10a}
+/* 2.10.11: estado solar-terrestre */
+details.sterr{margin:12px 0;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--panel2)}
+details.sterr>summary{font-weight:700;cursor:pointer}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px;margin-top:10px}
+.stgrid section{border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--panel)}
+.stgrid h4{margin:0 0 6px;font:600 .74rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.str{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px solid var(--line);font-size:.86rem}.str:last-child{border-bottom:0}
+.str span{color:var(--muted)}.str b{text-align:right;font-family:var(--f-m,monospace)}
+.st-g{color:#22c55e}.st-y{color:#d6a10a}.st-r{color:#ef4444}.st-n{color:var(--muted)}
+.sthh,.sthr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:4px 0;font-size:.86rem}.sthh{font:600 .7rem var(--f-m,monospace);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.sthr{border-bottom:1px solid var(--line)}.sthr:last-child{border-bottom:0}.sthr b{font-family:var(--f-m,monospace)}
