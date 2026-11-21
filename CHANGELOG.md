@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.21 — 2026-11-21
+
+- ES: IOTA (islas) con categoría propia en todos los selectores: Todos, DX, POTA, SOTA, WWFF, IOTA y Otros, en el clúster, el mapa y el buscador.
+- ES: Sin selectores repetidos: el buscador del clúster ya no tiene sus propias listas de banda, modo y tipo; usa el mismo filtro que el clúster y el mapa (o lo que escribas en la búsqueda, como «20m FT8»). Conserva continente y antigüedad, que no están en otro sitio. Los tipos sin spots ya no muestran «0».
+- EN: IOTA (islands) has its own category in every selector: All, DX, POTA, SOTA, WWFF, IOTA and Other, in the cluster, the map and the search.
+- EN: No repeated selectors: the cluster search no longer has its own band, mode and type lists; it uses the same filter as the cluster and the map (or what you type in the search, such as "20m FT8"). It keeps continent and age, which are not elsewhere. Types with no spots no longer show "0".
+
 ## 2.10.20 — 2026-11-21
 
 - ES: «Todos los modos» pasa a ser una opción más de la lista de modos de la estación (antes era una casilla al lado). Elegir un modo concreto deja solo ese modo; con «Todos los modos», la previsión sigue calculándose en el último modo concreto elegido. Va sincronizado con «Mi modo / Todos los modos» de «Qué hacer ahora».

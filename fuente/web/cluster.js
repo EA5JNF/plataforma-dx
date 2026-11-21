@@ -5,15 +5,16 @@ const EN=()=>window.ACRACB_LANG==="en";
 const T=(es,en)=>EN()?en:es;
 const S={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const ORD=[0,1,8,2,9,3,4,5,6,7,10,11,12];
-const PROGS=["POTA","SOTA","WWFF","OTROS"];
-/* 2.10.18: una sola clasificación en toda la plataforma: DX, POTA, SOTA, WWFF y OTROS (IOTA, GMA, castillos, faros,
+const PROGS=["POTA","SOTA","WWFF","IOTA","OTROS"];
+/* 2.10.18: una sola clasificación en toda la plataforma: DX, POTA, SOTA, WWFF, IOTA y OTROS (GMA, castillos, faros,
    diplomas españoles…). Sale de los propios clústeres: referencia del spot o de su comentario. */
-const P3=["POTA","SOTA","WWFF"];const catOf=o=>P3.includes(String(o.prog||"").toUpperCase())?String(o.prog).toUpperCase():"OTROS";
+/* 2.10.20: IOTA (islas) con categoría propia */
+const P3=["POTA","SOTA","WWFF","IOTA"];const catOf=o=>P3.includes(String(o.prog||"").toUpperCase())?String(o.prog).toUpperCase():"OTROS";
 const RXA=/\b(POTA|SOTA|WWFF|IOTA|GMA|WCA|HEMA|WWBOTA|BOTA|LLOTA|ILLW|ARLHS|SIOTA|ZLOTA|DME|DVGE|DFE|DCE|DIE|DMVE|DEE)[ :#-]*([A-Z0-9]{1,5}[\/-][A-Z0-9\/-]{1,12})\b/i;
 /* filtros acumulativos, como las bandas del mapa: se pueden marcar varios tipos y varias bandas a la vez */
 const ld=(k,ok)=>{try{const v=JSON.parse(S.get(k)||"null");return Array.isArray(v)?v.filter(ok):null}catch(e){return null}};
 let TYPES=new Set(ld("acracb_cltypes",x=>x==="dx"||PROGS.includes(x))||[S.get("acracb_cltype")].filter(x=>x==="dx"||PROGS.includes(x)));if(!TYPES.size)["dx"].concat(PROGS).forEach(x=>TYPES.add(x));
-/* quien tenía «Todos» marcado antes de existir OTROS sigue con todo */if(["dx","POTA","SOTA","WWFF"].every(x=>TYPES.has(x)))TYPES.add("OTROS");
+/* quien tenía «Todos» marcado antes de existir OTROS sigue con todo */if(["dx","POTA","SOTA","WWFF"].every(x=>TYPES.has(x))){TYPES.add("OTROS");TYPES.add("IOTA")}
 /* 2.10.19: un solo juego de filtros. Las bandas elegidas en el clúster son las mismas del mapa (st.mbs) y de los avisos;
    el modo es el de la estación más los que añadas en el clúster o el mapa (CMS). Vacío = todas. */
 const BSEL={get size(){return BL().length},has:b=>BL().includes(b),add(b){if(!BL().includes(b))st.mbs=BL().concat([b])},delete(b){st.mbs=BL().filter(x=>x!==b)},clear(){st.mbs=[]},[Symbol.iterator](){return BL().slice()[Symbol.iterator]()}};
@@ -43,17 +44,17 @@ function progAll(){
   for(const s of (L.spots||[])){const m=String(s.c||"").match(RXA);if(!m)continue;const k=s.call+"|"+m[2].toUpperCase();if(seen.has(k))continue;seen.add(k);
     out.push({call:s.call,prog:m[1].toUpperCase(),ref:m[2].toUpperCase(),f:s.f,band:s.band,mode:s.mode,t:s.t,by:Array.isArray(s.by)?s.by[0]:s.by,dx:s.dx,a:(()=>{try{return spotAge(s)}catch(e){return null}})(),c:""})}
   return out}
-function refUrl(p,r){if(!P3.includes(p))return "";if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
+function refUrl(p,r){if(!["POTA","SOTA","WWFF"].includes(p))return "";if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
   if(p==="SOTA")return "https://www.sotadata.org.uk/en/summit/"+r.split("/").map(encodeURIComponent).join("/");
   return "https://wwff.co/directory/?showRef="+encodeURIComponent(r)}
-const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","reserve"]};
+const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","reserve"],IOTA:["isla","island"]};
 const CATN=k=>k==="dx"?"DX":k==="OTROS"?T("Otros","Other"):k;
 
 /* ---------- barra de filtros ---------- */
 function bar(counts,bcounts){
   const bs=bandsOK(),list=ORD.filter(b=>bs.has(b));[...BSEL].forEach(b=>{if(!bs.has(b))BSEL.delete(b)});
   const tb=[["dx","DX"]].concat(PROGS.map(p=>[p,CATN(p)]));
-  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)&&!tb.every(([z])=>TYPES.has(z))}">${l}${counts[k]!=null?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
+  return `<div class="seg clseg" role="group" aria-label="${T("Qué mostrar","What to show")}"><span class="segl">${T("Ver","Show")}</span><button type="button" data-clt="*" class="mmall" aria-pressed="${tb.every(([k])=>TYPES.has(k))}">${T("Todos","All")}</button>${tb.map(([k,l])=>`<button type="button" data-clt="${k}" aria-pressed="${TYPES.has(k)&&!tb.every(([z])=>TYPES.has(z))}">${l}${counts[k]?` <small>${counts[k]}</small>`:""}</button>`).join("")}</div>`+
     (list.length>1?`<div class="seg clseg clbands" role="group" aria-label="${T("Banda del clúster","Cluster band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-clb="" aria-pressed="${!BSEL.size}">${T("Todas","All")}</button>${list.map(b=>`<button type="button" data-clb="${b}" aria-pressed="${BSEL.has(b)}"${bcounts[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bcounts[b]?` <small>${bcounts[b]}</small>`:""}</button>`).join("")}</div>`:"")}
 function wire(box){
   /* cada botón se marca o se desmarca; siempre queda al menos un tipo */
@@ -429,7 +430,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     srcs.push(e2(L.spotsSrc||"—"))}
   const ps=PROGS.filter(p=>TYPES.has(p));
   if(ps.length){const rows=pa.filter(o=>ps.includes(catOf(o))&&inB(o.band)).sort((a,b)=>(a.a??1e9)-(b.a??1e9));const N=80;
-    const psn=ps.map(p=>p==="OTROS"?T("otros programas (IOTA, GMA, castillos, faros…)","other programs (IOTA, GMA, castles, lighthouses…)"):p);const pl=psn.length>1?psn.slice(0,-1).join(", ")+T(" y "," and ")+psn[psn.length-1]:psn[0];
+    const psn=ps.map(p=>p==="OTROS"?T("otros programas (GMA, castillos, faros…)","other programs (GMA, castles, lighthouses…)"):p);const pl=psn.length>1?psn.slice(0,-1).join(", ")+T(" y "," and ")+psn[psn.length-1]:psn[0];
     bx.insertAdjacentHTML("beforeend",`<p class="note clnote">${T(`Activadores de ${pl} de todo el mundo en la última hora, en ${CMSTXT()}${bl}. Los más recientes, arriba.`,`${pl} activators worldwide in the last hour, in ${CMSTXT()}${bl}. Newest first.`)}</p>`);
     if(TYPES.has("dx"))h+=`<p class="note clsec">${pl}</p>`;
     h+=rows.length?rows.slice(0,N).map(progRow).join("")+(rows.length>N?`<p class="note">${T(`Y ${rows.length-N} más.`,`And ${rows.length-N} more.`)}</p>`:""):`<div class="empty">${T(`Ningún activador de ${pl} en ${CMSTXT()}${bl} en la última hora.`,`No ${pl} activators in ${CMSTXT()}${bl} in the last hour.`)}</div>`;
@@ -663,7 +664,12 @@ function selQ(){const g=id=>{const e=$(id);return e?e.value:""};const Q=qParse($
   if(t){Q.progs=new Set([t]);Q.chips.push(t==="dx"?"DX":t)}
   if(k){Q.cont=k;Q.chips.push(T("DX en ","DX in ")+contName(k))}if(ks){Q.scont=ks;Q.chips.push(T("spotter en ","spotter in ")+contName(ks))}
   if(a){Q.age=+a;Q.chips.push(T(`últimos ${a} min`,`last ${a} min`))}
-  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.scont||Q.age;return any?Q:null}
+  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.scont||Q.age;if(!any)return null;
+  /* 2.10.20: el buscador ya no tiene sus propios selectores de banda, modo y tipo: usa el filtro común (estación, clúster y mapa),
+     salvo que escribas tú la banda o el modo en la búsqueda («20m FT8») */
+  try{if(!Q.bands.size&&BSEL.size)Q.bands=new Set([...BSEL]);if(!Q.modes.size&&!allOn())Q.modes=new Set(CMS().map(k=>{const v=String(MODES[k].s).toUpperCase();return v==="JS8CALL"?"JS8":v}));
+    const ALLT=["dx"].concat(PROGS);if(!Q.progs.size&&!ALLT.every(x=>TYPES.has(x)))Q.progs=new Set([...TYPES])}catch(_){}
+  return Q}
 /* 2.8.3: continente por posición, con las reglas DXCC habituales (Canarias y Madeira en AF, Azores en EU, Turquía asiática,
    Chipre y el Cáucaso en AS, Indonesia, Filipinas y el Pacífico en OC, Hawái en OC, Trinidad en SA…). Sirve para el DX y para el spotter. */
 function contLL(p){if(!p||!isFinite(p[0])||!isFinite(p[1]))return null;let [lon,lat]=p;lon=((lon+540)%360)-180;
@@ -697,14 +703,14 @@ function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;co
   box.innerHTML=h;box.hidden=false;const pb=box.querySelector("[data-srcall]");if(pb)pb.onclick=()=>{try{openCall(pb.dataset.srcall)}catch(_){}}}
 function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
   w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" aria-label="${T("Buscar en los clústeres","Search the clusters")}" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia o país","Callsign, frequency or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
-    <details class="srf" id="srf"><summary>${T("Filtros","Filters")} <span class="srfh">${T("banda, modo, continente…","band, mode, continent…")}</span>${""} <span class="srfn" id="srfn"></span></summary><div class="srsel">
-      <label><span>${T("Banda","Band")}</span><select id="srb"><option value="">${T("Todas","All")}</option>${ORD.map(b=>`<option value="${b}">${BANDS[b]}</option>`).join("")}</select></label>
-      <label><span>${T("Modo","Mode")}</span><select id="srm"><option value="">${T("Todos","All")}</option><option value="CW">CW</option><option value="PHONE">${T("Fonía (todas)","Phone (all)")}</option><option value="DIGI">${T("Digitales (todos)","Digital (all)")}</option><optgroup label="${T("Concretos","Specific")}"><option value="SSB">SSB</option><option value="AM">AM</option><option value="FM">FM</option><option value="FT8">FT8</option><option value="FT4">FT4</option><option value="RTTY">RTTY</option><option value="PSK">PSK</option></optgroup></select></label>
+    <details class="srf" id="srf"><summary>${T("Filtros","Filters")} <span class="srfh">${T("continente y antigüedad","continent and age")}</span>${""} <span class="srfn" id="srfn"></span></summary><div class="srsel">
+
+
       <label><span>${T("Continente DX","DX continent")}</span><select id="srdx"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
       <label><span>${T("Continente del spotter","Spotter continent")}</span><select id="srcs"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
-      <label><span>${T("Tipo","Type")}</span><select id="srt"><option value="">${T("Todos","All")}</option><option value="dx">DX</option>${PROGS.map(x=>`<option value="${x}">${CATN(x)}</option>`).join("")}</select></label>
+
       <label><span>${T("Antigüedad","Age")}</span><select id="sra"><option value="">${T("Todas","All")}</option><option value="15">${T("Últimos 15 min","Last 15 min")}</option><option value="30">${T("Últimos 30 min","Last 30 min")}</option><option value="60">${T("Última hora","Last hour")}</option></select></label>
-    </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA, WWFF y otros programas (IOTA, GMA…) y en las DXpediciones anunciadas. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF and other programs (IOTA, GMA…) and announced DXpeditions. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
+    </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA, WWFF, IOTA y otros programas (GMA, castillos, faros…) y en las DXpediciones anunciadas. Usa el mismo modo, las mismas bandas y los mismos tipos (DX, POTA…) que el clúster y el mapa, salvo que escribas otros en la búsqueda. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF, IOTA and other programs (GMA, castles, lighthouses…) and announced DXpeditions. It uses the same mode, bands and types (DX, POTA…) as the cluster and the map, unless you type others in the search. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
     <div id="srchres" hidden aria-live="polite"></div>`;
   {const pt=sec.querySelector(":scope>.ptabs");if(pt)pt.after(w);else sec.insertBefore(w,sec.firstElementChild)}let tm=0;const inp=$("srchq"),x=$("srchx");
   inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
