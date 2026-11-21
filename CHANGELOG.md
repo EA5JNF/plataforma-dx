@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.16 — 2026-11-21
+
+- ES: El porcentaje de ampliación del botón «Aa» se lee bien: texto claro sobre fondo oscuro en el tema claro, y al revés en el oscuro, algo más grande.
+- EN: The zoom percentage on the "Aa" button is now easy to read: light text on dark in the light theme and the reverse in the dark theme, slightly larger.
+
 ## 2.10.15 — 2026-11-21
 
 - ES: La línea de estado de «Actualizar» es coherente: los spots nuevos y los confirmados se cuentan entre los que se muestran (antes podía salir «150 spots (664 nuevos)»).
