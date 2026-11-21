@@ -191,6 +191,16 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
   b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply();try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}};
   z.parentElement.insertBefore(b,z);apply();return true}
  (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
+/* ---- 2.10.31: vista de lista para todos los listados de estaciones, independiente de completa o compacta ---- */
+(function(){var EN=window.ACRACB_LANG==="en",K="acracb_list";
+ function on(){try{return localStorage.getItem(K)==="1"}catch(e){return false}}
+ function apply(){document.documentElement.classList.toggle("vl",on());var b=document.getElementById("listbtn");if(b){b.setAttribute("aria-pressed",String(on()));b.title=on()?(EN?"List view (tap for cards)":"Vista de lista (pulsa para tarjetas)"):(EN?"Card view (tap for list)":"Vista de tarjetas (pulsa para lista)");b.setAttribute("aria-label",b.title)}}
+ apply();
+ function btn(){if(document.getElementById("listbtn"))return true;var v=document.getElementById("viewbtn");if(!v)return false;var b=document.createElement("button");b.id="listbtn";b.type="button";b.className="thbtn viewbtn listbtn";
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.5h18M9 4v16"/></svg>';
+  b.onclick=function(){try{localStorage.setItem(K,on()?"":"1")}catch(e){}apply();try{refresh()}catch(e){}try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}try{renderAlerts()}catch(e){}try{window.renderAlBar&&renderAlBar()}catch(e){}};
+  v.insertAdjacentElement("afterend",b);apply();return true}
+ (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
 
 /* ---- 2.8.26: un solo envoltorio para el dibujo del mapa ----
    Antes cada añadido del mapa envolvía drawMap y, si otro lo envolvía después, volvía a envolverlo: en un minuto se

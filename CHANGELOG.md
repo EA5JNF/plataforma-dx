@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.31 — 2026-11-21
+
+- ES: Vista de lista: nuevo botón en la cabecera (junto al de vista completa/compacta y compatible con las dos) que muestra todos los listados de estaciones como una lista de filas alineadas: hace cuánto, frecuencia, modo, banda, estación con bandera y país, etiquetas, quién la oye, rumbo y distancia, probabilidad de QSO y «¿Lo oyes?». En el ordenador lleva cabecera de columnas; en el móvil, cada fila ocupa tres líneas cortas. Al tocar una fila se despliegan sus detalles. Se recuerda en el dispositivo.
+- ES: Buscador del clúster: nuevo filtro por país DX, con los países que hay ahora en los clústeres y cuántos spots tiene cada uno (con tu modo y tus bandas).
+- EN: List view: new header button (next to the full/compact view button and compatible with both) that shows every station listing as aligned rows: how long ago, frequency, mode, band, station with flag and country, tags, who hears it, bearing and distance, QSO chance and "Do you hear it?". On a computer it has column headings; on a phone each row takes three short lines. Tapping a row expands its details. It is remembered on the device.
+- EN: Cluster search: new DX country filter, listing the countries on the clusters right now and how many spots each has (with your mode and bands).
+
 ## 2.10.30 — 2026-11-21
 
 - ES: «Qué hacer ahora» ordenado y estable: siempre primero los botones de modo y las recomendaciones, y debajo, plegado, «Por qué: lo que dice el clúster y las condiciones». Antes, al pulsar «Mi modo» o «Todos los modos», ese bloque perdía el plegado y salía desordenado (en inglés no se plegaba nunca). Si lo abres, sigue abierto al cambiar de modo o al actualizar.

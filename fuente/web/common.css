@@ -1331,3 +1331,31 @@ html.vc .ctnowbn>span:not(.ctm){display:none}
 :root[data-theme="light"] .updb svg{stroke:#fff}
 
 :root[data-theme="light"] .seg button[aria-pressed="true"] small,:root[data-theme="light"] .seg button[aria-pressed="true"] i{color:#fff;opacity:.9}
+/* 2.10.31: vista de lista */
+.sclh{display:none}
+html.vl .sclh{display:grid;grid-template-columns:58px 74px 54px 46px minmax(150px,1.4fr) minmax(0,1fr) minmax(0,1fr) 150px 46px 92px;gap:0 10px;padding:4px 10px;font:600 .66rem var(--f-m,monospace);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:1}
+html.vl .sc.scl{display:grid!important;grid-template-columns:58px 74px 54px 46px minmax(150px,1.4fr) minmax(0,1fr) minmax(0,1fr) 150px 46px 92px;gap:0 10px;align-items:center;padding:5px 10px!important;margin:0!important;border-radius:0!important;border:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important;box-shadow:none!important;cursor:pointer;min-height:34px}
+html.vl .sc.scl:nth-of-type(even){background:color-mix(in srgb,var(--fg) 3%,transparent)!important}
+html.vl .sc.scl:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)!important}
+html.vl .sc.scl.old{opacity:.6}
+.scl>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.86rem}
+.scl .l-age{font:500 .78rem var(--f-m,monospace);color:var(--muted)}
+.scl .l-f b{font:700 .95rem var(--f-m,monospace)}
+.scl .l-b{font:600 .8rem var(--f-m,monospace)}
+.scl .l-call{font-weight:700}
+.scl .l-tags{display:flex;gap:4px;overflow:hidden}.scl .l-tags>*{flex:none}
+.scl .l-by{font-size:.78rem;color:var(--muted)}
+.scl .l-geo{font:500 .78rem var(--f-m,monospace);color:var(--muted)}
+.scl .l-p{font:500 .8rem var(--f-m,monospace);text-align:right}.scl .l-p b{font-size:.92rem;color:var(--fg)}
+.scl .l-oh{overflow:visible!important;justify-self:end}.scl .l-oh .ohbox{margin:0!important}.scl .l-oh .ohr{justify-content:flex-end}
+.scl .sc-d{display:none;grid-column:1/-1;margin:6px 0 4px}
+.scl.scx .sc-d{display:grid}
+@media (max-width:760px){
+ html.vl .sclh{display:none}
+ html.vl .sc.scl{grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-areas:"f m b age p" "call call call call oh" "tags tags by by geo";gap:2px 8px;padding:7px 10px!important}
+ .scl .l-f{grid-area:f}.scl .l-m{grid-area:m}.scl .l-b{grid-area:b}.scl .l-age{grid-area:age;justify-self:end}.scl .l-p{grid-area:p}.scl .l-call{grid-area:call}.scl .l-oh{grid-area:oh}.scl .l-tags{grid-area:tags}.scl .l-by{grid-area:by}.scl .l-geo{grid-area:geo;justify-self:end}
+ .scl .l-tags:empty,.scl .l-by:empty{display:none}
+}
+html.vl :is(div,section):has(> .sc.scl){display:block!important;columns:auto!important}
+html.vl :is(div,section):has(> .sc.scl)>.sclh{margin:0}
+@media (max-width:760px){.scl .l-f,.scl .l-m,.scl .l-b,.scl .l-p{min-width:max-content!important;overflow:visible!important}.scl .l-age{justify-self:start!important}}

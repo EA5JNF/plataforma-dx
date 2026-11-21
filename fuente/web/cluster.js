@@ -110,6 +110,7 @@ const ACTIVE=60;const isAct=a=>a!=null&&isFinite(a)&&a<=ACTIVE;window.ACRACB_isA
 const ageTag=(a,t)=>a!=null||t?`<span class="sc-age" title="${t?e2(t)+" UTC":""}">${ago(a)}</span>`:`<span class="sc-age">${T("sin spots recientes","no recent spots")}</span>`;
 function card(o){
   if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
+  if(o.call&&document.documentElement.classList.contains("vl"))return listRow(o);
   const h=`<div class="sc-h"><span class="sc-call">${o.call?stBtn(o.call,o.band):""}</span>${o.call||o.a!=null||o.t?ageTag(o.a,o.t):""}</div>`;
   const fl=[o.f?`<b class="sc-fq" style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:"",o.mode?mb(o.mode):"",o.band!=null&&BANDS[o.band]?`<span class="sc-b"${o.f?"":` style="color:${BC[o.band]};font-weight:600"`}>${BANDS[o.band]}</span>`:""].concat(o.tags||[]).concat(o.geo?[`<span class="sc-cp">${o.geo.az}° ${cab(o.geo.az)}</span>`]:[]).concat(o.p!=null?[`<span class="sc-cp"><b>${o.p} %</b></span>`]:[]).filter(Boolean);
   const f=fl.length?`<div class="sc-f">${fl.join("")}</div>`:"";
@@ -120,6 +121,26 @@ function card(o){
   const acc=o.call?`${ohd?"":` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`}`:"";
   return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
 window.ACRACB_card=o=>card(o);
+/* 2.10.31: vista de lista: una fila por estación con las columnas alineadas (como un clúster web, pero con más datos),
+   en todos los listados que usan la tarjeta de estación. Al tocar la fila se despliegan los detalles. Vale con la vista
+   completa y con la compacta. */
+function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
+  const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`;
+  let rumbo="",dist="";if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`}
+  const oh=window.ACRACB_ohBox&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):"";
+  return `<div class="sc scl ohc${old?" old":""}"${ohd}>`+
+    `<span class="l-age" title="${o.t?e2(o.t)+" UTC":""}">${ago(o.a)}</span>`+
+    `<span class="l-f">${o.f?`<b style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:""}</span>`+
+    `<span class="l-m">${o.mode?mb(o.mode):""}</span>`+
+    `<span class="l-b" style="color:${BC[o.band]||"inherit"}">${o.band!=null&&BANDS[o.band]?BANDS[o.band]:""}</span>`+
+    `<span class="l-call sc-call">${stBtn(o.call,o.band)}</span>`+
+    `<span class="l-tags">${(o.tags||[]).join("")}</span>`+
+    `<span class="l-by" title="${T("Le oyen","Heard by")}">${o.by||""}</span>`+
+    `<span class="l-geo">${g?`${g.az}° ${cab(g.az)} · ${fk(g.km)} km`:""}</span>`+
+    `<span class="l-p">${o.p!=null?`<b>${o.p}</b> %`:""}</span>`+
+    `<span class="l-oh">${oh}</span>`+
+    `<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl></div>`}
+window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span>${T("Hace","Ago")}</span><span>${T("Frecuencia","Frequency")}</span><span>${T("Modo","Mode")}</span><span>${T("Banda","Band")}</span><span>${T("Estación","Station")}</span><span>${T("Etiquetas","Tags")}</span><span>${T("Le oyen","Heard by")}</span><span>${T("Rumbo · distancia","Bearing · distance")}</span><span>${T("QSO","QSO")}</span><span></span></div>`;
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
@@ -431,7 +452,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     const one=g=>{const x=g.best;const sv=x.s;const tg=alt(g);if(!tg.length)return dxRow(sv,x.e,x.a);const o=Object.assign({},sv);const r=dxRow(o,x.e,x.a);
       const row=`<dt>${T("También en","Also on")}</dt><dd class="xalts">${tg.join("")}</dd>`;return r.includes('class="sc-d">')?r.replace('class="sc-d">','class="sc-d">'+row):r.replace(/(<div class="sc-f">[\s\S]*?)(<\/div>)/,(m,a1,a2)=>a1+tg.join("")+a2)};
     const cards=sel.map(one);const open=CLOPEN||cards.length<=N+2;
-    h+=cards.length?(open?cards:cards.slice(0,N)).join("")+(open?"":`<button type="button" class="btn llmore" data-clmore>${T(`Ver ${cards.length-N} estaciones más`,`Show ${cards.length-N} more stations`)}</button>`)
+    h+=cards.length?(document.documentElement.classList.contains("vl")?ACRACB_listHead():"")+(open?cards:cards.slice(0,N)).join("")+(open?"":`<button type="button" class="btn llmore" data-clmore>${T(`Ver ${cards.length-N} estaciones más`,`Show ${cards.length-N} more stations`)}</button>`)
       :`<div class="empty">${CLALL||!grp.length?T(`Sin spots DX de ${CMSTXT()} útiles${bl} ahora.`,`No useful ${CMSTXT()} DX spots${bl} right now.`):T(`Ninguna estación que puedas trabajar ahora${bl}. Pulsa «Todos» para ver las ${grp.length} del clúster.`,`No stations you can work right now${bl}. Tap «All» to see the ${grp.length} on the cluster.`)}</div>`;
     srcs.push(e2(L.spotsSrc||"—"))}
   const ps=PROGS.filter(p=>TYPES.has(p));
@@ -664,13 +685,13 @@ function sMatch(Q,o){if(Q.bands.size&&!Q.bands.has(o.band))return false;if(!mOK(
 const CONTS=[["EU","Europa","Europe"],["AF","África","Africa"],["AS","Asia","Asia"],["NA","Norteamérica","North America"],["SA","Sudamérica","South America"],["OC","Oceanía","Oceania"],["AN","Antártida","Antarctica"]];
 const contName=k=>{const n=CONTS.find(x=>x[0]===k);return n?T(n[1],n[2]):k};
 function selQ(){const g=id=>{const e=$(id);return e?e.value:""};const Q=qParse($("srchq")?$("srchq").value:"")||{bands:new Set(),modes:new Set(),progs:new Set(),f:null,calls:[],words:[],chips:[],cont:null,age:null};
-  const b=g("srb"),m=g("srm"),t=g("srt"),k=g("srdx"),ks=g("srcs"),a=g("sra");
+  const b=g("srb"),m=g("srm"),t=g("srt"),k=g("srdx"),ks=g("srcs"),a=g("sra"),en=g("srent");if(en){Q.entn=en;Q.chips.push(en)}
   if(b!==""){Q.bands=new Set([+b]);Q.chips=Q.chips.filter(x=>!/^(banda|band) /.test(x));Q.chips.push(T("banda ","band ")+BANDS[+b])}
   if(m){Q.modes=new Set([m]);Q.chips=Q.chips.filter(x=>!/^(modo|mode) /.test(x));Q.chips.push(T("modo ","mode ")+(m==="DIGI"?T("digitales","digital"):m==="PHONE"?T("fonía","phone"):m))}
   if(t){Q.progs=new Set([t]);Q.chips.push(t==="dx"?"DX":t)}
   if(k){Q.cont=k;Q.chips.push(T("DX en ","DX in ")+contName(k))}if(ks){Q.scont=ks;Q.chips.push(T("spotter en ","spotter in ")+contName(ks))}
   if(a){Q.age=+a;Q.chips.push(T(`últimos ${a} min`,`last ${a} min`))}
-  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.scont||Q.age;if(!any)return null;
+  const any=Q.bands.size||Q.modes.size||Q.progs.size||Q.f||Q.calls.length||Q.words.length||Q.cont||Q.scont||Q.age||Q.entn;if(!any)return null;
   /* 2.10.20: el buscador ya no tiene sus propios selectores de banda, modo y tipo: usa el filtro común (estación, clúster y mapa),
      salvo que escribas tú la banda o el modo en la búsqueda («20m FT8») */
   try{if(!Q.bands.size&&BSEL.size)Q.bands=new Set([...BSEL]);if(!Q.modes.size&&!allOn())Q.modes=new Set(CMS().map(k=>{const v=String(MODES[k].s).toUpperCase();return v==="JS8CALL"?"JS8":v}));
@@ -690,12 +711,12 @@ function contLL(p){if(!p||!isFinite(p[0])||!isFinite(p[1]))return null;let [lon,
   if(lon>=95&&lat<=7&&!(lon<104.5&&lat>1))return "OC";if(lon>=116&&lon<=127&&lat>4.5&&lat<=21)return "OC";if(lon>=130&&lat<24)return "OC";return "AS"}
 window.ACRACB_cont=contLL;
 function contOf(call,dx,band){try{const e=spotEval({call,dx:dx||(window.ACRACB_areaPos&&ACRACB_areaPos(call)),band:band!=null?band:3,kind:"dx",from:[]},st.mhour);return e&&e.t?e.t.cont:null}catch(_){return null}}
-function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=selQ();{const n=["srb","srm","srdx","srcs","srt","sra"].filter(id=>$(id)&&$(id).value).length,fn=$("srfn");if(fn)fn.textContent=n?`(${n} ${n===1?T("activo","active"):T("activos","active")})`:""}const clr=$("srchx");if(clr)clr.hidden=!Q;if(!Q){box.hidden=true;box.innerHTML="";return}
+function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;const Q=selQ();{const n=["srb","srm","srdx","srent","srcs","srt","sra"].filter(id=>$(id)&&$(id).value).length,fn=$("srfn");if(fn)fn.textContent=n?`(${n} ${n===1?T("activo","active"):T("activos","active")})`:""}const clr=$("srchx");if(clr)clr.hidden=!Q;if(!Q){box.hidden=true;box.innerHTML="";return}
   const lh=st.mhour;const out=[];
   for(const s of (L.spots||[])){const ent=(s.dxcc||"")+" "+(()=>{try{return (callEnt(s.call)||{}).name||""}catch(_){return ""}})();
-    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;const a=spotAge(s);if(Q.age&&!(a!=null&&a<=Q.age))continue;const e=spotEval(s,lh);if(Q.cont&&(s.cont||contLL(s.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(s.call)))||(e&&e.t&&e.t.cont))!==Q.cont)continue;
+    if(!sMatch(Q,{call:s.call,f:s.f,band:s.band,mode:modeOf(s),prog:null,ent}))continue;if(Q.entn&&(()=>{try{return (callEnt(s.call)||{}).name}catch(_){return ""}})()!==Q.entn)continue;const a=spotAge(s);if(Q.age&&!(a!=null&&a<=Q.age))continue;const e=spotEval(s,lh);if(Q.cont&&(s.cont||contLL(s.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(s.call)))||(e&&e.t&&e.t.cont))!==Q.cont)continue;
     if(Q.scont){const fp=Array.isArray(s.from)&&s.from[0]?s.from[0]:null;const by0=(Array.isArray(s.by)?s.by:[s.by])[0];if(contLL(fp||(by0&&window.ACRACB_areaPos&&ACRACB_areaPos(by0)))!==Q.scont)continue}out.push({a,h:spotKind(s)==="near"||!e?nearRow(s,a):dxRow(s,e,a)})}
-  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;if(Q.age&&!(o.a!=null&&o.a<=Q.age))continue;if(Q.cont&&(contOf(o.call,o.dx,o.band)||contLL(o.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(o.call))))!==Q.cont)continue;if(Q.scont)continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
+  try{for(const o of progAll()){let ent="";try{ent=(callEnt(o.call)||{}).name||""}catch(_){}if(!sMatch(Q,{call:o.call,f:o.f,band:o.band,mode:o.mode,prog:o.prog,ref:o.ref,ent}))continue;if(Q.entn&&ent!==Q.entn)continue;if(Q.age&&!(o.a!=null&&o.a<=Q.age))continue;if(Q.cont&&(contOf(o.call,o.dx,o.band)||contLL(o.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(o.call))))!==Q.cont)continue;if(Q.scont)continue;out.push({a:o.a,h:progRow(o)})}}catch(_){}
   out.sort((x,y)=>(x.a??1e9)-(y.a??1e9));
   const onlyCall=Q.calls.filter(x=>x.c).map(x=>x.c);
   const by=onlyCall.length?(L.spots||[]).filter(s=>(Array.isArray(s.by)?s.by:[s.by]).some(b=>onlyCall.some(c=>String(b||"").toUpperCase().includes(c)))):[];
@@ -709,17 +730,22 @@ function srchRun(){const box=$("srchres"),inp=$("srchq");if(!box||!inp)return;co
   box.innerHTML=h;box.hidden=false;const pb=box.querySelector("[data-srcall]");if(pb)pb.onclick=()=>{try{openCall(pb.dataset.srcall)}catch(_){}}}
 function srchInit(){const sec=document.querySelector('section[data-pg="dx"]');if(!sec||$("srch"))return;const w=document.createElement("div");w.id="srch";w.className="card srch";
   w.innerHTML=`<label class="srl" for="srchq">${T("Buscar en los clústeres","Search the clusters")}</label><div class="srrow"><input id="srchq" type="search" aria-label="${T("Buscar en los clústeres","Search the clusters")}" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="60" placeholder="${T("Indicativo, frecuencia o país","Callsign, frequency or country")}"><button type="button" class="btn" id="srchx" hidden>${T("Borrar","Clear")}</button></div>
-    <details class="srf" id="srf"><summary>${T("Filtros","Filters")} <span class="srfh">${T("continente y antigüedad","continent and age")}</span>${""} <span class="srfn" id="srfn"></span></summary><div class="srsel">
+    <details class="srf" id="srf"><summary>${T("Filtros","Filters")} <span class="srfh">${T("país, continente y antigüedad","country, continent and age")}</span>${""} <span class="srfn" id="srfn"></span></summary><div class="srsel">
 
 
       <label><span>${T("Continente DX","DX continent")}</span><select id="srdx"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
+      <label><span>${T("País DX","DX country")}</span><select id="srent"><option value="">${T("Todos","All")}</option></select></label>
       <label><span>${T("Continente del spotter","Spotter continent")}</span><select id="srcs"><option value="">${T("Todos","All")}</option>${CONTS.map(x=>`<option value="${x[0]}">${T(x[1],x[2])} (${x[0]})</option>`).join("")}</select></label>
 
       <label><span>${T("Antigüedad","Age")}</span><select id="sra"><option value="">${T("Todas","All")}</option><option value="15">${T("Últimos 15 min","Last 15 min")}</option><option value="30">${T("Últimos 30 min","Last 30 min")}</option><option value="60">${T("Última hora","Last hour")}</option></select></label>
     </div><p class="note srsrc">${T("Busca en los spots recientes del clúster DX y el RBN, en POTA, SOTA, WWFF, IOTA, LLOTA y otros programas (GMA, castillos, faros…) y en las DXpediciones anunciadas. Usa el mismo modo, las mismas bandas y los mismos tipos (DX, POTA…) que el clúster y el mapa, salvo que escribas otros en la búsqueda. En el texto, el asterisco * vale por cualquier cosa (EA8/* o */MM) y también puedes escribir banda o modo (20m FT8).","Searches recent DX cluster and RBN spots, POTA, SOTA, WWFF, IOTA, LLOTA and other programs (GMA, castles, lighthouses…) and announced DXpeditions. It uses the same mode, bands and types (DX, POTA…) as the cluster and the map, unless you type others in the search. In the text box the asterisk * matches anything (EA8/* or */MM) and you can also type a band or mode (20m FT8).")}</p></details>
     <div id="srchres" hidden aria-live="polite"></div>`;
   {const pt=sec.querySelector(":scope>.ptabs");if(pt)pt.after(w);else sec.insertBefore(w,sec.firstElementChild)}let tm=0;const inp=$("srchq"),x=$("srchx");
-  inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun))}
+  inp.addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(srchRun,220)});x.onclick=()=>{inp.value="";w.querySelectorAll("select").forEach(s=>s.value="");srchRun();inp.focus()};w.querySelectorAll("select").forEach(s=>s.addEventListener("change",srchRun));
+  /* 2.10.31: la lista de países se rellena con los que hay ahora en los clústeres, con cuántos spots */
+  const fe=()=>{const sel=$("srent");if(!sel)return;const c=new Map();const add=call=>{let n="";try{n=(callEnt(call)||{}).name||""}catch(_){}if(n)c.set(n,(c.get(n)||0)+1)};/* mismos filtros de modo y banda que el resto: el número es lo que vas a ver */(typeof SPOTS==="function"?SPOTS():(L.spots||[])).forEach(z=>add(z.call));try{progAll().filter(o=>modeOK(o)&&(o.a==null||o.a<=60)).forEach(o=>add(o.call))}catch(_){}
+    const v=sel.value,h=`<option value="">${T("Todos","All")}</option>`+[...c.entries()].sort((a,b)=>a[0].localeCompare(b[0],EN()?"en":"es")).map(([n,k])=>`<option value="${e2(n)}">${e2(n)} (${k})</option>`).join("");if(sel.dataset.h!==h){sel.innerHTML=h;sel.dataset.h=h;sel.value=v}};
+  fe();$("srent").addEventListener("focus",fe);$("srent").addEventListener("pointerdown",fe)}
 window.ACRACB_search=q=>{const i=$("srchq");if(!i)return;i.value=q||"";$("srchx").hidden=!q;srchRun()};
 /* ---------- enganche ---------- */
 function hook(){if(window.__hkSide)return true;if(typeof window.renderSide!=="function")return false;window.__hkSide=1;const o=window.renderSide;
@@ -727,7 +753,7 @@ function hook(){if(window.__hkSide)return true;if(typeof window.renderSide!=="fu
 if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout(()=>clearInterval(t),15000)}
 })();
 /* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
-document.addEventListener("click",ev=>{if(!document.documentElement.classList.contains("vc"))return;const t=ev.target;if(!t.closest)return;
+document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;if(!document.documentElement.classList.contains("vc")&&!t.closest(".scl"))return;
   if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});
 /* 2.10.20: se recuerda el último modo concreto (base de la previsión) antes de cambiar a «Todos los modos» */
 (function(){const sv=()=>{const m=document.getElementById("modesel");if(m&&m.value&&m.value!=="all"){try{store.set("c_modebase",m.value)}catch(_){}}};
