@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.38 — 2026-11-21
+
+- ES: Notificaciones más fiables: se espera a que el service worker esté activo antes de enviarlas (antes, si aún no lo estaba, en el iPhone, el iPad y Android fallaban en silencio). Un aviso solo se da por notificado si la notificación sale de verdad, y se recuerda 6 horas en lugar de para siempre: una estación que vuelve otro día vuelve a avisar. Al volver a la plataforma se comprueba enseguida lo pendiente.
+- ES: Debajo del botón de notificaciones se ve la última comprobación (cuántos avisos y cuántos nuevos) y la última notificación enviada; si una falla, se dice el motivo.
+- EN: More reliable notifications: they wait for the service worker to be active before being sent (before, if it was not yet, they failed silently on iPhone, iPad and Android). An alert is only marked as notified if the notification really appears, and it is remembered for 6 hours instead of forever: a station that comes back another day alerts again. Pending alerts are checked as soon as you return to the platform.
+- EN: Under the notifications button you can see the last check (how many alerts and how many new) and the last notification sent; if one fails, the reason is shown.
+
 ## 2.10.37 — 2026-11-21
 
 - ES: Corregido: «Cerrar» en la ficha de una estación no hacía nada con el modo concursos puesto (su botón compartía nombre interno con la caja de pausas del concurso).

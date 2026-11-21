@@ -166,10 +166,13 @@ let SWR=null;
 if(canSW){navigator.serviceWorker.register("sw.js").then(r=>{SWR=r}).catch(()=>{})}
 function notifOn(){return canN&&Notification.permission==="granted"&&S.get("acracb_notif")==="1"}
 window.ACRACB_notifOn=notifOn;
-async function swReg(){if(SWR)return SWR;if(!canSW)return null;try{const r=await Promise.race([navigator.serviceWorker.ready,new Promise(ok=>setTimeout(()=>ok(null),4000))]);if(r)SWR=r;return r}catch(e){return null}}
-async function notify(title,body,tag){const ic=(document.querySelector('link[rel="apple-touch-icon"]')||{}).href;const o={body,tag:tag||("acracb-"+title),icon:ic,badge:ic,lang:window.ACRACB_LANG==="en"?"en":"es",renotify:false,data:{url:location.href.split("#")[0]}};
-  try{const r=await swReg();if(r&&r.showNotification){await r.showNotification(title,o);return true}}catch(e){}
-  try{new Notification(title,o);return true}catch(e){}return false}
+/* 2.10.38: se espera a que el service worker esté ACTIVO (antes se usaba el registro recién hecho aunque aún no lo estuviera:
+   en el iPhone, el iPad y Android eso fallaba en silencio y el aviso se perdía). Se guarda el motivo del último fallo. */
+let NERR="";
+async function swReg(){if(!canSW)return null;if(SWR&&SWR.active)return SWR;try{const r=await Promise.race([navigator.serviceWorker.ready,new Promise(ok=>setTimeout(()=>ok(null),10000))]);if(r)SWR=r;return r}catch(e){return null}}
+async function notify(title,body,tag){const ic=(document.querySelector('link[rel="apple-touch-icon"]')||{}).href;const o={body,tag:tag||("acracb-"+title),icon:ic,badge:ic,lang:window.ACRACB_LANG==="en"?"en":"es",renotify:true,data:{url:location.href.split("#")[0]}};
+  NERR="";try{const r=await swReg();if(r&&r.showNotification){await r.showNotification(title,o);return true}if(canSW)NERR=TT("el service worker no se ha activado","the service worker did not activate")}catch(e){NERR=String(e&&e.message||e)}
+  try{new Notification(title,o);return true}catch(e){if(!NERR)NERR=String(e&&e.message||e)}return false}
 window.ACRACB_notify=notify;
 const IOSD=(()=>{try{return /iP(hone|ad|od)/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)}catch(e){return false}})();
 const STDA=(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}})();
@@ -186,6 +189,11 @@ function muteRow(){const m=window.ACRACB_alMuted&&ACRACB_alMuted();
   /* silenciadas: ya lo dice el aviso de justo debajo, con su botón «Reactivar» */
   return m?""
    :`<span class="nmute">${TT("Silenciar:","Mute:")} <button type="button" class="lnk" data-mute="60">${TT("1 hora","1 hour")}</button> · <button type="button" class="lnk" data-mute="tom">${TT("hasta mañana a las 8:00","until 8:00 tomorrow")}</button> · <button type="button" class="lnk" data-mute="inf">${TT("hasta que las reactive","until I turn them back on")}</button></span>`}
+/* 2.10.38: estado a la vista: cuándo se comprobó por última vez y cuál fue la última notificación */
+function nstat(){const hm=t=>new Date(t).toLocaleTimeString(TT("es-ES","en-US"),{hour:"2-digit",minute:"2-digit"});const b=[];
+  if(NCHK)b.push(TT(`Última comprobación ${hm(NCHK.at)}: ${NCHK.n} aviso${NCHK.n===1?"":"s"}, ${NCHK.f?NCHK.f+" nuevo"+(NCHK.f===1?"":"s"):"ninguno nuevo"}`,`Last check ${hm(NCHK.at)}: ${NCHK.n} alert${NCHK.n===1?"":"s"}, ${NCHK.f?NCHK.f+" new":"none new"}`));
+  if(NLAST)b.push(TT(`última notificación ${hm(NLAST.at)} (${NLAST.call})`,`last notification ${hm(NLAST.at)} (${NLAST.call})`));
+  return b.length?`<p class="note nstat">${e2(b.join(" · "))}.</p>`:""}
 function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw");if(!w){w=document.createElement("div");w.id="notifw";w.className="notifw";host.insertAdjacentElement("beforebegin",w)}
   const msg=NMSG?`<p class="note nmsg">${e2(NMSG)}</p>`:"";
   if(!canN){w.innerHTML=`<button class="btn" id="notifb" aria-expanded="${NHELP}">${TT("Avisarme con una notificación","Notify me")}</button><span class="note"> ${TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>${NHELP?notifHelp():""}`;
@@ -195,23 +203,33 @@ function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw")
   w.innerHTML=`<button class="btn" id="notifb" aria-pressed="${on}">${on?TT("Notificaciones activadas","Notifications on"):TT("Avisarme con una notificación","Notify me")}</button>`+
     (on?`<button type="button" class="btn" id="notift">${TT("Probar","Test")}</button>`:"")+
     `<span class="note nscope">${on?TT("Te avisará de lo que te falte, de las DXpediciones y del DX raro, curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ","It will alert you to what you need, DXpeditions and the rare, unusual or far DX you choose below, in your mode and bands. ")+scopeTxt():TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>`+
-    (on?muteRow():"")+msg;
+    (on?muteRow():"")+(on?nstat():"")+msg;
   const b=$("notifb");if(b)b.onclick=async()=>{NMSG="";if(notifOn()){S.set("acracb_notif","0");notifUI();return}
     if(IOSD&&!STDA){NHELP=true;w.insertAdjacentHTML("beforeend",notifHelp());return}
-    try{const p=await Notification.requestPermission();if(p==="granted"){S.set("acracb_notif","1");try{(L.alert&&L.alert.items||[]).forEach(x=>SEEN.add(x.call+"|"+x.band))}catch(e){}
+    try{const p=await Notification.requestPermission();if(p==="granted"){S.set("acracb_notif","1");try{(L.alert&&L.alert.items||[]).forEach(x=>SEEN.add(x.call+"|"+x.band));SEEN.save()}catch(e){}
       const ok=await notify("ACRACB DX",TT("Notificaciones activadas: te avisaré de lo que te falte.","Notifications on: I will let you know about what you need."),"acracb-on");if(!ok)NMSG=TT("El permiso está concedido, pero este navegador no ha mostrado la notificación de prueba.","Permission is granted, but this browser did not show the test notification.")}}catch(e){}
     notifUI();try{window.ACRACB_updSched&&ACRACB_updSched()}catch(e){}};
-  const t=$("notift");if(t)t.onclick=async()=>{const ok=await notify(TT("Prueba de ACRACB DX","ACRACB DX test"),TT("Si ves esto, las notificaciones funcionan en este aparato.","If you can see this, notifications work on this device."),"acracb-test");NMSG=ok?TT("Prueba enviada. Si no la ves, revisa el modo No molestar o Concentración del aparato.","Test sent. If you do not see it, check the device's Do Not Disturb or Focus mode."):TT("Este navegador no ha podido mostrarla.","This browser could not show it.");notifUI()}}
-const SEEN=new Set((()=>{try{return JSON.parse(S.get("acracb_nseen")||"[]")}catch(e){return []}})());
-function checkNotify(){if(!notifOn())return;if(window.ACRACB_alMuted&&ACRACB_alMuted())return;const al=L.alert;if(!al||!al.items)return;const fresh=al.items.filter(x=>{if(window.ACRACB_alOK&&!ACRACB_alOK(x))return false;const k=x.call+"|"+x.band;if(SEEN.has(k))return false;SEEN.add(k);return true});
-  if(fresh.length){const x=fresh[0];const EN=window.ACRACB_LANG==="en";notify(`${x.call} ${EN?"on":"en"} ${BANDS[x.band]||""} ${x.mode||""}`.trim(),`${x.f} · ${x.t} UTC · ${(x.sub==="rare"||x.sub==="cur"||x.sub==="far"||x.sub==="dxp")?(EN?(x.whyEn||x.why):x.why):(EN?"you need it":"te falta")+(x.why?" ("+(EN?(x.whyEn||x.why):x.why)+")":"")}${fresh.length>1?(EN?` · and ${fresh.length-1} more`:` · y ${fresh.length-1} más`):""}`,"acracb-"+x.call+"-"+x.band);S.set("acracb_nseen",JSON.stringify([...SEEN].slice(-300)))}}
+  const t=$("notift");if(t)t.onclick=async()=>{const ok=await notify(TT("Prueba de ACRACB DX","ACRACB DX test"),TT("Si ves esto, las notificaciones funcionan en este aparato.","If you can see this, notifications work on this device."),"acracb-test");NMSG=ok?TT("Prueba enviada. Si no la ves, revisa el modo No molestar o Concentración del aparato.","Test sent. If you do not see it, check the device's Do Not Disturb or Focus mode."):TT("Este navegador no ha podido mostrarla.","This browser could not show it.")+(NERR?" ("+NERR+")":"");notifUI()}}
+/* 2.10.38: lo ya avisado se recuerda 6 horas (antes, para siempre: una estación que volvía otro día ya no avisaba)
+   y solo se da por avisado si la notificación ha salido de verdad */
+const SEENH=6*36e5;const SEENM=new Map((()=>{try{const v=JSON.parse(S.get("acracb_nseen2")||"[]");return Array.isArray(v)?v:[]}catch(e){return []}})());
+const SEEN={has:k=>{const t=SEENM.get(k);return t!=null&&Date.now()-t<SEENH},add:k=>{SEENM.set(k,Date.now())},save:()=>{const n=Date.now();for(const [k,t] of SEENM)if(n-t>=SEENH)SEENM.delete(k);S.set("acracb_nseen2",JSON.stringify([...SEENM].slice(-400)))}};
+let NLAST=(()=>{try{return JSON.parse(S.get("acracb_nlast")||"null")}catch(e){return null}})(),NCHK=null,NBUSY=false;
+function checkNotify(){if(!notifOn()||NBUSY)return;if(window.ACRACB_alMuted&&ACRACB_alMuted())return;const al=L.alert;if(!al||!al.items)return;
+  const ok=al.items.filter(x=>!window.ACRACB_alOK||ACRACB_alOK(x)),fresh=ok.filter(x=>!SEEN.has(x.call+"|"+x.band));NCHK={at:Date.now(),n:ok.length,f:fresh.length};
+  if(!fresh.length)return;const x=fresh[0];const EN=window.ACRACB_LANG==="en";NBUSY=true;
+  Promise.resolve(notify(`${x.call} ${EN?"on":"en"} ${BANDS[x.band]||""} ${x.mode||""}`.trim(),`${x.f} · ${x.t} UTC · ${(x.sub==="rare"||x.sub==="cur"||x.sub==="far"||x.sub==="dxp")?(EN?(x.whyEn||x.why):x.why):(EN?"you need it":"te falta")+(x.why?" ("+(EN?(x.whyEn||x.why):x.why)+")":"")}${fresh.length>1?(EN?` · and ${fresh.length-1} more`:` · y ${fresh.length-1} más`):""}`,"acracb-"+x.call+"-"+x.band))
+   .then(sent=>{if(sent){fresh.forEach(y=>SEEN.add(y.call+"|"+y.band));SEEN.save();NLAST={at:Date.now(),call:x.call,band:x.band};S.set("acracb_nlast",JSON.stringify(NLAST))}else NMSG=TT("No se ha podido mostrar la última notificación","The last notification could not be shown")+(NERR?": "+NERR:"")+".";try{notifUI()}catch(e){}})
+   .finally(()=>{NBUSY=false})}
+/* al volver a la plataforma se comprueba enseguida lo pendiente */
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(()=>{try{checkNotify()}catch(e){}},400)});
 document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("#notifw [data-mute],#notifw [data-unmute]"))setTimeout(()=>{try{notifUI()}catch(e){}},30)});
 
 /* =================== arranque =================== */
 function all(){try{meteorNote()}catch(e){}try{qrpCard()}catch(e){}try{renderHeard()}catch(e){}try{notifUI()}catch(e){}}
 function hook(){
   try{const r0=refresh;refresh=function(){const v=r0.apply(this,arguments);all();return v}}catch(e){}
-  try{const a0=renderAlerts;renderAlerts=function(){const v=a0.apply(this,arguments);try{notifUI()}catch(e){}try{checkNotify()}catch(e){}return v}}catch(e){}
+  try{const a0=renderAlerts;renderAlerts=function(){const v=a0.apply(this,arguments);try{checkNotify()}catch(e){}try{notifUI()}catch(e){}return v}}catch(e){}
   all();try{checkNotify()}catch(e){}}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(hook,20));else setTimeout(hook,20);
 })();
