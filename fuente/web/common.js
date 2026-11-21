@@ -331,3 +331,19 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
 (function(){function go(){var s=document.getElementById("ssum"),b=document.getElementById("stbtn");if(!s||!b)return setTimeout(go,300);
  s.setAttribute("role","button");s.tabIndex=0;s.title=window.ACRACB_LANG==="en"?"Edit station":"Editar estación";
  s.addEventListener("click",function(){b.click()});s.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();b.click()}})}go()})();
+
+/* ---- 2.10.19: aviso bien visible cuando los datos no son de ahora ----
+   La web se actualiza sola cada 1–3 minutos con la pestaña a la vista. Si los datos tienen más de 30 minutos es que las
+   fuentes no han respondido: se dice arriba, con su antigüedad, para que nadie tome por actuales datos viejos. */
+(function(){if(window.__hkStale)return;window.__hkStale=1;const EN=()=>window.ACRACB_LANG==="en";
+  const age=m=>m<90?m+" min":m<2880?Math.round(m/60)+" h":Math.round(m/1440)+(EN()?" days":" días");
+  const T0=Date.now();
+  function chk(){try{if(typeof L==="undefined")return;/* al abrir, se espera a la primera actualización (o 15 s) para no avisar en falso */if(Date.now()-T0<15000&&!(L.upd&&Date.parse(L.upd.at)>=T0-2000))return;/* la hora que cuenta es la del spot más reciente (con las fuentes funcionando nunca pasa de unos minutos), no la del último intento */
+    const u=Date.parse(L.spotsUTC||L.spotsChecked||L.updatedUTC||"");const row=document.querySelector(".updrow");if(!row)return;let b=document.getElementById("stalebn");
+    const m=isNaN(u)?null:Math.round((Date.now()-u)/6e4);const none=!!(L.upd&&L.upd.tot&&L.upd.ok===0);const bad=(m!=null&&m>30)||none;
+    if(!bad){if(b)b.remove();return}
+    if(!b){b=document.createElement("div");b.id="stalebn";b.className="stalebn";b.setAttribute("role","alert");row.insertAdjacentElement("afterend",b)}
+    const t=m!=null&&m>30?(EN()?`The data is from ${age(m)} ago: the sources have not responded. Press Update or check your connection.`:`Los datos son de hace ${age(m)}: las fuentes no han respondido. Pulsa Actualizar o revisa la conexión.`):(EN()?"No source responded in the last update: you are seeing the previous data. Press Update or check your connection.":"Ninguna fuente respondió en la última actualización: ves los datos anteriores. Pulsa Actualizar o revisa la conexión.");
+    if(b.textContent!==t)b.textContent=t}catch(e){}}
+  setInterval(()=>{if(!document.hidden)chk()},30000);(window.ACRACB_afterDraw=window.ACRACB_afterDraw||[]).push(chk);
+  document.addEventListener("visibilitychange",chk);setTimeout(chk,2500);setTimeout(chk,8000);setTimeout(chk,16000)})();

@@ -14,7 +14,11 @@ const RXA=/\b(POTA|SOTA|WWFF|IOTA|GMA|WCA|HEMA|WWBOTA|BOTA|LLOTA|ILLW|ARLHS|SIOT
 const ld=(k,ok)=>{try{const v=JSON.parse(S.get(k)||"null");return Array.isArray(v)?v.filter(ok):null}catch(e){return null}};
 let TYPES=new Set(ld("acracb_cltypes",x=>x==="dx"||PROGS.includes(x))||[S.get("acracb_cltype")].filter(x=>x==="dx"||PROGS.includes(x)));if(!TYPES.size)["dx"].concat(PROGS).forEach(x=>TYPES.add(x));
 /* quien tenía «Todos» marcado antes de existir OTROS sigue con todo */if(["dx","POTA","SOTA","WWFF"].every(x=>TYPES.has(x)))TYPES.add("OTROS");
-let BSEL=new Set(ld("acracb_clbands",x=>Number.isInteger(x)&&x>=0&&x<=12)||[]);/* vacío = todas */
+/* 2.10.19: un solo juego de filtros. Las bandas elegidas en el clúster son las mismas del mapa (st.mbs) y de los avisos;
+   el modo es el de la estación más los que añadas en el clúster o el mapa (CMS). Vacío = todas. */
+const BSEL={get size(){return BL().length},has:b=>BL().includes(b),add(b){if(!BL().includes(b))st.mbs=BL().concat([b])},delete(b){st.mbs=BL().filter(x=>x!==b)},clear(){st.mbs=[]},[Symbol.iterator](){return BL().slice()[Symbol.iterator]()}};
+function BL(){try{return Array.isArray(st.mbs)?st.mbs:[]}catch(_){return []}}
+const saveB=()=>{try{store.set("mbs",JSON.stringify(st.mbs))}catch(_){}try{renderBandSeg()}catch(_){}try{if(st.page==="mapa")drawMap()}catch(_){}try{MSC=null}catch(_){}try{alBar()}catch(_){}};
 const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago=a=>a==null?"":a<1?T("ahora","now"):a<90?T(`hace ${a} min`,`${a} min ago`):a<1440?T(`hace ${Math.round(a/60)} h`,`${Math.round(a/60)} h ago`):T("hace más de un día","over a day ago");
 const minsFrom=u=>{const t=Date.parse(u||"");return isNaN(t)?null:Math.max(0,Math.round((Date.now()-t)/6e4))};
@@ -57,7 +61,7 @@ function wire(box){
   const k=b.dataset.clt,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}S.set("acracb_cltypes",JSON.stringify([...TYPES]));render();catChanged()});
   /* «Todas» quita la selección; marcar todas las bandas equivale a «Todas» */
   box.querySelectorAll("[data-clb]").forEach(b=>b.onclick=()=>{const v=b.dataset.clb;if(v==="")BSEL.clear();else{const n=+v;if(BSEL.has(n))BSEL.delete(n);else BSEL.add(n);const all=ORD.filter(x=>bandsOK().has(x));if(all.every(x=>BSEL.has(x)))BSEL.clear()}
-    S.set("acracb_clbands",JSON.stringify([...BSEL]));render()})}
+    saveB();render()})}
 
 /* ---------- filas: tarjeta de estación por secciones ----------
    cabecera: indicativo · bandera · país ........ hora
@@ -127,8 +131,11 @@ function recCards(go,dxn){const out=[];
   (dxn||[]).filter(x=>inMy(x.d)&&isAct(lastAge(String(x.d.call||"").split(/[ ,]/)[0]))).forEach(x=>{const d=x.d;const call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
     const q=[].concat(d.qsx||[]).map(z=>String(z).match(/(\d+(?:\.\d+)?)\s*([A-Z0-9]+)?/i)).filter(Boolean).map(m=>({f:+m[1]>1000?+m[1]/1000:+m[1],m:(m[2]||"").toUpperCase()})).filter(z=>inBand(z.f,x.b));
     let my="";try{my=String(MOD()||"").toUpperCase()}catch(e){}const pick=q.find(z=>z.m&&my&&z.m===my)||q[0];
-    if(pick){f=pick.f.toFixed(3);mode=pick.m}
-    else{const sp=(L.spots||[]).filter(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b)[0];if(sp){f=sp.f;mode=sp.mode||""}}
+    /* 2.10.19: con «Mi modo» solo se recomienda una frecuencia de tus modos (antes podía salir FT8 con «Mi modo · SSB») */
+    const MS0=new Set();try{CMS().forEach(k=>MS0.add(String(MODES[k].s).toUpperCase()))}catch(_){}const okM=m=>{if(!m)return true;const u=String(m).toUpperCase();return !MS0.size||MS0.has(u)||((u==="USB"||u==="LSB")&&MS0.has("SSB"))||(u==="JS8"&&MS0.has("JS8CALL"))};
+    const pick2=q.filter(z=>okM(z.m));const pk=pick2.find(z=>z.m&&my&&z.m===my)||pick2[0];
+    if(pk){f=pk.f.toFixed(3);mode=pk.m}
+    else{const sp=(L.spots||[]).filter(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b&&okM(z.mode||""))[0];if(sp){f=sp.f;mode=sp.mode||""}else if(q.length)return}
     const MYS=new Set();try{CMS().forEach(k=>MYS.add(String(MODES[k].s).toUpperCase()))}catch(_){}
     let hab=false;if(!mode&&Array.isArray(d.modes)&&d.modes.length){const mm=d.modes.map(z=>String(z).toUpperCase());mode=mm.includes(my)?my:(mm.find(z=>MYS.has(z))||(mm.includes("SSB")&&!/CW|FT/.test(my)?"SSB":mm[0]))}
     /* sin QSX ni spot en esa banda: la frecuencia habitual de las DXpediciones en ese modo */
@@ -239,11 +246,15 @@ document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.clos
   if(o.s===v)delete o.s;else o.s=v;{const s=obsSnr(o);if(s!=null)o.snr=Math.round(s*10)/10;else delete o.snr}dbSave("owner/cal",OBS);fitCal();CACHE.clear();refresh();try{renderPop()}catch(_){}try{renderInfo()}catch(_){}try{ACRACB_rebox()}catch(_){}try{redraw()}catch(_){}}catch(e){console.error(e)}},true);
 /* 2.5.9: «Mi modo / Todos los modos» en «Qué hacer» y casilla «Todos los modos» en la estación: las dos cosas van sincronizadas */
 const allOn=()=>{try{return CMS().length===Object.keys(MODES).length}catch(_){return false}};
-window.ACRACB_recModes=()=>{const on=allOn();let my="";try{my=MODES[MOD()].s}catch(_){}
-  return `<div class="recm seg" role="group" aria-label="${T("Modos","Modes")}"><button type="button" data-recm="0" aria-pressed="${!on}">${T("Mi modo","My mode")}${my?" · "+e2(my):""}</button><button type="button" data-recm="1" aria-pressed="${on}">${T("Todos los modos","All modes")}</button></div>`};
+/* 2.10.19: tres estados claros: solo tu modo, todos, o una mezcla elegida en el clúster o el mapa (se dice cuál) */
+const mineOn=()=>{try{const c=CMS();return c.length===1&&c[0]===MOD()}catch(_){return false}};
+window.ACRACB_recModes=()=>{const on=allOn(),mine=!on&&mineOn();let my="";try{my=MODES[MOD()].s}catch(_){}let mix="";if(!on&&!mine){try{mix=CMSTXT()}catch(_){}}
+  return `<div class="recm seg" role="group" aria-label="${T("Modos","Modes")}"><button type="button" data-recm="0" aria-pressed="${mine}">${T("Mi modo","My mode")}${my?" · "+e2(my):""}</button><button type="button" data-recm="1" aria-pressed="${on}">${T("Todos los modos","All modes")}</button></div>`+(mix?`<p class="note recmix">${T("Ahora ves","Now showing")}: ${e2(mix)}</p>`:"")};
 function syncAll(){const c=document.getElementById("allmodes");if(c)c.checked=allOn()}
-document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-recm]");if(!b)return;const want=b.dataset.recm==="1";if(want!==allOn()){try{toggleAllCM()}catch(_){}}syncAll();try{renderSide()}catch(_){}});
-document.addEventListener("change",ev=>{if(ev.target&&ev.target.id==="allmodes"){if(ev.target.checked!==allOn()){try{toggleAllCM()}catch(_){}}syncAll()}});
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-recm]");if(!b)return;const want=b.dataset.recm==="1";
+  /* antes se alternaba: con una mezcla de modos, «Mi modo» encendía todos. Ahora cada botón pone exactamente lo que dice */
+  if(want?!allOn():!mineOn()){try{setAllCM(want)}catch(_){}}syncAll();try{renderSide()}catch(_){}});
+document.addEventListener("change",ev=>{if(ev.target&&ev.target.id==="allmodes"){const w=ev.target.checked;if(w?!allOn():!mineOn()){try{setAllCM(w)}catch(_){}}syncAll()}});
 setTimeout(syncAll,600);document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("[data-mmall],[data-mm]"))setTimeout(syncAll,50)},true);window.ACRACB_geo=geoOf;window.ACRACB_split2=s=>splitTags(s);window.ACRACB_ago=ago;
 /* separa las etiquetas de split/QSL (van en su sección) de las de programa (van junto a la frecuencia) */
 function splitTags(s){const t=window.ACRACB_tags?ACRACB_tags(s):"";const xs=[],pr=[];(t.match(/<span class="xtag[^"]*"[^>]*>.*?<\/span>/g)||[]).forEach(x=>(/xtag x[sq]\b/.test(x)?xs:pr).push(x));return {xs:xs.join(""),pr}}
@@ -444,7 +455,8 @@ window.ACRACB_dxon=function(d){const a=dxSpots(d);if(!a.length)return !(L.dxon&&
 /* filtros de los avisos, acumulativos como los del clúster: varios modos y varias bandas a la vez */
 const AMODES=["SSB","AM","FM","CW","FT8","FT4","JT65","JS8","RTTY","PSK31","SSTV","OTROS"];
 const ANAME={JS8:"JS8Call"};
-let AM=new Set(ld("acracb_almodes",x=>AMODES.includes(x))||[]),AB=new Set(ld("acracb_albands",x=>Number.isInteger(x)&&x>=0&&x<=12)||[]);/* vacío = todos */
+/* 2.10.19: los avisos ya no tienen filtros propios: usan el modo y las bandas comunes (estación, clúster y mapa) */
+const AM=new Set(),AB=new Set();
 const mgrp=(m,f)=>{const x=mlab(m,f);return AMODES.includes(x)?x:(x==="JS8CALL"?"JS8":"OTROS")};
 window.ACRACB_alertCards=()=>{try{alertCards()}catch(e){}};
 function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch(_){}if(!L.alert||!Array.isArray(L.alert.items))return;
@@ -455,10 +467,8 @@ function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch
   const mc={},bc={};rows.forEach(r=>{mc[r.g]=(mc[r.g]||0)+1;if(r.band!=null)bc[r.band]=(bc[r.band]||0)+1});
   /* se ven siempre todos los modos y todas las bandas de tu estación; los que ahora no tienen avisos salen atenuados */
   const ml=AMODES.slice(),bs=bandsOK(),bl=ORD.filter(b=>bs.has(b));[...AB].forEach(b=>{if(!bs.has(b))AB.delete(b)});
-  fb.innerHTML=`<div class="seg clseg almodes" role="group" aria-label="${T("Modo de los avisos","Alert mode")}"><span class="segl">${T("Modo","Mode")}</span><button type="button" data-alm="" aria-pressed="${!AM.size}">${T("Todos","All")}</button>${ml.map(m=>`<button type="button" data-alm="${m}" aria-pressed="${AM.has(m)}"${mc[m]?"":' class="clz"'}>${m==="OTROS"?T("Otros","Other"):(ANAME[m]||m)}${mc[m]?` <small>${mc[m]}</small>`:""}</button>`).join("")}</div>`+
-    `<div class="seg clseg clbands albands" role="group" aria-label="${T("Banda de los avisos","Alert band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-alb="" aria-pressed="${!AB.size}">${T("Todas","All")}</button>${bl.map(b=>`<button type="button" data-alb="${b}" aria-pressed="${AB.has(b)}"${bc[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bc[b]?` <small>${bc[b]}</small>`:""}</button>`).join("")}</div>`;
-  fb.querySelectorAll("[data-alm]").forEach(b=>b.onclick=()=>{const v=b.dataset.alm;if(v==="")AM.clear();else{if(AM.has(v))AM.delete(v);else AM.add(v);if(ml.every(m=>AM.has(m)))AM.clear()}S.set("acracb_almodes",JSON.stringify([...AM]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
-  fb.querySelectorAll("[data-alb]").forEach(b=>b.onclick=()=>{const v=b.dataset.alb;if(v==="")AB.clear();else{const n=+v;if(AB.has(n))AB.delete(n);else AB.add(n);if(bl.every(x=>AB.has(x)))AB.clear()}S.set("acracb_albands",JSON.stringify([...AB]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
+  {const bl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);let hb=null;try{hb=HB()}catch(_){}
+   fb.innerHTML=`<p class="note alfn">${T("Modo y bandas","Mode and bands")}: <b>${e2(CMSTXT())}</b> · <b>${e2(hb!=null?BANDS[hb]:bl2.length?bl2.join(", "):T("todas las bandas","all bands"))}</b>. ${T("Son los mismos de tu estación, el clúster y el mapa: cámbialos en cualquiera de ellos.","Same as your station, the cluster and the map: change them in any of them.")}</p>`}
   const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{r.i=i;return r});
   const kn=`<p class="note alk">${LOG?T("Por orden: entidad nueva para tu log, DXpedición, banda nueva y modo nuevo. Solo lo que puedes trabajar ahora, como en el clúster «Para ti».","In order: new entity for your log, DXpedition, new band and new mode. Only what you can work now, as in the cluster's «For you».") :T("DXpediciones y entidades raras que puedes trabajar ahora, como en el clúster «Para ti». Sube tu ADIF y te avisará también de lo que te falta.","DXpeditions and rare entities you can work now, as in the cluster's «For you». Upload your ADIF to be alerted to what you still need.")}</p>`;
   wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});
@@ -481,7 +491,7 @@ function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st
   const H=alHave(),mw=L.mwm||{};(L.dx||[]).forEach(d=>{if(d.mw&&d.dxcc&&!mw[d.dxcc])mw[d.dxcc]=d.mw});
   const best=new Map();
   for(const s of (typeof SPOTS==="function"?SPOTS():(L.spots||[]))){
-    if(s.band==null||s.band>10)continue;let K="";try{K=spotKind(s)}catch(_){}if(K!=="dx"&&K!=="ind")continue;
+    if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}if(K!=="dx"&&K!=="ind")continue;
     let e=null,a=null,pp=0;try{e=spotEval(s,lh);a=spotAge(s);pp=e?spotProb(s,e,a).p:0}catch(_){}
     if(!e||a==null||a>30||pp<.1)continue;
     let t=null;try{t=tFor(s)}catch(_){}const dxcc=(t&&t.dxcc)||(+s.dxcc||null);const mg=mgOf(s.mode,s.f),bk=typeof BKEY!=="undefined"?BKEY[s.band]:s.band;
@@ -697,3 +707,6 @@ function hook(){if(window.__hkSide)return true;if(typeof window.renderSide!=="fu
   const w=function(){const r=o.apply(this,arguments);try{if(st.page==="dx"){render(st.mhour);renderNear();dxCards()}}catch(e){console.error(e)}return r};w.__cl=1;window.renderSide=w;return true}
 if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout(()=>clearInterval(t),15000)}
 })();
+/* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
+document.addEventListener("click",ev=>{if(!document.documentElement.classList.contains("vc"))return;const t=ev.target;if(!t.closest)return;
+  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});

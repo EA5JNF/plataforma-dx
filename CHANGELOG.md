@@ -5,6 +5,21 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.19 — 2026-11-21
+
+- ES: Un solo juego de filtros: las bandas elegidas en el clúster son las mismas del mapa y de los avisos, y el modo es el de la estación más los que añadas en el clúster o el mapa. Los Avisos ya no tienen filtros propios y dicen cuáles se están usando.
+- ES: «Mi modo / Todos los modos» en «Qué hacer ahora» funciona siempre igual: cada botón pone exactamente lo que dice (antes, con una mezcla de modos, «Mi modo» encendía todos). Si hay una mezcla elegida en el clúster o el mapa, se indica cuál. Con «Mi modo», las DXpediciones solo se recomiendan en frecuencias de tus modos.
+- ES: Vista compacta: tocar una tarjeta de estación despliega sus detalles (quién la oye, rumbo, distancia y señal prevista).
+- ES: Aviso bien visible cuando los datos no son de ahora (más de 30 minutos o ninguna fuente ha respondido), con su antigüedad; las edades largas se dicen en horas o días.
+- ES: Panel «Sol y propagación ahora» en cinco bloques repartidos en columnas sin huecos: tormentas, campo magnético, Sol, HF y VHF; cada fenómeno de VHF explica qué es.
+- ES: Antes de publicar se comprueba que todo el código se lee sin errores y que la web carga sin fallos en español e inglés; si no, no se publica.
+- EN: One set of filters: the bands chosen in the cluster are the same for the map and the alerts, and the mode is your station's plus any you add in the cluster or the map. Alerts no longer have their own filters and say which ones apply.
+- EN: "My mode / All modes" in "What to do now" always behaves the same: each button sets exactly what it says (before, with a mix of modes, "My mode" turned all on). If a mix was chosen in the cluster or the map, it is shown. With "My mode", DXpeditions are only recommended on frequencies of your modes.
+- EN: Compact view: tapping a station card expands its details (who hears it, bearing, distance and expected signal).
+- EN: Clear notice when the data is not current (over 30 minutes old or no source responded), with its age; long ages are given in hours or days.
+- EN: "Sun and propagation now" panel in five blocks laid out in columns without gaps: storms, magnetic field, Sun, HF and VHF; each VHF phenomenon explains what it is.
+- EN: Before publishing, all code is checked to parse without errors and the site to load without faults in Spanish and English; otherwise nothing is published.
+
 ## 2.10.18 — 2026-11-21
 
 - ES: El mapa dibuja lo mismo que el clúster: además de los spots DX, las activaciones POTA, SOTA, WWFF y de otros programas (▲). Antes solo salían los DX y por eso, con poca actividad, el mapa parecía vacío.

@@ -1255,7 +1255,8 @@ section.page>details.sterr{margin:0 0 12px;border:1px solid var(--line);border-l
 details.sterr>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}details.sterr>summary::-webkit-details-marker{display:none}
 details.sterr>summary::before{content:"▸";color:var(--accent)}details.sterr[open]>summary::before{content:"▾"}
 .sth-t{font-weight:700}.sth-s{color:var(--muted);font-size:.9rem}.sth-s b{color:var(--fg,inherit);font-family:var(--f-m,monospace)}
-.st3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;margin-top:10px}
+.st3{columns:3 300px;column-gap:10px;margin-top:10px}
+.st3 section{break-inside:avoid;margin:0 0 10px;display:block}
 .st3 section{border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--panel)}
 .st3 h4{margin:0 0 6px;font:600 .74rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .st3r{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;padding:5px 0;border-bottom:1px solid var(--line)}.st3r:last-child{border-bottom:0}
@@ -1296,3 +1297,11 @@ html.vc .page .card.fold>summary .fsum{font-size:.8rem}
 /* 2.10.18: sin repeticiones en el Resumen: 6 m/2 m/70 cm está en V-UHF y en el panel; las DXpediciones en el aire, en el Aviso DX y en DX */
 .ezvh,.ezdx{display:none!important}
 html:not(.vc) #st_ahora .stdup{display:none}
+/* 2.10.19: en la vista compacta, tocar una tarjeta de estación despliega sus detalles (quién la oye, rumbo, distancia, señal) */
+html.vc .sc.ohc{cursor:pointer}
+html.vc .sc.scx .sc-d{display:grid;grid-column:1/-1;order:9;margin-top:6px}
+html.vc .sc.ohc .sc-age{white-space:nowrap}
+html.vc .sc.ohc .sc-h .sc-age::after{content:" ▾";color:var(--muted)}
+html.vc .sc.ohc.scx .sc-h .sc-age::after{content:" ▴"}
+.stalebn{margin:6px 0 2px;padding:8px 12px;border-radius:8px;border:1px solid var(--bad,#c62828);background:color-mix(in srgb,var(--bad,#c62828) 12%,transparent);color:var(--fg);font-weight:600;font-size:.92rem}
+.st3vt{font-family:inherit!important;font-size:.86rem!important}
