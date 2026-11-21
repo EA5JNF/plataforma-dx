@@ -322,9 +322,13 @@ function spotIndex(){const k=(L.updatedUTC||"")+"|"+(L.spotsUTC||"")+"|"+(L.spot
 function modeW(spMode,myAdj){let k="ssb";try{k=spotMode({mode:spMode})}catch(_){}const d=((MODES[k]&&MODES[k].adj)||0)-myAdj;return d>0?Math.exp(-d/20):1}
 /* lo que dicen ahora los clústeres de una zona (destino) en una banda, visto desde tu locator */
 let ZEV=new Map(),ZEVK="";
-function zoneEv(dx,band,myAdj,key){spotIndex();const sk=SIXK+"|"+TXP.join(",")+"|"+myAdj;if(sk!==ZEVK){ZEV=new Map();ZEVK=sk}spotIndex();const kk=key+"|"+band;if(ZEV.has(kk))return ZEV.get(kk);
-  const myMid=mid(TXP,dx),myLen=distJS(TXP,dx);let miss=1,wSum=0,fsW=0;
-  for(const x of spotIndex()){if(x.band!==band||distJS(x.dx,dx)>1200)continue;const mw=modeW(x.mode,myAdj);
+/* 2.10.36: rapidez. El margen del modo (myAdj) va en la clave de cada destino y no en la de toda la caché: antes, al
+   consultarse con márgenes distintos (tu modo, concurso…), la caché se vaciaba en cada llamada y se recalculaba todo.
+   Las distancias de estas comparaciones (¿está cerca?, ¿se parece el camino?) usan la esfera, mucho más rápida; las
+   que se enseñan siguen siendo las exactas sobre el elipsoide. */
+function zoneEv(dx,band,myAdj,key){spotIndex();const sk=SIXK+"|"+TXP.join(",");if(sk!==ZEVK){ZEV=new Map();ZEVK=sk}const kk=key+"|"+band+"|"+myAdj;if(ZEV.has(kk))return ZEV.get(kk);
+  const myMid=mid(TXP,dx),myLen=distS(TXP,dx);let miss=1,wSum=0,fsW=0;
+  for(const x of spotIndex()){if(x.band!==band||distS(x.dx,dx)>1200)continue;const mw=modeW(x.mode,myAdj);
     for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*mw;if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs}}
   const r={E:1-miss,fs:wSum?fsW/wSum:.6};ZEV.set(kk,r);return r}
 /* 2.5.3: la misma ponderación en TODA la plataforma: cada probabilidad de VOACAP de la hora actual se equilibra con lo que dicen
@@ -341,19 +345,19 @@ window.ACRACB_live=(t,lh,b,p,extra)=>{if(t.lat==null||t.lon==null||b==null)retur
 /* cuánto se oye en una banda desde tu zona ahora mismo (0 = nada, 1 = mucha actividad) */
 let BZ=new Map(),BZK="";
 function busyNear(b){spotIndex();const k=SIXK+"|"+TXP.join(",");if(k!==BZK){BZ=new Map();BZK=k}if(BZ.has(b))return BZ.get(b);let n=0;
-  for(const x of spotIndex()){if(x.band!==b)continue;for(const fr of x.from){try{if(distJS(TXP,fr)<1500){n+=x.wA;break}}catch(_){}}}
+  for(const x of spotIndex()){if(x.band!==b)continue;for(const fr of x.from){try{if(distS(TXP,fr)<1500){n+=x.wA;break}}catch(_){}}}
   const r=1-Math.exp(-n/8);BZ.set(b,r);return r}
-function pathSim(fr,dx,myMid,myLen){try{const L2=distJS(fr,dx),ms=distJS(mid(fr,dx),myMid),dl=(L2-myLen)/Math.max(800,.3*myLen);const q=ms/1200;return Math.exp(-q*q)*Math.exp(-dl*dl)}catch(_){return 0}}
+function pathSim(fr,dx,myMid,myLen){try{const L2=distS(fr,dx),ms=distS(mid(fr,dx),myMid),dl=(L2-myLen)/Math.max(800,.3*myLen);const q=ms/1200;return Math.exp(-q*q)*Math.exp(-dl*dl)}catch(_){return 0}}
 function spotProb(s,e,a){let lh=null;try{lh=localNow()}catch(_){}
   let k="ssb";try{k=spotMode(s)}catch(_){}let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}
   let pS=e.pSP||0,pL=e.t&&e.t.l?(e.pLP||0):0;
   if(e.t&&lh!=null){window.ACRACB_NOLIVE=true;try{pS=prob(e.t,lh,s.band,false,ex).p;pL=e.t.l?prob(e.t,lh,s.band,true,ex).p:0}catch(_){}finally{window.ACRACB_NOLIVE=false}}
   const lp=pL>pS&&pL>=.05;const p0=lp?pL:pS;let p=p0;
   let E=0,fsW=0,wSum=0,self=false;
-  if(s.dx&&s.dx[0]!=null&&!lp){const myMid=mid(TXP,s.dx),myLen=distJS(TXP,s.dx);let miss=1;
+  if(s.dx&&s.dx[0]!=null&&!lp){const myMid=mid(TXP,s.dx),myLen=distS(TXP,s.dx);let miss=1;
     /* el propio spot (aunque sea algo antiguo) y los demás de la misma zona */
     const own={dx:s.dx,from:(s.from||[]).filter(f=>f&&f[0]!=null),wA:Math.exp(-Math.max(0,a==null?60:a)/30),fs:snrF(s),same:true};
-    const cand=[own].concat(spotIndex().filter(x=>x.band===s.band&&x.call!==s.call&&distJS(x.dx,s.dx)<1200));
+    const cand=[own].concat(spotIndex().filter(x=>x.band===s.band&&x.call!==s.call&&distS(x.dx,s.dx)<1200));
     let spAdj=0;try{spAdj=(MODES[k]&&MODES[k].adj)||0}catch(_){}
     for(const x of cand)for(const fr of x.from){const w=pathSim(fr,x.dx,myMid,myLen)*x.wA*(x.same?1:.7*modeW(x.mode,spAdj));if(w<.02)continue;miss*=1-Math.min(.95,w);wSum+=w;fsW+=w*x.fs;if(x.same&&w>.25)self=true}
     E=1-miss}
@@ -585,15 +589,24 @@ function alRefresh(){if(!L.alert)L.alert={at:L.spotsUTC||L.updatedUTC||new Date(
 function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":(sub==="rare"||sub==="cur"||sub==="far")?"xr":"xr allog";
   const tx=x.why?T(x.why,x.whyEn||x.why):(sub==="dxp"?T("DXpedición","DXpedition"):T("entidad rara","rare entity"));
   return `<span class="xtag ${cls}">${e2(tx)}</span>`+(x.dxp&&sub!=="dxp"?`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`:"")}
-function alHaveBtn(x){return `<button type="button" class="alhave" data-alhave="${e2(SK(x.call))}">${T("Ya la tengo","Got it already")}</button>`}
+/* 2.10.36: «Ya la tengo» con icono, discreto, y deshacer durante unos segundos */
+const HAVEIC='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.7 2.7L16 9.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function alHaveBtn(x,ic){const k=SK(x.call),tl=T(`Ya la tengo: no avisarme más de ${k}`,`Got it already: stop alerting me to ${k}`);
+  return `<button type="button" class="alhave${ic?" alhi":""}" data-alhave="${e2(k)}" title="${e2(tl)}" aria-label="${e2(tl)}">${HAVEIC}${ic?"":`<span>${T("Ya la tengo","Got it")}</span>`}</button>`}
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alhave]");if(!b)return;ev.preventDefault();ev.stopPropagation();
-  const k=b.dataset.alhave,x=((L.alert&&L.alert.items)||[]).find(i=>SK(i.call)===k);const H=alHave(),now=Date.now(),yr=now+365*864e5;
-  if(x){if(x.dxp||x.sub==="dxp"){const e=x.end?Date.parse(x.end+"T23:59:59Z"):NaN;H[x.ck]=isFinite(e)&&e>now?e+864e5:now+60*864e5}if(x.ek&&!/^E:null/.test(x.ek))H[x.ek]=yr;if(!x.dxp)H["C:"+k]=now+30*864e5}else H["C:"+k]=now+30*864e5;
+  const k=b.dataset.alhave,x=((L.alert&&L.alert.items)||[]).find(i=>SK(i.call)===k);const H=alHave(),now=Date.now(),yr=now+365*864e5;let SNAP="{}";try{SNAP=localStorage.getItem(ALHK)||"{}"}catch(_){}
+  if(x){if(x.dxp||x.sub==="dxp"){const e=x.end?Date.parse(x.end+"T23:59:59Z"):NaN;H[x.ck]=isFinite(e)&&e>now?e+864e5:now+60*864e5}if(x.ek&&!/^E:null/.test(x.ek))H[x.ek]=yr;if(!x.dxp)H["C:"+k]=now+30*864e5}else{const dp=dxpInfo(k),e=dp&&dp.end?Date.parse(dp.end+"T23:59:59Z"):NaN;H["C:"+k]=isFinite(e)&&e>now?e+864e5:now+30*864e5}
   try{localStorage.setItem(ALHK,JSON.stringify(H))}catch(_){}
   const tb=document.getElementById("bandtoast")||(()=>{const d=document.createElement("div");d.id="bandtoast";d.className="bandtoast";d.setAttribute("role","status");document.body.appendChild(d);return d})();
-  tb.textContent=T(`De acuerdo: no te avisaré más de ${k}.`,`OK: no more alerts for ${k}.`);tb.classList.add("on");clearTimeout(tb._t);tb._t=setTimeout(()=>tb.classList.remove("on"),2200);
-  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}},true);
-const withHave=(html,x)=>html.includes('class="sc scl')?html.replace("</dl>",`<dt></dt><dd>${alHaveBtn(x)}</dd></dl>`):html.includes('<div class="ohr">')?html.replace('<div class="ohr">','<div class="ohr">'+alHaveBtn(x)):html.replace(/<\/div>\s*$/,alHaveBtn(x)+"</div>");
+  tb.innerHTML=`<span>${e2(T(`Hecho: no te avisaré más de ${k}.`,`Done: no more alerts for ${k}.`))}</span><button type="button" class="tbundo" data-alundo>${T("Deshacer","Undo")}</button>`;tb.classList.add("on","tbact");tb._snap=SNAP;clearTimeout(tb._t);tb._t=setTimeout(()=>tb.classList.remove("on","tbact"),6000);
+  const redo=()=>{try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}try{dxCards()}catch(_){}};
+  /* la estación se despide con una pequeña animación antes de quitarla */
+  const rows=[...document.querySelectorAll(`[data-alhave="${CSS.escape(k)}"]`)].map(e=>e.closest(".sc")).filter(r=>r&&!r.classList.contains("dxc"));
+  if(rows.length&&!matchMedia("(prefers-reduced-motion: reduce)").matches){rows.forEach(r=>{r.style.height=r.offsetHeight+"px";r.classList.add("algone")});setTimeout(redo,260)}else redo()},true);
+document.addEventListener("click",ev=>{const u=ev.target.closest&&ev.target.closest("[data-alundo]");if(!u)return;ev.preventDefault();ev.stopPropagation();const tb=document.getElementById("bandtoast");
+  try{localStorage.setItem(ALHK,tb&&tb._snap||"{}")}catch(_){}if(tb){tb.classList.remove("on","tbact");clearTimeout(tb._t)}
+  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}try{dxCards()}catch(_){}},true);
+const withHave=(html,x)=>html.includes('class="sc scl')?html.replace('class="sc scl','class="sc scl alr').replace('<span class="l-x" aria-hidden="true"></span>',`<span class="l-hx">${alHaveBtn(x,true)}<span class="l-x" aria-hidden="true"></span></span>`):html.includes('<div class="ohr">')?html.replace('<div class="ohr">','<div class="ohr">'+alHaveBtn(x)):html.replace(/<\/div>\s*$/,alHaveBtn(x)+"</div>");
 function alRow(x){const sp=(L.spots||[]).find(s=>s.call===x.call)||{};const band=x.band!=null?x.band:sp.band;const mode=x.mode||sp.mode||"";return {x,sp,band,mode,g:mgrp(mode,x.f!=null?x.f:sp.f)}}
 function alOK(x){const r=alRow(x);return (!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))}
 window.ACRACB_alOK=x=>{try{return alOK(x)}catch(e){return true}};
@@ -636,6 +649,10 @@ if(!hookA()){const t2=setInterval(()=>{if(hookA())clearInterval(t2)},200);setTim
 
 /* ---------- 2.4.1: DXpediciones con la misma tarjeta por secciones ---------- */
 let DXOPEN=false;
+/* 2.10.36: «Ya la tengo» también en cada DXpedición: deja de avisarte de ella hasta que termine; se puede quitar */
+function dxHaveRow(call){const k=SK(call),H=alHave();return H["C:"+k]?`<div class="dxhv"><span class="dxgot">${HAVEIC}${T("La tienes: no te avisará más","You have it: no more alerts")}</span><button type="button" class="lnk" data-alunhave="${e2(k)}">${T("Quitar","Remove")}</button></div>`:`<div class="dxhv">${alHaveBtn({call})}</div>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alunhave]");if(!b)return;ev.preventDefault();ev.stopPropagation();const H=alHave();delete H["C:"+b.dataset.alunhave];
+  try{localStorage.setItem(ALHK,JSON.stringify(H))}catch(_){}try{dxCards()}catch(_){}try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}},true);
 function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor!=="function")return;const lh=st.mhour;
   const html=[];L.dx.forEach((d,i)=>{let t=null;try{t=tFor(d)}catch(e){}if(!t||!isFinite(d.lon)||!isFinite(d.lat))return;const p=[d.lon,d.lat];
     const gk=geoKm(TXP,p),az=Math.round(gk.az)%360,km=Math.round(gk.km),lkm=Math.round(gk.lkm),laz=(az+180)%360;
@@ -650,7 +667,7 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
       ${sec(T("Mejor hora","Best time"),`<span class="nw">${hh(bh.h)}:00 ${T("en","on")} <b style="color:${BC[bh.b]}">${BANDS[bh.b]}</b></span> <span class="nw">(${Math.round(bh.p*100)} %${bh.lp?T(", paso largo",", long path"):""})</span>`)}
       ${sec(T("Rumbo","Bearing"),`<span class="nw">${T("corto","short")} ${az}° ${cab(az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${laz}° ${cab(laz)}</span>`)}
       ${sec(T("Distancia","Distance"),`<span class="nw">${T("corto","short")} ${fk(km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(lkm)} km</span>`)}
-      ${sec(T("Línea gris","Greyline"),gl)}${sec("QSX",d.qsx?e2(String(d.qsx).replace(/\s*,\s*/g,", ")):"")}</dl>${!act?"":ACRACB_ohBox({t:t.id,b:n.p>0?n.b:bh.b,call:SK(c0),mode:(()=>{try{return MD().s}catch(_){return ""}})()})}</div>`})});
+      ${sec(T("Línea gris","Greyline"),gl)}${sec("QSX",d.qsx?e2(String(d.qsx).replace(/\s*,\s*/g,", ")):"")}</dl>${!act?"":ACRACB_ohBox({t:t.id,b:n.p>0?n.b:bh.b,call:SK(c0),mode:(()=>{try{return MD().s}catch(_){return ""}})()})}${dxHaveRow(c0)}</div>`})});
   {const on=html.filter(x=>x.act).sort((a,b)=>a.la-b.la),off=html.filter(x=>!x.act);html.length=0;on.forEach(x=>html.push(x.h));if(off.length){html.push(`<p class="dxoffh">${T("Anunciadas, sin spots en la última hora","Announced, no spots in the last hour")}</p>`);off.forEach(x=>html.push(x.h))}}
   const N=8,more=html.length>N+2&&!DXOPEN,nMore=html.slice(N).filter(x=>x.startsWith("<div")).length;
   box.innerHTML=(more?html.slice(0,N):html).join("")+(more?`<button type="button" class="btn llmore" id="dxmore">${T(`Ver ${nMore} DXpediciones más`,`Show ${nMore} more DXpeditions`)}</button>`:"")+

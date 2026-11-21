@@ -28,10 +28,15 @@ function open(){const b=document.getElementById("viewbtn");if(!b)return;let m=do
   const f=m.querySelector('[aria-checked="true"]');if(f)try{f.focus({preventScroll:true})}catch(e){}}
 function close(){const m=document.getElementById("viewmenu");if(m)m.hidden=true;const b=document.getElementById("viewbtn");if(b)b.setAttribute("aria-expanded","false")}
 /* redibujar todo y dejar la página donde estaba: se toma como referencia la primera sección visible */
-function reflow(){const tops=[...document.querySelectorAll("details.fold,.card,section.page")].filter(e=>e.getClientRects().length);
+/* 2.10.36: más rápido. Antes se vaciaba la caché de cálculos (VOACAP, probabilidades…) y se recalculaba todo: no hace
+   falta, solo cambia cómo se pintan las tarjetas. El menú se marca al instante y el redibujado va justo después, en el
+   siguiente fotograma, y si se pulsan varias opciones seguidas solo se redibuja una vez. */
+let RT=0;
+function reflow(){cancelAnimationFrame(RT);RT=requestAnimationFrame(()=>setTimeout(()=>{
+  const tops=[...document.querySelectorAll("details.fold,.card,section.page")].filter(e=>e.getClientRects().length);
   const ref=tops.find(e=>e.getBoundingClientRect().bottom>90),y0=ref?ref.getBoundingClientRect().top:0;
-  try{CACHE.clear()}catch(e){}try{refresh()}catch(e){}try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}try{renderAlerts()}catch(e){}try{window.renderAlBar&&renderAlBar()}catch(e){}
-  if(ref)requestAnimationFrame(()=>{const d=ref.getBoundingClientRect().top-y0;if(Math.abs(d)>2)window.scrollBy(0,d)})}
+  try{refresh()}catch(e){}try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}try{renderAlerts()}catch(e){}try{window.renderAlBar&&renderAlBar()}catch(e){}
+  if(ref){const d=ref.getBoundingClientRect().top-y0;if(Math.abs(d)>2)window.scrollBy(0,d)}},0))}
 function btn(){if(document.getElementById("viewbtn"))return true;const z=document.getElementById("zoombtn");if(!z)return false;
   const b=document.createElement("button");b.id="viewbtn";b.type="button";b.className="thbtn viewbtn vbtn";b.setAttribute("aria-haspopup","dialog");b.setAttribute("aria-expanded","false");
   z.parentElement.insertBefore(b,z);paintBtn();

@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.36 — 2026-11-21
+
+- ES: Mucho más rápida al tocar botones (Modo DX / Modo concursos, «Mi modo» / «Todos los modos» de Qué hacer, el menú Vista y el resto): con muchos spots, redibujar pasaba de unos 3 s a 0,3–0,5 s en un móvil lento. La caché de lo que dicen los clústeres de cada destino se vaciaba sin necesidad en cada consulta, y el destino más cercano a cada spot se recalculaba una y otra vez; ahora se guardan. Las distancias que se enseñan siguen siendo las exactas.
+- ES: El menú Vista ya no recalcula la propagación al cambiar (solo cambia cómo se pinta) y se marca al instante.
+- ES: «Ya la tengo» rediseñado: botón con icono de visto en las tarjetas y solo el icono en la vista de lista, junto a la flecha. Al pulsarlo, la estación se despide con una pequeña animación y abajo aparece «Hecho» con «Deshacer» durante unos segundos.
+- ES: «Ya la tengo» también en cada DXpedición: deja de avisarte de ella hasta que termine, la tarjeta lo indica y se puede quitar.
+- EN: Much faster when tapping buttons (DX mode / Contest mode, "My mode" / "All modes" in What to do, the View menu and the rest): with many spots, redrawing went from about 3 s to 0.3–0.5 s on a slow phone. The cache of what the clusters say about each destination was being emptied needlessly on every query, and the nearest destination to each spot was recalculated over and over; both are now kept. The distances shown are still the exact ones.
+- EN: The View menu no longer recalculates propagation when changing (only the drawing changes) and is marked instantly.
+- EN: "Got it already" redesigned: a button with a check icon on cards and just the icon in list view, next to the arrow. When tapped, the station leaves with a short animation and "Done" with "Undo" appears at the bottom for a few seconds.
+- EN: "Got it already" also on each DXpedition: it stops alerting you to it until it ends, the card shows it and it can be removed.
+
 ## 2.10.35 — 2026-11-21
 
 - ES: Un solo botón «Vista» en la cabecera, en lugar de los dos de solo icono: abre un menú con texto para elegir el detalle (Completa o Compacta) y cómo se ven las estaciones (Tarjetas o Lista), marcando lo elegido. Al cambiar se redibuja toda la plataforma a la vez y la página se queda donde estabas.

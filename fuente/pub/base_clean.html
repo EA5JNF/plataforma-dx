@@ -1115,7 +1115,11 @@ function TG(){const l=$("loc").value;if(TCACHE[l])return TCACHE[l];const tx=locT
   TCACHE[l]=V.meta.map((m,i)=>{const [id,name,dxcc,alias,lat,lon,cq,cont,act,rare,os,ol]=m;const p=[lon,lat],km=distJS(tx,p),az=brgJS(tx,p),laz=(az+180)%360,lkm=lpKm(tx,p);
     const hasL=ol>=0&&km>=9000;return {i,id,name,dxcc,alias,lat,lon,cq,cont,act,rare:!!rare,os,ol,l:hasL,km:Math.round(km),az:Math.round(az),laz:Math.round(laz),lkm:Math.round(lkm),gm:gmax(tx,az,km),lgm:hasL?gmax(tx,laz,lkm):0}});return TCACHE[l]}
 const T=id=>TG().find(x=>x.id===id);
-function nearestT(p,dxcc){let best=null,bd=1e9;for(const t of TG()){if(dxcc&&t.dxcc!==dxcc)continue;const d=distJS(p,[t.lon,t.lat]);if(d<bd){bd=d;best=t}}if(!best&&dxcc)return nearestT(p,0);return best}
+/* 2.10.36: el destino más cercano a un punto no depende de tu estación: se guarda, y se compara en la esfera (rápido) */
+const NTM=new Map();let NTG=null;
+function nearestT(p,dxcc){const tg=TG();if(tg!==NTG){NTM.clear();NTG=tg}const k=p[0]+","+p[1]+","+(dxcc||0);if(NTM.has(k))return NTM.get(k);
+  let best=null,bd=1e9;for(const t of tg){if(dxcc&&t.dxcc!==dxcc)continue;const d=distS(p,[t.lon,t.lat]);if(d<bd){bd=d;best=t}}
+  const r=!best&&dxcc?nearestT(p,0):best;if(NTM.size>20000)NTM.clear();NTM.set(k,r);return r}
 const TFM={};function tFor(o){if(!o)return null;const l=$("loc").value;const M=TFM[l]||(TFM[l]=new WeakMap());if(typeof o==="object"&&M.has(o))return M.get(o);const r=tFor0(o);if(typeof o==="object")M.set(o,r);return r}
 function tFor0(o){if(o.tid&&T(o.tid))return T(o.tid);const p=o.dx?o.dx:(o.lon!=null?[o.lon,o.lat]:null);if(!p)return o.zone?T(o.zone):null;return nearestT(p,o.dxcc||0)}
 let TXP=BASEQ;

@@ -586,5 +586,5 @@ os.makedirs(os.path.join(W, "out"), exist_ok=True)
 open(os.path.join(W, "out", "index.html"), "w", encoding="utf-8").write(w_es)
 open(os.path.join(W, "out", "en.html"), "w", encoding="utf-8").write(w_en)
 import subprocess as _sp
-_sp.run(["node", os.path.join(W, "minify.js"), os.path.join(W, "out", "lib")], check=True)
+if not os.environ.get("NOMIN"): _sp.run(["node", os.path.join(W, "minify.js"), os.path.join(W, "out", "lib")], check=True)
 print("web", len(w_es), "en", len(w_en))
