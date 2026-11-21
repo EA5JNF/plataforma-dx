@@ -147,7 +147,7 @@ _i=s.index("function explain(t,b,lh,lp,km){"); _j=s.index("\nfunction ",_i+10); 
 R('const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e);','const sp=SPOTS().map(s=>({s,e:spotEval(s,lh),a:spotAge(s)})).filter(x=>x.e&&(x.a==null||x.a<=60));')
 # el rumbo de un spot, con las mismas coordenadas que su tarjeta del clúster (antes 148° aquí y 149° allí)
 R('(rumbo ${e.lp?e.laz:e.az}° ${cab(e.lp?e.laz:e.az)})','(rumbo ${(g=>`${g}° ${cab(g)}`)((window.ACRACB_spAz&&ACRACB_spAz(s,e.lp))??(e.lp?e.laz:e.az))})')
-R('if(!sp.length)h+=`<p>No hay spots de fonía útiles en las bandas de este modo. ${','if(!sp.length)h+=`<p>No hay spots útiles de la última hora en ${esc(MD().s)} y en tus bandas. ${')
+R('if(!sp.length)h+=`<p>No hay spots de fonía útiles en las bandas de este modo. ${','if(!sp.length)h+=`<p>No hay spots útiles de la última hora en ${esc(CMSTXT())} y en tus bandas. ${')
 # El resumen de avisos decía «3 avisos: C8K 80 m, C8K 40 m» sin indicar que hay más
 R('${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}`','${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}${it.length>2?" y "+(it.length-2)+" más":""}`')
 # Kp con coma decimal también en inglés: ahora coma en español y punto en inglés

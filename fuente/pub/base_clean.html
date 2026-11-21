@@ -819,7 +819,7 @@ body.noscroll{overflow:hidden}
     <details class="card fold" id="f_easy" data-tab="Resumen"><summary><h2>Qué banda y hacia dónde</h2></summary><div id="easy"></div></details>
     <details class="card fold" id="f_contra" data-tab="Bandas"><summary><h2>Tus bandas ahora</h2><span class="fsum" id="s_contra"></span></summary><div id="contra" class="fin"></div></details>
     <details class="card fold" id="f_tl" data-tab="Hora a hora"><summary><h2><span id="tlt">Tu día hora a hora</span></h2><span class="fsum" id="s_tl"></span></summary><div class="tl" id="tl"></div><div class="tlh" id="tlh"></div><div class="sun" id="sun"></div></details>
-    <details class="card fold" id="f_rec" data-tab="Qué hacer" hidden hidden><summary><h2><span id="rech">Qué hacer ahora</span></h2><span class="fsum" id="s_rec"></span></summary><div id="rec"></div></details>
+    <details class="card fold" id="f_rec" data-tab="Qué hacer" hidden><summary><h2><span id="rech">Qué hacer ahora</span></h2><span class="fsum" id="s_rec"></span></summary><div id="rec"></div></details>
     <details class="card fold" id="f_vhf" data-tab="V-UHF"><summary><h2>6 m, 2 m y 70 cm</h2><span class="fsum" id="s_vhf"></span></summary><div class="sgrid sx" id="vhfo"></div></details>
     <details class="card fold" id="f_qth" data-tab="Tu QTH"><summary><h2>Tu QTH</h2><span class="fsum" id="s_qth"></span></summary><div class="qth" id="qth"></div></details>
     <div hidden><div class="bands" id="bands"></div></div>
@@ -1667,7 +1667,7 @@ function renderSide(){
   const top=st.mode==="contest"?per.filter(x=>x.mx.p>=.05).sort((a,b)=>b.act-a.act)[0]:per.filter(x=>x.mx.p>=.05).sort((a,b)=>b.cnt-a.cnt||b.mx.p-a.mx.p)[0];
   const allz=[];for(const t of TG().filter(inMode))for(const b of BI()){allz.push({t,b,lp:false,...prob(t,lh,b,false)});if(st.mode==="dx"&&t.l)allz.push({t,b,lp:true,...prob(t,lh,b,true)})}
   allz.sort((a,b)=>st.mode==="contest"?cval(b.t,b.b,b.p)-cval(a.t,a.b,a.p):b.p-a.p);
-  if(st.mode==="dx"){const far=allz.filter(z=>z.t.km>=2500);const rare=allz.filter(z=>z.t.km<2500);allz.length=0;allz.push(...far,...rare)}
+  /* 2.10.30: DX es todo lo que no es España: ya no se reordena por distancia */
   const needZ=allz.filter(z=>entNeed(z.t)===true&&z.p>=.15);
   const dxNow=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,lh)}:null}).filter(x=>x&&x.p>=.1).sort((a,b)=>b.p-a.p);
   const isNow=lh===now,when=isNow?"Ahora":"A las "+hh(lh)+":00";
@@ -1687,18 +1687,18 @@ function renderSide(){
   else{const z=allz[0];
     h+=st.mode==="contest"?`<p>${when}, la banda que más puntos da en el ${CT().n} es <b>${BANDS[top.b]}</b> (${top.cnt} multiplicador${top.cnt===1?"":"es"} abierto${top.cnt===1?"":"s"}). Donde más QSO saldrán: <b>${esc(z.t.name)}</b> en ${BANDS[z.b]} (${Math.round(z.p*100)} %).</p><details class="why"><summary>Por qué</summary><p>${explain(z.t,z.b,lh,false)}</p></details>`
      :`<p>${when}, la mejor banda es <b>${BANDS[top.b]}</b>, con ${top.cnt} destino${top.cnt===1?"":"s"} por encima del 30 %. El DX más probable: <b>${esc(z.t.name)}</b> en ${BANDS[z.b]} por ${z.lp?"paso largo":"paso corto"} (${Math.round(z.p*100)} %).</p><details class="why"><summary>Por qué</summary><p>${explain(z.t,z.b,lh,z.lp)}</p></details>`}
-  if(st.mode==="dx"){const re=TG().filter(t=>t.km<2500&&rareOn(t)).map(t=>({t,...bestAny(t,lh)})).filter(x=>x.p>=.15);if(re.length)h+=`<p><b>Europa rara en el aire:</b> ${re.map(x=>`${esc(x.t.name)} en ${BANDS[x.b]} (${Math.round(x.p*100)} %)`).join(", ")}.</p>`}
   ;
   h+="</div><div><h3 class=\"rqh\">Qué hacer</h3>";const steps=[];const goNow=dxs.filter(x=>x.e.p>=.1);
   if(st.mode==="contest"){if(top)steps.push(`Quédate en <b>${BANDS[top.b]}</b>. Si llamar CQ no da ritmo, recorre la banda.`);if(goNow.length)steps.push(`Multiplicador en el clúster: <b>${esc(goNow[0].s.call)}</b> en ${esc(goNow[0].s.f)} (${Math.round(goNow[0].e.p*100)} %).`)}
   else{goNow.slice(0,3).forEach(x=>steps.push(`Ve a <b>${esc(x.s.f)}</b> y busca a <b>${esc(x.s.call)}</b>${/up|arriba|split/i.test(x.s.c)?" (escucha arriba: trabaja en split)":""}, ${x.e.lp?"por paso largo":"por paso corto"} (${Math.round(x.e.p*100)} %).`));
     dxNow.filter(x=>!goNow.some(g=>x.d.call.includes(g.s.call))).slice(0,3).forEach(x=>steps.push(`DXpedición al alcance: <b>${CS(x.d.call)}</b> (${esc(x.d.ent)}) en ${BANDS[x.b]} por ${x.lp?"paso largo":"paso corto"} (${Math.round(x.p*100)} %)${x.d.qsx?", en "+esc(x.d.qsx):""}.`));
     if(LOG&&needZ.length)steps.push(`Te faltan y están abiertas: ${needZ.slice(0,4).map(z=>`<b>${esc(z.t.name.split(" (")[0])}</b> en ${BANDS[z.b]} (${Math.round(z.p*100)} %)`).join(", ")}.`);
-    if(top)steps.push(`Si no hay nada de eso, recorre <b>${BANDS[top.b]}</b> hacia ${esc(allz[0].t.name)}.`)}
+    /* 2.10.30: el destino sugerido es el mejor de esa misma banda (antes podía decir «recorre 12 m hacia» un destino que era de 20 m) */
+    if(top){const zb=allz.find(z=>z.b===top.b)||allz[0];steps.push(`Si no hay nada de eso, recorre <b>${BANDS[top.b]}</b> hacia ${esc(zb.t.name)}${zb.lp?" por paso largo":""}.`)}}
   h+=steps.length?"<ol style='margin:4px 0 0;padding-left:20px'>"+steps.map(x=>`<li>${x}</li>`).join("")+"</ol>":"<p>Nada útil a esta hora.</p>";
   const k=kpAt(lh);if(k>=4)h+=`<p class="note" style="color:#ff8a80">Kp ${k}: caminos polares penalizados; los del sur aguantan.</p>`;
   if(sunEl(TXP,lh)>0&&L.radio)h+=`<p class="note">Apagón por llamarada: ${L.radio.r12} % (si todo se calla, espera 15–60 min).</p>`;
-  {const R=$("rec")||(window.ACRACB_recEl&&ACRACB_recEl());if(R)R.innerHTML=`<div class="rec">${h}</div></div>`}const RH=$("rech")||(window.ACRACB_recEl&&ACRACB_recEl()?.parentNode?.querySelector("#rech"))||{};RH.textContent=isNow?"Qué hacer ahora":"Qué hacer a las "+hh(lh)+":00";
+  {const R=$("rec")||(window.ACRACB_recEl&&ACRACB_recEl());if(R){R.innerHTML=`<div class="rec">${h}</div></div>`;/* 2.10.30: siempre con el mismo orden: primero qué hacer, el porqué plegado */try{tidyRec()}catch(e){}}}const RH=$("rech")||(window.ACRACB_recEl&&ACRACB_recEl()?.parentNode?.querySelector("#rech"))||{};RH.textContent=isNow?"Qué hacer ahora":"Qué hacer a las "+hh(lh)+":00";
   // DX
   $("dxl").innerHTML=L.dx.map((d,i)=>{const t=tFor(d);if(!t)return "";const p=[d.lon,d.lat],az=Math.round(brgJS(TXP,p)),km=Math.round(distJS(TXP,p));let bh={p:0,h:0,b:0,lp:false};for(let x=0;x<24;x++){const r=bestAny(t,x);if(r.p>bh.p)bh={...r,h:x}}
     const n=bestAny(t,lh),onc=SPOTS().find(s=>d.call.includes(s.call)),nw=dxNew(d);
@@ -2272,8 +2272,8 @@ let CWG=0;function renderContestLazy(){const g=++CWG;if(st.mode!=="contest"){ren
   renderCCal();step()}
 
 /* «Qué hacer»: primero las acciones; el razonamiento, plegado */
-function tidyRec(){const r=document.querySelector("#rec .rec");if(!r||r.dataset.tidy)return;const ds=[...r.children];const qh=ds.find(d=>/^\s*Qué hacer/.test(d.textContent));if(!qh)return;
-  r.dataset.tidy="1";const rest=ds.filter(d=>d!==qh);r.prepend(qh);if(rest.length){const det=document.createElement("details");det.className="why recwhy";det.innerHTML="<summary>Por qué: lo que dice el clúster y las condiciones</summary>";rest.forEach(d=>det.appendChild(d));r.appendChild(det)}}
+function tidyRec(){const r=document.querySelector("#rec .rec");if(!r||r.dataset.tidy)return;const ds=[...r.children];const qh=ds.find(d=>/^\s*(Qué hacer|What to do)/.test(d.textContent));if(!qh)return;
+  r.dataset.tidy="1";const rest=ds.filter(d=>d!==qh);r.prepend(qh);if(rest.length){const det=document.createElement("details");det.className="why recwhy";det.innerHTML="<summary>Por qué: lo que dice el clúster y las condiciones</summary>";rest.forEach(d=>det.appendChild(d));r.appendChild(det);/* 2.10.30: sigue abierto o cerrado al cambiar de modo o actualizar */det.open=!!window.__rwOpen;det.addEventListener("toggle",()=>{window.__rwOpen=det.open})}}
 
 /* WSPR: recuentos por banda (MHz → banda de la plataforma) */
 const WSPRMAP={1:0,2:0,3:1,5:8,7:2,10:9,14:3,18:4,21:5,24:6,28:7,50:10};

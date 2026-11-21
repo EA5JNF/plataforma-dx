@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.30 — 2026-11-21
+
+- ES: «Qué hacer ahora» ordenado y estable: siempre primero los botones de modo y las recomendaciones, y debajo, plegado, «Por qué: lo que dice el clúster y las condiciones». Antes, al pulsar «Mi modo» o «Todos los modos», ese bloque perdía el plegado y salía desordenado (en inglés no se plegaba nunca). Si lo abres, sigue abierto al cambiar de modo o al actualizar.
+- ES: La sugerencia final usa el mejor destino de esa misma banda (antes podía decir «recorre 12 m hacia» un destino de 20 m). Fuera la línea «Europa rara en el aire» y el orden por distancia: con la nueva definición, toda Europa salvo España es DX. Sin spots, el aviso habla de tus modos, no siempre de «fonía».
+- EN: "What to do now" is ordered and stable: mode buttons and suggestions always first, and below, folded, "Why: what the cluster says and the conditions". Before, pressing "My mode" or "All modes" left that block unfolded and out of order (in English it never folded). If you open it, it stays open when you change mode or update.
+- EN: The final suggestion uses the best destination on that same band (it could say "tune 12 m toward" a 20 m destination). The "Rare Europe on air" line and the distance ordering are gone: with the new definition, all of Europe except Spain is DX. With no spots, the notice names your modes, not always "phone".
+
 ## 2.10.29 — 2026-11-21
 
 - ES: Idea tomada del WebCluster de URE: la referencia DME del spot manda sobre el prefijo para decidir si es España o DX. Un EA9 que activa un municipio de Ávila cuenta como España, y un EA1 desde Mallorca como Baleares (DX).
