@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.35 — 2026-11-21
+
+- ES: Un solo botón «Vista» en la cabecera, en lugar de los dos de solo icono: abre un menú con texto para elegir el detalle (Completa o Compacta) y cómo se ven las estaciones (Tarjetas o Lista), marcando lo elegido. Al cambiar se redibuja toda la plataforma a la vez y la página se queda donde estabas.
+- ES: Vista de lista rehecha como un clúster web (URE): columnas fijas y alineadas en todas las filas (hace, frecuencia, modo, banda, DX, país, comentario, quién la oye, rumbo, km, QSO), números alineados a la derecha y una flecha para desplegar la fila. Lo que no cabe se corta con «…» y se ve entero al desplegar. Las columnas se adaptan al ancho del propio listado: en tableta se pliegan quién la oye y el rumbo; en el móvil, dos líneas por estación (indicativo, país y probabilidad; frecuencia, modo, banda y hace cuánto), y la distancia y «¿Lo oyes?» al desplegar. Crece con el botón «Aa» y con el ampliado automático de pantallas 4K y 8K.
+- ES: En la vista de lista, «Ya la tengo» de los avisos está dentro de la fila desplegada.
+- EN: A single "View" button in the header instead of the two icon-only buttons: it opens a menu with text to choose the detail level (Full or Compact) and how stations are shown (Cards or List), marking the current choice. Changing it redraws the whole platform at once and the page stays where you were.
+- EN: List view rebuilt like a web cluster (URE): fixed columns aligned across all rows (ago, frequency, mode, band, DX, country, comment, heard by, bearing, km, QSO), numbers right-aligned and an arrow to expand the row. Whatever does not fit is cut with "…" and shown in full when expanded. The columns adapt to the width of the list itself: on a tablet, heard by and bearing fold away; on a phone, two lines per station (callsign, country and chance; frequency, mode, band and how long ago), with distance and "Do you hear it?" when expanded. It grows with the "Aa" button and with the automatic enlargement on 4K and 8K screens.
+- EN: In list view, the alerts' "Got it already" is inside the expanded row.
+
 ## 2.10.34 — 2026-11-21
 
 - ES: Actualización más rápida: los datos se pintan en unos 4,5 s como mucho con todo lo que haya llegado, en vez de esperar a la fuente más lenta (hasta 21 s). Las fuentes lentas siguen buscando por detrás y se añaden solas al llegar, sin volver a pedir nada; la línea de estado dice cuántas faltan.

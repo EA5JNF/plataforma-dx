@@ -192,7 +192,8 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
   b.innerHTML='<svg class="vfull" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/></svg><svg class="vcomp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>';
   b.onclick=function(){try{localStorage.setItem(K,cur()==="compact"?"full":"compact")}catch(e){}apply();try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}};
   z.parentElement.insertBefore(b,z);apply();return true}
- (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
+ /* 2.10.35: el botón suelto se sustituye por el menú «Vista» (viewmenu.js) */
+ window.ACRACB_view=function(v){if(v==null)return cur();try{localStorage.setItem(K,v==="compact"?"compact":"full")}catch(e){}apply()}})();
 /* ---- 2.10.31: vista de lista para todos los listados de estaciones, independiente de completa o compacta ---- */
 (function(){var EN=window.ACRACB_LANG==="en",K="acracb_list";
  function on(){try{return localStorage.getItem(K)==="1"}catch(e){return false}}
@@ -202,7 +203,7 @@ window.CSF=function(call){try{const c=esc(call),e=callEnt(call);if(!e||e.mm)retu
   b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.5h18M9 4v16"/></svg>';
   b.onclick=function(){try{localStorage.setItem(K,on()?"":"1")}catch(e){}apply();try{refresh()}catch(e){}try{window.ACRACB_clrender&&ACRACB_clrender()}catch(e){}try{renderAlerts()}catch(e){}try{window.renderAlBar&&renderAlBar()}catch(e){}};
   v.insertAdjacentElement("afterend",b);apply();return true}
- (function tryB(n){if(!btn()&&n<40)setTimeout(function(){tryB(n+1)},150)})(0)})();
+ window.ACRACB_list=function(v){if(v==null)return on();try{localStorage.setItem(K,v?"1":"")}catch(e){}apply()}})();
 
 /* ---- 2.8.26: un solo envoltorio para el dibujo del mapa ----
    Antes cada añadido del mapa envolvía drawMap y, si otro lo envolvía después, volvía a envolverlo: en un minuto se

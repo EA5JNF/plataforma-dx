@@ -125,22 +125,35 @@ window.ACRACB_card=o=>card(o);
    en todos los listados que usan la tarjeta de estación. Al tocar la fila se despliegan los detalles. Vale con la vista
    completa y con la compacta. */
 function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
+  /* 2.10.35: fila alineada como un clúster web (URE): una columna por dato, números a la derecha, lo que no cabe se corta
+     con «…» y se ve entero al desplegar la fila (y al pasar el ratón por encima) */
   const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`;
   let rumbo="",dist="";if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`}
   const oh=window.ACRACB_ohBox&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):"";
+  let en=null;try{en=callEnt(o.call)}catch(_){}
+  const cty=en?(en.mm?T("móvil marítimo","maritime mobile"):en.name):"",fu=en&&!en.mm&&en.cc?flagURL(en.cc):"";
+  const sa=String(ago(o.a)||"").replace(/^hace\s+/,"").replace(/\s+ago$/,"").replace(/^más de un día$/,T("+1 día","1 d+")).replace(/^over a day$/,"1 d+");
+  const byc=[...String(o.by||"").matchAll(/data-call="([^"]+)"/g)].map(m=>m[1]);const byTx=byc.length?byc[0]+(byc.length>1?` +${byc.length-1}`:""):String(o.by||"").replace(/<[^>]+>/g,"");
+  const strip=h=>String(h||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+  const com=(o.tags||[]).join("")+(o.xs?`<span class="l-ct">${o.xs}</span>`:"")+(o.note?`<span class="l-ct">${e2(o.note)}</span>`:"");
+  const comT=[strip((o.tags||[]).join(" · ")),strip(o.xs),o.note||""].filter(Boolean).join(" · ");
   return `<div class="sc scl ohc${old?" old":""}"${ohd}>`+
-    `<span class="l-age" title="${o.t?e2(o.t)+" UTC":""}">${ago(o.a)}</span>`+
+    `<span class="l-age" title="${o.t?e2(o.t)+" UTC":""}">${e2(sa)}</span>`+
     `<span class="l-f">${o.f?`<b style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:""}</span>`+
     `<span class="l-m">${o.mode?mb(o.mode):""}</span>`+
-    `<span class="l-b" style="color:${BC[o.band]||"inherit"}">${o.band!=null&&BANDS[o.band]?BANDS[o.band]:""}</span>`+
-    `<span class="l-call sc-call">${stBtn(o.call,o.band)}</span>`+
-    `<span class="l-tags">${(o.tags||[]).join("")}</span>`+
-    `<span class="l-by" title="${T("Le oyen","Heard by")}">${o.by||""}</span>`+
-    `<span class="l-geo">${g?`${g.az}° ${cab(g.az)} · ${fk(g.km)} km`:""}</span>`+
-    `<span class="l-p">${o.p!=null?`<b>${o.p}</b> %`:""}</span>`+
+    `<span class="l-b" style="color:${BC[o.band]||"inherit"}">${o.band!=null&&BANDS[o.band]?BANDS[o.band].replace(" ",""):""}</span>`+
+    `<span class="l-call"><span class="stc sc-call" data-stc="${e2(SK(o.call))}" data-stb="${o.band!=null&&o.band<10?o.band:""}"><span class="cs" data-call="${e2(o.call)}">${e2(o.call)}</span></span></span>`+
+    `<span class="l-cty" title="${e2(cty)}">${fu?`<img class="fl" src="${fu}" alt="" width="18" height="12">`:""}${e2(cty)}</span>`+
+    `<span class="l-tags" title="${e2(comT)}">${com}</span>`+
+    `<span class="l-by" title="${e2(byc.join(", "))}">${e2(byTx)}</span>`+
+    `<span class="l-az">${g?`${g.az}° ${cab(g.az)}`:""}</span>`+
+    `<span class="l-km">${g?fk(g.km):""}</span>`+
+    `<span class="l-p">${o.p!=null?`<b>${o.p}</b>%`:""}</span>`+
     `<span class="l-oh">${oh}</span>`+
-    `<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl></div>`}
-window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span>${T("Hace","Ago")}</span><span>${T("Frecuencia","Frequency")}</span><span>${T("Modo","Mode")}</span><span>${T("Banda","Band")}</span><span>${T("Estación","Station")}</span><span>${T("Etiquetas","Tags")}</span><span>${T("Le oyen","Heard by")}</span><span>${T("Rumbo · distancia","Bearing · distance")}</span><span>${T("QSO","QSO")}</span><span></span></div>`;
+    `<span class="l-x" aria-hidden="true"></span>`+
+    `<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec(T("Comentario","Comment"),com?`<span class="l-cfull">${com}</span>`:"")}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>`+
+    (oh?`<div class="l-ohx">${oh}</div>`:"")+`</div>`}
+window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-age">${T("Hace","Ago")}</span><span class="l-f">${T("Frec.","Freq.")}</span><span class="l-m">${T("Modo","Mode")}</span><span class="l-b">${T("Banda","Band")}</span><span class="l-call">DX</span><span class="l-cty">${T("País","Country")}</span><span class="l-tags">${T("Comentario","Comment")}</span><span class="l-by">${T("Le oyen","Heard by")}</span><span class="l-az">${T("Rumbo","Bearing")}</span><span class="l-km">km</span><span class="l-p">QSO</span><span class="l-oh"></span><span class="l-x"></span></div>`;
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
@@ -580,7 +593,7 @@ document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.clos
   const tb=document.getElementById("bandtoast")||(()=>{const d=document.createElement("div");d.id="bandtoast";d.className="bandtoast";d.setAttribute("role","status");document.body.appendChild(d);return d})();
   tb.textContent=T(`De acuerdo: no te avisaré más de ${k}.`,`OK: no more alerts for ${k}.`);tb.classList.add("on");clearTimeout(tb._t);tb._t=setTimeout(()=>tb.classList.remove("on"),2200);
   try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}},true);
-const withHave=(html,x)=>html.includes('<div class="ohr">')?html.replace('<div class="ohr">','<div class="ohr">'+alHaveBtn(x)):html.replace(/<\/div>\s*$/,alHaveBtn(x)+"</div>");
+const withHave=(html,x)=>html.includes('class="sc scl')?html.replace("</dl>",`<dt></dt><dd>${alHaveBtn(x)}</dd></dl>`):html.includes('<div class="ohr">')?html.replace('<div class="ohr">','<div class="ohr">'+alHaveBtn(x)):html.replace(/<\/div>\s*$/,alHaveBtn(x)+"</div>");
 function alRow(x){const sp=(L.spots||[]).find(s=>s.call===x.call)||{};const band=x.band!=null?x.band:sp.band;const mode=x.mode||sp.mode||"";return {x,sp,band,mode,g:mgrp(mode,x.f!=null?x.f:sp.f)}}
 function alOK(x){const r=alRow(x);return (!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))}
 window.ACRACB_alOK=x=>{try{return alOK(x)}catch(e){return true}};
