@@ -810,7 +810,7 @@ body.noscroll{overflow:hidden}
   </header>
   <div class="card start" id="start" hidden></div>
   <nav class="nav" aria-label="Secciones">
-    <button data-pg="ahora">Ahora</button><button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button><button data-pg="sol">Sol</button><button data-pg="concursos">Concursos</button><button data-pg="balizas">Balizas</button><button data-pg="fichas">Fichas</button><button data-pg="metodo">Método</button>
+    <button data-pg="ahora">Ahora</button><button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button><button data-pg="sol">Sol</button><button data-pg="concursos">Concursos</button><button data-pg="fichas">Fichas</button><button data-pg="metodo">Método</button>
   </nav>
   
 
@@ -874,12 +874,11 @@ body.noscroll{overflow:hidden}
     <details class="card fold" id="f_cycle" data-tab="Ciclo solar"><summary><h2>Ciclo solar 25</h2><span class="fsum" id="s_cycle"></span></summary><div id="cycle" class="fin"></div></details>
     
 <details class="card fold" id="f_solar" data-tab="Previsión"><summary><h2>Previsión geomagnética y efectos</h2><span class="fsum" id="s_solar"></span></summary><div id="solar" class="fin"></div></details>
+    <details class="card fold" id="f_bcn" data-tab="Balizas"><summary><h2>Balizas NCDXF/IARU</h2><span class="fsum" id="s_bcn"></span></summary><div id="bcn"></div></details>
     <details class="card fold" id="cotejow" data-tab="Fuentes"><summary><h2 style="display:inline">De dónde sale cada dato</h2> <span class="note" id="cotejos"></span></summary><div id="cotejo"></div></details>
   </section>
 
-  <section class="page" data-pg="balizas">
-    <div class="card" id="bcn"></div>
-  </section>
+  <section class="page" data-pg="balizas"></section>
 
   <section class="page" data-pg="fichas">
     <details class="card fold" id="f_explo" data-tab="Entidades"><summary><h2>Entidades</h2><span class="fsum" id="s_explo"></span></summary><div class="seg xview" id="xview" role="group" aria-label="Qué ver"><button data-xv="heard">Oídas en las últimas horas</button><button data-xv="prev">Previsión para tu estación</button></div><div id="explo" class="fin"></div></details>
@@ -1073,7 +1072,8 @@ function loadMonth(m){if(!m||MF[m]||MLOAD[m])return;MLOAD[m]=fetch(`voa/m${Strin
 function blendNow(){return memo("blend",()=>{const n=new Date(),m=n.getUTCMonth()+1,d=n.getUTCDate(),dim=new Date(Date.UTC(n.getUTCFullYear(),m,0)).getUTCDate();return d>=15?{mA:m,mB:m%12+1,w:(d-15)/dim}:{mA:m,mB:(m+10)%12+1,w:(15-d)/dim}})}
 function rawM(D,t,lp,j,h,b){if(!D||b>=NBD)return null;const o=(lp?t.ol:t.os)+j*SSZ+h*HSZ;return [D.u[o]/4,D.s[o+1+b*3],D.u[o+2+b*3],D.u[o+3+b*3]]}
 /* ciclo solar previsto por NOAA para el mes del concurso */
-function predSSN(mon,def){try{const d=nextDate(CT());const k=d.getUTCFullYear()+"-"+String(mon).padStart(2,"0");const v=L.ssnPred&&L.ssnPred[k];return v!=null&&isFinite(+v)?+v:def}catch(e){return def}}
+const PSN=new Map();function predSSN(mon,def){const k=mon+"|"+def+"|"+Math.floor(Date.now()/36e5)+"|"+(st.mode==="contest"?CT().n:"");if(PSN.has(k))return PSN.get(k);const r=predSSN0(mon,def);if(PSN.size>100)PSN.clear();PSN.set(k,r);return r}
+function predSSN0(mon,def){try{const d=nextDate(CT());const k=d.getUTCFullYear()+"-"+String(mon).padStart(2,"0");const v=L.ssnPred&&L.ssnPred[k];return v!=null&&isFinite(+v)?+v:def}catch(e){return def}}
 const MB={};function monthData(m){if(!V.months[m])return null;if(!MB[m]){const a=unb(V.months[m].b);MB[m]={idx:V.months[m].idx,u:a,s:new Int8Array(a.buffer)}}return MB[m]}
 const CBI=[0,1,2,3,5,7];
 const BASEQ=[-0.5017,38.5779];
@@ -1087,7 +1087,9 @@ function brgS(a,b){const la1=a[1]*D2R,la2=b[1]*D2R,dl=(b[0]-a[0])*D2R;const y=Ma
 /* 2.8.38: distancias y rumbos sobre el elipsoide WGS84 (Vincenty) en toda la plataforma, iguales a los de las tarjetas;
    la esfera queda solo como reserva cuando Vincenty no converge (casi antípodas) */
 const GWA=6378137,GWF=1/298.257223563,GWB=GWA*(1-GWF);
-function gVinc(p1,p2){const L=(p2[0]-p1[0])*D2R,U1=Math.atan((1-GWF)*Math.tan(p1[1]*D2R)),U2=Math.atan((1-GWF)*Math.tan(p2[1]*D2R));
+/* 2.10.32: las distancias y rumbos exactos se guardan: se pedían una y otra vez para los mismos puntos */
+const GVC=new Map();function gVinc(p1,p2){if(!p1||!p2)return gVinc0(p1,p2);const k=p1[0]+","+p1[1]+","+p2[0]+","+p2[1];let r=GVC.get(k);if(r!==undefined)return r;r=gVinc0(p1,p2);if(GVC.size>40000)GVC.clear();GVC.set(k,r);return r}
+function gVinc0(p1,p2){const L=(p2[0]-p1[0])*D2R,U1=Math.atan((1-GWF)*Math.tan(p1[1]*D2R)),U2=Math.atan((1-GWF)*Math.tan(p2[1]*D2R));
   const sU1=Math.sin(U1),cU1=Math.cos(U1),sU2=Math.sin(U2),cU2=Math.cos(U2);let l=L,lp,it=0,sS,cS,sg,sA,c2A,c2m;
   do{const sl=Math.sin(l),cl=Math.cos(l);sS=Math.sqrt((cU2*sl)**2+(cU1*sU2-sU1*cU2*cl)**2);if(sS===0)return {m:0,az:0};
     cS=sU1*sU2+cU1*cU2*cl;sg=Math.atan2(sS,cS);sA=cU1*cU2*sl/sS;c2A=1-sA*sA;c2m=c2A?cS-2*sU1*sU2/c2A:0;
@@ -1370,7 +1372,7 @@ const CONTESTS={
    tip:"1 punto por QSO y cada estado, provincia o país cuenta una sola vez. Son 30 h, de las que un monooperador opera 24."},
  lzdx:{modes:["ssb","cw"],n:"LZ DX",month:11,wk:"penult",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:t=>t.cont==="EU"?1:3,mult:"zonas ITU y los 28 distritos de Bulgaria, por banda, sea cual sea el modo",mk:"cqdx",
    tip:"Desde EA: cada QSO con Bulgaria da 10 puntos, otro continente 3 y Europa 1. Envías RS o RST y tu zona ITU, 37 en la Península, y las estaciones LZ envían su distrito. Puedes trabajar a cada estación una vez en CW y otra en SSB en cada banda, pero zona y distrito cuentan una sola vez por banda. Sin 160 m. Bulgaria va dentro del destino Balcanes del mapa, así que el cálculo la cuenta como Europa: cada LZ que trabajes vale más de lo que dice la estimación. Los multiplicadores se estiman con las zonas CQ, parecidas pero no iguales a las ITU."}};
-const CT=()=>CONTESTS[$("contest")?$("contest").value:"cqww"]||CONTESTS[CKEYS()[0]]||CONTESTS.cqww;
+const CT=()=>memo("CT",()=>CONTESTS[$("contest")?$("contest").value:"cqww"]||CONTESTS[CKEYS()[0]]||CONTESTS.cqww);
 const CKEYS=()=>Object.keys(CONTESTS).filter(k=>CONTESTS[k].modes.includes(MOD()));
 const BI0=()=>st.mode==="contest"?CT().bands:BALL.filter(b=>MD().bands.includes(b));
 /* banda elegida arriba: si hay una, toda la plataforma trabaja con ella */
@@ -1381,10 +1383,14 @@ let RS=null;function calcRS(){const s=new Set();(L.dx||[]).concat(L.spots||[]).f
 const rareOn=t=>t.rare&&(RS||(RS=calcRS())).has(t.id);
 const isDXz=t=>+t.dxcc!==281;
 const inMode=t=>st.mode==="contest"?CT().ok(t):isDXz(t);
-function cmults(lh,b){const s=new Set();for(const t of TG().filter(inMode)){if(prob(t,lh,b).p>=.3)s.add(CT().mk==="cqdx"?t.cq:t.dxcc)}return s}
-function fullWeekends(y,m){const r=[];for(let d=1;d<=31;d++){const dt=new Date(Date.UTC(y,m-1,d));if(dt.getUTCMonth()!==m-1)break;if(dt.getUTCDay()===6){const su=new Date(Date.UTC(y,m-1,d+1));if(su.getUTCMonth()===m-1)r.push(dt)}}return r}
+function cmults(lh,b){return memo("cmu|"+lh+"|"+b+"|"+CT().n+"|"+MOD(),()=>cmults0(lh,b))}
+function cmults0(lh,b){const s=new Set();for(const t of TG().filter(inMode)){if(prob(t,lh,b).p>=.3)s.add(CT().mk==="cqdx"?t.cq:t.dxcc)}return s}
+/* 2.10.32: se guarda el resultado: se llamaba miles de veces en cada cálculo (era lo que más tiempo gastaba al abrir) */
+const FWK=new Map();function fullWeekends(y,m){const k=y*100+m;const c=FWK.get(k);if(c)return c;const r=fullWeekends0(y,m);FWK.set(k,r);return r}
+function fullWeekends0(y,m){const r=[];for(let d=1;d<=31;d++){const dt=new Date(Date.UTC(y,m-1,d));if(dt.getUTCMonth()!==m-1)break;if(dt.getUTCDay()===6){const su=new Date(Date.UTC(y,m-1,d+1));if(su.getUTCMonth()===m-1)r.push(dt)}}return r}
 function contestDate(c,y){const w=fullWeekends(y,c.month);return c.wk==="penult"?w[w.length-2]:c.wk==="last"?w[w.length-1]:c.wk==="first"?w[0]:c.wk==="third"?w[2]:w[1]}
-function nextDate(c){const n=new Date();let d=contestDate(c,n.getUTCFullYear());if(d.getTime()+2*864e5<n.getTime())d=contestDate(c,n.getUTCFullYear()+1);return d}
+const NXD=new Map();function nextDate(c){const m=Math.floor(Date.now()/36e5),k=(c.n||"")+"|"+m;const v=NXD.get(k);if(v)return v;const r=nextDate0(c);if(NXD.size>200)NXD.clear();NXD.set(k,r);return r}
+function nextDate0(c){const n=new Date();let d=contestDate(c,n.getUTCFullYear());if(d.getTime()+2*864e5<n.getTime())d=contestDate(c,n.getUTCFullYear()+1);return d}
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 const fdate=d=>d.getUTCDate()+" de "+MESES[d.getUTCMonth()]+" de "+d.getUTCFullYear();
 /* ---------- hora y sol ---------- */
@@ -1809,7 +1815,7 @@ function renderContest(){const on=st.mode==="contest";$("cnone").hidden=on;
    :`<p>${c.n} no obliga a parar${c.h===24?" (son 24 h)":""}. Si necesitas dormir, las horas que menos dan son: <b>${low.map(x=>hh(x)+":00").join(", ")}</b>.</p>`;
   // trucos
   $("tricks").innerHTML=`<h2>Trucos legales para sumar más · ${c.n}</h2><p class="note" style="margin:0 0 6px">${c.tip}</p><ul class="note" style="font-size:.95rem;margin:0 0 10px;padding-left:20px">${((TRICKS[$("contest").value]||TRICKS[CT().base])||[]).map(x=>`<li>${x}</li>`).join("")}</ul>
-  <details class="why"><summary>Las 18 balizas: probabilidad en cada banda</summary><div class="scroll"><table class="hm" style="min-width:760px"><thead><tr><th class="rh">Banda</th><th class="rh">Tú puedes transmitir (EA)</th><th class="rh">EE. UU. Extra (${MD().s})</th><th class="rh">EE. UU. General (${MD().s})</th><th class="rh">La jugada</th></tr></thead><tbody>`+
+  <details class="why"><summary>Segmentos de cada banda: dónde puedes transmitir tú y dónde los de EE. UU.</summary><div class="scroll"><table class="hm" style="min-width:760px"><thead><tr><th class="rh">Banda</th><th class="rh">Tú puedes transmitir (EA)</th><th class="rh">EE. UU. Extra (${MD().s})</th><th class="rh">EE. UU. General (${MD().s})</th><th class="rh">La jugada</th></tr></thead><tbody>`+
   SEG().filter(([b])=>BI().includes(b)).map(([b,ea,ex,ge,j])=>`<tr><th class="rh"><span style="color:${BC[b]}">●</span> ${BANDS[b]}</th><td style="text-align:left">${ea}</td><td style="text-align:left">${ex}</td><td style="text-align:left">${ge}</td><td style="text-align:left;font-family:var(--f-b);font-size:.88rem;white-space:normal">${j}</td></tr>`).join("")+
   `</tbody></table></div><p class="note">Segmentos de ${MD().s} de EE. UU. según la norma FCC que conozco; los Advanced quedan entre Extra y General. Canadá no tiene segmentos por clase. Compruébalo antes del concurso. Respeta los tramos que el plan de la IARU Región 1 deja sin concursos (3.650–3.700 y 14.300–14.350 kHz).</p>`}
 /* ---------- sol y espacio ---------- */
@@ -1869,7 +1875,8 @@ function bcnMapSvg(data){if(typeof d3==="undefined"||typeof topojson==="undefine
   const seg=`<div class="seg bmseg" role="group" aria-label="Color de los puntos"><span class="segl">Color</span><button data-bmb="-1" aria-pressed="${k==null}">Mejor banda</button>${BFQ.map(([f,bi],j)=>`<button data-bmb="${j}" aria-pressed="${k===j}"><i style="background:${BC[bi]}"></i>${BANDS[bi]}</button>`).join("")}</div>`;
   return `<h3 class="bmh">Dónde están y cuáles emiten ahora</h3>${seg}<div class="bcnmap"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa de las balizas NCDXF">${bcnLand(W,H,pr)}${dots}${me?`<rect x="${(me[0]-5).toFixed(1)}" y="${(me[1]-5).toFixed(1)}" width="10" height="10" fill="#fff" stroke="#000"/>`:""}${ons}</svg></div>
    <p class="bmleg"><span><i style="background:#22c55e"></i>≥70 %</span><span><i style="background:#84cc16"></i>50–70</span><span><i style="background:#eab308"></i>30–50</span><span><i style="background:#f97316"></i>15–30</span><span><i style="background:#b91c1c"></i>5–15</span><span><i style="background:#475569"></i>&lt;5</span><span><b class="bmring"></b>${window.ACRACB_LANG==="en"?"transmitting now, in its band color":"emite ahora, en el color de su banda"}</span><span><i style="background:#fff;border:1px solid #000"></i>tú</span></p>`}
-function renderBcn(){if(st.page!=="balizas"&&!st.ly.bcn)return;const {slot,left}=bcnNow(),lh=localNow();
+/* 2.10.32: las balizas pasan a ser una pestaña de Sol (son la prueba directa de la propagación) */
+function renderBcn(){if(st.page!=="sol"&&!st.ly.bcn)return;const {slot,left}=bcnNow(),lh=localNow();
   const data=BCN.map((b,i)=>{const t=nearestT([b[2],b[3]],0);const az=Math.round(brgJS(TXP,[b[2],b[3]])),km=Math.round(distJS(TXP,[b[2],b[3]]));const heard=(L.beacons||[]).filter(x=>x.call===b[0]);
     const ps=BFQ.map(([f,bi],k)=>{const q=prob(t,lh,bi,false);return {on:(slot-k+18)%18===i,p:q.p,na:q.na}});return {b,i,az,km,heard,ps,best:Math.max(...ps.map(x=>x.na?0:x.p))}});
   const nowOn=BFQ.map(([f,bi],k)=>{const d=data[(slot-k+18)%18],q=d.ps[k];return `<div class="bnow"><span class="bf" style="color:${BC[bi]}">${f}</span><b>${CS(d.b[0])}</b><span class="note">${esc(d.b[1])}</span><span class="bp ${cls(q.p)}">${q.na?"—":Math.round(q.p*100)+" %"}</span></div>`}).join("");
@@ -1883,7 +1890,7 @@ function renderBcn(){if(st.page!=="balizas"&&!st.ly.bcn)return;const {slot,left}
   {const d=document.querySelector("#bcn details.bcntbl");if(d){d.open=BCNTBL;d.addEventListener("toggle",()=>{BCNTBL=d.open})}}
   document.querySelectorAll("#bcn [data-bmb]").forEach(x=>x.onclick=()=>{BMB=+x.dataset.bmb;renderBcn()});
   try{restoreWhy()}catch(e){}}
-setInterval(()=>{if(document.hidden)return;if(st.page==="balizas")renderBcn();if(st.page==="mapa"&&st.ly.bcn&&st.mapOn)updBcnMarks()},5000);
+setInterval(()=>{if(document.hidden)return;if(st.page==="sol"&&curTab("sol")==="f_bcn")renderBcn();if(st.page==="mapa"&&st.ly.bcn&&st.mapOn)updBcnMarks()},5000);
 /* ---------- fichas ---------- */
 function head(hl){let h="<tr><th></th>";for(let x=0;x<24;x++)h+=`<th class="${x===hl?"now":""}">${hh(x)}</th>`;return h+"</tr>"}
 function zoneTable(t,hl){let h=`<div class="scroll"><table class="hm"><thead>${head(hl)}</thead><tbody>`;
@@ -2355,7 +2362,7 @@ const PAGES=["ahora","mapa","dx","sol","concursos","balizas","fichas","metodo"],
    del mapa (no gasta batería en segundo plano). Si se llega desde una casilla de «Hora a hora», se respeta esa hora. */
 function mapStop(){if(st.play){clearInterval(st.play);st.play=null;const b=$("mplay");if(b)b.textContent="Animar 24 h"}}
 function mapNow(){mapStop();st.mhour=localNow();const r=$("mh");if(r)r.value=st.mhour}
-function go(pg,noScroll){if(!PAGES.includes(pg))pg="ahora";if(pg!=="mapa")mapStop();if(pg!=="mapa"){const mc=$("mapcard");if(mc&&(mc.classList.contains("fsm")||document.fullscreenElement||document.webkitFullscreenElement))try{toggleFS()}catch(e){}}st.page=pg;store.set("page",pg);document.querySelectorAll(".page").forEach(s=>s.classList.toggle("on",s.dataset.pg===pg));document.querySelectorAll(".nav button").forEach(b=>{const on=b.dataset.pg===pg;b.setAttribute("aria-current",on?"page":"false");if(on){const n=b.parentNode;try{n.scrollTo({left:b.offsetLeft-(n.clientWidth-b.offsetWidth)/2,behavior:"smooth"})}catch(e){}}});{const sn=$("subnav");if(sn){sn.hidden=!MORE.has(pg)||pg==="mas";sn.querySelectorAll("button").forEach(b=>b.setAttribute("aria-current",b.dataset.pg===pg?"page":"false"))}}
+function go(pg,noScroll){if(pg==="balizas"){go("sol",noScroll);try{selTab("sol","f_bcn",true)}catch(e){}return}if(!PAGES.includes(pg))pg="ahora";if(pg!=="mapa")mapStop();if(pg!=="mapa"){const mc=$("mapcard");if(mc&&(mc.classList.contains("fsm")||document.fullscreenElement||document.webkitFullscreenElement))try{toggleFS()}catch(e){}}st.page=pg;store.set("page",pg);document.querySelectorAll(".page").forEach(s=>s.classList.toggle("on",s.dataset.pg===pg));document.querySelectorAll(".nav button").forEach(b=>{const on=b.dataset.pg===pg;b.setAttribute("aria-current",on?"page":"false");if(on){const n=b.parentNode;try{n.scrollTo({left:b.offsetLeft-(n.clientWidth-b.offsetWidth)/2,behavior:"smooth"})}catch(e){}}});{const sn=$("subnav");if(sn){sn.hidden=!MORE.has(pg)||pg==="mas";sn.querySelectorAll("button").forEach(b=>b.setAttribute("aria-current",b.dataset.pg===pg?"page":"false"))}}
   try{history.replaceState(null,"","#"+pg)}catch(e){}if(typeof renderPage==="function"&&$("eqnote").textContent)renderPage();if(!noScroll){const n=document.querySelector(".nav");if(n&&n.getBoundingClientRect().top<0)n.scrollIntoView({block:"start"})}}
 document.querySelectorAll(".nav button,#subnav button").forEach(b=>b.onclick=()=>{if(b.dataset.pg==="mapa")mapNow();go(b.dataset.pg)});document.querySelectorAll(".mtile").forEach(b=>b.onclick=()=>go(b.dataset.go));
 /* ---------- refresco general ---------- */
@@ -2370,7 +2377,7 @@ let WARM=0;function warmCache(){const id=++WARM;const T=TG(),B=[...new Set([...B
   setTimeout(()=>ric(step),300)}
 let TLT=0;
 function renderPage(){const p=st.page;document.body.dataset.page=p;renderPgHelp();
-  renderSum();if(p==="ahora"){renderEasy();renderVHF();clearTimeout(TLT);TLT=setTimeout(()=>{if(st.page!=="ahora")return;renderQTH();renderSide();setTimeout(()=>{if(st.page==="ahora"){renderTL();renderContrast()}},0)},0)}else if(p==="mapa")drawMap();else if(p==="dx"){renderSide();renderAlerts();limitList($("spots"),12,"spots");limitList($("dxl"),8,"DXpediciones")}else if(p==="concursos"){renderContestLazy()}else if(p==="sol"){renderSpace();spaceExplain();renderCycle();renderCotejo();renderSolar();renderOutlook()}else if(p==="balizas")renderBcn();else if(p==="fichas"){const at=curTab("fichas");if(at==="f_explo"||!at)renderExplorer();if(at==="f_info")renderInfo();if(at==="f_tbl")renderView()};setTimeout(foldSums,60)}
+  renderSum();if(p==="ahora"){renderEasy();renderVHF();clearTimeout(TLT);TLT=setTimeout(()=>{if(st.page!=="ahora")return;renderQTH();renderSide();setTimeout(()=>{if(st.page==="ahora"){renderTL();renderContrast()}},0)},0)}else if(p==="mapa")drawMap();else if(p==="dx"){renderSide();renderAlerts();limitList($("spots"),12,"spots");limitList($("dxl"),8,"DXpediciones")}else if(p==="concursos"){renderContestLazy()}else if(p==="sol"){renderBcn();renderSpace();spaceExplain();renderCycle();renderCotejo();renderSolar();renderOutlook()}else if(p==="balizas")renderBcn();else if(p==="fichas"){const at=curTab("fichas");if(at==="f_explo"||!at)renderExplorer();if(at==="f_info")renderInfo();if(at==="f_tbl")renderView()};setTimeout(foldSums,60)}
 ["modesel","eq","site","thr","rx","nz","hz","sfi","kp","vh","hxh","sph","d80h","d160h","dph","efh","ybh","quh","ocfh","g5h","lwh","antsel","gnd","coax","coaxl","swr","proc","pile","lnz","opw"].forEach(id=>{const f=()=>{store.set("c_"+id,$(id).value);refresh()};$(id).addEventListener($(id).tagName==="SELECT"?"change":"input",f)});
 ["kpauto","ionoon","calon"].forEach(id=>{const v=store.get(id);if(v!==null)$(id).checked=v==="1";$(id).addEventListener("change",()=>{store.set(id,$(id).checked?"1":"0");refresh()})});
 /* 2.10.18: cambiar la hora no borra los cálculos ya hechos (antes se recalculaba todo en cada paso del deslizador) */

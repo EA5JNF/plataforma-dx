@@ -40,7 +40,9 @@ function themeBtn(){if($("thbtn"))return;const ck=document.querySelector(".brow1
   b.onclick=()=>{const t=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";try{S.set("acracb_theme_manual",JSON.stringify({t,until:nextChange(Date.now())}))}catch(e){}setTheme(t,true)};ck.appendChild(b);setTheme(document.documentElement.getAttribute("data-theme"),false)}
 /* ---------- textos largos: se ve un resumen y se despliega al tocar ---------- */
 const LIM=260;let CT=null;const OPENED=new Set();const ckey=el=>(el.textContent||"").trim().slice(0,48);
-function clampAll(){CT=null;try{longVals();glue()}catch(e){}document.querySelectorAll(".page p, .page .note, .page .w").forEach(el=>{
+/* 2.10.32: solo se repasa lo que está a la vista (cabecera y la sección abierta), no las ocho secciones a la vez; al cambiar de sección se repasa la nueva */
+function visRoots(){const r=[];const h=document.querySelector("header");if(h)r.push(h);let pg=null;try{pg=st.page}catch(e){}const s=pg&&document.querySelector(`section.page[data-pg="${pg}"]`);if(s)r.push(s);else r.push(document.body);return r}
+function clampAll(){CT=null;const R=visRoots();try{longVals();R.forEach(x=>glue(x))}catch(e){}R.flatMap(x=>[...x.querySelectorAll(x.matches&&x.matches(".page")?"p, .note, .w":".page p, .page .note, .page .w")]).forEach(el=>{
   if(el.dataset.cl||el.closest("summary,.sp,.chip,.dx,button,.mpop,.srcrep,.kv,td,th,.tl,.tlh,.drop,.goal,.srcg,#heardbox,#qrpbox,.notifw,#metnote,#space")||el.id==="updst")return;
   const d=el.closest("details");if(d&&!d.classList.contains("fold"))return;
   /* 2.8.27: solo textos sencillos; un bloque con desplegables, listas, tablas o párrafos dentro no se recorta (rompía los desplegables de «Cómo funciona») */
@@ -357,3 +359,5 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
     if(b.textContent!==t)b.textContent=t}catch(e){}}
   setInterval(()=>{if(!document.hidden)chk()},30000);(window.ACRACB_afterDraw=window.ACRACB_afterDraw||[]).push(chk);
   document.addEventListener("visibilitychange",chk);setTimeout(chk,2500);setTimeout(chk,8000);setTimeout(chk,16000)})();
+
+document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".nav button,[data-pg]"))setTimeout(()=>{try{clampAll()}catch(e){}},150)},true);

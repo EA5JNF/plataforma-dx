@@ -1359,3 +1359,4 @@ html.vl .sc.scl.old{opacity:.6}
 html.vl :is(div,section):has(> .sc.scl){display:block!important;columns:auto!important}
 html.vl :is(div,section):has(> .sc.scl)>.sclh{margin:0}
 @media (max-width:760px){.scl .l-f,.scl .l-m,.scl .l-b,.scl .l-p{min-width:max-content!important;overflow:visible!important}.scl .l-age{justify-self:start!important}}
+#f_bcn #bcn>h2:first-child{display:none}

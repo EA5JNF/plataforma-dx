@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.32 — 2026-11-21
+
+- ES: Más rápida: en un móvil medio, el trabajo pesado al abrir baja de unos 3,1 s a 1,6 s y la página queda lista antes (de 2,3 s a 1,7 s); cambiar a DX pasa de 0,64 s a 0,37 s, al mapa de 0,75 s a 0,55 s y a Concursos de 1,2 s a 0,9 s. Se guardan cálculos que se repetían miles de veces (fines de semana de concurso, previsión de manchas, distancias exactas, multiplicadores) y el repaso de textos solo mira la sección que está a la vista.
+- ES: Menú más corto: Balizas pasa a ser una pestaña de Sol (son la prueba directa de la propagación). El enlace antiguo lleva allí.
+- ES: En Concursos › Trucos, el desplegable que decía «Las 18 balizas» se llama ahora como lo que enseña: los segmentos de cada banda donde puedes transmitir tú y los de EE. UU.
+- EN: Faster: on a mid-range phone, heavy work at start-up drops from about 3.1 s to 1.6 s and the page is ready sooner (from 2.3 s to 1.7 s); switching to DX goes from 0.64 s to 0.37 s, to the map from 0.75 s to 0.55 s and to Contests from 1.2 s to 0.9 s. Calculations repeated thousands of times are now kept (contest weekends, sunspot forecast, exact distances, multipliers) and the text pass only looks at the visible section.
+- EN: Shorter menu: Beacons becomes a tab in Sun (they are the direct proof of propagation). The old link leads there.
+- EN: In Contests › Tips, the fold that said "The 18 beacons" is now named after what it shows: the band segments where you and US stations can transmit.
+
 ## 2.10.31 — 2026-11-21
 
 - ES: Vista de lista: nuevo botón en la cabecera (junto al de vista completa/compacta y compatible con las dos) que muestra todos los listados de estaciones como una lista de filas alineadas: hace cuánto, frecuencia, modo, banda, estación con bandera y país, etiquetas, quién la oye, rumbo y distancia, probabilidad de QSO y «¿Lo oyes?». En el ordenador lleva cabecera de columnas; en el móvil, cada fila ocupa tres líneas cortas. Al tocar una fila se despliegan sus detalles. Se recuerda en el dispositivo.
