@@ -334,7 +334,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     spotsChecked:iso(t0),spotsUTC:newest?iso(newest):prev.spotsUTC}}
 
 /* ================= ACTUALIZACIÓN COMPLETA ================= */
-const SOURCES=[["NOAA SWPC","https://services.swpc.noaa.gov/"],["HamQSL","https://www.hamqsl.com/solar.html"],["DRAO Penticton (NRCan)","https://www.spaceweather.gc.ca/forecast-prevision/solar-solaire/solarflux/sx-4-en.php"],["GFZ Potsdam","https://kp.gfz.de/"],["SILSO (Real Observatorio de Bélgica)","https://www.sidc.be/SILSO/"],["KC2G","https://prop.kc2g.com/"],["NASA CCMC DONKI","https://kauai.ccmc.gsfc.nasa.gov/DONKI/"],["WSPR.live","https://wspr.live/"],["PSK Reporter","https://pskreporter.info/"],["NG3K ADXO","https://www.ng3k.com/misc/adxo.html"],["Club Log Most Wanted","https://clublog.org/mostwanted.php"],["ARRL LoTW","https://lotw.arrl.org/"],["Spothole (M0TRT)","https://spothole.app/"],["DX Summit","https://www.dxsummit.fi/"],["HamQTH DX Cluster","https://www.hamqth.com/dxcluster.php"],["POTA","https://pota.app/"],["SOTAwatch","https://sotawatch.sota.org.uk/"],["WWFF Spots","https://spots.wwff.co/"],["CelesTrak","https://celestrak.org/"],["AMSAT","https://www.amsat.org/"],["SatNOGS DB","https://db.satnogs.org/"]];
+const SOURCES=[["NOAA SWPC","https://services.swpc.noaa.gov/"],["HamQSL","https://www.hamqsl.com/solar.html"],["DRAO Penticton (NRCan)","https://www.spaceweather.gc.ca/forecast-prevision/solar-solaire/solarflux/sx-4-en.php"],["GFZ Potsdam","https://kp.gfz.de/"],["SILSO (Real Observatorio de Bélgica)","https://www.sidc.be/SILSO/"],["KC2G","https://prop.kc2g.com/"],["NASA CCMC DONKI","https://kauai.ccmc.gsfc.nasa.gov/DONKI/"],["WSPR.live","https://wspr.live/"],["PSK Reporter","https://pskreporter.info/"],["NG3K ADXO","https://www.ng3k.com/misc/adxo.html"],["Club Log Most Wanted","https://clublog.org/mostwanted.php"],["ARRL LoTW","https://lotw.arrl.org/"],["eQSL.cc","https://www.eqsl.cc/"],["Spothole (M0TRT)","https://spothole.app/"],["DX Summit","https://www.dxsummit.fi/"],["HamQTH DX Cluster","https://www.hamqth.com/dxcluster.php"],["POTA","https://pota.app/"],["SOTAwatch","https://sotawatch.sota.org.uk/"],["WWFF Spots","https://spots.wwff.co/"],["CelesTrak","https://celestrak.org/"],["AMSAT","https://www.amsat.org/"],["SatNOGS DB","https://db.satnogs.org/"]];
 let BUSY=false;const LAST={};
 
 let LASTRUN=0;delete SRC["GIRO ionosondas"];delete SRC["SILSO ciclo"];
@@ -389,7 +389,7 @@ async function updateAll(auto){if(BUSY)return;BUSY=true;const t0=Date.now();LAST
   N.updated=fmtLocal(t0);N.updatedUTC=iso(t0);N.sources=SOURCES;
   const okn=Object.values(LAST).filter(x=>x.ok).length,tot=Object.keys(LAST).length,secs=((Date.now()-t0)/1000).toFixed(1).replace(".",",");
   N.upd={at:iso(t0),ok:okn,tot,secs,src:Object.fromEntries(Object.entries(LAST).map(([k,v])=>[k,v.ok]))};
-  try{applyLive(N)}catch(e){console.error(e)}L.alert={at:iso(t0),items};try{renderAlerts()}catch(e){}
+  N.mwm=mwm;try{applyLive(N)}catch(e){console.error(e)}L.mwm=mwm;let items2=null;try{items2=window.ACRACB_buildAlerts?ACRACB_buildAlerts():null}catch(e){}L.alert={at:iso(t0),items:items2||items};try{renderAlerts()}catch(e){}
   S.set(KEY,JSON.stringify(Object.assign({},N,{alert:L.alert})));
   status(`${auto?"Actualización automática":"Actualizado"} a las ${hmLocal(t0)} en ${secs} s · ${okn} de ${tot} fuentes respondieron${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} nuevos)`:" · clúster sin respuesta"}`,okn?"updst-ok":"updst-err");
   renderSrc();setBtn(false);BUSY=false;sched()}

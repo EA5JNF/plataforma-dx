@@ -1286,3 +1286,10 @@ html.vc .ezd0,html.vc .ezalt{margin-top:4px}
 html.vc .page .card.fold>summary .fsum{font-size:.8rem}
 .alsub{margin:2px 0 6px;font-size:.82rem;color:var(--muted);line-height:1.35}
 .clexp{margin:2px 0 10px!important;font-size:.88rem}
+/* 2.10.17: avisos DX */
+.xtag.alnew{background:var(--good,#2e7d32);color:#fff;border-color:transparent}
+.xtag.allog{border-color:var(--accent);color:var(--accent)}
+.ohr .alhave{margin:0 auto 0 0}
+.alhave{margin-top:8px;align-self:flex-start;font:600 .82rem var(--f-s,inherit);padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+.alhave:hover{border-color:var(--accent)}
+.eqslt{color:var(--fg);border-color:var(--line)}

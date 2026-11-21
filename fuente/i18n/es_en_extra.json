@@ -399,5 +399,7 @@
 "Editar estación": "Edit station",
 "pulsa «Editar estación» arriba y pon tu locator, modo, potencia y antena. Todo se recalcula para ti.": "press “Edit station” above and enter your locator, mode, power and antenna. Everything is recalculated for you.",
 "Solo lo que puedes trabajar tú ahora, con tu estación, tu modo y tu banda.": "Only what you can work right now, with your station, your mode and your band.",
-"Todo lo que se anuncia ahora en el mundo, lo puedas oír o no. Lo que es para ti está en «Avisos».": "Everything being spotted worldwide right now, whether you can hear it or not. What is for you is in “Alerts”."
+"Todo lo que se anuncia ahora en el mundo, lo puedas oír o no. Lo que es para ti está en «Avisos».": "Everything being spotted worldwide right now, whether you can hear it or not. What is for you is in “Alerts”.",
+"eQSL.cc, otro sistema gratuito para confirmar contactos por internet. Vale para sus propios diplomas y para algunos de otras entidades, pero no para el DXCC de la ARRL.": "eQSL.cc, another free system to confirm contacts online. It counts for its own awards and some others, but not for ARRL DXCC.",
+"Lo que falta en tu log, DXpediciones y DX raro que puedes trabajar ahora. Se revisan en cada actualización. Solo te avisan los del modo y las bandas que elijas abajo.": "What your log is missing, DXpeditions and rare DX you can work now. Checked on every update. You are only alerted to those in the mode and bands you choose below."
 }

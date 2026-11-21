@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.17 — 2026-11-21
+
+- ES: Avisos DX con un criterio único: solo lo que puedes trabajar ahora (como el clúster «Para ti») y, por orden, entidad nueva para tu log, DXpedición, banda nueva, modo nuevo y DX raro. Cada aviso dice el motivo.
+- ES: Botón «Ya la tengo» en cada aviso: deja de avisar de esa estación (una DXpedición, hasta que acabe) y de esa entidad en esa banda y modo. Si tu ADIF ya tiene QSO con la DXpedición desde que empezó, no avisa.
+- ES: El ADIF guarda también los indicativos trabajados con la fecha del último QSO (sigue sin salir del dispositivo).
+- ES: Junto al indicativo sale «eQSL» si la estación es socia con autenticidad garantizada de eQSL.cc y ha subido su log en el último año. Lista pública y gratuita, copiada cada semana como la de LoTW. eQSL no vale para el DXCC de la ARRL.
+- EN: DX alerts follow one rule: only what you can work now (as the cluster's "For you") and, in order, new entity for your log, DXpedition, new band, new mode and rare DX. Each alert states why.
+- EN: "Got it already" button on every alert: no more alerts for that station (a DXpedition, until it ends) or that entity on that band and mode. If your ADIF already has a QSO with the DXpedition since it started, there is no alert.
+- EN: The ADIF also keeps worked callsigns with the date of the last QSO (it still never leaves the device).
+- EN: An "eQSL" tag appears next to the callsign if the station is an eQSL.cc Authenticity Guaranteed member that uploaded its log in the last year. Free public list, copied weekly like LoTW's. eQSL does not count for ARRL DXCC.
+
 ## 2.10.16 — 2026-11-21
 
 - ES: El porcentaje de ampliación del botón «Aa» se lee bien: texto claro sobre fondo oscuro en el tema claro, y al revés en el oscuro, algo más grande.

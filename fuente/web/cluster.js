@@ -416,7 +416,7 @@ const ANAME={JS8:"JS8Call"};
 let AM=new Set(ld("acracb_almodes",x=>AMODES.includes(x))||[]),AB=new Set(ld("acracb_albands",x=>Number.isInteger(x)&&x>=0&&x<=12)||[]);/* vacío = todos */
 const mgrp=(m,f)=>{const x=mlab(m,f);return AMODES.includes(x)?x:(x==="JS8CALL"?"JS8":"OTROS")};
 window.ACRACB_alertCards=()=>{try{alertCards()}catch(e){}};
-function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.alert.items))return;
+function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch(_){}if(!L.alert||!Array.isArray(L.alert.items))return;
   const old=[...box.querySelectorAll(":scope>.sp")];let wrap=box.querySelector(":scope>.alc"),fb=box.querySelector(":scope>.alf");
   if(!wrap){if(!old.length)return;wrap=document.createElement("div");wrap.className="alc";old[0].before(wrap);old.forEach(o=>o.remove())}
   if(!fb){fb=document.createElement("div");fb.className="alf";wrap.before(fb)}
@@ -428,15 +428,64 @@ function alertCards(){const box=$("alerts");if(!box||!L.alert||!Array.isArray(L.
     `<div class="seg clseg clbands albands" role="group" aria-label="${T("Banda de los avisos","Alert band")}"><span class="segl">${T("Banda","Band")}</span><button type="button" data-alb="" aria-pressed="${!AB.size}">${T("Todas","All")}</button>${bl.map(b=>`<button type="button" data-alb="${b}" aria-pressed="${AB.has(b)}"${bc[b]?"":' class="clz"'}><i style="background:${BC[b]}"></i>${BANDS[b]}${bc[b]?` <small>${bc[b]}</small>`:""}</button>`).join("")}</div>`;
   fb.querySelectorAll("[data-alm]").forEach(b=>b.onclick=()=>{const v=b.dataset.alm;if(v==="")AM.clear();else{if(AM.has(v))AM.delete(v);else AM.add(v);if(ml.every(m=>AM.has(m)))AM.clear()}S.set("acracb_almodes",JSON.stringify([...AM]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
   fb.querySelectorAll("[data-alb]").forEach(b=>b.onclick=()=>{const v=b.dataset.alb;if(v==="")AB.clear();else{const n=+v;if(AB.has(n))AB.delete(n);else AB.add(n);if(bl.every(x=>AB.has(x)))AB.clear()}S.set("acracb_albands",JSON.stringify([...AB]));setTimeout(()=>{try{foldSums()}catch(e){}try{alBar()}catch(e){}},0);alertCards();alBar()});
-  const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{let k=0;try{const t=r.sp.dx&&typeof tFor==="function"?tFor(r.sp):null;k=t&&window.ACRACB_needRank?ACRACB_needRank(r.x.call,t,r.band!=null?r.band:null):0}catch(e){}r.k=k;r.i=i;return r}).sort((a,b)=>b.k-a.k||a.i-b.i);
-  const kn=vis.some(r=>r.k>0)?`<p class="note alk">${T("Con tu log cargado, primero salen las entidades que te faltan, y entre ellas las que confirman por LoTW.","With your log loaded, entities you still need come first, led by those that confirm via LoTW.")}</p>`:"";
-  wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});const need=String(x.need||"");
-    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;
+  const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{r.i=i;return r});
+  const kn=`<p class="note alk">${LOG?T("Por orden: entidad nueva para tu log, DXpedición, banda nueva y modo nuevo. Solo lo que puedes trabajar ahora, como en el clúster «Para ti».","In order: new entity for your log, DXpedition, new band and new mode. Only what you can work now, as in the cluster's «For you».") :T("DXpediciones y entidades raras que puedes trabajar ahora, como en el clúster «Para ti». Sube tu ADIF y te avisará también de lo que te falta.","DXpeditions and rare entities you can work now, as in the cluster's «For you». Upload your ADIF to be alerted to what you still need.")}</p>`;
+  wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});
+    const tag=alTag(x);
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
-    return card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(st.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:st.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")
-    :`<p class="note">${T("Ningún aviso con este modo y esta banda. Pulsa «Todos» o «Todas» para verlos todos.","No alerts for this mode and band. Tap «All» to see them all.")}</p>`}
+    return withHave(card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(st.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:st.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))}),x)}).join("")
+    :kn+`<p class="note">${T("Ningún aviso con este modo y esta banda. Pulsa «Todos» o «Todas» para verlos todos.","No alerts for this mode and band. Tap «All» to see them all.")}</p>`}
 /* 2.4.1: el aviso flotante (arriba, en Ahora) solo enseña los modos y bandas elegidos en Avisos, con las mismas tarjetas */
 /* 2.4.7: un solo criterio para todo lo que avisa (lista, aviso flotante, resumen y notificaciones): el modo y las bandas elegidos en Avisos */
+/* ---------- 2.10.17: avisos DX con criterio único y lógico ----------
+   Mezcla, por orden: 1) entidad nueva para tu log, 2) DXpedición, 3) banda nueva, 4) modo nuevo, 5) DX posible (entidad rara).
+   Solo entra lo que el clúster «Para ti» da por trabajable (oído en la última media hora y con un 10 % o más desde tu estación).
+   «Ya la tengo» deja de avisar de esa estación (DXpedición: hasta que acabe) y de esa entidad en esa banda y modo durante un año. */
+const ALHK="acracb_alhave";
+function alHave(){try{const o=JSON.parse(localStorage.getItem(ALHK)||"{}"),n=Date.now();let ch=false;for(const k in o)if(!(o[k]>n)){delete o[k];ch=true}if(ch)localStorage.setItem(ALHK,JSON.stringify(o));return o}catch(_){return {}}}
+const mgOf=(mode,f)=>{const g=mgrp(mode,f);return g==="CW"?"CW":(g==="SSB"||g==="AM"||g==="FM")?"PH":"DG"};
+const MGN={CW:["CW","CW"],PH:["fonía","phone"],DG:["digital","digital"]};
+function dxpInfo(call){const k=SK(call);for(const d of (L.dx||[])){if(dxTok(d.call).includes(k))return d}return null}
+function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st.mhour;
+  const H=alHave(),mw=L.mwm||{};(L.dx||[]).forEach(d=>{if(d.mw&&d.dxcc&&!mw[d.dxcc])mw[d.dxcc]=d.mw});
+  const best=new Map();
+  for(const s of (typeof SPOTS==="function"?SPOTS():(L.spots||[]))){
+    if(s.band==null||s.band>10)continue;let K="";try{K=spotKind(s)}catch(_){}if(K!=="dx"&&K!=="ind")continue;
+    let e=null,a=null,pp=0;try{e=spotEval(s,lh);a=spotAge(s);pp=e?spotProb(s,e,a).p:0}catch(_){}
+    if(!e||a==null||a>30||pp<.1)continue;
+    let t=null;try{t=tFor(s)}catch(_){}const dxcc=(t&&t.dxcc)||(+s.dxcc||null);const mg=mgOf(s.mode,s.f),bk=typeof BKEY!=="undefined"?BKEY[s.band]:s.band;
+    const ck="C:"+SK(s.call),ek="E:"+dxcc+"|"+bk+"|"+mg;if(H[ck]||H[ek])continue;
+    const dp=dxpInfo(s.call);let rk=0,why="",whyEn="",sub="";
+    const LE=LOG&&dxcc?LOG.e[dxcc]:null,LM=LOG&&LOG.m&&dxcc?LOG.m[dxcc]:null;
+    const wkCall=LOG&&LOG.calls?LOG.calls[SK(s.call)]:null;
+    const dpDone=dp&&wkCall&&(!dp.start||wkCall>=String(dp.start).replace(/-/g,""));
+    if(LOG&&dxcc){
+      const anyC=LE&&Object.values(LE).includes("C"),bS=LE?LE[bk]:null,mS=LM?LM[mg]:null;
+      if(!anyC){rk=5;why=LE?"Entidad sin confirmar":"Entidad nueva";whyEn=LE?"Entity not confirmed":"New entity";sub="ent"}
+      else if(bS!=="C"){rk=3;why=bS?"Sin confirmar en "+BANDS[s.band]:"Banda nueva: "+BANDS[s.band];whyEn=bS?"Not confirmed on "+BANDS[s.band]:"New band: "+BANDS[s.band];sub="band"}
+      else if(LOG.m&&mS!=="C"){rk=2;why=(mS?"Sin confirmar en ":"Modo nuevo: ")+MGN[mg][0];whyEn=(mS?"Not confirmed in ":"New mode: ")+MGN[mg][1];sub="mode"}
+    }
+    if(dp&&!dpDone&&rk<4){rk=4;if(!why){why="DXpedición";whyEn="DXpedition";sub="dxp"}}
+    if(!rk&&!LOG&&dxcc&&mw[dxcc]&&mw[dxcc]<=100){rk=1;why="DX posible · Most Wanted nº "+mw[dxcc];whyEn="Possible DX · Most Wanted #"+mw[dxcc];sub="rare"}
+    if(!rk&&!LOG&&dp&&!dpDone){rk=4;why="DXpedición";whyEn="DXpedition";sub="dxp"}
+    if(!rk)continue;
+    const it={call:s.call,f:s.f,band:s.band,mode:s.mode,t:s.t,by:s.by,c:s.c||"",need:sub==="dxp"?"DXpedición":why,why,whyEn,sub,rk,pp,dxp:!!(dp&&!dpDone),dxcc,ek,ck,end:dp&&dp.end||null};
+    const k=SK(s.call),o=best.get(k);if(!o||rk>o.rk||(rk===o.rk&&pp>o.pp))best.set(k,it)}
+  return [...best.values()].sort((a,b)=>b.rk-a.rk||(b.dxp-a.dxp)||b.pp-a.pp).slice(0,20)}
+window.ACRACB_buildAlerts=()=>{try{return buildAlerts()}catch(e){console.error(e);return null}};
+function alRefresh(){if(!L.alert)L.alert={at:L.spotsUTC||L.updatedUTC||new Date().toISOString(),items:[]};const it=window.ACRACB_buildAlerts();if(it)L.alert.items=it}
+function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":sub==="rare"?"xr":"xr allog";
+  const tx=x.why?T(x.why,x.whyEn||x.why):(sub==="dxp"?T("DXpedición","DXpedition"):T("entidad rara","rare entity"));
+  return `<span class="xtag ${cls}">${e2(tx)}</span>`+(x.dxp&&sub!=="dxp"?`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`:"")}
+function alHaveBtn(x){return `<button type="button" class="alhave" data-alhave="${e2(SK(x.call))}">${T("Ya la tengo","Got it already")}</button>`}
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alhave]");if(!b)return;ev.preventDefault();ev.stopPropagation();
+  const k=b.dataset.alhave,x=((L.alert&&L.alert.items)||[]).find(i=>SK(i.call)===k);const H=alHave(),now=Date.now(),yr=now+365*864e5;
+  if(x){if(x.dxp||x.sub==="dxp"){const e=x.end?Date.parse(x.end+"T23:59:59Z"):NaN;H[x.ck]=isFinite(e)&&e>now?e+864e5:now+60*864e5}if(x.ek&&!/^E:null/.test(x.ek))H[x.ek]=yr;if(!x.dxp)H["C:"+k]=now+30*864e5}else H["C:"+k]=now+30*864e5;
+  try{localStorage.setItem(ALHK,JSON.stringify(H))}catch(_){}
+  const tb=document.getElementById("bandtoast")||(()=>{const d=document.createElement("div");d.id="bandtoast";d.className="bandtoast";d.setAttribute("role","status");document.body.appendChild(d);return d})();
+  tb.textContent=T(`De acuerdo: no te avisaré más de ${k}.`,`OK: no more alerts for ${k}.`);tb.classList.add("on");clearTimeout(tb._t);tb._t=setTimeout(()=>tb.classList.remove("on"),2200);
+  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}},true);
+const withHave=(html,x)=>html.includes('<div class="ohr">')?html.replace('<div class="ohr">','<div class="ohr">'+alHaveBtn(x)):html.replace(/<\/div>\s*$/,alHaveBtn(x)+"</div>");
 function alRow(x){const sp=(L.spots||[]).find(s=>s.call===x.call)||{};const band=x.band!=null?x.band:sp.band;const mode=x.mode||sp.mode||"";return {x,sp,band,mode,g:mgrp(mode,x.f!=null?x.f:sp.f)}}
 function alOK(x){const r=alRow(x);return (!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))}
 window.ACRACB_alOK=x=>{try{return alOK(x)}catch(e){return true}};
@@ -459,7 +508,7 @@ document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;
   const m=document.getElementById("almenu");if(m&&!m.hidden&&!t.closest("#almenu")){m.hidden=true;const b=document.getElementById("almb");b&&b.setAttribute("aria-expanded","false")}});
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"){const m=document.getElementById("almenu");if(m&&!m.hidden){m.hidden=true}}});
 document.addEventListener("acracb:band",()=>{try{alBar()}catch(e){}});
-function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;muteBanner();return}muteBanner();const al=L.alert;if(!al||!Array.isArray(al.items)){el.hidden=true;return}
+function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;muteBanner();return}muteBanner();try{alRefresh()}catch(_){}const al=L.alert;if(!al||!Array.isArray(al.items)){el.hidden=true;return}
   const age=al.at?(Date.now()-Date.parse(al.at))/6e4:1e9;let off=null;try{off=sessionStorage.getItem("aloff")}catch(e){}
   const hb=(typeof HB==="function")?HB():null;const rows=al.items.map(alRow).filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))&&(hb==null||r.band===hb));
   if(!rows.length||age>150||off===al.at){el.hidden=true;el.innerHTML="";return}
@@ -467,10 +516,10 @@ function alBar(){const el=$("albar");if(!el)return;if(alMuted()){el.hidden=true;
   {const fa=$("f_al");if(typeof st!=="undefined"&&st.page==="dx"&&fa&&fa.getClientRects().length){el.hidden=true;return}}
   const shown=rows.slice(0,3);
   el.hidden=false;el.classList.add("albar2");
-  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc((x=>{try{return fmtT(x)}catch(e){const d=new Date(x);return isNaN(d)?"":d.toLocaleTimeString(T("es-ES","en-US"),{hour:"2-digit",minute:"2-digit"})}})(al.at))}</span></b><span class="alb"><span class="almw"><button type="button" class="almb" id="almb" aria-haspopup="menu" aria-expanded="false" title="${T("Silenciar avisos","Mute alerts")}">${BELL_OFF}<span>${T("Silenciar","Mute")}</span></button><span class="almenu" id="almenu" role="menu" hidden><button type="button" role="menuitem" data-mute="60">${T("1 hora","1 hour")}</button><button type="button" role="menuitem" data-mute="tom">${T("Hasta mañana a las 8:00","Until tomorrow 8:00")}</button><button type="button" role="menuitem" data-mute="inf">${T("Hasta que los reactive","Until I turn them back on")}</button></span></span><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div><p class="alsub">${T("Una estación que puedes trabajar tú ahora, en tu modo y tu banda. Todo lo que se anuncia en el mundo está en DX › Clúster.","A station you can work right now, in your mode and band. Everything spotted worldwide is in DX › Cluster.")}</p>
-  <div class="alc">${shown.map(({x,sp,band,mode})=>{const stg=splitTags({c:cTr(x.c||sp.c||"")});const need=String(x.need||"");
-    const tag=`<span class="xtag ${/DXped/i.test(need)?"xs dxpt":"xr"}">${e2(/DXped/i.test(need)?T("DXpedición","DXpedition"):T("entidad rara","rare entity"))}</span>`;let a=null;try{a=spotAge({t:x.t})}catch(e){}
-    return card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))})}).join("")}</div>`;
+  el.innerHTML=`<div class="alh"><b>${T("Aviso DX","DX alert")} <span class="alt">${esc((x=>{try{return fmtT(x)}catch(e){const d=new Date(x);return isNaN(d)?"":d.toLocaleTimeString(T("es-ES","en-US"),{hour:"2-digit",minute:"2-digit"})}})(al.at))}</span></b><span class="alb"><span class="almw"><button type="button" class="almb" id="almb" aria-haspopup="menu" aria-expanded="false" title="${T("Silenciar avisos","Mute alerts")}">${BELL_OFF}<span>${T("Silenciar","Mute")}</span></button><span class="almenu" id="almenu" role="menu" hidden><button type="button" role="menuitem" data-mute="60">${T("1 hora","1 hour")}</button><button type="button" role="menuitem" data-mute="tom">${T("Hasta mañana a las 8:00","Until tomorrow 8:00")}</button><button type="button" role="menuitem" data-mute="inf">${T("Hasta que los reactive","Until I turn them back on")}</button></span></span><button type="button" class="lnk" id="algo">${rows.length>shown.length?T(`Ver los ${rows.length}`,`See all ${rows.length}`):T("Ver en Avisos","See in Alerts")}</button><button type="button" class="lnk" id="alx" aria-label="${T("Cerrar aviso","Close alert")}">${T("Cerrar","Close")}</button></span></div><p class="alsub">${T("Lo que puedes trabajar tú ahora y te interesa: lo que falta en tu log, DXpediciones y DX raro. Todo lo que se anuncia en el mundo está en DX › Clúster.","What you can work right now and is worth it: what your log is missing, DXpeditions and rare DX. Everything spotted worldwide is in DX › Cluster.")}</p>
+  <div class="alc">${shown.map(({x,sp,band,mode})=>{const stg=splitTags({c:cTr(x.c||sp.c||"")});
+    const tag=alTag(x);let a=null;try{a=spotAge({t:x.t})}catch(e){}
+    return withHave(card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(stg.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:stg.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))}),x)}).join("")}</div>`;
   $("algo").onclick=()=>{go("dx");try{selTab("dx","f_al",true)}catch(e){}el.hidden=true;const fa=$("f_al");if(fa){fa.open=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{try{fa.scrollIntoView({block:"start",behavior:"smooth"})}catch(e){fa.scrollIntoView()}}))}};$("alx").onclick=()=>{try{sessionStorage.setItem("aloff",al.at)}catch(e){}el.hidden=true}}
 window.renderAlBar=alBar;document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest(".nav button,#subnav button,.ptabs button,[data-pg]"))setTimeout(()=>{try{alBar()}catch(e){}},80)},true);
 function hookA(){if(window.__hkAl)return true;if(typeof window.renderAlerts!=="function")return false;window.__hkAl=1;const o=window.renderAlerts;const w=function(){const r=o.apply(this,arguments);try{alertCards()}catch(e){console.error(e)}return r};w.__cl=1;window.renderAlerts=w;return true}
