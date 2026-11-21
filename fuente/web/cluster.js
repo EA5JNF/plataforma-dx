@@ -250,11 +250,18 @@ const allOn=()=>{try{return CMS().length===Object.keys(MODES).length}catch(_){re
 const mineOn=()=>{try{const c=CMS();return c.length===1&&c[0]===MOD()}catch(_){return false}};
 window.ACRACB_recModes=()=>{const on=allOn(),mine=!on&&mineOn();let my="";try{my=MODES[MOD()].s}catch(_){}let mix="";if(!on&&!mine){try{mix=CMSTXT()}catch(_){}}
   return `<div class="recm seg" role="group" aria-label="${T("Modos","Modes")}"><button type="button" data-recm="0" aria-pressed="${mine}">${T("Mi modo","My mode")}${my?" · "+e2(my):""}</button><button type="button" data-recm="1" aria-pressed="${on}">${T("Todos los modos","All modes")}</button></div>`+(mix?`<p class="note recmix">${T("Ahora ves","Now showing")}: ${e2(mix)}</p>`:"")};
-function syncAll(){const c=document.getElementById("allmodes");if(c)c.checked=allOn()}
+function syncAll(){const m=document.getElementById("modesel");if(!m)return;const a=allOn();
+  if(a&&m.value!=="all"){m.value="all";try{store.set("c_modesel","all")}catch(_){}}
+  else if(!a&&m.value==="all"){let b="ssb";try{b=MOD()}catch(_){}m.value=b;try{store.set("c_modesel",b)}catch(_){}}}
+/* 2.10.20: elegir en la lista un modo concreto deja solo ese modo; elegir «Todos los modos» los enciende todos */
+document.addEventListener("change",ev=>{const m=ev.target;if(!m||m.id!=="modesel")return;
+  if(m.value==="all"){if(!allOn()){try{setAllCM(true)}catch(_){}}}
+  else{try{store.set("c_modebase",m.value)}catch(_){}try{CACHE.clear()}catch(_){}if(!mineOn()){try{setAllCM(false)}catch(_){}}}
+  try{renderSide()}catch(_){}},true);
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-recm]");if(!b)return;const want=b.dataset.recm==="1";
   /* antes se alternaba: con una mezcla de modos, «Mi modo» encendía todos. Ahora cada botón pone exactamente lo que dice */
   if(want?!allOn():!mineOn()){try{setAllCM(want)}catch(_){}}syncAll();try{renderSide()}catch(_){}});
-document.addEventListener("change",ev=>{if(ev.target&&ev.target.id==="allmodes"){const w=ev.target.checked;if(w?!allOn():!mineOn()){try{setAllCM(w)}catch(_){}}syncAll()}});
+
 setTimeout(syncAll,600);document.addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("[data-mmall],[data-mm]"))setTimeout(syncAll,50)},true);window.ACRACB_geo=geoOf;window.ACRACB_split2=s=>splitTags(s);window.ACRACB_ago=ago;
 /* separa las etiquetas de split/QSL (van en su sección) de las de programa (van junto a la frecuencia) */
 function splitTags(s){const t=window.ACRACB_tags?ACRACB_tags(s):"";const xs=[],pr=[];(t.match(/<span class="xtag[^"]*"[^>]*>.*?<\/span>/g)||[]).forEach(x=>(/xtag x[sq]\b/.test(x)?xs:pr).push(x));return {xs:xs.join(""),pr}}
@@ -710,3 +717,6 @@ if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout
 /* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
 document.addEventListener("click",ev=>{if(!document.documentElement.classList.contains("vc"))return;const t=ev.target;if(!t.closest)return;
   if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});
+/* 2.10.20: se recuerda el último modo concreto (base de la previsión) antes de cambiar a «Todos los modos» */
+(function(){const sv=()=>{const m=document.getElementById("modesel");if(m&&m.value&&m.value!=="all"){try{store.set("c_modebase",m.value)}catch(_){}}};
+  document.addEventListener("focusin",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);document.addEventListener("pointerdown",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);setTimeout(sv,1500)})();

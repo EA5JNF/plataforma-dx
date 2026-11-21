@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.20 — 2026-11-21
+
+- ES: «Todos los modos» pasa a ser una opción más de la lista de modos de la estación (antes era una casilla al lado). Elegir un modo concreto deja solo ese modo; con «Todos los modos», la previsión sigue calculándose en el último modo concreto elegido. Va sincronizado con «Mi modo / Todos los modos» de «Qué hacer ahora».
+- EN: "All modes" is now one more option in the station's mode list (it used to be a checkbox beside it). Choosing a specific mode leaves only that mode; with "All modes", the forecast is still calculated in the last specific mode chosen. It stays in sync with "My mode / All modes" in "What to do now".
+
 ## 2.10.19 — 2026-11-21
 
 - ES: Un solo juego de filtros: las bandas elegidas en el clúster son las mismas del mapa y de los avisos, y el modo es el de la estación más los que añadas en el clúster o el mapa. Los Avisos ya no tienen filtros propios y dicen cuáles se están usando.

@@ -5,7 +5,7 @@
 "use strict";
 const EN=()=>window.ACRACB_LANG==="en";const T=(es,en)=>EN()?en:es;
 function info(){let n=0,C=false,mode="SSB";try{C=st.mode==="contest";n=TG().filter(inMode).length}catch(e){}
-  try{const m=document.getElementById("modesel");if(m&&m.selectedIndex>=0)mode=m.options[m.selectedIndex].textContent.trim()}catch(e){}return {n,C,mode}}
+  try{mode=MODES[MOD()].s}catch(e){}return {n,C,mode}}
 function enhance(){const el=document.getElementById("tl");if(!el)return;const hm=el.querySelector(".hm2");if(!hm||el.querySelector(".tlintro"))return;
   const {n,C,mode}=info();
   const intro=document.createElement("p");intro.className="tlintro";

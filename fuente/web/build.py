@@ -370,7 +370,9 @@ assert _mt in w
 w = w.replace(_mt, '<details class="mdet"><summary>Equilibrio con los clústeres</summary><p>Cada probabilidad de la hora actual se equilibra con lo que dicen los clústeres en ese momento. Cuentan los spots de los últimos 45 minutos en esa banda hacia ese destino o su zona, según lo que se parece el trayecto del que los oye al tuyo: misma zona de rebote en la ionosfera y distancia parecida. Pesan más si son recientes, traen buena señal y son del mismo modo que el tuyo: un spot de FT8 prueba menos para la SSB, porque pasa con mucha menos señal. Con el camino confirmado, la cifra se acerca a lo que permite la señal, del 35 al 85 %. Una hora antes o después cuenta la mitad y a partir de dos horas manda solo la previsión. Si a ti te han oído cerca de esa estación, sube aún más. Todas las cifras de la plataforma usan esta misma medida, salvo la capa «Predicción VOACAP» del mapa, que enseña la previsión de VOACAP sola. Sin spots parecidos manda VOACAP, salvo un caso: si desde tu zona se está oyendo mucho DX en esa banda y nadie oye nada de un destino donde normalmente hay actividad, la cifra baja con prudencia, como mucho a la mitad, porque esa dirección probablemente está cerrada.</p></details>\n        ' + _mt, 1)
 # 2.5.9: «Todos los modos» junto al modo de la estación (el modo elegido sigue siendo la base de la previsión)
 _i = w.index('<select id="modesel"'); _j = w.index('</select></span>', _i) + len('</select>')
-w = w[:_j] + '<label class="allm" title="El clúster, los avisos y «Qué hacer» muestran todos los modos; la previsión se calcula en tu modo">' + '<input type="checkbox" id="allmodes"> Todos los modos</label>' + w[_j:]
+# 2.10.20: «Todos los modos» pasa a ser una opción más de la lista de modos (antes era una casilla al lado)
+_k = w.rindex('</select>', _i, _j)
+w = w[:_k] + '<optgroup label="Ver todo"><option value="all">Todos los modos</option></optgroup>' + w[_k:]
 def assemble(w, upd, LANG, TITLE):
     global man
     NM = os.path.join(SP, "pub", "node_modules")
@@ -572,6 +574,7 @@ _FQ = re.compile(r'\b(\d{1,3}\.\d{3}(?:\s?[\u2013-]\s?\d{1,3}\.\d{3})?)(\s?)kHz'
 w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 # 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
 w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
+w_en = w_en.replace('<optgroup label="Ver todo">', '<optgroup label="Show all">')
 # 2.10.2: comillas al estilo de EE. UU. en la versión inglesa
 w_en = w_en.replace('«', '“').replace('»', '”')
 w_en = w_en.replace('ionosfera sobre tu QTH con el modelo <b>GloTEC</b> (TEC, foF2 y altura de la capa F2)', 'ionosphere over your QTH from the <b>GloTEC</b> model (TEC, foF2 and F2-layer height)')
