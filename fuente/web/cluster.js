@@ -805,7 +805,18 @@ if(!hook()){const t=setInterval(()=>{if(hook())clearInterval(t)},200);setTimeout
 })();
 /* 2.10.19: vista compacta: una tarjeta se abre y se cierra al tocarla (sin afectar a botones ni enlaces de dentro) */
 document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;const vl=document.documentElement.classList.contains("vl");if(!document.documentElement.classList.contains("vc")&&!vl)return;
-  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=vl?t.closest(".sc"):t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx")});
+  if(t.closest("button,a,input,select,label,summary,[data-stc],.stc"))return;const c=vl?t.closest(".sc"):t.closest(".sc.ohc");if(!c)return;c.classList.toggle("scx");
+  const k=scKey(c);if(k){if(c.classList.contains("scx")){SCOPEN.delete(k);SCOPEN.add(k);while(SCOPEN.size>60)SCOPEN.delete(SCOPEN.values().next().value)}else SCOPEN.delete(k)}});
+/* 2.10.40: lo desplegado sigue desplegado. Los listados se redibujan solos (cada actualización, cuando llegan las fuentes
+   lentas, cada minuto…) y antes cada redibujado cerraba las filas abiertas: el contenido de debajo subía y perdías el
+   sitio donde leías. Ahora se recuerda qué filas tenías abiertas y se vuelven a abrir en el mismo instante, antes de pintar. */
+const SCOPEN=new Set();
+function scKey(c){const box=c.closest("[id]");const st=c.querySelector("[data-stc]"),cs=c.querySelector("[data-call]");
+  const who=c.dataset.dxi!=null?"dx"+(st?st.dataset.stc:c.dataset.dxi):(st?st.dataset.stc:cs?cs.dataset.call:"");if(!who)return "";
+  const f=c.dataset.f||((c.querySelector(".l-f,.sc-fq,.f")||{}).textContent||"").trim();return (box?box.id:"")+"|"+who+"|"+f}
+try{new MutationObserver(ms=>{if(!SCOPEN.size)return;for(const m of ms)for(const n of m.addedNodes){if(n.nodeType!==1)continue;
+  const list=n.classList&&n.classList.contains("sc")?[n]:n.querySelectorAll?n.querySelectorAll(".sc"):[];
+  for(const c of list){if(c.classList.contains("scx"))continue;const k=scKey(c);if(k&&SCOPEN.has(k))c.classList.add("scx")}}}).observe(document.documentElement,{childList:true,subtree:true})}catch(_){}
 /* 2.10.20: se recuerda el último modo concreto (base de la previsión) antes de cambiar a «Todos los modos» */
 (function(){const sv=()=>{const m=document.getElementById("modesel");if(m&&m.value&&m.value!=="all"){try{store.set("c_modebase",m.value)}catch(_){}}};
   document.addEventListener("focusin",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);document.addEventListener("pointerdown",ev=>{if(ev.target&&ev.target.id==="modesel")sv()},true);setTimeout(sv,1500)})();

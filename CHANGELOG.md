@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.10.40 — 2026-11-21
+
+- ES: Lo desplegado sigue desplegado: los listados se redibujan solos (en cada actualización, al llegar las fuentes lentas, cada minuto) y antes cada redibujado cerraba las filas y tarjetas abiertas, con lo que el contenido subía y perdías el sitio de lectura. Ahora se recuerdan las que tenías abiertas y se vuelven a abrir antes de pintar, sin saltos.
+- EN: Expanded stays expanded: lists redraw themselves (on every update, when slow sources arrive, every minute) and each redraw used to close the open rows and cards, so the content moved up and you lost your reading place. The open ones are now remembered and reopened before drawing, with no jumps.
+
 ## 2.10.39 — 2026-11-21
 
 - ES: Concursos › Ritmo: los QSO por hora se ven en casillas con la hora, el ritmo y la banda, sin números montados: 24 en una fila en el ordenador, 12 por fila en tableta y móvil y 8 en pantallas muy estrechas. La hora actual se marca y las horas de pausa se atenúan.
