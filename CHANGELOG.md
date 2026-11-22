@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.44 — 2026-11-22
+
+- ES: Spots de los socios: se consultan cada 15 segundos mientras se usa la plataforma, cada 2 minutos tras 5 minutos sin tocar nada y nunca con la página oculta. Evita pasar del límite diario gratuito de Cloudflare aunque muchos socios la dejen abierta.
+- EN: Member spots: checked every 15 seconds while the platform is in use, every 2 minutes after 5 idle minutes, and never with the page hidden. Keeps within Cloudflare's free daily limit even if many members leave it open.
+
 ## 2.11.43 — 2026-11-22
 
 - ES: Fuentes: si Spothole u otra fuente de reserva tarda demasiado (por ejemplo, con datos móviles), se pide también por el intermediario del club en vez de quedarse sin datos. Los spots de Spothole tienen 10 segundos de margen en lugar de 6.

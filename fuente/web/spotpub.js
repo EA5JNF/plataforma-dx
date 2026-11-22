@@ -48,7 +48,11 @@ function putMine(){try{if(typeof L==="undefined"||!L||!Array.isArray(L.spots))re
   if(recOK){const n0=L.spots.length;L.spots=L.spots.filter(x=>!(x.src&&x.src.includes("ACRACB")&&x.sid&&!ids.has(x.sid)));ch+=n0-L.spots.length}
   const have=new Set(L.spots.map(k));for(const m of REC.concat(mine.filter(x=>!REC.some(r=>r.id===x.id)))){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);have.add(k(sp));ch++}}
   if(ch){try{CACHE.clear()}catch(_){}try{refresh()}catch(_){}}}catch(_){}}
-setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(pullRec,15000);setTimeout(pullRec,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullRec()});
+/* 2.11.44: cada 15 s mientras se usa la plataforma; si pasan 5 minutos sin tocar nada, cada 2 minutos; con la página oculta,
+   nada. Así el intermediario no pasa del límite diario del plan gratuito de Cloudflare aunque muchos socios la dejen abierta */
+let ACTV=Date.now(),LASTP=0;["pointerdown","keydown","wheel","touchstart","scroll"].forEach(ev=>addEventListener(ev,()=>{const idle=Date.now()-ACTV>3e5;ACTV=Date.now();if(idle)pullRec()},{passive:true}));
+function tickRec(){if(document.hidden)return;const gap=Date.now()-ACTV>3e5?12e4:15e3;if(Date.now()-LASTP>=gap-500){LASTP=Date.now();pullRec()}}
+setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(tickRec,15000);setTimeout(()=>{LASTP=Date.now();pullRec()},3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){LASTP=Date.now();pullRec()}});
 /* etiqueta «Socio» en las tarjetas y filas del clúster: un spot comunicado por un socio no es una predicción ni una
    observación automática de la red */
 (function tag(){const f=window.ACRACB_tags;if(typeof f!=="function"||f.__socio){setTimeout(tag,300);return}
