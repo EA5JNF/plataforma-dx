@@ -564,7 +564,7 @@ def webify(c, lang):
                              env=dict(os.environ, CSSO="/tmp/claude-0/tools/node_modules/csso"), check=True).stdout
         assert len(css) > 20000, "hoja minimizada vacía"
         h = hashlib.sha256(css.encode("utf-8")).hexdigest()[:10]; cfn = "lib/app-%s.css" % h
-        open(os.path.join(OUT, cfn), "w", encoding="utf-8").write(css)
+        if os.environ.get('CSSEXT'): open(os.path.join(OUT, cfn), "w", encoding="utf-8").write(css)  # 2.11.21: la hoja va dentro de la página; solo se escribe aparte si se pide
         c = c[:big.start()] + ('<style>%s</style>' % css if not os.environ.get('CSSEXT') else '<link rel="stylesheet" href="%s">' % cfn) + c[big.end():]
     for did in ("world", "dxccdata", "geolbl", "voa", "cycdata"):
         m = re.search(r'<script id="%s" type="application/json">(.*?)</script>' % did, c, re.S)

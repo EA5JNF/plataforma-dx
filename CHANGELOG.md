@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.21 — 2026-11-22
+
+- ES: Reglas de concursos cotejadas con las bases oficiales. Corregidos: ARRL 160 m (desde fuera de EE. UU. y Canadá cada QSO vale 2 puntos, no 5), RSGB IOTA (desde tierra firme, 2 puntos por QSO y 15 con islas IOTA), WAG (cada distrito cuenta por banda y por modo) y SAC (1 punto por QSO desde Europa, ya verificado).
+- ES: La web pesa unos 24 MB menos: se han quitado 137 hojas de estilo antiguas que ya no se usaban, y la construcción deja de generarlas.
+- EN: Contest rules checked against the official rules. Fixed: ARRL 160 m (from outside the US and Canada each QSO is worth 2 points, not 5), RSGB IOTA (from the mainland, 2 points per QSO and 15 with IOTA islands), WAG (each district counts per band and per mode) and SAC (1 point per QSO from Europe, now verified).
+- EN: The site is about 24 MB lighter: 137 old, unused style sheets were removed and the build no longer generates them.
+
 ## 2.11.20 — 2026-11-22
 
 - ES: Corregidas las reglas del OK/OM DX CW: en CW solo cuentan los QSO con Chequia y Eslovaquia, a 1 punto cada uno desde Europa, y los multiplicadores son los distritos OK/OM por banda. Antes copiaba por error las reglas de la fonía.

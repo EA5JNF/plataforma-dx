@@ -555,5 +555,16 @@
 "La previsión": "The forecast",
 "Lo que se mide hoy": "What is measured today",
 "distritos OK/OM, por banda": "OK/OM districts, per band",
-"En CW solo cuentan los QSO con Chequia y Eslovaquia: 1 punto cada uno desde Europa. Cada distrito OK/OM cuenta en cada banda.": "In CW only QSOs with Czechia and Slovakia count: 1 point each from Europe. Each OK/OM district counts on each band."
+"En CW solo cuentan los QSO con Chequia y Eslovaquia: 1 punto cada uno desde Europa. Cada distrito OK/OM cuenta en cada banda.": "In CW only QSOs with Czechia and Slovakia count: 1 point each from Europe. Each OK/OM district counts on each band.",
+"Solo 160 m y solo con EE. UU. y Canadá: 2 puntos cada QSO (los 5 puntos son para ellos cuando te trabajan a ti). Todo pasa de noche, con el camino a Norteamérica abierto desde la puesta de sol aquí hasta el amanecer allí.": "160 m only and only with the US and Canada: 2 points per QSO (the 5 points are for them when they work you). It all happens at night, with the path to North America open from sunset here to sunrise there.",
+"Todos con todos: desde tierra firme, 2 puntos por QSO y 15 si la otra estación está en una isla IOTA. Aquí se cuentan 2, porque la plataforma no sabe qué estaciones están en islas. Las referencias IOTA cuentan en cada banda y modo.": "Everyone works everyone: from the mainland, 2 points per QSO and 15 if the other station is on an IOTA island. Here 2 are counted, because the platform does not know which stations are on islands. IOTA references count on each band and mode.",
+"distritos DARC (letra del DOK), por banda y modo": "DARC districts (DOK letter), per band and mode",
+"Solo cuentan los QSO con Alemania: 3 puntos cada uno. Cada distrito DARC cuenta una vez en CW y otra en fonía en cada banda.": "Only QSOs with Germany count: 3 points each. Each DARC district counts once in CW and once in phone on each band.",
+"Mismas reglas que en CW: solo Escandinavia y 1 punto por QSO desde Europa.": "Same rules as CW: Scandinavia only and 1 point per QSO from Europe.",
+"Desde Europa, 1 punto por QSO. Cada prefijo escandinavo cuenta en cada banda.": "From Europe, 1 point per QSO. Each Scandinavian prefix counts on each band.",
+", por banda y modo": ", per band and mode",
+". Desde Europa, 1 punto por QSO. Cada prefijo escandinavo cuenta en cada banda.": ". From Europe, 1 point per QSO. Each Scandinavian prefix counts on each band.",
+". Todo pasa de noche, con el camino a Norteamérica abierto desde la puesta de sol aquí hasta el amanecer allí.": ". It all happens at night, with the path to North America open from sunset here to sunrise there.",
+"Solo 160 m y solo con EE. UU. y Canadá: 2 puntos cada QSO": "160 m only and only with the US and Canada: 2 points per QSO",
+"los 5 puntos son para ellos cuando te trabajan a ti": "the 5 points are for them when they work you"
 }
