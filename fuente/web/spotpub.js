@@ -114,5 +114,8 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 /* 2.11.26: también arriba, junto a «Actualizar», para tenerlo a mano desde cualquier pestaña */
 function top(){const r=document.querySelector(".updrow");if(!r)return false;if($("sptop"))return true;
   const b=document.createElement("button");b.type="button";b.id="sptop";b.className="sptop";b.innerHTML=`<span class="ic">${ICON}</span><span class="tx">${T("Anunciar spot","Post spot")}</span>`;b.title=T("Anunciar en el clúster de la plataforma una estación que oyes","Post to the platform cluster a station you hear");b.onclick=()=>open();const u=document.getElementById("updbtn");if(u)u.after(b);else r.appendChild(b);return true}
-let n=0;(function go(){const a=btn(),b=top();if(a&&b)return;if(++n<60)setTimeout(go,250)})();
+/* 2.11.51: antes se dejaba de intentar a los 15 s; en un iPad con la carga lenta el buscador de DX aparece más tarde
+   y se quedaba sin botón. Ahora se comprueba después de cada dibujado y cada segundo (es solo mirar si existe) */
+const ens=()=>{try{btn();top()}catch(e){}};ens();setInterval(ens,1000);
+window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];window.ACRACB_afterDraw.push(ens);
 })();

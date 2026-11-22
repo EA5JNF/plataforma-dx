@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.51 — 2026-11-22
+
+- ES: El botón «Anunciar spot» del buscador de DX faltaba si se abría la pestaña DX pasados 15 segundos desde que cargó la plataforma (pasaba sobre todo en el iPad). Ahora aparece siempre, en todos los tamaños de pantalla y vistas.
+- EN: The "Post spot" button in the DX search was missing if the DX tab was opened more than 15 seconds after the platform loaded (mostly on the iPad). It now always appears, at every screen size and view.
+
 ## 2.11.50 — 2026-11-22
 
 - ES: Franja de valores (SFI, SSN, Kp…): la cifra y su unidad ya no se separan (el viento salía con «km/s» en otra línea), y con letra grande la cifra se ajusta a su casilla en vez de partirse. La llamarada solo se parte entre «M» y «X».
