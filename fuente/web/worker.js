@@ -1,12 +1,12 @@
 // ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 2
-// Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos (PSK Reporter, 2).
+// Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
-const PERMITIDAS = ["www.hamqsl.com", "www.spaceweather.gc.ca", "kp.gfz-potsdam.de", "kp.gfz.de", "www.sidc.be", "prop.kc2g.com",
-  "lgdc.uml.edu", "www.ng3k.com", "clublog.org", "www.dxsummit.fi", "retrieve.pskreporter.info",
+// 2.10.44: fuera las webs cuyas condiciones de uso no están claras (HamQSL, NRCan, KC2G, GIRO, NG3K, Club Log, DX Summit,
+// PSK Reporter, POTA, SOTA y WWFF). Este cambio vale para la próxima vez que se despliegue el intermediario.
+const PERMITIDAS = ["kp.gfz-potsdam.de", "kp.gfz.de", "www.sidc.be",
   // de reserva: la plataforma las lee directamente y solo pasa por aquí si el navegador no puede
-  "services.swpc.noaa.gov", "spothole.app", "www.hamqth.com", "spots.wwff.co", "api.pota.app", "api2.sota.org.uk",
-  "db1.wspr.live", "api.nasa.gov", "kauai.ccmc.gsfc.nasa.gov", "giro.uml.edu"];
+  "services.swpc.noaa.gov", "spothole.app", "www.hamqth.com", "db1.wspr.live", "kauai.ccmc.gsfc.nasa.gov", "celestrak.org"];
 // Páginas desde las que se puede usar (null = la plataforma abierta como archivo en el ordenador)
 const ORIGENES = ["https://ea5jnf.github.io", "null"];
 const MAX_BYTES = 8 * 1024 * 1024, MAX_URL = 2048, TIEMPO_MS = 12000, MAX_SALTOS = 3;

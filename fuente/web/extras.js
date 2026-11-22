@@ -30,7 +30,7 @@ window.ACRACB_tags=function(s,inline){const c=String((s&&s.c)||"");if(!c)return 
   m=c.match(/\b(POTA|WWFF|SOTA|IOTA|GMA)[ :#-]*([A-Z0-9]{1,4}[\/-][A-Z0-9-]{2,8}|[A-Z]{2}-\d{3})\b/i);
   if(m)out.push(`<span class="xtag xr">${esc2(m[1].toUpperCase())} ${esc2(m[2].toUpperCase())}</span>`);
   else{m=c.match(/\b(POTA|WWFF|SOTA)\b/i);if(m)out.push(`<span class="xtag xr">${esc2(m[1].toUpperCase())}</span>`)}
-  if(!out.length){m=c.match(/skimmer|PSK Reporter/i);return m?" · "+esc2(m[0]):""}
+  if(!out.length){m=c.match(/skimmer/i);return m?" · "+esc2(m[0]):""}
   return (inline?" ":"<br>")+out.join(" ")};
 function esc2(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
@@ -103,35 +103,34 @@ const MEMO={};
 async function memo(k,min,fn){const m=MEMO[k];if(m&&Date.now()-m.t<min*6e4)return m.v;const v=await fn();MEMO[k]={t:Date.now(),v};return v}
 function rxPos(call,loc){try{if(loc&&typeof normLoc==="function"&&normLoc(loc))return locToLL(loc)}catch(e){}try{const ap=window.ACRACB_areaPos&&ACRACB_areaPos(call);if(ap)return ap}catch(e){}try{const e=callEnt(call);if(e&&e.lon!=null)return [e.lon,e.lat];if(e&&e.dxcc){const m=(V.meta||[]).find(x=>x[2]===e.dxcc);if(m)return [m[5],m[4]]}}catch(e){}return null}
 async function fromSpothole(call){let j;try{j=await get("https://spothole.app/api/v1/spots?max_age=3600&dx_call="+encodeURIComponent(call),"json")}catch(e){j=await get("https://spothole.app/api/v1/spots?max_age=3600","json")}const a=Array.isArray(j)?j:(j.spots||j.data||[]);
-  return a.filter(s=>base(s.dx_call||s.dx||s.callsign)===call).map(s=>{const c=String(s.comment||s.info||"");const db=c.match(/(-?\d+)\s*dB/i);const f=+(s.freq||s.frequency||0);const fm=f>1e6?f/1e6:f>1000?f/1000:f;
-    const src=/RBN/i.test(String(s.source||""))?"Reverse Beacon":/PSK/i.test(String(s.source||""))?"PSK Reporter":"Clúster";
+  return a.filter(s=>base(s.dx_call||s.dx||s.callsign)===call&&!/PSK/i.test(String(s.source||""))).map(s=>{const c=String(s.comment||s.info||"");const db=c.match(/(-?\d+)\s*dB/i);const f=+(s.freq||s.frequency||0);const fm=f>1e6?f/1e6:f>1000?f/1000:f;
+    const src=/RBN/i.test(String(s.source||""))?"Reverse Beacon":"Clúster";
     const la=+(s.de_latitude||s.de_lat),lo=+(s.de_longitude||s.de_lon);
     return {rx:base(s.de_call||s.spotter||s.de),pos:isFinite(la)&&isFinite(lo)&&(la||lo)?[lo,la]:null,f:fm,band:bandOf(fm),mode:s.mode||(src==="Reverse Beacon"?"CW":""),snr:db?+db[1]:null,t:Date.parse(s.time_iso||s.time||s.spot_time)||(+s.time>1e9?+s.time*1000:null),src}})}
-/* clústeres DX clásicos: HamQTH (directo), DX Summit (por el intermediario) y los spots que ya tiene la plataforma */
+/* clústeres DX clásicos: HamQTH y los spots que ya tiene la plataforma */
 async function fromCluster(call){const out=[];const add=(rx,fq,mode,t,c,src)=>{const f=+fq>1000?+fq/1000:+fq;const db=String(c||"").match(/(-?\d+)\s*dB/i);out.push({rx:base(rx),pos:null,f,band:bandOf(f),mode:mode||"",snr:db?+db[1]:null,t,src,c:c||""})};
-  const tasks=[(async()=>{const t=await get("https://www.hamqth.com/dxc_csv.php?limit=500","text");t.split("\n").map(l=>l.split("^")).filter(p=>p.length>=5&&base(p[2])===call).forEach(p=>add(p[0],p[1],"",Date.parse(String(p[4]).replace(" ","T")+(/Z$/.test(p[4])?"":"Z"))||null,p[3],"HamQTH"))})(),
-    (async()=>{let j=await get(PROXY+encodeURIComponent("https://www.dxsummit.fi/api/v1/spots?limit=500"),"json");if(!Array.isArray(j))j=j.spots||[];j.filter(s=>base(s.dx_call||s.dx||s.callsign)===call).forEach(s=>add(s.de_call||s.spotter||s.de,s.frequency||s.freq,"",Date.parse(s.time||s.spot_time)||null,s.info||s.comment,"DX Summit"))})()];
+  const tasks=[(async()=>{const t=await get("https://www.hamqth.com/dxc_csv.php?limit=200","text");t.split("\n").map(l=>l.split("^")).filter(p=>p.length>=5&&base(p[2])===call).forEach(p=>add(p[0],p[1],"",Date.parse(String(p[4]).replace(" ","T")+(/Z$/.test(p[4])?"":"Z"))||null,p[3],"HamQTH"))})()];
   const r=await Promise.allSettled(tasks);
   try{(L.spots||[]).filter(s=>base(s.call)===call).forEach(s=>String(s.by||"").split(/[ ,]+/).filter(Boolean).forEach(by=>add(by,s.f,s.mode,Date.parse(s.utc||"")||null,s.c,"Clúster")))}catch(e){}
   if(r.every(x=>x.status==="rejected")&&!out.length)throw new Error("sin respuesta");return out}
 async function fromWSPR(call){const q=`SELECT toUnixTimestamp(time) t,rx_sign,rx_loc,rx_lat,rx_lon,frequency,snr,distance FROM wspr.rx WHERE tx_sign='${call.replace(/[^A-Z0-9\/]/g,"")}' AND time>now()-3600 ORDER BY time DESC LIMIT 300 FORMAT JSON`;
   const j=await get("https://db1.wspr.live/?query="+encodeURIComponent(q),"json");return (j.data||[]).map(r=>{const f=+r.frequency/1e6;return {rx:base(r.rx_sign),pos:[+r.rx_lon,+r.rx_lat],f,band:bandOf(f),mode:"WSPR",snr:+r.snr,t:+r.t*1000,src:"WSPRnet",km:+r.distance}})}
-async function fromPSK(call){const u=`https://retrieve.pskreporter.info/query?senderCallsign=${encodeURIComponent(call)}&flowStartSeconds=-3600&rronly=1&noactive=1`;
-  const x=await memo("psk"+call,5,()=>get(PROXY+encodeURIComponent(u),"text",15000));const out=[];
-  for(const m of String(x).matchAll(/<receptionReport\b([^>]*)\/?>/g)){const at={};for(const a of m[1].matchAll(/(\w+)="([^"]*)"/g))at[a[1]]=a[2];
-    const f=+at.frequency/1e6;out.push({rx:base(at.receiverCallsign),pos:rxPos(at.receiverCallsign,at.receiverLocator),f,band:bandOf(f),mode:at.mode||"",snr:at.sNR!=null?+at.sNR:null,t:+at.flowStartSeconds*1000,src:"PSK Reporter"})}
+/* 2.10.44: Reverse Beacon Network en el resumen de HamQTH (datos gratuitos, «Data provided by HamQTH.com»): cada skimmer con su SNR */
+async function fromRBN(call){const j=await memo("rbn",2,()=>get("https://www.hamqth.com/rbn_data.php?data=1&age=3600&order=3","json"));const out=[];
+  for(const [k,v] of Object.entries(j&&typeof j==="object"?j:{})){if(!v||base(v.dxcall||k)!==call)continue;const f=+String(v.freq||"").replace(/\s/g,"")/1000;if(!isFinite(f)||!f)continue;
+    const t=Date.now()-(+v.age||0)*1000;for(const [rx,snr] of Object.entries(v.lsn||{}))out.push({rx:base(rx),pos:null,f,band:bandOf(f),mode:v.mode||"CW",snr:isFinite(+snr)?+snr:null,t,src:"Reverse Beacon"})}
   return out}
 async function checkHeard(manual){const call=base(($("hcall")||{}).value||S.get("acracb_mycall")||"");if(!call||call.length<3){if(manual)hStatus("Escribe tu indicativo.");return}
   if(ART){hStatus("Esta comprobación funciona en la versión web de la plataforma, no aquí.");return}
   if(HBUSY)return;HBUSY=true;HLAST=Date.now();S.set("acracb_mycall",call);hStatus("Buscando quién te ha oído en la última hora…");
-  const src=[["Reverse Beacon",fromSpothole],["clústeres DX",fromCluster],["PSK Reporter",fromPSK],["WSPRnet",fromWSPR]];
+  const src=[["Reverse Beacon",fromSpothole],["HamQTH RBN",fromRBN],["clústeres DX",fromCluster],["WSPRnet",fromWSPR]];
   const res=await Promise.all(src.map(async([n,fn])=>{try{return {n,ok:true,v:await fn(call)}}catch(e){return {n,ok:false,v:[]}}}));
   const all=[];res.forEach(r=>r.v.forEach(x=>{if(!x.rx||x.band==null)return;if(!x.pos)x.pos=rxPos(x.rx,null);if(x.km==null&&x.pos)try{x.km=Math.round(window.ACRACB_geoKm?ACRACB_geoKm(TXP,x.pos).km:distJS(TXP,x.pos))}catch(e){}all.push(x)}));
   const best=new Map();all.forEach(x=>{const k=x.rx+"|"+x.band;const b=best.get(k);if(!b||(x.t||0)>(b.t||0))best.set(k,x)});
   HR={call,at:Date.now(),list:[...best.values()],src:res.map(r=>[r.n,r.ok])};HBUSY=false;renderHeard()}
 function hStatus(t){const e=$("hst");if(e)e.textContent=t}
 function renderHeard(){const el=$("heardbox");if(!el)return;const call=S.get("acracb_mycall")||((typeof LOG!=="undefined"&&LOG&&LOG.call)||"");
-  if(!$("hcall")){el.innerHTML=`<p>Llama CQ dos o tres minutos y pulsa <b>Comprobar</b>: verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon, PSK Reporter y WSPRnet. <button class="lnk" id="hclub">Probar con el del club, EA5RKB</button></p>
+  if(!$("hcall")){el.innerHTML=`<p>Llama CQ dos o tres minutos y pulsa <b>Comprobar</b>: verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon (a través de Spothole y HamQTH) y WSPRnet. <button class="lnk" id="hclub">Probar con el del club, EA5RKB</button></p>
     <div class="hcrow"><input id="hcall" type="text" autocomplete="off" spellcheck="false" maxlength="14" placeholder="Indicativo" aria-label="Tu indicativo" value="${esc2(call)}"><button class="btn" id="hgo">Comprobar</button></div><p class="note" id="hst"></p><div id="hres"></div>`;
     $("hgo").onclick=()=>checkHeard(true);$("hclub").onclick=()=>{const prev=S.get("acracb_mycall");$("hcall").value="EA5RKB";checkHeard(true).then(()=>{if(prev)S.set("acracb_mycall",prev)})};$("hcall").addEventListener("keydown",e=>{if(e.key==="Enter")checkHeard(true)});
     $("hcall").addEventListener("input",e=>{e.target.value=e.target.value.toUpperCase()})}

@@ -1,14 +1,14 @@
 /* ---- ACRACB 2.2: satélites de aficionado ----
    Próximos pases sobre tu locator en las próximas 24 h, calculados en tu navegador con satellite.js (MIT)
    y los elementos orbitales públicos de CelesTrak (grupo «amateur»), que se guardan 12 h en el dispositivo.
-   Frecuencias y modos según AMSAT; algunos satélites funcionan solo a ratos: su estado real está en amsat.org/status. */
+   Frecuencias y modos según SatNOGS DB; algunos satélites funcionan solo a ratos: su estado real está en amsat.org/status. */
 (function(){
 "use strict";
 const EN=()=>window.ACRACB_LANG==="en";const T=(es,en)=>EN()?en:es;
 const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const S={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 /* 2.10.2: frecuencias estructuradas para poder calcular el Doppler de cada pase y explicar cómo configurarlo.
-   Datos contrastados con SatNOGS DB (Libre Space Foundation) y AMSAT. up/dn en Hz; tono en Hz (0 = sin tono). */
+   Datos de SatNOGS DB (Libre Space Foundation, CC BY-SA 4.0). up/dn en Hz; tono en Hz (0 = sin tono). */
 const SATS=[
  {id:25544,n:"ISS",kind:"FM",k:"fm",tx:[
    {l:["Repetidor de voz (V/U)","Voice repeater (V/U)"],up:145990000,dn:437800000,tone:67.0,m:"FM"},
@@ -28,8 +28,8 @@ const legacy=s=>{const t=s.tx[0];const r=(a,b,m)=>b&&b!==a?`${fmt(a)} – ${fmt(
 SATS.forEach(x=>Object.assign(x,legacy(x)));
 const TLEURL="https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle",PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=";
 /* 2.7.3: las órbitas se leen primero de la copia que la propia plataforma guarda dos veces al día (datos/tle-amateur.txt,
-   descargada de CelesTrak o, si no responde, de AMSAT); si no está, de CelesTrak y de AMSAT directamente */
-const TLEURL2="https://www.amsat.org/tle/current/nasabare.txt",MIRROR=(()=>{try{return /^https?:$/.test(location.protocol)&&/ea5jnf\.github\.io$/.test(location.hostname)?new URL("datos/tle-amateur.txt",location.href).href:null}catch(e){return null}})();
+   descargada de CelesTrak); si no está, de CelesTrak directamente. 2.10.44: sin AMSAT como respaldo */
+const MIRROR=(()=>{try{return /^https?:$/.test(location.protocol)&&/ea5jnf\.github\.io$/.test(location.hostname)?new URL("datos/tle-amateur.txt",location.href).href:null}catch(e){return null}})();
 /* 2.8.29: estado de cada satélite y de sus transmisores según SatNOGS DB (Libre Space Foundation, CC BY-SA 4.0),
    copiado dos veces al día en datos/satnogs.json junto a las órbitas */
 let SN=null,snAsk=false;
@@ -42,7 +42,7 @@ function parse(txt){const L=String(txt||"").split(/\r?\n/).map(s=>s.trimEnd()).f
 async function getTLE(){let c=null;try{c=JSON.parse(S.get("acracb_tle")||"null")}catch(e){}
   if(c&&c.t&&Date.now()-c.t<12*36e5&&c.d)return c.d;
   const tryF=async u=>{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),15000);try{const r=await fetch(u,{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);const t=await r.text();if(t.length>2e6)throw new Error("size");return t}finally{clearTimeout(tm)}};
-  let d=null;for(const u of [MIRROR,TLEURL,TLEURL2,PROXY+encodeURIComponent(TLEURL),PROXY+encodeURIComponent(TLEURL2)].filter(Boolean)){try{const x=parse(await tryF(u));if(x[25544]&&Object.keys(x).length>=3){d=x;break}}catch(e){}}
+  let d=null;for(const u of [MIRROR,TLEURL,PROXY+encodeURIComponent(TLEURL)].filter(Boolean)){try{const x=parse(await tryF(u));if(x[25544]&&Object.keys(x).length>=3){d=x;break}}catch(e){}}
   if(d){S.set("acracb_tle",JSON.stringify({t:Date.now(),d}));return d}
   if(c&&c.d)return c.d;throw new Error("tle")}
 const deg=r=>r*180/Math.PI;
@@ -89,7 +89,7 @@ function detail(p){const rec=REC&&REC[p.s.id];if(!rec)return "";const o=obsP();c
      `<li>You need a full-duplex rig (or two rigs) with SSB: up on LSB/CW, listen on USB/CW.</li><li>Correct the Doppler on the UHF frequency and keep the VHF one fixed. Find your own signal first: send a tone or your callsign and tune until you hear yourself clearly.</li><li>As the transponder inverts, raising your uplink lowers your signal on the downlink.</li><li>A Yagi for each band and low power: never be louder than the beacon.</li>`)
    :T(`<li>Necesita un módem GMSK y un programa específico (no se trabaja con walkie). Mira la guía del satélite en AMSAT.</li>`,`<li>Needs a GMSK modem and dedicated software (not workable with a handheld). See the satellite's guide at AMSAT.</li>`);
   return `<details class="satx" data-sk="${p.s.id}-${p.aos}"${SXO.has(p.s.id+"-"+p.aos)?" open":""}><summary>${T("Frecuencias, Doppler y cómo configurarlo","Frequencies, Doppler and how to set it up")}</summary>${blocks}<h5>${T("Cómo hacer el QSO","How to make the QSO")}</h5><ol class="sathow">${how}</ol>
-    <p class="note">${T("El Doppler se calcula para este pase y tu locator con la órbita del satélite. Las frecuencias son las de SatNOGS DB y AMSAT; antes de transmitir, comprueba que el satélite esté activo.","Doppler is calculated for this pass and your locator from the satellite's orbit. Frequencies are from SatNOGS DB and AMSAT; before transmitting, check that the satellite is active.")}</p></details>`}
+    <p class="note">${T("El Doppler se calcula para este pase y tu locator con la órbita del satélite. Las frecuencias son las de SatNOGS DB; antes de transmitir, comprueba que el satélite esté activo.","Doppler is calculated for this pass and your locator from the satellite's orbit. Frequencies are from SatNOGS DB; before transmitting, check that the satellite is active.")}</p></details>`}
 function card(p){const now=Date.now(),live=p.aos<=now&&p.los>now;let cur="";
   if(live&&REC&&REC[p.s.id]){try{const P=TXP||[-0.67,38.63];const a=look(REC[p.s.id],new Date(),{longitude:P[0]*Math.PI/180,latitude:P[1]*Math.PI/180,height:.05});if(a)cur=`<span class="nw">${T("ahora","now")} ${Math.round(a.az)}° ${cabS(a.az)}, ${T("elevación","elevation")} ${Math.max(0,Math.round(a.el))}°</span>`}catch(e){}}
   const dur=Math.round((p.los-p.aos)/6e4),mx=Math.round(p.max);
@@ -105,7 +105,7 @@ function render(){const box=document.getElementById("sats");if(!box)return;snLoa
   const head=`<div class="seg clseg"><span class="segl">${T("Pases","Passes")}</span><button type="button" data-satlow="0" aria-pressed="${!LOW}">${T("Desde 10°","From 10°")}</button><button type="button" data-satlow="1" aria-pressed="${LOW}">${T("Todos","All")}</button></div>`;
   const html=head+`<p class="note">${T(`Próximos pases sobre tu locator en las próximas 24 h. Cuanto más alta la elevación máxima, mejor se oye. Estado real de cada satélite en <a href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a>.`,`Next passes over your locator in the next 24 h. The higher the maximum elevation, the better. Current status of each satellite at <a href="https://www.amsat.org/status/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a>.`)}${err?" "+err:""}</p>`+
    (sh.length?`<div class="satl">${sh.map(card).join("")}</div>`:`<div class="empty">${T("Ningún pase en las próximas 24 h.","No passes in the next 24 h.")}</div>`)+
-   `<details class="srcd"><summary>${T("Fuentes","Sources")}</summary><p class="note">${T("Elementos orbitales","Orbital elements")}: <a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer" data-ext>CelesTrak</a>${T(" y "," and ")}<a href="https://www.amsat.org/" target="_blank" rel="noopener noreferrer" data-ext>AMSAT</a> · ${T("cálculo","calculation")}: satellite.js (MIT) · ${T("frecuencias","frequencies")}: AMSAT · ${T("estado","status")}: <a href="https://db.satnogs.org/" target="_blank" rel="noopener noreferrer" data-ext>SatNOGS DB</a>${SN&&SN.at?" ("+e2(SN.at.slice(0,10))+")":""} · ${T("calculado a las","calculated at")} ${hm(calcAt)} UTC</p></details>`;
+   `<details class="srcd"><summary>${T("Fuentes","Sources")}</summary><p class="note">${T("Elementos orbitales","Orbital elements")}: <a href="https://celestrak.org/" target="_blank" rel="noopener noreferrer" data-ext>CelesTrak</a> · ${T("cálculo","calculation")}: satellite.js (MIT) · ${T("frecuencias","frequencies")}: SatNOGS DB · ${T("estado","status")}: <a href="https://db.satnogs.org/" target="_blank" rel="noopener noreferrer" data-ext>SatNOGS DB</a>${SN&&SN.at?" ("+e2(SN.at.slice(0,10))+")":""} · ${T("calculado a las","calculated at")} ${hm(calcAt)} UTC</p></details>`;
   if(box.dataset.h!==html){box.dataset.h=html;box.innerHTML=html;box.querySelectorAll("details.satx").forEach(d=>d.addEventListener("toggle",()=>{if(d.open)SXO.add(d.dataset.sk);else SXO.delete(d.dataset.sk)}))}
   box.querySelectorAll("[data-satlow]").forEach(b=>b.onclick=()=>{LOW=b.dataset.satlow==="1";S.set("acracb_satlow",LOW?"1":"0");render()})}
 /* se calcula al abrir la pestaña, cada 6 h o si cambia el locator; la tarjeta se refresca cada 20 s mientras se ve */

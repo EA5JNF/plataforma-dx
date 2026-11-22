@@ -544,10 +544,11 @@ function alHave(){try{const o=JSON.parse(localStorage.getItem(ALHK)||"{}"),n=Dat
 const mgOf=(mode,f)=>{const g=mgrp(mode,f);return g==="CW"?"CW":(g==="SSB"||g==="AM"||g==="FM")?"PH":"DG"};
 const MGN={CW:["CW","CW"],PH:["fonía","phone"],DG:["digital","digital"]};
 function dxpInfo(call){const k=SK(call);for(const d of (L.dx||[])){if(dxTok(d.call).includes(k))return d}return null}
-/* qué más avisa, aparte de tu log y las DXpediciones: entidades raras (las 100 más buscadas de Club Log), indicativos curiosos
+/* qué más avisa, aparte de tu log y las DXpediciones: indicativos curiosos
    (móvil marítimo o aeronáutico, bases en la Antártida, indicativos especiales) y DX lejano (a 15.000 km o más de tu estación) */
-const ALXK="acracb_alx",RAREN=100,FARKM=15000;
-function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:o.rare!==0,cur:o.cur!==0,far:o.far!==0}}
+/* 2.10.44: sin «entidades raras»: salía de la lista Most Wanted de Club Log, cuyas condiciones de uso no están claras */
+const ALXK="acracb_alx",FARKM=15000;
+function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:false,cur:o.cur!==0,far:o.far!==0}}
 function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
   if(suf==="MM")return ["Móvil marítimo","Maritime mobile"];if(suf==="AM")return ["Móvil aeronáutico","Aeronautical mobile"];
   {let en=null;try{en=callEnt(c)}catch(_){}if(+dxcc===13||(en&&/^(Antártida|Antarctica)$/i.test(en.name||"")))return ["Base en la Antártida","Antarctic base"]}
@@ -555,12 +556,12 @@ function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),
   if(/\d{3,}/.test(core)||/^[A-Z]{2}\d{2,}[A-Z]/.test(core)||(core.length>=7&&/^[A-Z0-9]+$/.test(core)&&/\d/.test(core)))return ["Indicativo especial","Special event call"];
   return null}
 function alXRow(){const X=alX(),b=(k,es,en,tl,tle)=>`<button type="button" class="btn alxb" data-alx="${k}" aria-pressed="${X[k]}" title="${e2(T(tl,tle))}">${T(es,en)}</button>`;
-  return `<div class="alxr"><span class="note">${T("Avisar también de","Also alert me to")}:</span>${b("rare","Entidades raras","Rare entities","Las 100 entidades más buscadas de Club Log","Club Log's 100 most wanted entities")}${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}</div>`}
+  return `<div class="alxr"><span class="note">${T("Avisar también de","Also alert me to")}:</span>${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}</div>`}
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alx]");if(!b)return;const X=alX(),k=b.dataset.alx;X[k]=!X[k];
-  try{localStorage.setItem(ALXK,JSON.stringify({rare:X.rare?1:0,cur:X.cur?1:0,far:X.far?1:0}))}catch(_){}
+  try{localStorage.setItem(ALXK,JSON.stringify({cur:X.cur?1:0,far:X.far?1:0}))}catch(_){}
   try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}});
 function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st.mhour;
-  const H=alHave(),mw=L.mwm||{};(L.dx||[]).forEach(d=>{if(d.mw&&d.dxcc&&!mw[d.dxcc])mw[d.dxcc]=d.mw});
+  const H=alHave();
   const best=new Map();
   for(const s of (typeof SPOTS==="function"?SPOTS():(L.spots||[]))){
     if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}if(K!=="dx"&&K!=="ind")continue;
@@ -580,10 +581,9 @@ function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st
     }
     if(dp&&!dpDone&&rk<4){rk=4;if(!why){why="DXpedición";whyEn="DXpedition";sub="dxp"}}
     if(!rk&&!LOG&&dp&&!dpDone){rk=4;why="DXpedición";whyEn="DXpedition";sub="dxp"}
-    /* 2.10.34: también lo raro, lo curioso y lo lejano, cada uno con su interruptor */
+    /* 2.10.34: también lo curioso y lo lejano, cada uno con su interruptor */
     if(!rk){const X=alX(),km=e.km||0,cu=X.cur?curOf(s.call,dxcc):null;
-      if(X.rare&&dxcc&&mw[dxcc]&&mw[dxcc]<=RAREN){rk=1;why="Entidad rara · Most Wanted nº "+mw[dxcc];whyEn="Rare entity · Most Wanted #"+mw[dxcc];sub="rare"}
-      else if(cu){rk=1;why=cu[0];whyEn=cu[1];sub="cur"}
+      if(cu){rk=1;why=cu[0];whyEn=cu[1];sub="cur"}
       else if(X.far&&km>=FARKM){rk=1;why="DX lejano · "+km.toLocaleString("es-ES")+" km";whyEn="Far DX · "+km.toLocaleString("en-US")+" km";sub="far"}}
     if(!rk)continue;
     const it={call:s.call,f:s.f,band:s.band,mode:s.mode,t:s.t,by:s.by,c:s.c||"",need:sub==="dxp"?"DXpedición":why,why,whyEn,sub,rk,pp,dxp:!!(dp&&!dpDone),dxcc,ek,ck,end:dp&&dp.end||null};
@@ -663,7 +663,7 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
     const gk=geoKm(TXP,p),az=Math.round(gk.az)%360,km=Math.round(gk.km),lkm=Math.round(gk.lkm),laz=(az+180)%360;
     let bh={p:0,h:0,b:0,lp:false};for(let x=0;x<24;x++){const r=bestAny(t,x);if(r.p>bh.p)bh={...r,h:x}}const n=bestAny(t,lh);
     let nw=false;try{nw=dxNew(d)}catch(e){}const e=callEnt(d.call);const cty=e&&e.name&&String(d.ent||"").toLowerCase()!==e.name.toLowerCase()?` <span class="cty">· ${e2(d.ent)}</span>`:"";
-    const tags=[d.mw?`<span class="agr dif">Most Wanted nº ${e2(d.mw)}</span>`:"",MOD()==="ssb"&&d.ssb===false?`<span class="tag">${T("fonía sin confirmar","phone unconfirmed")}</span>`:"",d.until?`<span class="sc-b">${T("hasta","until")} ${e2(d.until)}</span>`:""].filter(Boolean);
+    const tags=[MOD()==="ssb"&&d.ssb===false?`<span class="tag">${T("fonía sin confirmar","phone unconfirmed")}</span>`:"",d.until?`<span class="sc-b">${T("hasta","until")} ${e2(d.until)}</span>`:""].filter(Boolean);
     let air="";try{air=(window.ACRACB_dxon?ACRACB_dxon(d):"").replace(/<br>$/,"")}catch(x){}
     let gl="";try{gl=window.ACRACB_grey?ACRACB_grey.short(p).replace(/^(Línea gris común|Shared greyline):?\s*/,""):""}catch(x){}
     const sec=(l,v)=>v?`<dt>${l}</dt><dd>${v}</dd>`:"";

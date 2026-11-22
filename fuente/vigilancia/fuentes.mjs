@@ -1,7 +1,6 @@
 // Comprueba una vez por semana que las fuentes gratuitas de la plataforma siguen respondiendo con datos.
 // Si alguna falla, el flujo abre (o actualiza) un aviso en GitHub y GitHub manda un correo al propietario.
 const d=new Date(),day=x=>x.toISOString().slice(0,10),ago=h=>new Date(Date.now()-h*36e5);
-const giro=x=>x.toISOString().slice(0,19).replace("T","+").replace(/-/g,"/");
 const wspr="SELECT band,count() FROM wspr.rx WHERE time>now()-3600 GROUP BY band FORMAT TSV";
 const S=[
  ["NOAA WWV","https://services.swpc.noaa.gov/text/wwv.txt"],
@@ -19,30 +18,23 @@ const S=[
  ["NOAA ciclo previsto","https://services.swpc.noaa.gov/json/solar-cycle/predicted-solar-cycle.json"],
  ["NOAA ciclo observado","https://services.swpc.noaa.gov/json/solar-cycle/observed-solar-cycle-indices.json"],
  ["GFZ Potsdam",`https://kp.gfz.de/app/json/?start=${day(ago(24))}T00:00:00Z&end=${day(d)}T23:59:59Z&index=Kp`],
- ["HamQSL","https://www.hamqsl.com/solarxml.php"],
- ["DRAO Penticton","https://www.spaceweather.gc.ca/solar_flux_data/daily_flux_values/fluxtable.txt"],
  ["SILSO EISN","https://www.sidc.be/SILSO/DATA/EISN/EISN_current.txt"],
- ["SILSO ciclo","https://www.sidc.be/SILSO/DATA/SN_ms_tot_V2.0.txt"],
- ["NASA DONKI",`https://api.nasa.gov/DONKI/WSAEnlilSimulations?startDate=${day(ago(168))}&endDate=${day(d)}&api_key=DEMO_KEY`],
- ["KC2G ionosondas","https://prop.kc2g.com/api/stations.json"],
- ["KC2G eSSN","https://prop.kc2g.com/api/essn.json"],
- ["GIRO ionosondas",`https://lgdc.uml.edu/common/DIDBGetValues?ursiCode=EB040&charName=foF2&DMUF=3000&fromDate=${giro(ago(6))}&toDate=${giro(d)}`],
+ ["NASA DONKI",`https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/WSAEnlilSimulations?startDate=${day(ago(168))}&endDate=${day(d)}`],
  ["WSPR.live","https://db1.wspr.live/?query="+encodeURIComponent(wspr)],
- ["NG3K","https://www.ng3k.com/misc/adxo.html"],
- ["Club Log","https://clublog.org/mostwanted.php?api=1"],
  ["Spothole avisos","https://spothole.app/api/v1/alerts"],
  ["Spothole","https://spothole.app/api/v1/spots?max_age=3600"],
- ["DXSummit","https://www.dxsummit.fi/api/v1/spots?limit=50"],
  ["HamQTH","https://www.hamqth.com/dxc_csv.php?limit=50"],
- ["POTA","https://api.pota.app/spot/activator"],
- ["WWFF","https://spots.wwff.co/static/spots.json"],
- ["SOTA","https://api2.sota.org.uk/api/spots/60/all"],
  ["GFZ Hp30",`https://kp.gfz.de/app/json/?start=${ago(6).toISOString().slice(0,19)}Z&end=${d.toISOString().slice(0,19)}Z&index=Hp30`],
  ["NOAA D-RAP","https://services.swpc.noaa.gov/text/drap_global_frequencies.txt"],
- ["ARRL LoTW usuarios","https://lotw.arrl.org/lotw-user-activity.csv"],
+ ["NOAA avisos","https://services.swpc.noaa.gov/products/alerts.json"],
+ ["NOAA regiones","https://services.swpc.noaa.gov/json/solar_regions.json"],
+ ["NOAA protones","https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json"],
+ ["HamQTH RBN","https://www.hamqth.com/rbn_data.php?data=1&age=600"],
+ ["NASA SDO","https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg"],
+ ["SOHO LASCO","https://soho.nascom.nasa.gov/data/realtime/c3/512/latest.jpg"],
+ ["Open-Meteo","https://api.open-meteo.com/v1/forecast?latitude=38.6&longitude=-0.7&hourly=weather_code&forecast_hours=3"],
  ["SatNOGS DB","https://db.satnogs.org/api/satellites/?format=json&norad_cat_id=25544"],
  ["CelesTrak satélites","https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle"],
- ["AMSAT satélites","https://www.amsat.org/tle/current/nasabare.txt"],
  ["VOACAP (Cloudflare)","https://acracb-voacap.pages.dev/hubs/v3/IM98/idx.json"],
  ["VOACAP respaldo (Cloudflare)","https://acracb-voacap-respaldo.pages.dev/hubs/v3/IM98/idx.json"]];
 async function one([n,u]){for(let i=0;i<2;i++){const c=new AbortController(),t=setTimeout(()=>c.abort(),25000);

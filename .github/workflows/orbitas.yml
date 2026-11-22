@@ -1,6 +1,6 @@
 # Copia de las órbitas de los satélites de aficionado (TLE) dos veces al día en datos/tle-amateur.txt.
 # La plataforma la lee de su propia web, así que no depende de que CelesTrak deje descargar a cada navegador.
-# Fuente: CelesTrak (grupo «amateur»); si no responde, AMSAT (nasabare.txt). Datos públicos y gratuitos.
+# Fuente: CelesTrak (grupo «amateur»). Datos públicos y gratuitos.
 # 2.8.29: también el estado de los satélites de la plataforma y de sus transmisores, de SatNOGS DB
 # (Libre Space Foundation, CC BY-SA 4.0, sin registro), en datos/satnogs.json. Los números NORAD son los de web/sats.js.
 name: Órbitas de satélites
@@ -26,7 +26,7 @@ jobs:
       - name: Descargar las órbitas
         run: |
           mkdir -p datos; ok=""
-          for u in "https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle" "https://www.amsat.org/tle/current/nasabare.txt"; do
+          for u in "https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle"; do
             if curl -fsSL --max-time 30 -A "ACRACB-PlataformaDX (+https://ea5jnf.github.io/plataforma-dx/)" "$u" -o t.txt \
                && grep -q '^1 25544' t.txt && [ "$(grep -c '^1 ' t.txt)" -ge 3 ]; then ok="$u"; break; fi
             echo "No responde bien: $u"

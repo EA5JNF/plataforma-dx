@@ -77,18 +77,14 @@ async function troFetch(){if(troBusy)return;troBusy=true;troErr="";try{
   finally{troBusy=false;render()}}
 function troNowI(){if(!TRO||!TRO.times)return -1;const t=Date.now();let k=-1;TRO.times.forEach((x,i)=>{if(x<=t)k=i});return k}
 
-/* ---------- dispersión meteórica en directo: recepciones MSK144 en PSK Reporter (cada 10 min como mucho) ---------- */
-const PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=";
-let MSL=null,msBusy=false;
-async function msFetch(){if(msBusy||(MSL&&Date.now()-MSL.at<10*6e4))return;msBusy=true;try{
-  const u="https://retrieve.pskreporter.info/query?mode=MSK144&flowStartSeconds=-3600&rronly=1&noactive=1";
-  const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),20000);let x="";
-  try{const r=await fetch(PROXY+encodeURIComponent(u),{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);x=await r.text();if(x.length>5e6)throw new Error("size")}finally{clearTimeout(tm)}
-  let n=0,eu=0,b6=0,b2=0,best=null;const ll=s=>{try{const q=normLoc(s);return q&&q.length>=4?locToLL(q.slice(0,6)):null}catch(e){return null}};
-  for(const m of x.matchAll(/<receptionReport\b([^>]*)\/?>/g)){const at={};for(const a of m[1].matchAll(/(\w+)="([^"]*)"/g))at[a[1]]=a[2];n++;const f=+at.frequency||0;if(f>=50e6&&f<54e6)b6++;else if(f>=144e6&&f<146e6)b2++;
-    const A=ll(at.senderLocator),B=ll(at.receiverLocator);if(!A||!B)continue;if(A[1]>34&&A[1]<72&&A[0]>-25&&A[0]<45)eu++;
-    let d=0;try{d=distJS(A,B)}catch(e){}if(d>=500&&d<=2300&&(!best||d>best.d))best={d,tx:at.senderCallsign,rx:at.receiverCallsign,f}}
-  MSL={at:Date.now(),ok:true,n,eu,b6,b2,best}}catch(e){MSL={at:Date.now(),ok:false}}finally{msBusy=false;render()}}
+/* ---------- dispersión meteórica en directo: spots MSK144 de los clústeres en la última hora ----------
+   2.10.44: antes se pedían las recepciones a PSK Reporter, cuyas condiciones de uso no están claras */
+let MSL=null;
+function msFetch(){try{if(typeof L==="undefined")return;const now=Date.now();let n=0,eu=0,b6=0,b2=0,best=null;
+  for(const s of (L.spots||[])){if(!/MSK|Q65/i.test(String(s.mode||"")+" "+String(s.c||"")))continue;const t=Date.parse(s.utc||"");if(!t||now-t>36e5)continue;n++;
+    if(s.band===10)b6++;else if(s.band>=11)b2++;const f=(s.from||[]).find(p=>p&&(p[0]||p[1]));if(f&&f[1]>34&&f[1]<72&&f[0]>-25&&f[0]<45)eu++;
+    if(s.dx&&f){let d=0;try{d=distJS(s.dx,f)}catch(e){}if(d>=500&&d<=2300&&(!best||d>best.d))best={d,tx:s.call,rx:(s.by||[])[0]||"",f:s.f}}}
+  MSL={at:now,ok:true,n,eu,b6,b2,best}}catch(e){MSL={at:Date.now(),ok:false}}}
 
 /* ---------- estado de cada tipo de apertura ---------- */
 function esState(){const st=(window.ACRACB_es&&ACRACB_es.state)||{};const cl=[];Object.entries(st).forEach(([k,s])=>(s&&s.clouds||[]).forEach(c=>cl.push([k,c])));
@@ -135,7 +131,7 @@ function esPart(es){const me0=me();let map="";
   const off=-new Date().getTimezoneOffset()/60;const solar=h=>((h-off+me()[0]/15)%24+24)%24;
   const bh=Array.from({length:24},(_,h)=>ESM[mo]*ESH(solar(h)));const mx=Math.max(...bh,.01);const nowH=new Date().getHours();
   const chart=`<div class="vbars" role="img" aria-label="${T("Probabilidad de esporádica E por hora","Sporadic E chance by hour")}">${bh.map((v,h)=>`<i class="${h===nowH?"now":""}" style="height:${Math.max(4,Math.round(v/mx*100))}%" title="${String(h).padStart(2,"0")}:00 · ${Math.round(v*100)} %"></i>`).join("")}</div><div class="vbx"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>`;
-  return `<p>${T(`Lo que se ve ahora y dónde puede abrir. El anillo marca hasta dónde llega un salto de esporádica E desde tu QTH; las nubes salen de las recepciones de PSK Reporter de los últimos 15 minutos y las líneas, de los spots del clúster de la última hora.`,`What is seen now and where it may open. The ring shows how far a sporadic E hop reaches from your QTH; clouds come from PSK Reporter reports in the last 15 minutes and lines from cluster spots in the last hour.`)}</p>${map}
+  return `<p>${T(`Lo que se ve ahora y dónde puede abrir. El anillo marca hasta dónde llega un salto de esporádica E desde tu QTH; las nubes salen de las recepciones WSPR y de los spots con locator de los últimos 30 minutos, y las líneas, de los spots del clúster de la última hora.`,`What is seen now and where it may open. The ring shows how far a sporadic E hop reaches from your QTH; clouds come from WSPR receptions and spots with a locator in the last 30 minutes, and lines from cluster spots in the last hour.`)}</p>${map}
    <h5>${T("Previsión por hora para hoy (climatología)","Hourly outlook for today (climatology)")}</h5>${chart}
    <p class="note">${T(`En ${["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][mo]}, alguna apertura de 6 m en Europa se da en torno al ${Math.round(ESM[mo]*100)} % de los días, con dos máximos: media mañana y última hora de la tarde. En 2 m es mucho más rara: solo con nubes muy intensas. Es una estadística, no una previsión del día: lo que manda es lo que se ve ahora en el mapa.`,`In ${["January","February","March","April","May","June","July","August","September","October","November","December"][mo]}, some 6 m opening in Europe happens on about ${Math.round(ESM[mo]*100)} % of days, with two peaks: mid-morning and late afternoon. On 2 m it is much rarer: only with very intense clouds. It is a statistic, not a forecast for the day: what counts is what the map shows now.`)}</p>
    <p class="note">${T("Frecuencias: 6 m FT8 50.313, SSB 50.150; 2 m FT8 144.174, SSB 144.300.","Frequencies: 6 m FT8 50.313, SSB 50.150; 2 m FT8 144.174, SSB 144.300.")}</p>`}
@@ -171,7 +167,7 @@ function msPart(m){const t=Date.now();const s=m.s;const dirs=[[0,"N–S"],[45,"N
     tbl=`<h5>${T(`Radiante de las ${s.s[0]} en las próximas 24 h`,`${s.s[1]} radiant over the next 24 h`)}</h5><div class="vbars vrad">${elr}</div><div class="vbx"><span>${loc(hrs[0])}</span><span>+6 h</span><span>+12 h</span><span>+18 h</span><span>+23 h</span></div>
      <h5>${T("Mejores horas según la dirección del enlace","Best hours by path direction")}</h5><div class="vmgrid">${rows}</div>
      <p class="vleg"><span><i class="g"></i>${T("buena geometría","good geometry")}</span><span><i class="y"></i>${T("regular","fair")}</span><span><i class="n"></i>${T("mala o radiante bajo el horizonte","poor or radiant below the horizon")}</span></p>`}
-  const live=MSL?MSL.ok?T(`En la última hora, PSK Reporter recogió <b>${MSL.n}</b> recepciones en MSK144 (${MSL.b6} en 6 m y ${MSL.b2} en 2 m; ${MSL.eu} desde Europa)${MSL.best?`; la más larga, ${e2(MSL.best.tx)} → ${e2(MSL.best.rx)} a ${fk2(MSL.best.d)} km`:""}.`,`In the last hour PSK Reporter logged <b>${MSL.n}</b> MSK144 reports (${MSL.b6} on 6 m and ${MSL.b2} on 2 m; ${MSL.eu} from Europe)${MSL.best?`; the longest, ${e2(MSL.best.tx)} → ${e2(MSL.best.rx)} at ${fk2(MSL.best.d)} km`:""}.`):T("PSK Reporter no ha respondido ahora.","PSK Reporter did not respond now."):T("Consultando la actividad en MSK144…","Checking MSK144 activity…");
+  const live=MSL?MSL.ok?T(`En la última hora, los clústeres anunciaron <b>${MSL.n}</b> ${MSL.n===1?"estación":"estaciones"} en MSK144 o Q65 (${MSL.b6} en 6 m y ${MSL.b2} en 2 m o más; ${MSL.eu} oídas desde Europa)${MSL.best?`; la más larga, ${e2(MSL.best.tx)} → ${e2(MSL.best.rx)} a ${fk2(MSL.best.d)} km`:""}.`,`In the last hour the clusters reported <b>${MSL.n}</b> ${MSL.n===1?"station":"stations"} on MSK144 or Q65 (${MSL.b6} on 6 m and ${MSL.b2} on 2 m or above; ${MSL.eu} heard from Europe)${MSL.best?`; the longest, ${e2(MSL.best.tx)} → ${e2(MSL.best.rx)} at ${fk2(MSL.best.d)} km`:""}.`):T("No se han podido leer los spots del clúster.","The cluster spots could not be read."):T("Consultando la actividad en MSK144…","Checking MSK144 activity…");
   return `<p>${T("Las estelas ionizadas de los meteoros, a unos 100 km de altura, reflejan 6 y 2 m durante fracciones de segundo: permiten contactos de 800 a 2.200 km con MSK144 (50.280 y 144.360) o con FT8. Fuera de las lluvias siempre hay meteoros esporádicos, con su máximo de madrugada.","The ionized trails of meteors, about 100 km up, reflect 6 and 2 m for fractions of a second: they allow 800–2,200 km contacts with MSK144 (50.280 and 144.360) or FT8. Outside showers there are always sporadic meteors, peaking in the early morning.")}</p>
    ${s?`<dl class="sc-d"><dt>${T("Lluvia","Shower")}</dt><dd><b>${EN()?s.s[1]:s.s[0]}</b> · ${T("máximo el","peak on")} ${new Date(s.pk).toLocaleDateString(EN()?"en-US":"es-ES",{day:"numeric",month:"long"})} · ${T("unos","about")} ${s.s[4]} ${T("meteoros por hora (ZHR, IMO)","meteors per hour (ZHR, IMO)")}</dd><dt>${T("Radiante ahora","Radiant now")}</dt><dd>${Math.round(m.rad.el)}° ${T("de elevación","elevation")}, ${T("rumbo","bearing")} ${Math.round(m.rad.az)}° ${cabS(m.rad.az)}</dd></dl>`:""}
    ${tbl}<h5>${T("Actividad ahora","Activity now")}</h5><p>${live}</p>

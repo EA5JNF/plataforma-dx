@@ -5,6 +5,23 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.0 — 2026-11-22
+
+- ES: Solo fuentes con permiso de uso claro. Se retiran las que no lo tenían: HamQSL, observatorio de Penticton (NRCan), ionosondas de KC2G y GIRO, previsión del BOM australiano, NG3K, Club Log (Most Wanted), DX Summit, PSK Reporter, las API de POTA, SOTA y WWFF (sus spots siguen llegando a través de Spothole), las listas de LoTW y eQSL, AMSAT como respaldo de órbitas y el calendario WA7BNM. Fuera también lo que dependía de ellas: el aviso de «entidades raras», la etiqueta «Most Wanted», la prioridad «confirma por LoTW» y la columna HamQSL de «Tus bandas ahora».
+- ES: Nueva pestaña «Sol ahora» en Sol: avisos y alertas oficiales de NOAA de las últimas 24 h, traducidos y con su gravedad; regiones activas del Sol con la más compleja y su probabilidad de llamarada; e imágenes del Sol en este momento de NASA SDO (corona en ultravioleta y manchas) y del coronógrafo LASCO C3 de SOHO (ESA/NASA).
+- ES: Protones medidos por los satélites GOES (NOAA) en «Sol y espacio».
+- ES: Esporádica E en 6 y 2 m ahora con las recepciones de WSPR (wspr.live) y los spots con locator de los clústeres; la dispersión meteórica en directo, con los spots MSK144 y Q65 del clúster; «¿Me oyen?» suma el resumen del Reverse Beacon Network de HamQTH.
+- ES: Eyecciones de masa coronal directamente del servicio público de NASA CCMC (DONKI), sin clave. Ciclo solar con la previsión de NOAA y su margen de error.
+- ES: Créditos rehechos con todas las fuentes y su licencia, entre ellas Open-Meteo (CC BY 4.0), que ya se usaba para la tropo y no figuraba. Autoría: «Idea original, diseño y realización: Alfredo, EA5JNF, su único autor», como derecho moral irrenunciable; la plataforma es de ACRACB.
+- ES: Al tocar una fila o tarjeta para desplegarla, el móvil ya no la tapa un instante con su destello azul o gris, y la flecha cambia sin animación a medias.
+- EN: Only sources with clear permission to use. Removed those without it: HamQSL, the Penticton observatory (NRCan), KC2G and GIRO ionosondes, the Australian BOM forecast, NG3K, Club Log (Most Wanted), DX Summit, PSK Reporter, the POTA, SOTA and WWFF APIs (their spots still arrive through Spothole), the LoTW and eQSL lists, AMSAT as orbit fallback and the WA7BNM calendar. Also removed what depended on them: the "rare entities" alert, the "Most Wanted" tag, the "confirms via LoTW" priority and the HamQSL column in "Your bands now".
+- EN: New "Sun now" tab under Sun: official NOAA alerts and warnings from the last 24 h, translated and graded; active regions on the Sun with the most complex one and its flare probability; and current images of the Sun from NASA SDO (ultraviolet corona and sunspots) and the SOHO LASCO C3 coronagraph (ESA/NASA).
+- EN: Protons measured by the GOES satellites (NOAA) in "Sun and space".
+- EN: Sporadic E on 6 and 2 m now from WSPR receptions (wspr.live) and cluster spots with a locator; live meteor scatter from cluster MSK144 and Q65 spots; "Who hears me?" adds HamQTH's Reverse Beacon Network summary.
+- EN: Coronal mass ejections straight from NASA CCMC's public DONKI service, with no key. Solar cycle with the NOAA forecast and its error margin.
+- EN: Credits rewritten with every source and its license, including Open-Meteo (CC BY 4.0), already used for tropo but not listed. Authorship: "Original idea, design and development: Alfredo, EA5JNF, its sole author", as an inalienable moral right; the platform belongs to ACRACB.
+- EN: Tapping a row or card to expand it no longer gets the phone's brief blue or gray flash over it, and the arrow switches without a half-drawn animation.
+
 ## 2.10.43 — 2026-11-22
 
 - ES: Aviso legal completo al pie de la página: titular y contacto, propiedad intelectual (derechos de autor de Alfredo, EA5JNF; el club usa la plataforma con su permiso), excepción para lo de terceros, exención de responsabilidad y privacidad conforme al RGPD (responsable, qué se guarda en el dispositivo y por qué no necesita consentimiento, quién ve la dirección IP, base legal, derechos y reclamación ante la AEPD).

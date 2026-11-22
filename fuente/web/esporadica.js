@@ -1,5 +1,6 @@
 /* ---- ACRACB 2.2: aviso de esporádica E en 6 m y 2 m ----
-   Cada 5 minutos (6 m) y 10 minutos (2 m) se piden a PSK Reporter las recepciones de los últimos 15 minutos.
+   Cada 5 minutos (6 m) y 10 minutos (2 m) se miran las recepciones WSPR de los últimos 30 minutos (base pública wspr.live)
+   y los spots de los clústeres en la misma banda. 2.10.44: antes se usaba PSK Reporter, cuyas condiciones de uso no están claras.
    Un trayecto de 700 a 2300 km en 6 m (1200 a 2300 km en 2 m) es típico de un salto por esporádica E: la nube está
    en el punto medio del trayecto. Se agrupan los puntos medios por zonas de 5° y, si una zona junta trayectos de
    varias estaciones distintas, se avisa. Además se calcula si esa nube te sirve a ti: si está a 350–1150 km de tu QTH,
@@ -8,8 +9,7 @@
 "use strict";
 const EN=()=>window.ACRACB_LANG==="en";const T=(es,en)=>EN()?en:es;
 const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=";
-const BANDS=[{k:"6",lbl:"6 m",fr:"50000000-54000000",min:700,max:2300,every:5,need:3},{k:"2",lbl:"2 m",fr:"144000000-146000000",min:1200,max:2300,every:10,need:2}];
+const BANDS=[{k:"6",lbl:"6 m",wb:50,cb:10,min:700,max:2300,every:5,need:3},{k:"2",lbl:"2 m",wb:144,cb:11,min:1200,max:2300,every:10,need:2}];
 const ST={};let busy=false;
 const R=Math.PI/180;
 function ll(loc){try{const s=normLoc(loc);if(!s||s.length<4)return null;return locToLL(s.slice(0,6))}catch(e){return null}}
@@ -20,13 +20,17 @@ function dest(p,brg,km){const d=km/6371,b=brg*R,la=p[1]*R,lo=p[0]*R;const la2=Ma
   const lo2=lo+Math.atan2(Math.sin(b)*Math.sin(d)*Math.cos(la),Math.cos(d)-Math.sin(la)*Math.sin(la2));return [((lo2/R)+540)%360-180,la2/R]}
 function brg(a,b){try{return Math.round(brgJS(a,b))}catch(e){const la1=a[1]*R,la2=b[1]*R,dl=(b[0]-a[0])*R;return Math.round(((Math.atan2(Math.sin(dl)*Math.cos(la2),Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl))/R)+360)%360)}}
 function placeName(p){try{let best=null,bd=1e9;for(const t of TG()){const d=dist(p,[t.lon,t.lat]);if(d<bd){bd=d;best=t}}return best&&bd<900?best.name:null}catch(e){return null}}
-async function fetchBand(b){const u=`https://retrieve.pskreporter.info/query?frange=${b.fr}&flowStartSeconds=-900&rronly=1&noactive=1`;
-  const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),20000);
-  try{const r=await fetch(PROXY+encodeURIComponent(u),{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);const x=await r.text();if(x.length>6e6)throw new Error("size");return x}finally{clearTimeout(tm)}}
-function analyze(b,xml){const paths=new Map();let n=0;
-  for(const m of String(xml).matchAll(/<receptionReport\b([^>]*)\/?>/g)){const at={};for(const a of m[1].matchAll(/(\w+)="([^"]*)"/g))at[a[1]]=a[2];n++;
-    const A=ll(at.senderLocator),B=ll(at.receiverLocator);if(!A||!B)continue;const d=dist(A,B);if(d<b.min||d>b.max)continue;
-    const k=[String(at.senderCallsign||""),String(at.receiverCallsign||"")].sort().join("|");if(paths.has(k))continue;paths.set(k,{A,B,d,M:mid(A,B),tx:at.senderCallsign,rx:at.receiverCallsign,t:+at.flowStartSeconds*1000,mode:at.mode||""})}
+async function fetchBand(b){const q=`SELECT tx_sign,rx_sign,tx_loc,rx_loc,toUnixTimestamp(time) t FROM wspr.rx WHERE band=${b.wb} AND time>now()-1800 LIMIT 3000 FORMAT JSON`;
+  const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),20000);const out=[];let ok=false;
+  try{const r=await fetch("https://db1.wspr.live/?query="+encodeURIComponent(q),{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer",cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const x=await r.text();if(x.length>6e6)throw new Error("size");
+    const j=JSON.parse(x);(j.data||[]).forEach(d=>out.push({A:ll(d.tx_loc),B:ll(d.rx_loc),tx:d.tx_sign,rx:d.rx_sign,t:+d.t*1000,mode:"WSPR"}));ok=true}catch(e){}finally{clearTimeout(tm)}
+  /* spots de los clústeres de esa banda con la posición exacta del DX (locator) y la del que lo oye */
+  try{const now=Date.now();(typeof L!=="undefined"&&L.spots||[]).forEach(s=>{if(s.band!==b.cb||!s.dxp||!s.dx)return;const t=Date.parse(s.utc||"");if(!t||now-t>18e5)return;
+    (s.by||[]).forEach((by,i)=>{const f=(s.from||[])[i];if(f&&(f[0]||f[1]))out.push({A:s.dx,B:f,tx:s.call,rx:by,t,mode:s.mode||""})});ok=true})}catch(e){}
+  if(!ok)throw new Error("sin datos");return out}
+function analyze(b,reps){const paths=new Map();let n=0;
+  for(const at of reps||[]){n++;const A=at.A,B=at.B;if(!A||!B)continue;const d=dist(A,B);if(d<b.min||d>b.max)continue;
+    const k=[String(at.tx||""),String(at.rx||"")].sort().join("|");if(paths.has(k))continue;paths.set(k,{A,B,d,M:mid(A,B),tx:at.tx,rx:at.rx,t:at.t,mode:at.mode||""})}
   
   /* nubes: puntos medios a menos de 500 km unos de otros */
   const cl=[];for(const p of paths.values()){let c=cl.find(c=>dist(c.M,p.M)<500);if(!c){c={M:p.M.slice(),ps:[],calls:new Set()};cl.push(c)}c.ps.push(p);c.calls.add(p.tx);c.calls.add(p.rx);
@@ -49,18 +53,18 @@ function cloudCard(b,c){const where=c.name?T(`sobre ${e2(c.name)}`,`over ${e2(c.
     :T(`La nube está a ${fk(c.dm)} km de tu QTH: queda ${c.dm<350?"demasiado cerca":"demasiado lejos"} para un salto desde aquí.`,`The cloud is ${fk(c.dm)} km from your QTH: ${c.dm<350?"too close":"too far"} for a hop from here.`);
   return `<div class="sc es${c.you?" live":""}"><div class="sc-h"><span class="sc-call">${T("Esporádica E","Sporadic E")} · ${b.lbl}</span><span class="sc-age">${T("último a las","last at")} ${hm(c.last)} UTC</span></div>`+
     `<div class="sc-f"><span class="xtag ${c.you?"xr":"xq"}">${c.you?T("te sirve","usable for you"):T("en otra zona","elsewhere")}</span><span class="sc-b">${where}</span></div>`+
-    `<dl class="sc-d"><dt>${T("Para ti","For you")}</dt><dd>${you}</dd><dt>${T("Trayectos","Paths")}</dt><dd>${c.n} ${T("en 15 min","in 15 min")}, ${c.calls} ${T("estaciones","stations")}, ${fk(c.dmin)}–${fk(c.dmax)} km</dd><dt>${T("Ejemplos","Examples")}</dt><dd>${c.ex.map(e2).join("<br>")}</dd></dl></div>`}
+    `<dl class="sc-d"><dt>${T("Para ti","For you")}</dt><dd>${you}</dd><dt>${T("Trayectos","Paths")}</dt><dd>${c.n} ${T("en 30 min","in 30 min")}, ${c.calls} ${T("estaciones","stations")}, ${fk(c.dmin)}–${fk(c.dmax)} km</dd><dt>${T("Ejemplos","Examples")}</dt><dd>${c.ex.map(e2).join("<br>")}</dd></dl></div>`}
 function render(){const box=document.getElementById("esbox");if(!box)return;
-  if(typeof fetch==="undefined"||(typeof ART!=="undefined"&&ART)){box.innerHTML=`<p class="note">${T("El aviso de esporádica E funciona en la versión web, que consulta PSK Reporter.","The sporadic-E alert works in the web version, which queries PSK Reporter.")}</p>`;return}
-  const all=BANDS.map(b=>[b,ST[b.k]]).filter(([,s])=>s);if(!all.length){box.innerHTML=`<p class="note">${T("Consultando PSK Reporter…","Querying PSK Reporter…")}</p>`;return}
+  if(typeof fetch==="undefined"||(typeof ART!=="undefined"&&ART)){box.innerHTML=`<p class="note">${T("El aviso de esporádica E funciona en la versión web, que consulta WSPR y los clústeres.","The sporadic-E alert works in the web version, which queries WSPR and the clusters.")}</p>`;return}
+  const all=BANDS.map(b=>[b,ST[b.k]]).filter(([,s])=>s);if(!all.length){box.innerHTML=`<p class="note">${T("Consultando WSPR y los clústeres…","Querying WSPR and the clusters…")}</p>`;return}
   const cl=[];all.forEach(([b,s])=>(s.clouds||[]).forEach(c=>cl.push([b,c])));
   const st2=all.map(([b,s])=>`${b.lbl}: ${s.ok?T(`${s.paths} trayectos de 700–2.300 km entre ${s.reports} recepciones`,`${s.paths} paths of 700–2,300 km out of ${s.reports} reports`):T("sin respuesta","no response")} (${hm(s.at)} UTC)`).join(" · ");
-  box.innerHTML=(cl.length?`<div class="esl">${cl.map(([b,c])=>cloudCard(b,c)).join("")}</div>`:`<div class="empty">${T("Ahora no se ve esporádica E en Europa ni cerca: ningún grupo de trayectos de un salto en 6 m ni en 2 m en los últimos 15 minutos.","No sporadic E seen right now: no group of single-hop paths on 6 m or 2 m in the last 15 minutes.")}</div>`)+
-    `<details class="srcd"><summary>${T("Cómo se calcula","How it is worked out")}</summary><p class="note">${T("Recepciones de PSK Reporter de los últimos 15 minutos. Un trayecto de 700 a 2.300 km en 6 m (1.200 a 2.300 km en 2 m) suele ser un salto por esporádica E, con la nube en el punto medio. Se avisa cuando varias estaciones distintas coinciden en la misma zona. Te sirve si la nube está a 350–1.150 km de tu QTH.","PSK Reporter reports from the last 15 minutes. A 700–2,300 km path on 6 m (1,200–2,300 km on 2 m) is usually a sporadic-E hop, with the cloud at its midpoint. An alert is shown when several different stations meet in the same area. It is usable for you if the cloud is 350–1,150 km from your QTH.")}<br>${st2}</p></details>`;
+  box.innerHTML=(cl.length?`<div class="esl">${cl.map(([b,c])=>cloudCard(b,c)).join("")}</div>`:`<div class="empty">${T("Ahora no se ve esporádica E en Europa ni cerca: ningún grupo de trayectos de un salto en 6 m ni en 2 m en los últimos 30 minutos.","No sporadic E seen right now: no group of single-hop paths on 6 m or 2 m in the last 30 minutes.")}</div>`)+
+    `<details class="srcd"><summary>${T("Cómo se calcula","How it is worked out")}</summary><p class="note">${T("Recepciones WSPR (wspr.live) y spots de los clústeres con locator de los últimos 30 minutos. Un trayecto de 700 a 2.300 km en 6 m (1.200 a 2.300 km en 2 m) suele ser un salto por esporádica E, con la nube en el punto medio. Se avisa cuando varias estaciones distintas coinciden en la misma zona. Te sirve si la nube está a 350–1.150 km de tu QTH.","WSPR receptions (wspr.live) and cluster spots with a locator from the last 30 minutes. A 700–2,300 km path on 6 m (1,200–2,300 km on 2 m) is usually a sporadic-E hop, with the cloud at its midpoint. An alert is shown when several different stations meet in the same area. It is usable for you if the cloud is 350–1,150 km from your QTH.")}<br>${st2}</p></details>`;
   /* aviso en «Ahora» cuando hay una nube que te sirve */
   const top=cl.find(([,c])=>c.you);let bar=document.getElementById("esbar");const sec=document.querySelector('section.page[data-pg="ahora"]');
   if(top&&sec){if(!bar){bar=document.createElement("div");bar.id="esbar";bar.className="card esbar";bar.setAttribute("role","status");sec.insertBefore(bar,sec.firstChild)}
-    const [b,c]=top;bar.innerHTML=`<b>${T("Esporádica E en","Sporadic E on")} ${b.lbl}</b> · ${T(`te puede abrir hacia el ${cabS(c.you.az)} (${c.you.az}°)${c.you.to?`, ${e2(c.you.to)}`:""}`,`may open for you towards the ${cabS(c.you.az)} (${c.you.az}°)${c.you.to?`, ${e2(c.you.to)}`:""}`)} · ${c.n} ${T("trayectos en 15 min","paths in 15 min")} <button type="button" class="btn" id="esgo">${T("Ver","View")}</button>`;
+    const [b,c]=top;bar.innerHTML=`<b>${T("Esporádica E en","Sporadic E on")} ${b.lbl}</b> · ${T(`te puede abrir hacia el ${cabS(c.you.az)} (${c.you.az}°)${c.you.to?`, ${e2(c.you.to)}`:""}`,`may open for you towards the ${cabS(c.you.az)} (${c.you.az}°)${c.you.to?`, ${e2(c.you.to)}`:""}`)} · ${c.n} ${T("trayectos en 30 min","paths in 30 min")} <button type="button" class="btn" id="esgo">${T("Ver","View")}</button>`;
     bar.hidden=false;const g=document.getElementById("esgo");if(g)g.onclick=()=>{try{go("ahora");selTab("ahora","f_vhf",true);const d=document.getElementById("f_vhf");if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"})}}catch(e){}}}
   else if(bar)bar.hidden=true}
 window.ACRACB_es={poll,render,analyze,get state(){return ST}};

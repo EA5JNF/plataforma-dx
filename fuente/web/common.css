@@ -1509,3 +1509,19 @@ html.vc .crate .crh{padding:2px 0 3px}
 /* 2.10.43: aviso legal ordenado */
 .legal h4{margin:12px 0 4px;font:600 .74rem var(--f-m,monospace);letter-spacing:.07em;text-transform:uppercase;color:var(--fg)}
 .legal ul{margin:4px 0 8px;padding-left:18px}.legal li{margin:3px 0}.legal p{margin:4px 0}
+
+/* 2.10.44: al tocar una fila o tarjeta para abrirla, el navegador del móvil la tapaba un instante con su destello azul o gris
+   (el «glitch»). Se quita en toda la página: lo que se abre ya marca qué has tocado */
+html,body,.sc,.scl,.sc *{-webkit-tap-highlight-color:transparent}
+.scl .l-x{transition:none}
+/* 2.10.44: Sol › Hoy: avisos de NOAA, regiones activas e imágenes del Sol */
+#sunnow h3{margin:16px 0 8px}
+.swal{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.swal li{padding:7px 10px;border-left:3px solid var(--ok);border-radius:0 8px 8px 0;background:color-mix(in srgb,var(--fg) 4%,transparent);line-height:1.4;overflow-wrap:anywhere}
+.swal li.lvc-y{border-left-color:var(--warn)}.swal li.lvc-r{border-left-color:var(--bad)}
+.swal li small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+.swrg{margin:12px 0 0;line-height:1.5}.swrg small{color:var(--muted)}
+.swim{display:grid;grid-template-columns:repeat(3,minmax(0,300px));gap:12px}
+@media (max-width:640px){.swim{gap:8px}.swim .swd{display:none}.swim figcaption{font-size:.78rem}}
+.swim figure{margin:0;min-width:0}.swim img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:10px;background:#000;object-fit:cover}
+.swim figcaption{font-size:.84rem;line-height:1.4;margin-top:6px;color:var(--muted)}.swim figcaption b{color:var(--fg)}.swim figcaption small{display:block;margin-top:2px}
