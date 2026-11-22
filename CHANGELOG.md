@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.22 — 2026-11-22
+
+- ES: Tarjetas de estación sin contradicciones: la señal prevista se juzga con lo que necesita el modo del spot (CW, FT8, fonía) y con el mismo modelo que la probabilidad; cuando los clústeres suben o bajan mucho la probabilidad respecto al modelo, la tarjeta dice por qué.
+- ES: La probabilidad de QSO tiene su propia fila (antes iba metida en «Distancia»). El camino largo solo aparece cuando cuenta. Si la señal es igual en los dos sentidos, una sola barra.
+- ES: La señal prevista sale en todas las tarjetas de estación (clúster, avisos, cerca, programas), no solo en algunas.
+- ES: Cada tarjeta mide lo que necesita: ya no se estira hasta la más alta de su fila.
+- ES: «Últimas imágenes del Sol»: títulos cortos en una línea, créditos sin repetir y aviso de que cada imagen lleva su hora y de que la del coronógrafo suele ir varias horas por detrás.
+- EN: Station cards without contradictions: the expected signal is judged against what the spot's mode needs (CW, FT8, phone) with the same model as the chance; when the clusters raise or lower the chance a lot against the model, the card says why.
+- EN: The QSO chance has its own row (it used to sit inside "Distance"). The long path only shows when it matters. If the signal is the same both ways, a single bar.
+- EN: The expected signal shows on every station card (cluster, alerts, nearby, programs), not only some.
+- EN: Each card is as tall as it needs: it no longer stretches to the tallest one in its row.
+- EN: "Latest images of the Sun": short one-line titles, credits not repeated, and a note that each image shows its time and the coronagraph one usually lags several hours.
+
 ## 2.11.21 — 2026-11-22
 
 - ES: Reglas de concursos cotejadas con las bases oficiales. Corregidos: ARRL 160 m (desde fuera de EE. UU. y Canadá cada QSO vale 2 puntos, no 5), RSGB IOTA (desde tierra firme, 2 puntos por QSO y 15 con islas IOTA), WAG (cada distrito cuenta por banda y por modo) y SAC (1 punto por QSO desde Europa, ya verificado).

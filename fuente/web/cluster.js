@@ -115,11 +115,16 @@ function card(o){
   const fl=[o.f?`<b class="sc-fq" style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:"",o.mode?mb(o.mode):"",o.band!=null&&BANDS[o.band]?`<span class="sc-b"${o.f?"":` style="color:${BC[o.band]};font-weight:600"`}>${BANDS[o.band]}</span>`:""].concat(o.tags||[]).concat(o.geo?[`<span class="sc-cp">${o.geo.az}° ${cab(o.geo.az)}</span>`]:[]).concat(o.p!=null?[`<span class="sc-cp"><b>${o.p} %</b></span>`]:[]).filter(Boolean);
   const f=fl.length?`<div class="sc-f">${fl.join("")}</div>`:"";
   const g=o.geo;let rumbo="",dist="";
-  if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;
-    dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km${o.p!=null?`<span class="sc-sep">·</span>`:""}</span>${o.p!=null?` <span class="nw"><b>${o.p} %</b> ${T("de QSO","QSO chance")}${o.lpb?T(" (paso largo)"," (long path)"):""}</span>`:""}`}
+  /* 2.11.22: el camino largo solo se enseña cuando cuenta (DX lejano o si es el mejor); la probabilidad va en su propia fila
+     y, si los clústeres la cambian mucho respecto al modelo, se dice por qué */
+  if(g){const lg=o.lpb||g.km>=6000;rumbo=lg?`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`:`${g.az}° ${cab(g.az)}`;
+    dist=lg?`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`:`${fk(g.km)} km`}
+  let pr="";if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
+    if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`El modelo da ${o.p0} %; lo sube que estaciones con un camino parecido al tuyo lo están oyendo ahora.`,`The model gives ${o.p0} %; stations with a path like yours hearing it now raise it.`)}</span>`;
+    else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`El modelo da ${o.p0} %; lo baja lo que se oye ahora (o lo que has anotado).`,`The model gives ${o.p0} %; what is heard now (or what you noted) lowers it.`)}</span>`}
   const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:"";
   const acc=o.call?`${ohd?"":` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`}`:"";
-  return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
+  return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Probabilidad de QSO","QSO chance"),pr)}${sec(T("Señal prevista","Expected signal"),o.sig||"")}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
 window.ACRACB_card=o=>card(o);
 /* 2.10.31: vista de lista: una fila por estación con las columnas alineadas (como un clúster web, pero con más datos),
    en todos los listados que usan la tarjeta de estación. Al tocar la fila se despliegan los detalles. Vale con la vista
@@ -166,7 +171,7 @@ window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
   (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
-    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,
+    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,sig:(()=>{try{return sigRow(s,e,sp)}catch(_){return ""}})(),
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
   /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
   let my=new Set();try{CMS().forEach(k=>my.add(String(MODES[k].s).toUpperCase()))}catch(_){}
@@ -381,16 +386,23 @@ window.ACRACB_spotProb=spotProb;
 /* 2.6.3: la misma probabilidad de QSO en todas las tarjetas (avisos, aviso de portada, «Cerca», POTA/SOTA/WWFF) */
 function PC(s,a){try{if(s.band==null)return {};const dx=s.dx&&s.dx[0]!=null?s.dx:(window.ACRACB_areaPos&&ACRACB_areaPos(s.call));if(!dx)return {};
   const ss=Object.assign({},s,{dx,kind:"dx",from:Array.isArray(s.from)?s.from:[]});const e=spotEval(ss,localNow());if(!e||!e.t)return {};const r=spotProb(ss,e,a);
-  return isFinite(r.p)?{p:Math.round(r.p*100),lpb:!!r.lp,oh:{t:e.t.id,b:ss.band,call:ss.call,mode:ss.mode}}:{}}catch(_){return {}}}
+  let sg="";try{sg=sigRow(ss,e,r)}catch(_){}
+  return isFinite(r.p)?{p:Math.round(r.p*100),p0:Math.round(r.p0*100),sig:sg,lpb:!!r.lp,oh:{t:e.t.id,b:ss.band,call:ss.call,mode:ss.mode}}:{}}catch(_){return {}}}
 /* 2.10.1: señal prevista en los dos sentidos (le oirás / te oirá) y, si ya anotaste lo que oyes o lo que te oyen,
    la comparación con lo previsto y cómo cambia la probabilidad con tus datos */
 function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null;try{lh=localNow()}catch(_){}if(lh==null)return "";
   const g=ACRACB_sigEst(e.t,lh,s.band,!!sp.lp);if(!g)return "";const k=(()=>{try{return spotMode(s)}catch(_){return "ssb"}})();
-  const dig=["ft8","ft4","jt65","js8","psk","rtty"].includes(k),cw=k==="cw";
-  /* 2.10.4: lectura de S-metro con una barra de color (rojo débil, ámbar media, verde fuerte) */
-  const rep=x=>{const v=Math.min(x.s,9+40),pc=Math.round(Math.min(1,v/13)*100),c=x.snr>=12?"sg-g":x.snr>=3?"sg-y":"sg-r";
-    return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b>`+` <span class="sgx">${x.low?T(`bajo el ruido (${sTxt(x.ns)})`,`below the noise (${sTxt(x.ns)})`):x.snr>=12?T("clara","clear"):T("justa","weak")}</span>`};
-  let h=`<span class="sgl"><span class="sgk">${T("Le oirás","You hear them")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","They hear you")}</span>${rep(g.tx)}</span><span class="note sgn">${T("Estimación del modelo","Model estimate")}</span>`;
+  /* 2.11.22: la señal se juzga con lo que necesita el modo del spot, con el mismo modelo que da la probabilidad (antes, con
+     un umbral fijo de SSB: una señal suficiente para CW o FT8 salía «bajo el ruido» junto a una probabilidad alta) */
+  let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}const need=g.req-ex;
+  const mn=k==="cw"?"CW":["ft8","ft4","jt65","js8","psk","rtty"].includes(k)?k.toUpperCase():T("la fonía","phone");
+  const rep=x=>{const m=x.snr-need,v=Math.min(x.s,9+40),pc=Math.round(Math.min(1,v/13)*100),c=m>=6?"sg-g":m>=0?"sg-y":"sg-r";
+    const w=m>=6?T("de sobra para ","plenty for ")+mn:m>=0?T("justa para ","just enough for ")+mn:T("no le basta a ","not enough for ")+mn;
+    return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b>`+` <span class="sgx">${w}${x.low?T(` · ruido ${sTxt(x.ns)}`,` · noise ${sTxt(x.ns)}`):""}</span>`};
+  const same=g.rx.s===g.tx.s&&Math.abs(g.rx.snr-g.tx.snr)<3;
+  let h=same?`<span class="sgl"><span class="sgk">${T("En los dos sentidos","Both ways")}</span>${rep(g.rx)}</span>`
+    :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear them")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","They hear you")}</span>${rep(g.tx)}</span>`;
+  h+=`<span class="note sgn">${T("Mediana del mes según el modelo","Monthly median from the model")}</span>`;
   const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
   if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
   if(u&&u.h&&u.s!=null){const d=u.s-g.tx.s;cmp.push(T(`te oye a <b>${sTxt(u.s)}</b> y se preveía ${sTxt(g.tx.s)}`,`they hear you at <b>${sTxt(u.s)}</b>; ${sTxt(g.tx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
@@ -398,7 +410,7 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   if(cmp.length)h+=`<div class="sgcmp">${T("Con lo que has anotado","With what you noted")}: ${cmp.join("; ")}.</div>`;
   return h}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
-  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,secs:(()=>{const r=sigRow(s,e,sp);return r?[[T("Señal prevista","Expected signal"),r]]:[]})()})}
+  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,sig:sigRow(s,e,sp)})}
 function progRow(o){const u=refUrl(o.prog,o.ref),pn=PNAME[o.prog];const tag=u?`<a class="xtag xr" href="${u}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(pn[0],pn[1])}">${e2(o.prog)} ${e2(o.ref)}</a>`:`<span class="xtag xr">${e2(o.prog)} ${e2(o.ref)}</span>`;
   return card({...PC({call:o.call,band:o.band,mode:o.mode,f:o.f,dx:o.dx,t:o.t,c:o.c},o.a),call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(cTr(o.c)):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;

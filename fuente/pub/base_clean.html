@@ -1299,7 +1299,7 @@ const sOf=dbm=>dbm<=-73?Math.max(1,Math.min(9,Math.round(1+(dbm+121)/6))):9+Math
 const rOf=snr=>snr>=15?5:snr>=8?4:snr>=3?3:snr>=0?2:1;
 function sigEst(t,lh,b,lp){if(!t||b==null||VUHF(b))return null;try{const cal=PRM().cal,a=marg(t,lh,b,lp,true),c=marg(t,lh,b,lp,false);if(!a||!c)return null;
   const one=(M,F)=>{const snr=M.m+cal-33.8,nd=noiseDbm(F),dbm=nd+snr,nS=sOf(nd);return {snr:Math.round(snr),dbm:Math.round(dbm),s:sOf(dbm),ns:nS,r:rOf(snr),low:snr<3}};
-  return {rx:one(a,myNoiseF(b,lh)),tx:one(c,dxNoiseF(t,b,lh))}}catch(e){return null}}
+  return {rx:one(a,myNoiseF(b,lh)),tx:one(c,dxNoiseF(t,b,lh)),req:Math.round(a.thr-33.8)}}catch(e){return null}}
 window.ACRACB_sigEst=sigEst;
 /* ---------- log QRZ ---------- */
 let LOG=null;
