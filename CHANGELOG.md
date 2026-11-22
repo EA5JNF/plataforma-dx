@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.5 — 2026-11-22
+
+- ES: «Avisar también de» rehecho: «Indicativos curiosos» y «DX lejano» son ahora interruptores que se ven claramente encendidos o apagados, cada uno con su explicación debajo, en una columna en el móvil y en dos en pantallas anchas. En vista compacta, sin las explicaciones. Fuera las menciones a «lo raro», que ya no existe.
+- EN: "Also alert me to" redone: "Unusual calls" and "Far DX" are now switches that are clearly on or off, each with its explanation underneath, in one column on phones and two on wide screens. In compact view, without the explanations. Removed the mentions of "rare", which no longer exists.
+
 ## 2.11.4 — 2026-11-22
 
 - ES: Línea y panel de la estación sin repeticiones. Arriba, el locator y cuatro botones (modo, banda, potencia y antena), sin puntos ni «Concursos» al final; en vista compacta ya se ve entera y no se corta la antena. En el panel ya no se repiten modo, banda, potencia ni antena (siguen guardados y se cambian con los botones): quedan el locator, «Tu estación» solo con altitud y entorno, las coordenadas con la zona de cálculo VOACAP, y «Cálculo» solo con SFI, SSN y Kp. La nota del radioclub solo sale si usas su estación. En compacta se ocultan además las coordenadas y esa nota.

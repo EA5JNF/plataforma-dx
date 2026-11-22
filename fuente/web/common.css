@@ -1412,13 +1412,17 @@ html.vl .sc:not(.scl):not(#zz1):not(#zz2){flex-direction:row!important;align-ite
 .qsm .qsi.sel{color:var(--accent);font-weight:600}.qsm .qsi.sel::before{content:"✓";position:absolute;left:10px}
 .qsm .qsi[disabled]{opacity:.45;cursor:default}
 /* 2.10.34: avisar también de lo raro, lo curioso y lo lejano */
-.alxr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px}.alxr .note{margin:0}
-.alxr .alxb{padding:4px 10px;font-size:.82rem;min-height:32px}
-@media (pointer:coarse){.alxr .alxb{min-height:40px}}
-html.vc .alxr{margin:2px 0 4px}html.vc .alxr .alxb{padding:2px 8px;min-height:28px}
-.alxr .alxb[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:#1e2733;color:var(--fg)}
-.alxr .alxb[aria-pressed="false"]{color:var(--dim)}
-:root[data-theme="light"] .alxr .alxb[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:none}
+.alxr{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px;margin:6px 0 10px}
+.alxr .alxh{grid-column:1/-1;font:600 .7rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.alxr .alxb{display:flex;align-items:center;gap:12px;width:100%;min-width:0;text-align:left;font:inherit;color:var(--fg);cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--fg) 3%,transparent);-webkit-tap-highlight-color:transparent}
+.alxr .alxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.alxr .alxt b{font-size:.92rem;font-weight:600}
+.alxr .alxt small{font-size:.78rem;line-height:1.35;color:var(--muted)}
+.alxr .alxs{flex:none;position:relative;width:38px;height:22px;border-radius:11px;background:color-mix(in srgb,var(--fg) 18%,transparent);transition:background .15s}
+.alxr .alxs::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:transform .15s}
+.alxr .alxb[aria-checked="true"]{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.alxr .alxb[aria-checked="true"] .alxs{background:var(--accent)}.alxr .alxb[aria-checked="true"] .alxs::after{transform:translateX(16px);background:#fff}
+.alxr .alxb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html.vc .alxr{gap:6px;margin:4px 0 6px}html.vc .alxr .alxb{padding:6px 10px}html.vc .alxr .alxt small{display:none}
 /* 2.10.34: los avisos de concurso se cierran como los demás */
 .ctnowbn{position:relative;padding-right:40px!important}
 .ctnowbn .ctx{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;background:transparent;color:inherit;font-size:1.3rem;line-height:1;cursor:pointer;border-radius:6px;opacity:.8}
