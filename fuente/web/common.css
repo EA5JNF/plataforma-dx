@@ -1597,7 +1597,7 @@ html.vc .sline{padding:6px 8px!important}
 .srch .srsel select{min-height:40px;padding:6px 10px}
 /* columnas compartidas por todas las filas de un destino: cada una mide lo que su contenido y se alinean entre filas */
 .ez .ezsp{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;column-gap:10px;align-items:center}
-.ez .ezsp>.ezs,.ez .ezsp>.ezrest{display:contents!important}
+.ez .ezsp>.ezs,.ez .ezsp>.ezrest,.ez .ezsp>.ezrest>.ezs{display:contents!important}
 .ez .ezsp>.ezrest[hidden]{display:none!important}
 .ez .ezs>*{padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
 .ez .ezsp>:not(.ezs):not(.ezrest){grid-column:1/-1;justify-self:start}
@@ -1661,3 +1661,19 @@ html.vc .sc:not(.scl) .alhave:not(.alhi){padding:0;width:2.1em;height:2.1em;min-
 .sline>#stbtn .stl{padding:0!important;display:block!important}
 .ssum2>.logbtn{font-family:var(--f-b,inherit)!important;font-size:.9rem!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important;border:1px solid color-mix(in srgb,var(--fg) 16%,transparent)!important;background:color-mix(in srgb,var(--fg) 5%,transparent)!important;color:var(--fg)!important;height:32px;padding:0 10px!important}
 #stpanel .modenote select{font-size:.85rem!important;padding:4px 8px!important;min-height:32px;margin:2px 0}
+/* 2.11.14: Países y log › Entidades también en vista de lista, como el resto de listados: una fila por entidad,
+   columnas alineadas (país, cuándo, bandas y modos, indicativos, rumbo y probabilidad); en el móvil, dos líneas */
+html.vl .hlist{display:block!important;container-type:inline-size;border-top:1px solid var(--line);gap:0}
+html.vl .hrow{display:grid!important;grid-template-columns:minmax(9em,1.3fr) minmax(9em,1fr) minmax(8em,1.2fr) minmax(7em,1fr) minmax(12em,1.3fr);column-gap:12px;align-items:center;width:100%;padding:7px 10px!important;margin:0;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:transparent!important}
+html.vl .hrow:nth-child(even){background:color-mix(in srgb,var(--fg) 3.5%,transparent)!important}
+@media (hover:hover){html.vl .hrow:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)!important}}
+html.vl .hrow>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.vl .hrow .hb{flex-wrap:nowrap;overflow:hidden}
+html.vl .hrow .hn .fl{vertical-align:-2px}
+html.vl .hrow .hp{text-align:right}
+@container (max-width:560px){
+ html.vl .hrow{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n t" "b c";row-gap:3px;column-gap:10px}
+ html.vl .hrow .hn{grid-area:n}html.vl .hrow .ht{grid-area:t;text-align:right}
+ html.vl .hrow .hb{grid-area:b}html.vl .hrow .hc{grid-area:c;text-align:right;max-width:42vw}
+ html.vl .hrow .hp{display:none}
+}

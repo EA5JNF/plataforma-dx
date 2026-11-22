@@ -31,14 +31,16 @@ function whenEnd(d){const now=new Date(),same=d.toDateString()===now.toDateStrin
   return T(`termina ${day} a las ${hm(d)} (${utc(d)} UTC)`,`ends ${day} at ${hm(d)} (${utc(d)} UTC)`)}
 function inIt(x){try{return st.mode==="contest"&&$("contest")&&$("contest").value===x.plan}catch(e){return false}}
 function join(x,user){if(!x.plan)return;const K=CONTESTS[x.plan];try{
-  if(!K.modes.includes(MOD())){const s=$("modesel");if(s){s.value=K.modes[0];try{store.set("c_modesel",s.value);store.set("c_modebase",s.value)}catch(_){}s.dispatchEvent(new Event("change",{bubbles:true}))}}
+  if(!K.modes.includes(MOD())){const s=$("modesel");if(s){if(!user&&!LS.get("acracb_ctprevmode"))LS.set("acracb_ctprevmode",s.value);s.value=K.modes[0];try{store.set("c_modesel",s.value);store.set("c_modebase",s.value)}catch(_){}s.dispatchEvent(new Event("change",{bubbles:true}))}}
   store.set("contest",x.plan);setMode("contest",true);const cs=$("contest");if(cs&&cs.value!==x.plan){cs.value=x.plan;store.set("contest",x.plan)}
   try{CACHE.clear()}catch(_){}try{renderBandSeg()}catch(_){}refresh()}catch(e){console.error(e)}
   if(!user)LS.set("acracb_ctauto",x.key);LS.set("acracb_ctdecl",null);draw()}
-function leave(x){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);try{setMode("dx",true);refresh()}catch(e){}draw()}
+/* 2.11.14: si al entrar solo en un concurso se cambió tu modo (p. ej. de SSB a CW), al salir o al terminar vuelve el tuyo */
+function restoreMode(){const pm=LS.get("acracb_ctprevmode");if(!pm)return;LS.set("acracb_ctprevmode",null);const s=$("modesel");if(s&&s.value!==pm){s.value=pm;try{store.set("c_modesel",pm);store.set("c_modebase",pm)}catch(_){}s.dispatchEvent(new Event("change",{bubbles:true}))}}
+function leave(x){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);try{restoreMode();setMode("dx",true);refresh()}catch(e){}draw()}
 function draw(){const L0=list();let b=document.getElementById("ctnowbn");const x=L0[0];
   /* al terminar el concurso que se activó solo, vuelta a modo DX */
-  const au=LS.get("acracb_ctauto");if(au&&!L0.some(y=>y.key===au)){LS.set("acracb_ctauto",null);try{if(st.mode==="contest"){setMode("dx",true);refresh()}}catch(e){}}
+  const au=LS.get("acracb_ctauto");if(au&&!L0.some(y=>y.key===au)){LS.set("acracb_ctauto",null);try{if(st.mode==="contest"){restoreMode();setMode("dx",true);refresh()}}catch(e){}}
   if(!x){if(b)b.remove();renderCt(null);return}
   if(x.plan&&!inIt(x)&&LS.get("acracb_ctdecl")!==x.key&&LS.get("acracb_ctauto")!==x.key){join(x,false);return}
   /* 2.10.34: se puede cerrar como los demás avisos; no vuelve hasta el siguiente concurso y no cambia el modo */
@@ -67,9 +69,18 @@ document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;co
   const mc=t.closest('.modes button[data-m="contest"]');if(mc){LS.set("acracb_ctdecl",null);setTimeout(draw,50)}},true);
 /* 2.10.37: se envía por el mismo camino que el resto (service worker): «new Notification» no funciona en el iPhone, el iPad
    ni Android, y la marca de «ya avisado» solo se guarda si la notificación ha salido de verdad */
-function notif(){try{const x=list()[0];if(!x)return;if(!(window.ACRACB_notifOn&&ACRACB_notifOn())||!window.ACRACB_notify)return;
-  if(LS.get("acracb_ctnotif")===x.key)return;
-  Promise.resolve(ACRACB_notify(T("Concurso en marcha: ","Contest running: ")+x.c[0],x.c[1]+" · "+whenEnd(x.en),"ctnow")).then(ok=>{if(ok)LS.set("acracb_ctnotif",x.key)}).catch(()=>{})}catch(e){}}
+/* 2.11.14: avisa de TODOS los concursos del calendario: una hora antes de empezar y al empezar (cada uno una vez),
+   también si coinciden varios a la vez */
+function upcoming(){const out=[];if(typeof CAL==="undefined"||typeof calDate!=="function")return out;const now=Date.now();
+  for(const c of CAL){for(const y of [new Date().getUTCFullYear(),new Date().getUTCFullYear()+1]){const sat=calDate(y,c[2],c[3]);if(!sat)continue;const w=win(c,sat);if(!w)continue;
+    const d=+w.st-now;if(d>0&&d<=36e5)out.push({c,st:w.st,en:w.en,key:"pre|"+c[0]+"|"+w.st.toISOString()})}}return out}
+function sentSet(){try{return new Set(JSON.parse(LS.get("acracb_ctnotif2")||"[]"))}catch(e){return new Set()}}
+function markSent(k){const s=[...sentSet(),k].slice(-80);LS.set("acracb_ctnotif2",JSON.stringify(s))}
+const hhmm=d=>{try{return d.toLocaleTimeString(EN()?"en-US":"es-ES",{hour:"2-digit",minute:"2-digit"})}catch(e){return d.toISOString().slice(11,16)+" UTC"}};
+function notif(){try{if(!(window.ACRACB_notifOn&&ACRACB_notifOn())||!window.ACRACB_notify)return;const S=sentSet();let q=Promise.resolve();
+  for(const x of upcoming()){if(S.has(x.key))continue;q=q.then(()=>ACRACB_notify(T("Concurso dentro de una hora: ","Contest in one hour: ")+x.c[0],x.c[1]+" · "+T("empieza a las ","starts at ")+hhmm(x.st),"ctpre|"+x.c[0])).then(ok=>{if(ok)markSent(x.key)}).catch(()=>{})}
+  for(const x of list()){if(S.has(x.key)||LS.get("acracb_ctnotif")===x.key)continue;
+    q=q.then(()=>ACRACB_notify(T("Concurso en marcha: ","Contest running: ")+x.c[0],x.c[1]+" · "+whenEnd(x.en)+(x.plan?" · "+T("la plataforma ya está preparada para él","the platform is set up for it"):""),"ctnow|"+x.c[0])).then(ok=>{if(ok)markSent(x.key)}).catch(()=>{})}}catch(e){}}
 function boot(){if(typeof CAL==="undefined"||typeof setMode!=="function"||!document.querySelector(".updrow"))return setTimeout(boot,400);
   try{draw();notif()}catch(e){console.error(e)}setInterval(()=>{if(!document.hidden)try{draw();notif()}catch(e){}},60000)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();

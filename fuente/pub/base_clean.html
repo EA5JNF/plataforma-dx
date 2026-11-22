@@ -1368,6 +1368,73 @@ const CONTESTS={
    tip:"Como el WPX de fonía y CW: los prefijos cuentan una vez y las bandas bajas puntúan el doble. Compruébalo en sus bases."},
  rttyru:{modes:["rtty"],base:"arrl10",n:"ARRL RTTY Roundup",month:1,wk:"first",h:30,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"estados de EE. UU., provincias de Canadá y países DXCC (una vez)",mk:"wve",
    tip:"1 punto por QSO y cada estado, provincia o país cuenta una sola vez. Son 30 h, de las que un monooperador opera 24."},
+ /* 2.11.14: todos los concursos del calendario con sus reglas para una estación EA (fuentes: las bases oficiales de cada uno).
+    Para los de un solo país, la plataforma usa la zona de cálculo más cercana (Bélgica, Países Bajos, Suiza, Chequia y Eslovaquia,
+    y Alemania van con «Europa central»; Rumanía con «Balcanes»). Donde las bases no estaban claras se cuenta igual cada QSO y se dice. */
+ uba:{modes:["ssb"],n:"UBA DX SSB",month:1,wk:"last",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===230?10:[230,248,269,236,272,227,149,224,296].includes(t.dxcc)?3:1,mult:"secciones UBA y prefijos belgas, por banda",
+   tip:"Desde EA: cada QSO con Bélgica da 10 puntos, con un país de la Unión Europea 3 y el resto 1, más un plus según el porcentaje de QSO con Bélgica. Un QSO belga puede dar dos multiplicadores (sección UBA y prefijo)."},
+ ubacw:{modes:["cw"],base:"uba",n:"UBA DX CW",month:2,wk:"last",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===230?10:[230,248,269,236,272,227,149,224,296].includes(t.dxcc)?3:1,mult:"secciones UBA y prefijos belgas, por banda",
+   tip:"Mismas reglas que en fonía: Bélgica 10 puntos, Unión Europea 3 y el resto 1."},
+ refcw:{modes:["cw"],n:"REF CW (Coupe du REF)",month:1,wk:"last",h:36,bands:[1,2,3,5,7],ok:t=>[227,79,84,63,453,169,175,162,277,298].includes(t.dxcc),pts:t=>t.dxcc===227?1:3,mult:"departamentos franceses y DOM-TOM, por banda",
+   tip:"Solo cuentan los QSO con Francia y sus territorios: 1 punto con Francia (mismo continente) y 3 con los DOM-TOM de otro continente. Cada departamento cuenta en cada banda."},
+ refssb:{modes:["ssb"],base:"refcw",n:"REF SSB (Coupe du REF)",month:2,wk:"last",h:36,bands:[1,2,3,5,7],ok:t=>[227,79,84,63,453,169,175,162,277,298].includes(t.dxcc),pts:t=>t.dxcc===227?1:3,mult:"departamentos franceses y DOM-TOM, por banda",
+   tip:"Solo Francia y sus territorios: 1 punto con Francia, 3 con los DOM-TOM de otro continente."},
+ pacc:{modes:["cw","ssb"],n:"PACC (Países Bajos)",month:2,wk:"second",h:24,bands:[0,1,2,3,5,7],ok:t=>t.dxcc===230,pts:()=>1,mult:"las 12 provincias neerlandesas, por banda y modo",
+   tip:"Solo cuentan los QSO con estaciones PA: 1 punto cada uno. Las 12 provincias cuentan en cada banda y modo, así que repetir provincias en otras bandas compensa."},
+ rdxc:{modes:["cw","ssb"],n:"Russian DX",month:3,wk:"third",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===54||t.dxcc===15?10:t.cont==="EU"?3:5,mult:"países DXCC y óblasts rusos, por banda",
+   tip:"Todos con todos: Rusia 10 puntos, otro continente 5, Europa 3 y tu propio país 2. Cada país y cada óblast cuentan en cada banda."},
+ spdx:{modes:["cw","ssb"],n:"SP DX",month:4,wk:"first",h:24,bands:[0,1,2,3,5,7],ok:t=>t.dxcc===269,pts:()=>3,mult:"las 16 provincias polacas, por banda",
+   tip:"Solo cuentan los QSO con Polonia: 3 puntos cada uno. Las 16 provincias cuentan en cada banda (96 como máximo)."},
+ jidxcw:{modes:["cw"],n:"JIDX CW",month:4,wk:"second",h:30,bands:[0,1,2,3,5,7],ok:t=>t.dxcc===339,pts:(t,b)=>b===0?4:b===1||b===7?2:1,mult:"prefecturas y distritos japoneses, por banda",
+   tip:"Solo cuentan los QSO con Japón: 4 puntos en 160 m, 2 en 80 y 10 m y 1 en el resto. Desde EA todo depende de las aperturas a Japón: de madrugada en bandas bajas y a media mañana en altas."},
+ jidxssb:{modes:["ssb"],base:"jidxcw",n:"JIDX Phone",month:11,wk:"second",h:30,bands:[0,1,2,3,5,7],ok:t=>t.dxcc===339,pts:(t,b)=>b===0?4:b===1||b===7?2:1,mult:"prefecturas y distritos japoneses, por banda",
+   tip:"Solo Japón: 4 puntos en 160 m, 2 en 80 y 10 m y 1 en el resto."},
+ okomssb:{modes:["ssb"],n:"OK/OM DX SSB",month:4,wk:"second",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===230?10:t.cont==="EU"?3:5,mult:"distritos OK/OM y países DXCC/WAE",
+   tip:"Todos con todos: Chequia y Eslovaquia 10 puntos, otro continente 5, Europa 3 y tu propio país 1."},
+ okomcw:{modes:["cw"],base:"okomssb",n:"OK/OM DX CW",month:11,wk:"second",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===230?10:t.cont==="EU"?3:5,mult:"distritos OK/OM y países DXCC/WAE",
+   tip:"Mismas reglas que en fonía: OK y OM 10 puntos, otro continente 5, Europa 3."},
+ cqmm:{modes:["cw","ssb"],n:"CQMM DX",month:4,wk:"third",h:39,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases oficiales",
+   tip:"Todos con todos. La plataforma no tiene verificados los puntos de este concurso: aquí cada QSO cuenta igual para planificar bandas y horas. Consulta las bases oficiales."},
+ spdxrtty:{modes:["rtty"],n:"SP DX RTTY",month:4,wk:"last",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases oficiales",
+   tip:"La plataforma no tiene verificados los puntos de este concurso: aquí cada QSO cuenta igual para planificar bandas y horas. Consulta las bases oficiales."},
+ helvetia:{modes:["cw","ssb"],n:"Helvetia",month:4,wk:"last",h:24,bands:[0,1,2,3,5,7],ok:t=>t.dxcc===230,pts:()=>3,mult:"los 26 cantones suizos, por banda",
+   tip:"Solo cuentan los QSO con Suiza: 3 puntos cada uno. Cada cantón cuenta en cada banda."},
+ ari:{modes:["cw","ssb","rtty"],n:"ARI International DX",month:5,wk:"first",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===248?10:t.cont==="EU"?1:3,mult:"las 110 provincias italianas y países DXCC, por banda",
+   tip:"Todos con todos: Italia 10 puntos, otro continente 3, Europa 1 y tu propio país 0 (aunque vale como multiplicador)."},
+ smreycw:{modes:["cw"],n:"S. M. el Rey de España CW",month:5,wk:"third",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases de la URE",
+   tip:"Concurso de la URE. Puntos y multiplicadores, en las bases de concursos.ure.es: aquí cada QSO cuenta igual para planificar bandas y horas."},
+ smreyssb:{modes:["ssb"],base:"smreycw",n:"S. M. el Rey de España SSB",month:6,wk:"fourth",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases de la URE",
+   tip:"Concurso de la URE. Puntos y multiplicadores, en las bases de concursos.ure.es: aquí cada QSO cuenta igual para planificar."},
+ eartty:{modes:["rtty"],n:"EA RTTY",month:4,wk:"first",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases de la URE",
+   tip:"Concurso de la URE. Puntos y multiplicadores, en las bases de concursos.ure.es: aquí cada QSO cuenta igual para planificar."},
+ eapsk:{modes:["psk"],n:"EA PSK63",month:3,wk:"second",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"según las bases de la URE",
+   tip:"Concurso de la URE. Puntos y multiplicadores, en las bases de concursos.ure.es: aquí cada QSO cuenta igual para planificar."},
+ aacw:{modes:["cw"],n:"All Asian DX CW",month:6,wk:"third",h:48,bands:[0,1,2,3,5,7],ok:t=>t.cont==="AS",pts:(t,b)=>b===0?3:b===1||b===7?2:1,mult:"prefijos asiáticos (como en el WPX), por banda",
+   tip:"Solo cuentan los QSO con Asia: 3 puntos en 160 m, 2 en 80 y 10 m y 1 en el resto. Cada prefijo asiático cuenta en cada banda."},
+ aassb:{modes:["ssb"],base:"aacw",n:"All Asian DX Phone",month:9,wk:"first",h:48,bands:[0,1,2,3,5,7],ok:t=>t.cont==="AS",pts:(t,b)=>b===0?3:b===1||b===7?2:1,mult:"prefijos asiáticos (como en el WPX), por banda",
+   tip:"Solo Asia: 3 puntos en 160 m, 2 en 80 y 10 m y 1 en el resto."},
+ iota:{modes:["cw","ssb"],n:"RSGB IOTA",month:7,wk:"last",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:()=>5,mult:"referencias IOTA, por banda y modo",
+   tip:"Todos con todos: 5 puntos por QSO y 15 si la otra estación está en una isla IOTA. Las referencias IOTA cuentan en cada banda y modo."},
+ euhf:{modes:["cw","ssb"],n:"EU HF Championship",month:8,wk:"first",h:12,bands:[0,1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"años de primera licencia distintos (dos cifras), por banda",
+   tip:"Solo 12 horas, de 12:00 a 24:00 UTC del sábado: 1 punto por QSO. Envías RS o RST y las dos últimas cifras del año de tu primera licencia; cada año distinto es un multiplicador en cada banda."},
+ yodx:{modes:["cw","ssb"],n:"YO DX HF",month:8,wk:"last",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>t.dxcc===296?8:t.cont==="EU"?2:4,mult:"países DXCC y distritos rumanos, por banda",
+   tip:"Todos con todos: Rumanía 8 puntos, otro continente 4, Europa 2 y tu propio país 1."},
+ wwdigi:{modes:["ft8","ft4"],n:"WW Digi DX",month:8,wk:"last",h:24,bands:[0,1,2,3,5,7],ok:t=>true,pts:t=>1+Math.floor((t.km||3000)/3000),mult:"cuadrículas de dos letras (campos), por banda",
+   tip:"FT4 y FT8, todos con todos: 1 punto más 1 por cada 3.000 km. Los campos del locator (dos letras) cuentan en cada banda."},
+ saccw:{modes:["cw"],n:"SAC CW (Escandinavia)",month:9,wk:"third",h:24,bands:[1,2,3,5,7],ok:t=>[224,222,242,237,118,259].includes(t.dxcc),pts:()=>1,mult:"prefijos escandinavos, por banda",
+   tip:"Solo cuentan los QSO con Escandinavia (JW, JX, LA, OH, OH0, OJ0, OX, OY, OZ, SM y TF). La plataforma no tiene verificados los puntos por QSO: aquí cuentan todos igual."},
+ sacssb:{modes:["ssb"],base:"saccw",n:"SAC SSB (Escandinavia)",month:10,wk:"second",h:24,bands:[1,2,3,5,7],ok:t=>[224,222,242,237,118,259].includes(t.dxcc),pts:()=>1,mult:"prefijos escandinavos, por banda",
+   tip:"Solo Escandinavia. La plataforma no tiene verificados los puntos por QSO: aquí cuentan todos igual."},
+ ocssb:{modes:["ssb"],n:"Oceania DX Phone",month:10,wk:"first",h:24,bands:[0,1,2,3,5,7],ok:t=>t.cont==="OC",pts:(t,b)=>[20,10,5,1,0,2,0,3][b]||1,mult:"prefijos de Oceanía, por banda",
+   tip:"Solo cuentan los QSO con Oceanía: 20 puntos en 160 m, 10 en 80, 5 en 40, 1 en 20, 2 en 15 y 3 en 10 m. Las bandas bajas valen mucho: los caminos largos a VK y ZL al amanecer."},
+ occw:{modes:["cw"],base:"ocssb",n:"Oceania DX CW",month:10,wk:"second",h:24,bands:[0,1,2,3,5,7],ok:t=>t.cont==="OC",pts:(t,b)=>[20,10,5,1,0,2,0,3][b]||1,mult:"prefijos de Oceanía, por banda",
+   tip:"Solo Oceanía: 20 puntos en 160 m, 10 en 80, 5 en 40, 1 en 20, 2 en 15 y 3 en 10 m."},
+ wag:{modes:["cw","ssb"],n:"WAG (DARC)",month:10,wk:"third",h:24,bands:[1,2,3,5,7],ok:t=>t.dxcc===230,pts:()=>3,mult:"distritos DARC (letra del DOK), por banda",
+   tip:"Solo cuentan los QSO con Alemania: 3 puntos cada uno. Cada distrito DARC cuenta en cada banda."},
+ waerty:{modes:["rtty"],base:"wae",n:"WAE DX RTTY",month:11,wk:"second",h:48,bands:[1,2,3,5,7],ok:t=>true,pts:()=>1,mult:"países DXCC y WAE por banda, con 80 m ×4, 40 m ×3 y el resto ×2",mk:"wae",
+   tip:"En RTTY todos trabajan con todos: 1 punto por QSO y otro por cada QTC. Los multiplicadores de 80 m valen ×4 y los de 40 m ×3."},
+ arrl160:{modes:["cw"],n:"ARRL 160 m",month:12,wk:"first",h:42,bands:[0],ok:t=>t.dxcc===291||t.dxcc===1,pts:()=>5,mult:"secciones ARRL y RAC",mk:"wve",
+   tip:"Solo 160 m y solo con EE. UU. y Canadá: 5 puntos cada QSO. Todo pasa de noche, con el camino a Norteamérica abierto desde la puesta de sol aquí hasta el amanecer allí."},
  lzdx:{modes:["ssb","cw"],n:"LZ DX",month:11,wk:"penult",h:24,bands:[1,2,3,5,7],ok:t=>true,pts:t=>t.cont==="EU"?1:3,mult:"zonas ITU y los 28 distritos de Bulgaria, por banda, sea cual sea el modo",mk:"cqdx",
    tip:"Desde EA: cada QSO con Bulgaria da 10 puntos, otro continente 3 y Europa 1. Envías RS o RST y tu zona ITU, 37 en la Península, y las estaciones LZ envían su distrito. Puedes trabajar a cada estación una vez en CW y otra en SSB en cada banda, pero zona y distrito cuentan una sola vez por banda. Sin 160 m. Bulgaria va dentro del destino Balcanes del mapa, así que el cálculo la cuenta como Europa: cada LZ que trabajes vale más de lo que dice la estimación. Los multiplicadores se estiman con las zonas CQ, parecidas pero no iguales a las ITU."}};
 const CT=()=>memo("CT",()=>CONTESTS[$("contest")?$("contest").value:"cqww"]||CONTESTS[CKEYS()[0]]||CONTESTS.cqww);
@@ -1386,7 +1453,7 @@ function cmults0(lh,b){const s=new Set();for(const t of TG().filter(inMode)){if(
 /* 2.10.32: se guarda el resultado: se llamaba miles de veces en cada cálculo (era lo que más tiempo gastaba al abrir) */
 const FWK=new Map();function fullWeekends(y,m){const k=y*100+m;const c=FWK.get(k);if(c)return c;const r=fullWeekends0(y,m);FWK.set(k,r);return r}
 function fullWeekends0(y,m){const r=[];for(let d=1;d<=31;d++){const dt=new Date(Date.UTC(y,m-1,d));if(dt.getUTCMonth()!==m-1)break;if(dt.getUTCDay()===6){const su=new Date(Date.UTC(y,m-1,d+1));if(su.getUTCMonth()===m-1)r.push(dt)}}return r}
-function contestDate(c,y){const w=fullWeekends(y,c.month);return c.wk==="penult"?w[w.length-2]:c.wk==="last"?w[w.length-1]:c.wk==="first"?w[0]:c.wk==="third"?w[2]:w[1]}
+function contestDate(c,y){const w=fullWeekends(y,c.month);return c.wk==="penult"?w[w.length-2]:c.wk==="last"?w[w.length-1]:c.wk==="first"?w[0]:c.wk==="third"?w[2]:c.wk==="fourth"?w[3]:w[1]}
 const NXD=new Map();function nextDate(c){const m=Math.floor(Date.now()/36e5),k=(c.n||"")+"|"+m;const v=NXD.get(k);if(v)return v;const r=nextDate0(c);if(NXD.size>200)NXD.clear();NXD.set(k,r);return r}
 function nextDate0(c){const n=new Date();let d=contestDate(c,n.getUTCFullYear());if(d.getTime()+2*864e5<n.getTime())d=contestDate(c,n.getUTCFullYear()+1);return d}
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -2164,18 +2231,18 @@ function closeCall(){const ov=$("cpop");if(ov&&!ov.hidden){ov.hidden=true;docume
 
 /* ---------- calendario de los grandes concursos (todas las modalidades) ---------- */
 /* [nombre, modalidad, mes (1-12), fin de semana completo nº (1-4; -1 = último, -2 = penúltimo), horario UTC, empieza el viernes, clave del plan, URE] */
-const CAL=[["ARRL RTTY Roundup","RTTY",1,1,"18:00 sáb – 23:59 dom"],["CQ WW 160 m CW","CW",1,-1,"22:00 vie – 22:00 dom",1,"cq160cw"],["UBA DX SSB","SSB",1,-1,"13:00 sáb – 13:00 dom"],["REF CW","CW",1,-1,"06:00 sáb – 18:00 dom"],
- ["CQ WPX RTTY","RTTY",2,2,"00:00 sáb – 24:00 dom",0,"wpxrtty"],["PACC (Países Bajos)","CW/SSB",2,2,"12:00 sáb – 12:00 dom"],["ARRL International DX CW","CW",2,3,"00:00 sáb – 24:00 dom",0,"arrlcw"],["CQ WW 160 m SSB","SSB",2,-1,"22:00 vie – 21:59 dom",1,"cq160"],["UBA DX CW","CW",2,-1,"13:00 sáb – 13:00 dom"],["REF SSB","SSB",2,-1,"06:00 sáb – 18:00 dom"],
- ["ARRL International DX SSB","SSB",3,1,"00:00 sáb – 24:00 dom",0,"arrl"],["EA PSK63","PSK63",3,2,"12:00 sáb – 11:59 dom",0,0,1],["Russian DX","CW/SSB",3,3,"12:00 sáb – 12:00 dom"],["CQ WPX SSB","SSB",3,-1,"00:00 sáb – 24:00 dom",0,"wpx"],
- ["EA RTTY","RTTY",4,1,"12:00 sáb – 11:59 dom",0,0,1],["SP DX","CW/SSB",4,1,"15:00 sáb – 15:00 dom"],["JIDX CW","CW",4,2,"07:00 sáb – 13:00 dom"],["OK/OM DX SSB","SSB",4,2,"12:00 sáb – 11:59 dom"],["CQMM DX","CW/SSB",4,3,"09:00 sáb – 23:59 dom"],["SP DX RTTY","RTTY",4,-1,"12:00 sáb – 12:00 dom"],["Helvetia","CW/SSB",4,-1,"13:00 sáb – 12:59 dom"],
- ["ARI International DX","CW/SSB/RTTY",5,1,"12:00 sáb – 11:59 dom"],["S. M. el Rey de España CW","CW",5,3,"12:00 sáb – 11:59 dom",0,0,1],["CQ WPX CW","CW",5,-1,"00:00 sáb – 24:00 dom",0,"wpxcw"],
- ["All Asian DX CW","CW",6,3,"00:00 sáb – 24:00 dom"],["S. M. el Rey de España SSB","SSB",6,4,"12:00 sáb – 11:59 dom",0,0,1],
- ["IARU HF World Championship","CW/SSB",7,2,"12:00 sáb – 12:00 dom",0,"iaru"],["Nacional CW (CNCW)","CW",7,3,"12:00–22:59 sáb y 05:00–11:59 dom",0,0,1],["RSGB IOTA","CW/SSB",7,-1,"12:00 sáb – 12:00 dom"],
- ["EU HF Championship","CW/SSB",8,1,"12:00–23:59 sáb (solo el sábado)",2],["WAE DX CW","CW",8,2,"00:00 sáb – 23:59 dom",0,"waecw"],["YO DX HF","CW/SSB",8,-1,"12:00 sáb – 11:59 dom"],["WW Digi DX","FT4/FT8",8,-1,"12:00 sáb – 12:00 dom"],
- ["All Asian DX Phone","SSB",9,1,"00:00 sáb – 24:00 dom"],["WAE DX SSB","SSB",9,2,"00:00 sáb – 23:59 dom",0,"wae"],["SAC CW (Escandinavia)","CW",9,3,"12:00 sáb – 12:00 dom"],["CQ WW RTTY","RTTY",9,-1,"00:00 sáb – 24:00 dom",0,"cqwwrtty"],
- ["Oceania DX Phone","SSB",10,1,"06:00 sáb – 06:00 dom"],["Oceania DX CW","CW",10,2,"06:00 sáb – 06:00 dom"],["SAC SSB (Escandinavia)","SSB",10,2,"12:00 sáb – 12:00 dom"],["WAG (DARC)","CW/SSB",10,3,"15:00 sáb – 14:59 dom"],["CQ WW DX SSB","SSB",10,-1,"00:00 sáb – 24:00 dom",0,"cqww"],
- ["WAE DX RTTY","RTTY",11,2,"00:00 sáb – 23:59 dom"],["JIDX Phone","SSB",11,2,"07:00 sáb – 13:00 dom"],["OK/OM DX CW","CW",11,2,"12:00 sáb – 12:00 dom"],["LZ DX","CW/SSB",11,-2,"12:00 sáb – 12:00 dom",0,"lzdx"],["CQ WW DX CW","CW",11,-1,"00:00 sáb – 24:00 dom",0,"cqwwcw"],
- ["ARRL 160 m","CW",12,1,"22:00 vie – 16:00 dom",1],["ARRL 10 m","CW/SSB",12,2,"00:00 sáb – 23:59 dom",0,"arrl10"]];
+const CAL=[["ARRL RTTY Roundup","RTTY",1,1,"18:00 sáb – 23:59 dom",0,"rttyru"],["CQ WW 160 m CW","CW",1,-1,"22:00 vie – 22:00 dom",1,"cq160cw"],["UBA DX SSB","SSB",1,-1,"13:00 sáb – 13:00 dom",0,"uba"],["REF CW","CW",1,-1,"06:00 sáb – 18:00 dom",0,"refcw"],
+ ["CQ WPX RTTY","RTTY",2,2,"00:00 sáb – 24:00 dom",0,"wpxrtty"],["PACC (Países Bajos)","CW/SSB",2,2,"12:00 sáb – 12:00 dom",0,"pacc"],["ARRL International DX CW","CW",2,3,"00:00 sáb – 24:00 dom",0,"arrlcw"],["CQ WW 160 m SSB","SSB",2,-1,"22:00 vie – 21:59 dom",1,"cq160"],["UBA DX CW","CW",2,-1,"13:00 sáb – 13:00 dom",0,"ubacw"],["REF SSB","SSB",2,-1,"06:00 sáb – 18:00 dom",0,"refssb"],
+ ["ARRL International DX SSB","SSB",3,1,"00:00 sáb – 24:00 dom",0,"arrl"],["EA PSK63","PSK63",3,2,"12:00 sáb – 11:59 dom",0,"eapsk",1],["Russian DX","CW/SSB",3,3,"12:00 sáb – 12:00 dom",0,"rdxc"],["CQ WPX SSB","SSB",3,-1,"00:00 sáb – 24:00 dom",0,"wpx"],
+ ["EA RTTY","RTTY",4,1,"12:00 sáb – 11:59 dom",0,"eartty",1],["SP DX","CW/SSB",4,1,"15:00 sáb – 15:00 dom",0,"spdx"],["JIDX CW","CW",4,2,"07:00 sáb – 13:00 dom",0,"jidxcw"],["OK/OM DX SSB","SSB",4,2,"12:00 sáb – 11:59 dom",0,"okomssb"],["CQMM DX","CW/SSB",4,3,"09:00 sáb – 23:59 dom",0,"cqmm"],["SP DX RTTY","RTTY",4,-1,"12:00 sáb – 12:00 dom",0,"spdxrtty"],["Helvetia","CW/SSB",4,-1,"13:00 sáb – 12:59 dom",0,"helvetia"],
+ ["ARI International DX","CW/SSB/RTTY",5,1,"12:00 sáb – 11:59 dom",0,"ari"],["S. M. el Rey de España CW","CW",5,3,"12:00 sáb – 11:59 dom",0,"smreycw",1],["CQ WPX CW","CW",5,-1,"00:00 sáb – 24:00 dom",0,"wpxcw"],
+ ["All Asian DX CW","CW",6,3,"00:00 sáb – 24:00 dom",0,"aacw"],["S. M. el Rey de España SSB","SSB",6,4,"12:00 sáb – 11:59 dom",0,"smreyssb",1],
+ ["IARU HF World Championship","CW/SSB",7,2,"12:00 sáb – 12:00 dom",0,"iaru"],["Nacional CW (CNCW)","CW",7,3,"12:00–22:59 sáb y 05:00–11:59 dom",0,0,1],["RSGB IOTA","CW/SSB",7,-1,"12:00 sáb – 12:00 dom",0,"iota"],
+ ["EU HF Championship","CW/SSB",8,1,"12:00–23:59 sáb (solo el sábado)",2,"euhf"],["WAE DX CW","CW",8,2,"00:00 sáb – 23:59 dom",0,"waecw"],["YO DX HF","CW/SSB",8,-1,"12:00 sáb – 11:59 dom",0,"yodx"],["WW Digi DX","FT4/FT8",8,-1,"12:00 sáb – 12:00 dom",0,"wwdigi"],
+ ["All Asian DX Phone","SSB",9,1,"00:00 sáb – 24:00 dom",0,"aassb"],["WAE DX SSB","SSB",9,2,"00:00 sáb – 23:59 dom",0,"wae"],["SAC CW (Escandinavia)","CW",9,3,"12:00 sáb – 12:00 dom",0,"saccw"],["CQ WW RTTY","RTTY",9,-1,"00:00 sáb – 24:00 dom",0,"cqwwrtty"],
+ ["Oceania DX Phone","SSB",10,1,"06:00 sáb – 06:00 dom",0,"ocssb"],["Oceania DX CW","CW",10,2,"06:00 sáb – 06:00 dom",0,"occw"],["SAC SSB (Escandinavia)","SSB",10,2,"12:00 sáb – 12:00 dom",0,"sacssb"],["WAG (DARC)","CW/SSB",10,3,"15:00 sáb – 14:59 dom",0,"wag"],["CQ WW DX SSB","SSB",10,-1,"00:00 sáb – 24:00 dom",0,"cqww"],
+ ["WAE DX RTTY","RTTY",11,2,"00:00 sáb – 23:59 dom",0,"waerty"],["JIDX Phone","SSB",11,2,"07:00 sáb – 13:00 dom",0,"jidxssb"],["OK/OM DX CW","CW",11,2,"12:00 sáb – 12:00 dom",0,"okomcw"],["LZ DX","CW/SSB",11,-2,"12:00 sáb – 12:00 dom",0,"lzdx"],["CQ WW DX CW","CW",11,-1,"00:00 sáb – 24:00 dom",0,"cqwwcw"],
+ ["ARRL 160 m","CW",12,1,"22:00 vie – 16:00 dom",1,"arrl160"],["ARRL 10 m","CW/SSB",12,2,"00:00 sáb – 23:59 dom",0,"arrl10"]];
 function calDate(y,m,n){const sats=[];for(let d=1;d<=31;d++){const x=new Date(Date.UTC(y,m-1,d));if(x.getUTCMonth()!==m-1)break;if(x.getUTCDay()===6){const s=new Date(Date.UTC(y,m-1,d+1));if(s.getUTCMonth()===m-1)sats.push(x)}}return n<0?sats[sats.length+n]:sats[n-1]}
 function calNext(c){const now=new Date();for(const y of [now.getUTCFullYear(),now.getUTCFullYear()+1]){const sat=calDate(y,c[2],c[3]);if(!sat)continue;const st=new Date(sat.getTime()-(c[5]===1?864e5:0)),en=new Date(sat.getTime()+(c[5]===2?1:2)*864e5);if(en>now)return {st,sat,en}}return null}
 const CALF={all:"Todos",ph:"Fonía",cw:"CW",dig:"Digitales",ure:"URE"};let CALSEL=null;

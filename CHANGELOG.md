@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.14 — 2026-11-22
+
+- ES: Avisos de todos los concursos del calendario: uno una hora antes de empezar y otro al arrancar, cada uno una sola vez.
+- ES: Todos los concursos del calendario tienen ya su ficha con puntos, multiplicadores y bandas según sus bases oficiales (UBA, REF, PACC, Russian DX, SP DX, JIDX, OK/OM DX, Helvetia, ARI, SM/REY, All Asian, IOTA, EU HF, YO DX, WW Digi, Oceania, WAG, WAE RTTY, ARRL 160 y los de la URE, entre otros), y el resto de pestañas se adaptan a cada uno como ya pasaba con los grandes. Donde la plataforma no ha podido verificar los puntos, cada QSO cuenta igual y se dice claramente.
+- ES: Al terminar un concurso al que la plataforma se unió sola, vuelve el modo de operación que tenías.
+- ES: Países y Log › Entidades también se ve en modo lista.
+- ES: Arreglados los destinos de «Qué hacer» con más de 12 estaciones: los indicativos desaparecían y las filas sobrantes se amontonaban en columnas.
+- EN: Alerts for every contest in the calendar: one an hour before it starts and another when it begins, each only once.
+- EN: Every contest in the calendar now has its own entry with points, multipliers and bands from its official rules (UBA, REF, PACC, Russian DX, SP DX, JIDX, OK/OM DX, Helvetia, ARI, SM/REY, All Asian, IOTA, EU HF, YO DX, WW Digi, Oceania, WAG, WAE RTTY, ARRL 160 and the URE contests, among others), and the other tabs adapt to each one as they already did for the big ones. Where the platform could not verify the points, every QSO counts the same and this is stated clearly.
+- EN: When a contest the platform joined on its own ends, your previous operating mode comes back.
+- EN: Countries and Log › Entities also supports list view.
+- EN: Fixed "What to do" destinations with more than 12 stations: the calls disappeared and the extra rows piled up in columns.
+
 ## 2.11.13 — 2026-11-22
 
 - ES: Recuento del clúster más corto: «DX 190/698 · otros modos 495 · activaciones 13».
