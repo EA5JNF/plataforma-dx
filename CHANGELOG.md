@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.26 — 2026-11-22
+
+- ES: Botón «Anunciar spot» junto a «Actualizar», visible desde cualquier pestaña, para anunciar a mano cualquier estación que oigas aunque no esté en ningún listado. En la pestaña DX sigue junto al buscador, con texto también en el móvil.
+- ES: Los spots se envían primero por el intermediario del club en Cloudflare, que los entrega a DX Summit sin que el navegador los bloquee (cuando esté actualizado); mientras tanto se usan las otras vías y se comprueba en los clústeres que el spot ha salido.
+- ES: Vista compacta: «Anunciar» aparece al desplegar la tarjeta, sin desordenar la fila. Vista de lista: lo mismo que la tarjeta.
+- ES: Señal: «Le oirás», «Te oirá» o «Ida y vuelta» encima, y la barra, la S y el veredicto en una línea que ya no se parte (antes «S9+10» salía en tres renglones).
+- EN: "Post spot" button next to "Update", visible from any tab, to post by hand any station you hear even if it is not in any list. In the DX tab it stays next to the search box, with its label on phones too.
+- EN: Spots are sent first through the club's Cloudflare relay, which delivers them to DX Summit without the browser blocking them (once it is updated); meanwhile the other routes are used and the clusters are checked to see the spot went out.
+- EN: Compact view: "Spot it" shows when the card is expanded, without cluttering the row. List view: same as the card.
+- EN: Signal: "You hear", "Hears you" or "Both ways" on top, and bar, S and verdict on one line that no longer breaks ("S9+10" used to take three lines).
+
 ## 2.11.25 — 2026-11-22
 
 - ES: Anunciar spots, más visible y más fiable: botón «Anunciar spot» junto al buscador de DX y botón «Anunciar» en cada estación (tarjeta o fila), que abre una ventana ya rellena con el indicativo y la frecuencia. Si el navegador no deja leer la respuesta de DX Summit, se envía como formulario, y en los dos casos se comprueba en los clústeres que el spot ha salido de verdad; si en 3 minutos no aparece, se dice y se explica cómo hacerlo en DX Summit.

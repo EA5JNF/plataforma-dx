@@ -1,4 +1,7 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 2
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 3
+// 2.11.26: además, POST /spot reenvía a DX Summit los spots que anuncian los usuarios desde la plataforma. Desde el
+// navegador no se puede (DX Summit solo acepta envíos desde su propia web); desde aquí, sí. Solo desde la plataforma,
+// con los datos revisados, un spot cada 30 segundos por conexión y sin guardar nada.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -13,7 +16,8 @@ const MAX_BYTES = 8 * 1024 * 1024, MAX_URL = 2048, TIEMPO_MS = 12000, MAX_SALTOS
 
 function cabeceras(origen) {
   const h = new Headers({
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin",
     "X-Content-Type-Options": "nosniff",
@@ -34,11 +38,42 @@ function valida(u) {
   return d;
 }
 
+// ---- anunciar un spot ----
+const DXS = "https://new.dxsummit.fi/api/v1/spots";
+const INDICATIVO = /^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
+const json = (o, status, origen) => { const h = cabeceras(origen); h.set("Content-Type", "application/json; charset=utf-8"); h.set("Cache-Control", "no-store"); return new Response(JSON.stringify(o), { status, headers: h }); };
+async function spot(request, origen) {
+  if (!origen || origen === "null" || !ORIGENES.includes(origen)) return json({ status: "origen no permitido" }, 403, origen);
+  const largo = +(request.headers.get("Content-Length") || 0);
+  if (largo > 1024) return json({ status: "demasiado largo" }, 413, origen);
+  let d; try { d = JSON.parse((await request.text()).slice(0, 1024)); } catch (e) { return json({ status: "datos no válidos" }, 400, origen); }
+  const de = String(d.de_call || "").trim().toUpperCase(), dx = String(d.dx_call || "").trim().toUpperCase();
+  const f = Math.round(parseFloat(d.frequency) * 10) / 10, info = String(d.info || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 30);
+  if (!INDICATIVO.test(de) || !INDICATIVO.test(dx) || de === dx) return json({ status: "indicativo no válido" }, 400, origen);
+  if (!(f >= 1800 && f <= 450000)) return json({ status: "frecuencia no válida" }, 400, origen);
+  // un spot cada 30 segundos por conexión (se recuerda en la caché del propio Worker, sin guardar datos)
+  const ip = request.headers.get("CF-Connecting-IP") || "x", llave = new Request("https://acracb-dx.invalid/rl/" + encodeURIComponent(ip));
+  const cache = caches.default;
+  if (await cache.match(llave)) return json({ status: "espera unos segundos" }, 429, origen);
+  await cache.put(llave, new Response("1", { headers: { "Cache-Control": "max-age=30" } }));
+  const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
+  try {
+    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/3.0 (club de radioaficionados)" },
+      body: JSON.stringify({ de_call: de, dx_call: dx, frequency: f.toFixed(1), info }) });
+    let j = null; try { j = await r.json(); } catch (e) {}
+    const ok = r.ok && (!j || j.status == null || j.status === "ok");
+    return json({ status: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 80) : "DX Summit respondió " + r.status) }, ok ? 200 : 502, origen);
+  } catch (e) {
+    return json({ status: "DX Summit no respondió" }, 502, origen);
+  } finally { clearTimeout(t); }
+}
+
 export default {
   async fetch(request) {
     const origen = request.headers.get("Origin");
     if (origen && !ORIGENES.includes(origen)) return texto("Origen no permitido", 403, null);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cabeceras(origen) });
+    if (request.method === "POST" && new URL(request.url).pathname === "/spot") return spot(request, origen);
     if (request.method !== "GET" && request.method !== "HEAD") return texto("Método no permitido", 405, origen);
     if (request.url.length > MAX_URL) return texto("Dirección demasiado larga", 414, origen);
     const u = new URL(request.url).searchParams.get("u");

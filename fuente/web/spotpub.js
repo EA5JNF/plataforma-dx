@@ -6,7 +6,7 @@
 (function(){
 "use strict";
 const T=(a,b)=>window.ACRACB_LANG==="en"?b:a,$=id=>document.getElementById(id);
-const API="https://new.dxsummit.fi/api/v1/spots",WEB="https://www.dxsummit.fi/",CHK="https://spothole.app/api/v1/spots?max_age=900";
+const RELAY="https://acracb-dx.ea5jnf.workers.dev/spot",API="https://new.dxsummit.fi/api/v1/spots",WEB="https://www.dxsummit.fi/",CHK="https://spothole.app/api/v1/spots?max_age=900";
 const KCALL="acracb_mycall",KLAST="acracb_spotlast";
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CALL=/^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
@@ -35,7 +35,10 @@ function confirmLater(s,how){const t0=Date.now();let n=0;
   setTimeout(tick,20000)}
 async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando…","Sending…"));
   put(KCALL,s.de);const body={de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info};let st="";
-  try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
+  /* 2.11.26: primero, el intermediario del club (Cloudflare), que lo entrega a DX Summit sin que el navegador lo bloquee */
+  try{const r=await fetch(RELAY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
+    if(r.status!==404&&r.status!==405){let j=null;try{j=await r.json()}catch(_){}if(j&&j.status!=null)st=j.status==="ok"?"ok":String(j.status)}}catch(_){}
+  if(!st)try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
     let j=null;try{j=await r.json()}catch(_){}st=r.ok&&(!j||j.status==null||j.status==="ok")?"ok":(j&&j.status?String(j.status):"HTTP "+r.status)}
   catch(e){st="cors"}
   if(st==="cors"){/* el navegador no deja leer la respuesta de DX Summit: se envía como formulario, que no necesita permiso, y se comprueba después */
@@ -74,5 +77,8 @@ function btn(){const r=document.querySelector("#srch .srrow");if(!r)return false
   const b=document.createElement("button");b.type="button";b.id="spopen";b.className="btn spopen";b.innerHTML=`${ICON}<span>${T("Anunciar spot","Post spot")}</span>`;b.setAttribute("aria-label",T("Anunciar un spot","Post a spot"));b.title=T("Anunciar un spot en los clústeres","Post a spot to the clusters");b.onclick=()=>open();r.appendChild(b);return true}
 /* el botón de cada estación (tarjeta o fila) abre la ventana ya rellena */
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-spot]");if(!b)return;e.preventDefault();e.stopPropagation();const fh=b.dataset.spf||((b.closest("[data-f]")||{}).dataset||{}).f||"";open(b.dataset.spot,fh)},true);
-let n=0;(function go(){if(btn())return;if(++n<60)setTimeout(go,250)})();
+/* 2.11.26: también arriba, junto a «Actualizar», para tenerlo a mano desde cualquier pestaña */
+function top(){const r=document.querySelector(".updrow");if(!r)return false;if($("sptop"))return true;
+  const b=document.createElement("button");b.type="button";b.id="sptop";b.className="sptop";b.innerHTML=`<span class="ic">${ICON}</span><span class="tx">${T("Anunciar spot","Post spot")}</span>`;b.title=T("Anunciar en los clústeres una estación que oyes","Post to the clusters a station you hear");b.onclick=()=>open();const u=document.getElementById("updbtn");if(u)u.after(b);else r.appendChild(b);return true}
+let n=0;(function go(){const a=btn(),b=top();if(a&&b)return;if(++n<60)setTimeout(go,250)})();
 })();
