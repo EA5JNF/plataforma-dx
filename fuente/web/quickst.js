@@ -70,6 +70,13 @@ let RW=innerWidth;addEventListener("resize",()=>{close();if((RW<=480)!==(innerWi
 addEventListener("scroll",e=>{if(M&&!(e.target&&e.target.closest&&e.target.closest(".qsm")))place()},{passive:true,capture:true});
 /* 2.11.6: «Editar estación» es solo un icono: su texto pasa a ser el título y la etiqueta accesible */
 function btnT(){const b=$i("stbtn");if(!b)return;if(!b.querySelector(".stl")){const l=document.createElement("b");l.className="stl";l.setAttribute("aria-hidden","true");b.appendChild(l);try{$i("ssum").dataset.qh="";sum()}catch(_){}}const p=$i("stpanel"),sl=b.closest(".sline");if(p&&sl&&p.parentElement!==sl)sl.appendChild(p);
+  /* 2.11.18: el botón del locator solo abre y cierra el panel. El manejador antiguo reescribía el botón entero («Cerrar» /
+     «Editar estación») y borraba el locator, que ya no volvía al cerrar */
+  if(p){const loc=()=>{try{return ($i("loc")&&$i("loc").value||"").toUpperCase()}catch(_){return ""}};
+    b.onclick=()=>{p.hidden=!p.hidden;b.setAttribute("aria-expanded",String(!p.hidden));
+      let l=b.querySelector(".stl");if(!l){b.textContent="";l=document.createElement("b");l.className="stl";l.setAttribute("aria-hidden","true");b.appendChild(l)}
+      [...b.childNodes].forEach(n=>{if(n!==l)n.remove()});if(!l.textContent)l.textContent=loc();try{sum()}catch(_){}
+      if(!p.hidden)p.scrollIntoView({block:"nearest"})}}
   const f=()=>{const t=b.getAttribute("aria-expanded")==="true"?T("Ocultar tu estación","Hide your station"):T("Tu estación: locator, antena, altitud y entorno","Your station: locator, antenna, altitude and surroundings");if(b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
   new MutationObserver(f).observe(b,{attributes:true,attributeFilter:["aria-expanded"],childList:true,subtree:true,characterData:true})}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{hook();btnT()});else{hook();btnT()}

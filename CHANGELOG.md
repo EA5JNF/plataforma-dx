@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.18 — 2026-11-22
+
+- ES: El botón del locator ya no se vacía al pulsarlo: abre y cierra el panel de la estación y el locator se queda siempre arriba, en su sitio.
+- ES: «Sol y propagación ahora» ya no dice «HF cerrada» mientras se descarga la previsión de tu zona («calculando la previsión de tu zona…») y se actualiza en cuanto llega, al volver a la pestaña y cada 15 segundos (antes, cada minuto).
+- ES: En pantallas anchas, los destinos de «Qué hacer» no dejan un hueco enorme entre el indicativo y la frecuencia.
+- EN: The locator button no longer empties when tapped: it opens and closes the station panel and the locator always stays at the top, in place.
+- EN: "Sun and propagation now" no longer says "HF closed" while your area's forecast is downloading ("calculating the forecast for your area…") and it updates as soon as it arrives, when you return to the tab and every 15 seconds (it used to be every minute).
+- EN: On wide screens, "What to do" destinations no longer leave a huge gap between the call and the frequency.
+
 ## 2.11.17 — 2026-11-22
 
 - ES: Multiplicadores del clúster en concurso: el recuento y la lista ya coinciden. Se ven los 8 mejores y, si hay más, «Ver N más» despliega el resto (antes decía 9 y solo enseñaba 8).

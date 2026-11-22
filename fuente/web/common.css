@@ -1700,3 +1700,5 @@ html.vl .hrow .hp{text-align:right}
 .clvmb{align-content:start}
 .clvmb>.clvmi[hidden]{display:none!important}
 .clvmb>.clvmore{grid-column:1/-1;justify-self:start;margin-top:4px}
+/* 2.11.18: en pantallas anchas los destinos de «Qué hacer» no dejan un hueco enorme entre el indicativo y la frecuencia */
+@media (min-width:900px){.ez .ezsp{grid-template-columns:minmax(9ch,max-content) auto auto auto;column-gap:18px;justify-content:start}}

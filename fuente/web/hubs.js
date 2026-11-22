@@ -81,8 +81,10 @@ async function gz(url,want){const r=await fetch(url,{credentials:"omit"});if(!r.
 async function gunz(b){if(b[0]!==0x1f||b[1]!==0x8b)return b;/* el servidor ya lo descomprimió */
   try{if(typeof DecompressionStream!=="undefined"){const s=new Blob([b]).stream().pipeThrough(new DecompressionStream("gzip"));return new Uint8Array(await new Response(s).arrayBuffer())}}catch(e){}
   return fflate.gunzipSync(b)}
+/* 2.11.18: otras partes preguntan si la previsión de la zona aún se está descargando, para no dar por cerrada la HF */
+window.ACRACB_hubLoading=()=>loading>0;
 function kick(){if(tmr)return;tmr=setTimeout(()=>{tmr=null;if(loading>0){wantK=true;return}wantK=false;try{CACHE.clear();if(typeof refresh==="function")refresh()}catch(e){}},120)}
-function status(){if(loading<=0&&wantK)kick();const e=document.getElementById("locw");if(!e)return;e.dataset.hub=loading>0?"1":"";if(loading>0)e.textContent=EN()?"Loading the VOACAP forecast for your area…":"Cargando la previsión VOACAP de tu zona…"}
+function status(){if(loading<=0&&wantK)kick();try{window.ACRACB_stPlace&&ACRACB_stPlace()}catch(e){}const e=document.getElementById("locw");if(!e)return;e.dataset.hub=loading>0?"1":"";if(loading>0)e.textContent=EN()?"Loading the VOACAP forecast for your area…":"Cargando la previsión VOACAP de tu zona…"}
 function clearT(){try{for(const k in TCACHE)delete TCACHE[k]}catch(e){}try{for(const k in TFM)delete TFM[k]}catch(e){}}
 async function switchTo(h){cur=h;idx=null;const g=++gen;for(const k in MF)delete MF[k];for(const k in MLOAD)delete MLOAD[k];
   try{BASEQ=[h.lon,h.lat]}catch(e){}loading++;status();
