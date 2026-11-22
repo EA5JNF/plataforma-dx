@@ -15,7 +15,9 @@ function seg(id,label){const s=$i(id);if(!s)return e2(label);
 function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw="",an="";
   try{loc=String($i("loc").value||"").slice(0,6);md=MD().s;h=HB();const p=PWN().split(" ");pw=p[0]+" "+p[1];an=ANTL()}catch(_){return false}
   /* 2.11.4: sin puntos entre piezas (los botones ya se separan) ni «Concursos» al final, que ya lo dice el botón de modo */
-  const html=`<b class="qsl">${e2(loc)}</b>${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:T("Todas las bandas","All bands"))}${seg("eq",pw)}${seg("antsel",an)}`;
+  /* 2.11.6: más corto en el móvil: «Todas» y las combinaciones de antenas resumidas («Directiva 3 el. + 2 dipolos») */
+  const nar=innerWidth<=480,ps=String(an).split(" + ");if(ps.length>2||(nar&&ps.length>1)){const r=ps.slice(1),dp=r.every(x=>/dipol/i.test(x));an=ps[0]+" + "+(dp?T(`${r.length} ${r.length>1?"dipolos":"dipolo"}`,`${r.length} ${r.length>1?"dipoles":"dipole"}`):T(`${r.length} más`,`${r.length} more`))}
+  const html=`<b class="qsl">${e2(loc)}</b>${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}${seg("antsel",an)}`;
   if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
   return true}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */
@@ -47,7 +49,10 @@ document.addEventListener("keydown",e=>{const b=e.target.closest&&e.target.close
   if(!M)return;if(e.key==="Escape"){e.preventDefault();close(true);return}
   if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();const it=[...M.querySelectorAll(".qsi:not([disabled])")];let i=it.indexOf(document.activeElement);i=e.key==="ArrowDown"?Math.min(it.length-1,i+1):Math.max(0,i-1);if(it[i])it[i].focus()}
   if(e.key==="Tab")close()},true);
-addEventListener("resize",()=>close(),{passive:true});
+let RW=innerWidth;addEventListener("resize",()=>{close();if((RW<=480)!==(innerWidth<=480)){RW=innerWidth;try{sum()}catch(_){}}},{passive:true});
 addEventListener("scroll",e=>{if(M&&!(e.target&&e.target.closest&&e.target.closest(".qsm")))place()},{passive:true,capture:true});
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",hook);else hook();
+/* 2.11.6: «Editar estación» es solo un icono: su texto pasa a ser el título y la etiqueta accesible */
+function btnT(){const b=$i("stbtn");if(!b)return;const f=()=>{const t=(b.querySelector("span")||b).textContent.trim();if(t&&b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
+  new MutationObserver(f).observe(b,{attributes:true,attributeFilter:["aria-expanded"],childList:true,subtree:true,characterData:true})}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{hook();btnT()});else{hook();btnT()}
 })();

@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.6 — 2026-11-22
+
+- ES: La caja de la estación ocupa menos: el selector de modo es más bajo; los botones de modo, banda, potencia y antena fluyen junto a «Subir log» y a «Editar estación», que pasa a ser un botón de lápiz (un aspa cuando el panel está abierto). En el móvil queda en tres filas en vez de cinco: «Todas» en lugar de «Todas las bandas» y las combinaciones de antenas resumidas («Directiva 3 el. + 2 dipolos»). En el ordenador, todo en una fila.
+- EN: The station box takes less space: the mode switch is shorter; the mode, band, power and antenna buttons flow alongside "Upload log" and "Edit station", which becomes a pencil button (a cross when the panel is open). On phones it fits in three rows instead of five: "All" instead of "All bands" and antenna combinations summarized ("3-el. Yagi + 2 dipoles"). On desktop, everything on one row.
+
 ## 2.11.5 — 2026-11-22
 
 - ES: «Avisar también de» rehecho: «Indicativos curiosos» y «DX lejano» son ahora interruptores que se ven claramente encendidos o apagados, cada uno con su explicación debajo, en una columna en el móvil y en dos en pantallas anchas. En vista compacta, sin las explicaciones. Fuera las menciones a «lo raro», que ya no existe.

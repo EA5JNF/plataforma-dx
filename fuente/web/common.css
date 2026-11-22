@@ -1543,3 +1543,22 @@ html.vc #stpanel .upd,html.vc #stpanel .locw,html.vc #stpanel .stnote{display:no
 #ssum[role=button]::after{content:none;display:none}
 #stpanel .upd+.locw::before{content:"· ";color:var(--muted)}
 #stpanel .upd,#stpanel .locw{font-size:.78rem}
+/* 2.11.6: la caja de la estación en menos espacio. Los botones de la estación fluyen con los de modo, banda, potencia y
+   antena (el resumen deja de ser una caja aparte); «Editar estación» pasa a ser un botón de icono (lápiz, y aspa cuando
+   está abierto) y «Mi log» un botón del mismo tamaño. En el móvil: el selector de modo y dos filas de botones */
+.sline{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:6px!important;padding:8px 10px!important}
+.sline>#ssum{display:contents!important}
+.sline>.modes{flex:0 0 auto!important;order:0!important;grid-column:auto!important}
+.sline>.modes button{min-height:32px!important;padding:5px 14px!important;font-size:.76rem!important}
+@media (max-width:700px){.sline>.modes{flex:0 0 100%!important;width:100%!important}.sline>.modes button{padding:5px 6px!important}}
+#ssum .qs,#ssum .qsl,.sline>.logbtn,.sline>.stbtn{min-height:32px;box-sizing:border-box}
+#ssum .qs{padding:2px 9px;margin:0;font-size:.9rem}
+#ssum .qsl{display:inline-flex;align-items:center;margin:0 2px 0 0;font-size:.9rem}
+.sline>.logbtn,.sline>.stbtn{order:5!important;width:auto!important;flex:0 0 auto!important;margin:0!important;padding:2px 11px!important;font-size:.78rem!important;min-height:32px!important;border-radius:7px!important;justify-content:center}
+.sline>#stbtn{width:32px!important;padding:0!important;display:inline-flex!important;align-items:center}
+.sline>#stbtn>span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sline>#stbtn .pen{width:16px;height:16px;margin:0!important}
+.sline>#stbtn[aria-expanded="true"]{border-color:var(--accent)!important;color:var(--accent)}
+.sline>#stbtn[aria-expanded="true"] .pen{display:none}
+.sline>#stbtn[aria-expanded="true"]::before{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+html.vc .sline{padding:6px 8px!important}
