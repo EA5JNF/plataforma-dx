@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.9 — 2026-11-22
+
+- ES: Caja de la estación en dos filas: el selector DX/concursos y, debajo, solo lo que se cambia a menudo (modo, banda y potencia) más un botón con tu locator. Ese botón despliega en la misma caja lo que casi nunca se toca: locator, antena, altitud, entorno y «Subir log», y después el concurso, las coordenadas y el cálculo.
+- ES: Ritmo de concurso por horas: las cifras de tres dígitos y las bandas ya caben en su casilla en cualquier pantalla (tamaño según el ancho real; «40m» sin espacio).
+- EN: Station box in two rows: the DX/contest switch and, below, only what changes often (mode, band and power) plus a button with your locator. That button unfolds, inside the same box, what you rarely touch: locator, antenna, altitude, surroundings and "Upload log", then the contest, the coordinates and the calculation.
+- EN: Contest hourly rate: three-digit figures and bands now fit their cell on any screen (sized to the real width; "40m" without a space).
+
 ## 2.11.8 — 2026-11-22
 
 - ES: Mapa: los triángulos de POTA, SOTA, WWFF y demás programas mantienen su tamaño al acercar; antes crecían con el zoom hasta tapar el mapa.

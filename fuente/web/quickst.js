@@ -19,9 +19,17 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
   const nar=innerWidth<=480,ps=String(an).split(" + ");if(ps.length>2||(nar&&ps.length>1)){const r=ps.slice(1),dp=r.every(x=>/dipol/i.test(x));an=ps[0]+" + "+(dp?T(`${r.length} ${r.length>1?"dipolos":"dipolo"}`,`${r.length} ${r.length>1?"dipoles":"dipole"}`):T(`${r.length} más`,`${r.length} more`))}
   /* 2.11.7: todo en la misma caja: también el locator, la altitud y el entorno son botones; lo demás, en «Más» */
   const al=$i("altin"),gv=($i("gnd")||{}).value,gl={rock:T("Suelo seco","Dry ground"),avg:T("Tierra normal","Average ground"),coast:T("Junto al mar","By the sea"),sea:T("Agua salada","Salt water")}[gv]||"";
-  const html=`${seg("locin",loc)}${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
+  /* 2.11.9: a la vista solo lo que se cambia a menudo (modo, banda y potencia) y el botón con tu locator, que despliega
+     en la misma caja lo que casi nunca se toca: locator, antena, altitud, entorno, tu log y lo demás */
+  e.classList.add("qsbar");
+  const html=`${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}`;
   if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
+  const e2b=bar2();if(e2b){const h2=`${seg("locin",loc)}${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
+    let w=e2b.querySelector(".qsb2");if(!w){w=document.createElement("span");w.className="qsb2";e2b.prepend(w)}if(w.dataset.qh!==h2){w.innerHTML=h2;w.dataset.qh=h2}
+    const lb=$i("logbtn");if(lb&&lb.parentElement!==e2b)e2b.appendChild(lb)}
+  const sl=document.querySelector("#stbtn .stl");if(sl&&sl.textContent!==loc)sl.textContent=loc;
   return true}
+function bar2(){let b=$i("ssum2");const p=$i("stpanel");if(!b&&p){b=document.createElement("div");b.id="ssum2";b.className="qsbar ssum2";p.prepend(b)}return b}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */
 function hook(){if(typeof renderSum!=="function"||!$i("ssum"))return setTimeout(hook,300);
   const r0=renderSum;renderSum=function(){const v=r0.apply(this,arguments);try{$i("ssum").dataset.qh="";sum()}catch(e){console.error(e)}return v};
@@ -48,21 +56,21 @@ function place(){if(!M||!MB)return;const r=MB.getBoundingClientRect(),vw=innerWi
 function pick(v){const s=MB&&$i(MB.dataset.qs);close(true);if(!s||s.value===v)return;s.value=v;s.dispatchEvent(new Event("change",{bubbles:true}));
   setTimeout(()=>{try{$i("ssum").dataset.qh="";sum()}catch(_){}},60)}
 /* tocar una pieza abre su menú y no el panel entero */
-document.addEventListener("click",e=>{if(IGN)return;const t=e.target;if(!t.closest)return;const b=t.closest("#ssum .qs");
+document.addEventListener("click",e=>{if(IGN)return;const t=e.target;if(!t.closest)return;const b=t.closest(".qsbar .qs");
   if(b){e.stopPropagation();e.preventDefault();open(b);return}
   const it=t.closest(".qsm .qsi");if(it&&!it.disabled){e.stopPropagation();pick(it.dataset.v);return}
   if(t.closest(".qsf"))return;
   if(M&&!t.closest(".qsm"))close()},true);
-document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("#ssum .qs"))e.stopPropagation();else if(M&&!(e.target.closest&&e.target.closest(".qsm")))close()},true);
-document.addEventListener("keydown",e=>{const b=e.target.closest&&e.target.closest("#ssum .qs");if(b&&(e.key==="Enter"||e.key===" "||e.key==="ArrowDown")){e.preventDefault();e.stopPropagation();if(MB!==b)open(b);return}
+document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest(".qsbar .qs"))e.stopPropagation();else if(M&&!(e.target.closest&&e.target.closest(".qsm")))close()},true);
+document.addEventListener("keydown",e=>{const b=e.target.closest&&e.target.closest(".qsbar .qs");if(b&&(e.key==="Enter"||e.key===" "||e.key==="ArrowDown")){e.preventDefault();e.stopPropagation();if(MB!==b)open(b);return}
   if(!M)return;if(e.key==="Escape"){e.preventDefault();close(true);return}if(e.target.closest&&e.target.closest(".qsf"))return;
   if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();const it=[...M.querySelectorAll(".qsi:not([disabled])")];let i=it.indexOf(document.activeElement);i=e.key==="ArrowDown"?Math.min(it.length-1,i+1):Math.max(0,i-1);if(it[i])it[i].focus()}
   if(e.key==="Tab")close()},true);
 let RW=innerWidth;addEventListener("resize",()=>{close();if((RW<=480)!==(innerWidth<=480)){RW=innerWidth;try{sum()}catch(_){}}},{passive:true});
 addEventListener("scroll",e=>{if(M&&!(e.target&&e.target.closest&&e.target.closest(".qsm")))place()},{passive:true,capture:true});
 /* 2.11.6: «Editar estación» es solo un icono: su texto pasa a ser el título y la etiqueta accesible */
-function btnT(){const b=$i("stbtn");if(!b)return;const p=$i("stpanel"),sl=b.closest(".sline");if(p&&sl&&p.parentElement!==sl)sl.appendChild(p);
-  const f=()=>{const t=b.getAttribute("aria-expanded")==="true"?T("Ocultar ajustes","Hide settings"):T("Más ajustes","More settings");if(b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
+function btnT(){const b=$i("stbtn");if(!b)return;if(!b.querySelector(".stl")){const l=document.createElement("b");l.className="stl";l.setAttribute("aria-hidden","true");b.appendChild(l);try{$i("ssum").dataset.qh="";sum()}catch(_){}}const p=$i("stpanel"),sl=b.closest(".sline");if(p&&sl&&p.parentElement!==sl)sl.appendChild(p);
+  const f=()=>{const t=b.getAttribute("aria-expanded")==="true"?T("Ocultar tu estación","Hide your station"):T("Tu estación: locator, antena, altitud y entorno","Your station: locator, antenna, altitude and surroundings");if(b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
   new MutationObserver(f).observe(b,{attributes:true,attributeFilter:["aria-expanded"],childList:true,subtree:true,characterData:true})}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{hook();btnT()});else{hook();btnT()}
 })();

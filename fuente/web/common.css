@@ -1399,12 +1399,12 @@ html.vl .sc:not(.scl):not(#zz1):not(#zz2){flex-direction:row!important;align-ite
 .st3h4{grid-template-columns:1fr 1.3fr 1.3fr 1.3fr!important}.st3h4>b{font-size:.82rem}
 .st-o{color:#ea7a2a}:root[data-theme="light"] .st-o{color:#b45309}
 /* 2.10.35: la estación, a un toque (modo, banda, potencia, antena) */
-#ssum .qs{display:inline-flex;align-items:center;gap:4px;max-width:100%;font:inherit;color:inherit;line-height:1.25;text-align:left;padding:1px 7px;margin:1px 0;border:1px solid color-mix(in srgb,var(--fg) 16%,transparent);border-radius:7px;background:color-mix(in srgb,var(--fg) 5%,transparent);cursor:pointer;-webkit-tap-highlight-color:transparent;vertical-align:baseline}
-#ssum .qs .qsc{flex:none;width:.7em;height:.7em;background:currentColor;opacity:.6;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
-#ssum .qs.on,#ssum .qs:focus-visible{border-color:var(--accent);outline:none;background:color-mix(in srgb,var(--accent) 14%,transparent)}
-#ssum .qs.on .qsc{transform:rotate(180deg)}
-@media (hover:hover){#ssum .qs:hover{border-color:color-mix(in srgb,var(--accent) 60%,transparent)}}
-#ssum .qs[data-qs="antsel"]{white-space:normal}
+.qsbar .qs{display:inline-flex;align-items:center;gap:4px;max-width:100%;font:inherit;color:inherit;line-height:1.25;text-align:left;padding:1px 7px;margin:1px 0;border:1px solid color-mix(in srgb,var(--fg) 16%,transparent);border-radius:7px;background:color-mix(in srgb,var(--fg) 5%,transparent);cursor:pointer;-webkit-tap-highlight-color:transparent;vertical-align:baseline}
+.qsbar .qs .qsc{flex:none;width:.7em;height:.7em;background:currentColor;opacity:.6;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.qsbar .qs.on,.qsbar .qs:focus-visible{border-color:var(--accent);outline:none;background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.qsbar .qs.on .qsc{transform:rotate(180deg)}
+@media (hover:hover){.qsbar .qs:hover{border-color:color-mix(in srgb,var(--accent) 60%,transparent)}}
+.qsbar .qs[data-qs="antsel"]{white-space:normal}
 .qsm{position:fixed;z-index:3000;max-width:min(92vw,420px);overflow:auto;overscroll-behavior:contain;padding:5px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
 .qsm .qsg{padding:8px 10px 3px;font:600 .68rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .qsm .qsi{display:block;width:100%;text-align:left;font:inherit;font-size:.95rem;color:var(--fg);background:none;border:0;border-radius:7px;padding:8px 10px 8px 28px;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
@@ -1537,7 +1537,7 @@ html,body,.sc,.scl,.sc *{-webkit-tap-highlight-color:transparent}
 .sc-via{display:block;color:var(--muted);font-size:.85em;white-space:normal;overflow-wrap:anywhere;margin-top:2px}
 /* 2.11.4: la línea de la estación sin repeticiones: el locator y cuatro botones; en compacta también se ve entera */
 #ssum{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 6px;min-width:0}
-#ssum .qsl{margin-right:2px}
+.qsbar .qsl{margin-right:2px}
 html.vc #ssum{white-space:normal;overflow:visible;text-overflow:clip}
 html.vc #stpanel .upd,html.vc #stpanel .locw,html.vc #stpanel .stnote{display:none}
 #ssum[role=button]::after{content:none;display:none}
@@ -1551,9 +1551,9 @@ html.vc #stpanel .upd,html.vc #stpanel .locw,html.vc #stpanel .stnote{display:no
 .sline>.modes{flex:0 0 auto!important;order:0!important;grid-column:auto!important}
 .sline>.modes button{min-height:32px!important;padding:5px 14px!important;font-size:.76rem!important}
 @media (max-width:700px){.sline>.modes{flex:0 0 100%!important;width:100%!important}.sline>.modes button{padding:5px 6px!important}}
-#ssum .qs,#ssum .qsl,.sline>.logbtn,.sline>.stbtn{min-height:32px;box-sizing:border-box}
-#ssum .qs{padding:2px 9px;margin:0;font-size:.9rem}
-#ssum .qsl{display:inline-flex;align-items:center;margin:0 2px 0 0;font-size:.9rem}
+.qsbar .qs,.qsbar .qsl,.sline>.logbtn,.sline>.stbtn{min-height:32px;box-sizing:border-box}
+.qsbar .qs{padding:2px 9px;margin:0;font-size:.9rem}
+.qsbar .qsl{display:inline-flex;align-items:center;margin:0 2px 0 0;font-size:.9rem}
 .sline>.logbtn,.sline>.stbtn{order:5!important;width:auto!important;flex:0 0 auto!important;margin:0!important;padding:2px 11px!important;font-size:.78rem!important;min-height:32px!important;border-radius:7px!important;justify-content:center}
 .sline>#stbtn{width:32px!important;padding:0!important;display:inline-flex!important;align-items:center}
 .sline>#stbtn>span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -1601,3 +1601,21 @@ html.vc .sline{padding:6px 8px!important}
 .ez .ezsp>.ezrest[hidden]{display:none!important}
 .ez .ezs>*{padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
 .ez .ezsp>:not(.ezs):not(.ezrest){grid-column:1/-1;justify-self:start}
+/* 2.11.9: ritmo de concurso: las cifras de tres dígitos y las bandas caben siempre en su casilla (tamaño según el ancho real) */
+.crate .crh{overflow:hidden}
+.crate .crh b{font-size:min(1rem,calc(4.2cqi - 2px))!important;letter-spacing:-.02em}
+.crate .crh .bd{font-size:min(.68rem,calc(3.1cqi - 1.5px))!important}
+.crate .crh .h{font-size:min(.7rem,calc(3.3cqi - 1.5px))!important}
+@media (min-width:1101px){.crate .crh b{font-size:min(.95rem,calc(2.1cqi - 1px))!important}.crate .crh .bd{font-size:min(.62rem,calc(1.55cqi - 1px))!important}.crate .crh .h{font-size:min(.66rem,calc(1.65cqi - 1px))!important}}
+
+/* 2.11.9: caja de la estación en dos filas: modo DX/concursos y, debajo, modo, banda, potencia y el botón del locator */
+.sline>#stbtn{width:auto!important;padding:0 10px!important;gap:6px}
+.sline>#stbtn .stl{font:600 .85rem var(--f-m,monospace);letter-spacing:.02em;order:-1}
+.sline>#stbtn::before{order:1}
+.qsbar .qs{padding:2px 8px}
+.ssum2{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
+.ssum2 .qsb2{display:contents}
+.ssum2>.logbtn{min-height:32px;padding:2px 11px;font-size:.78rem;border-radius:7px}
+html.vc .ssum2>.logbtn{display:none}
+.sline>#stbtn{min-width:0!important;justify-content:center!important}.sline>#stbtn>svg{display:none!important}
+.sline>#stbtn{align-items:center!important;line-height:1!important}.sline>#stbtn>span{margin:-1px!important;padding:0!important}.sline>#stbtn .stl{line-height:1;display:block}
