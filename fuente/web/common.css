@@ -1770,3 +1770,80 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
  html.vl .sc.scl>.l-tags>*{max-width:none!important;overflow:visible!important;text-overflow:clip!important}
  html.vl .sc.scl>.l-tags:not(:has(.xtag)){display:none!important}
 }
+/* 2.11.34: listado ancho y mediano: el indicativo cabe entero (también con /P o /MM) y las etiquetas no se cortan,
+   pasan a una segunda línea si no caben. Los cortes de columnas, según el ancho real del listado, sin que nada se salga */
+@container (min-width:561px){
+ html.vl .sc.scl>.l-call,html.vl .sc.scl>.l-call *{white-space:nowrap!important}
+ html.vl .sc.scl>.l-tags{flex-wrap:wrap!important;overflow:visible!important;row-gap:3px}
+ html.vl .sc.scl>.l-tags>.xtag,html.vl .sc.scl>.l-tags>.nwb,html.vl .sc.scl>.l-tags>.nsb{max-width:none!important;overflow:visible!important;text-overflow:clip!important;white-space:nowrap!important}
+}
+@container (min-width:1241px){
+ html.vl .sclh,html.vl .sc.scl{--lcols:6ch 8ch 5.6em 4.6ch minmax(9ch,12.5ch) minmax(7em,1fr) minmax(8em,1.5fr) minmax(6.5em,.8fr) 8ch 7ch 5ch 9.5em var(--lx,1.1em)}
+}
+@container (min-width:901px) and (max-width:1240px){
+ html.vl .sclh,html.vl .sc.scl{--lcols:6ch 8ch 5.6em 4.6ch minmax(9ch,12.5ch) minmax(6em,1fr) minmax(7em,1.4fr) 7ch 5ch 9.5em var(--lx,1.1em)}
+ .scl>.l-by,.sclh>.l-by,.scl>.l-az,.sclh>.l-az{display:none!important}
+}
+@container (min-width:701px) and (max-width:900px){
+ html.vl .sclh,html.vl .sc.scl{--lcols:5.5ch 8ch 5.4em 4.6ch minmax(9ch,12ch) minmax(5em,1fr) minmax(5em,1fr) 6.5ch 5ch var(--lx,1.1em);column-gap:8px}
+ .scl>.l-by,.sclh>.l-by,.scl>.l-az,.sclh>.l-az,.scl>.l-oh,.sclh>.l-oh{display:none!important}
+ .scl.scx .l-ohx{display:block;margin-top:6px}
+}
+/* 2.11.34: multiplicadores del clúster: nada cortado. El indicativo va entero y el país, si no cabe al lado, pasa debajo */
+.clvmi>.cc{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.3}
+.clvmi>.cc .cs{white-space:nowrap}
+.clvmi>.cc .ccy{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-weight:400;color:var(--muted)}
+.clvmi>.cc .ccy .fl{flex:none;border-radius:2px}.clvmi>.cc .ccy .cty{white-space:normal;min-width:0}
+.clvmi>*{padding:3px 0}
+
+/* 2.11.34: listados de 561 a 700 px (columnas estrechas en tableta y escritorio): las mismas dos líneas que en el móvil, sin que nada se salga */
+@container (max-width:700px){
+ html.vl .sclh{display:none!important}
+ html.vl .sc.scl{grid-template-columns:10ch 4.4em 4.6ch minmax(0,1fr) 7ch var(--lx,1.1em);grid-template-areas:"call cty cty cty p x" "f m b age age age" "tg tg tg tg tg tg";column-gap:8px;row-gap:4px;padding:8px 10px!important}
+ .scl>.l-call{font-size:1.06em}.scl>.l-age{text-align:right;padding-left:4px}
+ .scl>.l-f{grid-area:f}.scl>.l-m{grid-area:m}.scl>.l-b{grid-area:b}.scl>.l-call{grid-area:call}.scl>.l-p{grid-area:p}.scl>.l-x{grid-area:x}
+ .scl>.l-age{grid-area:age}.scl>.l-cty{grid-area:cty;font-size:.92em}.scl>.l-km{grid-area:km}
+ .scl>.l-km{display:none}
+ .scl>.l-p{text-align:right}
+ .scl>.l-tags{display:flex;grid-area:tg}.scl>.l-tags:not(:has(.xtag)){display:none}.scl>.l-tags .l-ct{display:none}
+ .scl .sc-d,.scl .l-ohx{grid-column:1/-1}}
+@container (max-width:700px){.scl>.l-hx{grid-area:x}}
+@container (max-width:700px){.scl .sc-d.ld{grid-template-columns:1fr 1fr;gap:10px 14px;padding:10px 12px}.scl .ld .ldi:has(.smtr,.sgl,[class*="sig"]){grid-column:1/-1}}
+@container (max-width:700px){
+ html.vl .sc.scl{grid-template-columns:7.6ch 3.9em 4.3ch minmax(0,1fr) auto var(--lx,1.1em)!important;
+  grid-template-areas:"call call cty cty p x" "f m b tg age age"!important;column-gap:8px!important;row-gap:2px!important;padding:7px 10px!important}
+ .scl>.l-f{text-align:left!important}.scl>.l-m{text-align:left!important;justify-self:start}.scl>.l-b{text-align:left}
+ .scl>.l-cty{min-width:0}
+ .scl>.l-tags{display:flex!important;grid-area:tg;min-width:0;overflow:hidden;gap:4px}
+ .scl>.l-tags:not(:has(.xtag)){visibility:hidden}
+ .scl>.l-tags>*{flex:0 1 auto!important;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .scl>.l-tags .l-ct{display:none!important}
+ .scl>.l-age{text-align:right;padding-left:0!important;white-space:nowrap}
+ .scl>.l-p{white-space:nowrap}
+}
+@container (max-width:700px){
+ .scl>.l-tags{justify-content:flex-start}
+ .scl>.l-tags>*{display:block!important;text-align:left!important;font-size:.7rem!important;padding:1px 5px!important;letter-spacing:0!important}
+}
+@container (max-width:700px){
+ html.vl .sc.scl{grid-template-columns:7.4ch 3.3em 4.2ch minmax(0,1fr) auto max(var(--lx,1.1em),6.6ch)!important;grid-template-areas:"call call cty cty p x" "f m b tg tg age"!important}
+ .scl>.l-x{justify-self:end}
+}
+@container (max-width:700px){
+ html.vl .hrow{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n t" "b c";row-gap:3px;column-gap:10px}
+ html.vl .hrow .hn{grid-area:n}html.vl .hrow .ht{grid-area:t;text-align:right}
+ html.vl .hrow .hb{grid-area:b}html.vl .hrow .hc{grid-area:c;text-align:right;max-width:42vw}
+ html.vl .hrow .hp{display:none}
+}
+/* y por debajo de 340 px, las tres líneas de 2.11.30 siguen mandando */
+@container (max-width:340px){
+ html.vl .sc.scl.scl{grid-template-columns:7.4ch 3.3em 4.2ch minmax(0,1fr) auto var(--lx,1.1em)!important;
+  grid-template-areas:"call call cty cty cty x" "f m b p age age" "tg tg tg tg tg tg"!important;row-gap:3px!important}
+ html.vl .sc.scl>.l-cty{display:flex!important;align-items:center;gap:6px;min-width:0;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.2;align-self:center;hyphens:manual}
+ html.vl .sc.scl>.l-cty .fl{flex:0 0 auto;margin-right:0!important}
+ html.vl .sc.scl>.l-cty *{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+ html.vl .sc.scl>.l-p{justify-self:end;text-align:right;padding-right:8px}
+ html.vl .sc.scl>.l-tags{flex-wrap:wrap;overflow:visible!important}
+ html.vl .sc.scl>.l-tags>*{max-width:none!important;overflow:visible!important;text-overflow:clip!important}
+ html.vl .sc.scl>.l-tags:not(:has(.xtag)){display:none!important}
+}

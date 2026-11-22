@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.34 — 2026-11-22
+
+- ES: Multiplicadores del clúster en concurso: nada cortado. El indicativo va entero y debajo, la bandera con el país.
+- ES: Vista de lista en tableta y escritorio («Qué hacer ahora», clúster…): indicativos enteros (también con /P), etiquetas completas (pasan a una segunda línea si no caben) y ninguna fila se sale por la derecha.
+- EN: Cluster multipliers in contests: nothing cut off. The full callsign, with the flag and country below.
+- EN: List view on tablet and desktop ("What to do now", cluster…): full callsigns (including /P), complete tags (they wrap to a second line if needed) and no row runs off the right edge.
+
 ## 2.11.33 — 2026-11-22
 
 - ES: Anunciar spots: el intermediario (versión 5) lo envía a la vez por DX Summit y por siete nodos del clúster sin contraseña repartidos por la red (España, Reino Unido, Países Bajos, Alemania y Estados Unidos). Mientras envía, avisa de que puede tardar hasta medio minuto.
