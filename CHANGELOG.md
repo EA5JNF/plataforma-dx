@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.36 — 2026-11-22
+
+- ES: Multiplicadores del clúster: el país va siempre debajo del indicativo, igual en todas las filas.
+- ES: Anunciar spots: el texto del formulario habla de los varios nodos, y si alguno no acepta el spot se ve el motivo que dio.
+- EN: Cluster multipliers: the country always sits under the callsign, the same on every row.
+- EN: Posting spots: the form text mentions the several nodes, and if one does not take the spot, the reason it gave is shown.
+
 ## 2.11.35 — 2026-11-22
 
 - ES: Multiplicadores del clúster: la bandera, a la altura del nombre del país aunque ocupe dos líneas; los puntos, destacados; las tarjetas, algo más anchas para que nada se pise.

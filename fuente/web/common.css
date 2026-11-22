@@ -1854,3 +1854,6 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
 .clvmb{grid-template-columns:auto minmax(min-content,1fr) auto auto auto!important;column-gap:6px!important}
 /* 2.11.35: tarjetas de multiplicadores con un mínimo de 290 px, para que quepan indicativo, zona, probabilidad y puntos sin pisarse */
 .clvm{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))!important;--gmin:290px}
+.spno{display:block;margin-top:6px;color:var(--muted);font-size:.82em;line-height:1.4}
+/* 2.11.36: multiplicadores: el país siempre debajo del indicativo, en todas las filas igual */
+.clvmi>.cc .ccy{display:flex!important;margin-top:1px}
