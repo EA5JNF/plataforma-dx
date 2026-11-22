@@ -120,8 +120,8 @@ function card(o){
   if(g){const lg=o.lpb||g.km>=6000;rumbo=lg?`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`:`${g.az}° ${cab(g.az)}`;
     dist=lg?`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`:`${fk(g.km)} km`}
   let pr="";if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
-    if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`El modelo da ${o.p0} %; lo sube que estaciones con un camino parecido al tuyo lo están oyendo ahora.`,`The model gives ${o.p0} %; stations with a path like yours hearing it now raise it.`)}</span>`;
-    else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`El modelo da ${o.p0} %; lo baja lo que se oye ahora (o lo que has anotado).`,`The model gives ${o.p0} %; what is heard now (or what you noted) lowers it.`)}</span>`}
+    if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
+    else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
   const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:"";
   const acc=o.call?`${ohd?"":` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`}`:"";
   return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Probabilidad de QSO","QSO chance"),pr)}${sec(T("Señal prevista","Expected signal"),o.sig||"")}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
@@ -402,7 +402,7 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   const same=g.rx.s===g.tx.s&&Math.abs(g.rx.snr-g.tx.snr)<3;
   let h=same?`<span class="sgl"><span class="sgk">${T("En los dos sentidos","Both ways")}</span>${rep(g.rx)}</span>`
     :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear them")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","They hear you")}</span>${rep(g.tx)}</span>`;
-  h+=`<span class="note sgn">${T("Mediana del mes según el modelo","Monthly median from the model")}</span>`;
+  h=`<span class="sgw" title="${T("Mediana del mes según el modelo","Monthly median from the model")}">${h}</span>`;
   const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
   if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
   if(u&&u.h&&u.s!=null){const d=u.s-g.tx.s;cmp.push(T(`te oye a <b>${sTxt(u.s)}</b> y se preveía ${sTxt(g.tx.s)}`,`they hear you at <b>${sTxt(u.s)}</b>; ${sTxt(g.tx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}

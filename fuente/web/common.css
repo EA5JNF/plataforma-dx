@@ -1711,3 +1711,14 @@ html.vl .hrow .hp{text-align:right}
 @media (min-width:1100px){#spots,#near{align-items:start!important}}
 .sc-d .sgn{display:block;margin-top:2px}
 .swim figcaption b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 2.11.23: publicar un spot */
+.spub>summary{cursor:pointer;font-weight:600}.spub .spubh{font-weight:400;color:var(--muted);font-size:.85em}
+.spfrm{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px;align-items:end;margin-top:10px}
+.spfrm label{display:flex;flex-direction:column;gap:3px;font-size:.8rem;color:var(--muted);min-width:0}
+.spfrm input{font:inherit;font-size:1rem;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);min-width:0;text-transform:uppercase}
+.spfrm #spi{text-transform:none}.spfrm .btn{min-height:38px}
+.spconf{margin-top:10px;padding:10px 12px;border:1px solid var(--accent);border-radius:8px}.spconf p{margin:0 0 8px}.spbtn{display:flex;gap:8px;flex-wrap:wrap}
+.spmsg{margin:8px 0 0}.spmsg.ok{color:var(--ok,#2e9d5b)}.spmsg.warn{color:var(--warn)}
+/* 2.11.23: exportar/importar ajustes y primera visita */
+.ajf{text-align:center}.ajf .lnk{font-size:inherit}.ajmsg{margin:4px 0 0}.ajmsg.warn{color:var(--warn)}
+.welc{border-color:var(--accent)!important}.welc p{margin:0 0 6px}.welc ol{margin:0 0 10px;padding-left:1.3em}.welb{display:flex;gap:8px;flex-wrap:wrap}

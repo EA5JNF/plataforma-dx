@@ -5,6 +5,21 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.23 — 2026-11-22
+
+- ES: Publicar un spot desde la pestaña DX: va a la red mundial de clústeres a través de DX Summit, gratis y sin registro, solo con tu indicativo. Se revisa y se confirma antes de enviarlo, no deja repetir el mismo spot en 10 minutos y, si el navegador no permite enviarlo, abre DX Summit con los datos.
+- ES: Reglas verificadas con las bases oficiales de los concursos de la URE (S. M. el Rey CW y SSB, EA RTTY, EA PSK63), del CQMM DX (solo CW, del grupo brasileño CWJF) y del SP DX RTTY.
+- ES: Antes de cada publicación se comprueba sola la coherencia entre la señal prevista y la probabilidad, y todas las pestañas en temas claro y oscuro y en las tres vistas, en móvil, tableta y pantalla grande. Si algo falla, no se publica.
+- ES: Tarjetas con menos texto: la explicación de la probabilidad es más corta y la nota del modelo pasa al pasar el ratón.
+- ES: Tus ajustes en otro dispositivo: «Exportar» guarda un fichero con tus ajustes y «Importar» lo carga en el otro aparato, sin cuentas ni servidores.
+- ES: Primera visita: una tarjeta con los tres pasos para configurar tu estación.
+- EN: Post a spot from the DX tab: it goes to the worldwide cluster network through DX Summit, free and without sign-up, just with your callsign. It is reviewed and confirmed before sending, the same spot cannot be repeated within 10 minutes and, if the browser does not allow sending it, DX Summit opens with the details.
+- EN: Rules checked against the official rules of the URE contests (H. M. the King CW and SSB, EA RTTY, EA PSK63), the CQMM DX (CW only, from the Brazilian CWJF group) and the SP DX RTTY.
+- EN: Before each release, the consistency between expected signal and chance is checked automatically, and every tab in light and dark themes and the three views, on phone, tablet and large screen. If anything fails, it is not released.
+- EN: Cards with less text: the chance explanation is shorter and the model note shows on hover.
+- EN: Your settings on another device: "Export" saves a file with your settings and "Import" loads it on the other device, with no accounts or servers.
+- EN: First visit: a card with the three steps to set up your station.
+
 ## 2.11.22 — 2026-11-22
 
 - ES: Tarjetas de estación sin contradicciones: la señal prevista se juzga con lo que necesita el modo del spot (CW, FT8, fonía) y con el mismo modelo que la probabilidad; cuando los clústeres suben o bajan mucho la probabilidad respecto al modelo, la tarjeta dice por qué.
