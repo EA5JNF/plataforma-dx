@@ -1562,3 +1562,20 @@ html.vc #stpanel .upd,html.vc #stpanel .locw,html.vc #stpanel .stnote{display:no
 .sline>#stbtn[aria-expanded="true"] .pen{display:none}
 .sline>#stbtn[aria-expanded="true"]::before{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 6l12 12M18 6L6 18' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
 html.vc .sline{padding:6px 8px!important}
+/* 2.11.7: todo en la misma caja. Locator, modo, banda, potencia, antena, altitud y entorno son botones; el botón de flecha
+   despliega en la misma caja lo poco que queda (concurso, coordenadas y zona VOACAP, cálculo y ajustes finos) */
+.sline>#stpanel{flex:0 0 100%;order:6;margin:2px 0 0!important;padding:8px 0 0!important;border-top:1px solid var(--line)}
+#stpanel>.hsel,#stpanel>#stmore,#stpanel .stkeep{display:none!important}
+#stpanel .modenote{font-size:.82rem;margin:0 0 6px}
+#stpanel .upd,#stpanel .locw{font-size:.76rem}
+#stpanel .cfg{margin-top:6px}
+.sline>#stbtn .pen{display:none!important}
+.sline>#stbtn::before{content:"";width:14px;height:14px;background:currentColor;transition:transform .15s;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.sline>#stbtn[aria-expanded="true"]::before{transform:rotate(180deg);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;}
+.qsf{padding:10px 12px;min-width:220px}
+.qsf .qsfl{display:block;font:600 .68rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.qsf .qsfr{display:flex;align-items:center;gap:6px}
+.qsf .qsfi{flex:1;min-width:0;width:9ch;font:600 16px var(--f-m,monospace);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:7px 9px;text-transform:uppercase}
+.qsf .qsfu{color:var(--muted)}
+.qsf .qsfo{font:inherit;font-size:.85rem;color:var(--accent);background:none;border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);border-radius:7px;padding:7px 10px;cursor:pointer}
+.qsf .qsfn{margin:6px 0 0;font-size:.78rem;color:var(--bad);max-width:260px}.qsf .qsfn:empty{display:none}

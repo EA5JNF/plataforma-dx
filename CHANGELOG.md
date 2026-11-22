@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.7 — 2026-11-22
+
+- ES: Toda la estación en la misma caja. El locator, la altitud y el entorno también son botones, como modo, banda, potencia y antena: el locator y la altitud se escriben en una ventanita con «Aplicar» (y avisa si el locator no es válido), y el entorno se elige en su menú. El botón de flecha despliega, dentro de la misma caja, solo lo que sobra: el concurso, las coordenadas con la zona VOACAP y el cálculo con sus ajustes finos. Desaparecen las filas grandes de locator, altitud y entorno.
+- EN: The whole station in one box. Locator, altitude and surroundings are buttons too, like mode, band, power and antenna: locator and altitude are typed in a small box with "Apply" (with a warning if the locator is not valid), and surroundings are picked from their menu. The arrow button unfolds, inside the same box, only the extras: the contest, the coordinates with the VOACAP zone and the calculation with its fine settings. The large locator, altitude and surroundings rows are gone.
+
 ## 2.11.6 — 2026-11-22
 
 - ES: La caja de la estación ocupa menos: el selector de modo es más bajo; los botones de modo, banda, potencia y antena fluyen junto a «Subir log» y a «Editar estación», que pasa a ser un botón de lápiz (un aspa cuando el panel está abierto). En el móvil queda en tres filas en vez de cinco: «Todas» en lugar de «Todas las bandas» y las combinaciones de antenas resumidas («Directiva 3 el. + 2 dipolos»). En el ordenador, todo en una fila.
