@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.42 — 2026-11-22
+
+- ES: «Qué hacer ahora» coherente con el resumen: primero las estaciones que te faltan; después el DX de verdad, lejos y en la mejor banda del momento, antes que las estaciones cercanas (menos de 2.000 km) aunque salgan al 100 %.
+- EN: "What to do now" consistent with the summary: first the stations you still need; then real DX, far away and on the best band right now, ahead of nearby stations (under 2,000 km) even at 100 %.
+
 ## 2.11.41 — 2026-11-22
 
 - ES: Anunciar spots: solo se muestran los nodos a los que de verdad se envía (SpottedHam, WA9PIE y EA7JXH), con su estado. Comprobado con un spot real: los tres lo aceptan.
