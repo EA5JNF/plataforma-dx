@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.3 — 2026-11-22
+
+- ES: Modo, banda, potencia y antena de la línea de la estación: cada uno es ahora un botón que abre un menú propio, con la opción actual marcada, igual en iPhone, iPad, Android y ordenador (también con teclado). Antes había un selector invisible encima del texto que en Safari a veces no se abría, y la raya discontinua de debajo se veía rota.
+- ES: NASA DONKI vuelve a funcionar: se lee por la pasarela oficial de la NASA (api.nasa.gov, con su clave pública DEMO_KEY, sin registro) y, si no responde, del servicio de CCMC por el intermediario. El servicio de CCMC no deja que una página lo lea directamente.
+- EN: Mode, band, power and antenna in the station line are now buttons that open their own menu, with the current choice marked, the same on iPhone, iPad, Android and desktop (also by keyboard). Before, an invisible picker sat over the text that Safari sometimes failed to open, and the dashed underline looked broken.
+- EN: NASA DONKI works again: it is read through NASA's official gateway (api.nasa.gov, with its public DEMO_KEY, no sign-up) and, if that fails, from the CCMC service through the relay. The CCMC service does not let a web page read it directly.
+
 ## 2.11.2 — 2026-11-22
 
 - ES: En el clúster consta quién publicó cada spot: «Publicado por» con el indicativo (o los indicativos) que lo anunciaron y la red por la que llegó (Spothole, HamQTH o Reverse Beacon). En la vista lista, la columna se llama «Publica».

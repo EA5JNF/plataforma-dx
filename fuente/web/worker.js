@@ -6,7 +6,7 @@
 // PSK Reporter, POTA, SOTA y WWFF). Este cambio vale para la próxima vez que se despliegue el intermediario.
 const PERMITIDAS = ["kp.gfz-potsdam.de", "kp.gfz.de", "www.sidc.be",
   // de reserva: la plataforma las lee directamente y solo pasa por aquí si el navegador no puede
-  "services.swpc.noaa.gov", "spothole.app", "www.hamqth.com", "db1.wspr.live", "kauai.ccmc.gsfc.nasa.gov", "celestrak.org"];
+  "services.swpc.noaa.gov", "spothole.app", "www.hamqth.com", "db1.wspr.live", "api.nasa.gov", "kauai.ccmc.gsfc.nasa.gov", "celestrak.org"];
 // Páginas desde las que se puede usar (null = la plataforma abierta como archivo en el ordenador)
 const ORIGENES = ["https://ea5jnf.github.io", "null"];
 const MAX_BYTES = 8 * 1024 * 1024, MAX_URL = 2048, TIEMPO_MS = 12000, MAX_SALTOS = 3;

@@ -62,7 +62,7 @@ const SAFE=(k,v)=>k==="__proto__"||k==="constructor"||k==="prototype"?undefined:
 const PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=",VIA=new Set(["kp.gfz-potsdam.de","www.sidc.be","kp.gfz.de"]);
 /* fuentes que se leen directamente; si el navegador no las deja leer (o no responden), se reintenta a través del
    intermediario propio del club (Cloudflare). Las que funcionan así se recuerdan durante la sesión. */
-const RESCUE=new Set(["services.swpc.noaa.gov","spothole.app","www.hamqth.com","db1.wspr.live","kauai.ccmc.gsfc.nasa.gov"]),VIA2=new Set();
+const RESCUE=new Set(["services.swpc.noaa.gov","spothole.app","www.hamqth.com","db1.wspr.live","api.nasa.gov","kauai.ccmc.gsfc.nasa.gov"]),VIA2=new Set();
 async function req1(url,type,tm){const ac=new AbortController();const t=setTimeout(()=>ac.abort(),tm);
   try{const r=await fetch(url,{signal:ac.signal,cache:"no-store",mode:"cors",credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);
     /* límite de tamaño: una fuente que devuelva algo enorme (por error o a propósito) se descarta sin colgar la página */
@@ -154,7 +154,10 @@ SRC["NOAA 3 días"]=async()=>{const t=await T("https://services.swpc.noaa.gov/te
 SRC["NOAA 27 días"]=async()=>{const t=await T("https://services.swpc.noaa.gov/text/27-day-outlook.txt");const days=[...t.matchAll(/^(\d{4}) (\w{3}) (\d{2})\s+(\d+)\s+(\d+)\s+(\d+)/gm)].map(m=>[`${m[1]}-${String(MESN[m[2].toLowerCase()]).padStart(2,"0")}-${m[3]}`,+m[4],+m[5],+m[6]]);
   const m=t.match(/:Issued:\s*(\d{4}) (\w{3}) (\d{1,2})/);return days.length?{issued:m?`NOAA SWPC, ${+m[3]} ${MES[MESN[m[2].toLowerCase()]-1]} ${m[1]}`:"NOAA SWPC",days}:null};
 SRC["NOAA aurora"]=async()=>{const j=await J("https://services.swpc.noaa.gov/json/ovation_aurora_latest.json");let b=[0,null];for(const [lon,lat,a] of j.coordinates||[]){const lo=lon>180?lon-360:lon;if(lat>=45&&lat<=65&&lo>=-10&&lo<=30&&a>b[0])b=[a,lat]}return b};
-SRC["NASA DONKI"]=async()=>{const d=new Date(),f=x=>x.toISOString().slice(0,10);const j=await J(`https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/WSAEnlilSimulations?startDate=${f(new Date(Date.now()-7*864e5))}&endDate=${f(d)}`)||[];
+SRC["NASA DONKI"]=async()=>{const d=new Date(),f=x=>x.toISOString().slice(0,10);/* 2.11.3: primero la pasarela oficial de la NASA (api.nasa.gov, con su clave pública DEMO_KEY, sin registro), que deja leer
+     a cualquier página; si no responde, el servicio de CCMC, que el navegador no deja leer directamente y va por el intermediario */
+  const q=`startDate=${f(new Date(Date.now()-7*864e5))}&endDate=${f(d)}`;let j;
+  try{j=await J(`https://api.nasa.gov/DONKI/WSAEnlilSimulations?${q}&api_key=DEMO_KEY`)}catch(e){j=await J(`https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/WSAEnlilSimulations?${q}`)}j=Array.isArray(j)?j:[];
   const out=[],seen=new Set();for(const s of j){const earth=s.isEarthGB||(s.impactList||[]).some(i=>String(i.location).toLowerCase()==="earth");if(!earth)continue;
     let arr=s.estimatedShockArrivalTime;if(!arr)(s.impactList||[]).forEach(i=>{if(String(i.location).toLowerCase()==="earth")arr=i.arrivalTime});
     const ci=(s.cmeInputs||[{}])[0],st=ci.cmeStartTime;if(seen.has(st))continue;seen.add(st);const at=ptime(arr);if(at&&at<Date.now()-864e5)continue;
@@ -317,7 +320,7 @@ const SOURCES=[["NOAA SWPC","https://www.swpc.noaa.gov/"],["NASA SDO","https://s
 let BUSY=false;const LAST={};
 
 let LASTRUN=0;
-const SLOW={"GFZ Hp30":10,"NOAA D-RAP":5,"GFZ Potsdam":10,"SILSO EISN":30,"NASA DONKI":20,"NOAA avisos":5,"NOAA regiones":30,"NOAA protones":10,"WSPR.live":5,"NOAA 27 días":30,"NOAA ciclo previsto":60,"NOAA ciclo observado":60,
+const SLOW={"GFZ Hp30":10,"NOAA D-RAP":5,"GFZ Potsdam":10,"SILSO EISN":30,"NASA DONKI":30,"NOAA avisos":5,"NOAA regiones":30,"NOAA protones":10,"WSPR.live":5,"NOAA 27 días":30,"NOAA ciclo previsto":60,"NOAA ciclo observado":60,
  /* 2.4.6: más fuentes lentas que no hace falta pedir cada pocos minutos */
  "NOAA 3 días":30,"NOAA flujo":30,"NOAA manchas":60,"NOAA WWV":15,"NOAA aurora":10},MEMO={};
 for(const n in SLOW){if(!SRC[n])continue;const f=SRC[n];SRC[n]=async()=>{const m=MEMO[n];if(m&&Date.now()-m.t<SLOW[n]*6e4)return m.v;const v=await f();if(v!=null)MEMO[n]={t:Date.now(),v};return v}}

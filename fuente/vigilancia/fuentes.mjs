@@ -19,7 +19,7 @@ const S=[
  ["NOAA ciclo observado","https://services.swpc.noaa.gov/json/solar-cycle/observed-solar-cycle-indices.json"],
  ["GFZ Potsdam",`https://kp.gfz.de/app/json/?start=${day(ago(24))}T00:00:00Z&end=${day(d)}T23:59:59Z&index=Kp`],
  ["SILSO EISN","https://www.sidc.be/SILSO/DATA/EISN/EISN_current.txt"],
- ["NASA DONKI",`https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/WSAEnlilSimulations?startDate=${day(ago(168))}&endDate=${day(d)}`],
+ ["NASA DONKI",`https://api.nasa.gov/DONKI/WSAEnlilSimulations?startDate=${day(ago(168))}&endDate=${day(d)}&api_key=DEMO_KEY`],
  ["WSPR.live","https://db1.wspr.live/?query="+encodeURIComponent(wspr)],
  ["Spothole avisos","https://spothole.app/api/v1/alerts"],
  ["Spothole","https://spothole.app/api/v1/spots?max_age=3600"],
