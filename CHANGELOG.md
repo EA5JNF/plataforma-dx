@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.24 — 2026-11-22
+
+- ES: RSGB IOTA: los spots del clúster que llevan una referencia IOTA en el comentario (como EU-005) cuentan 15 puntos; el resto, 2.
+- EN: RSGB IOTA: cluster spots carrying an IOTA reference in the comment (like EU-005) count 15 points; the rest, 2.
+
 ## 2.11.23 — 2026-11-22
 
 - ES: Publicar un spot desde la pestaña DX: va a la red mundial de clústeres a través de DX Summit, gratis y sin registro, solo con tu indicativo. Se revisa y se confirma antes de enviarlo, no deja repetir el mismo spot en 10 minutos y, si el navegador no permite enviarlo, abre DX Summit con los datos.
