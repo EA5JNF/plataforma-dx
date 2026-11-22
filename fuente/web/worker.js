@@ -1,9 +1,9 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8.1
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8.2
 import { connect } from "cloudflare:sockets";
 // Dos funciones, separadas:
 //  1) Recepción: lee las webs públicas de la lista PERMITIDAS y se las pasa a la plataforma (solo GET, ver abajo).
 //  2) Clúster interno de la plataforma (POST /spot, GET /recientes, POST /retirar) y, aparte, difusión a clústeres
-//     externos solo a los destinos con permiso confirmado (lista DESTINOS más abajo). Detalles junto a su código.
+//     externos solo a los destinos activados en la lista DESTINOS (más abajo). Detalles junto a su código.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -49,7 +49,7 @@ function valida(u) {
 //  · Almacén: Cloudflare D1 (enlazado con el nombre DB) si existe, porque reparte los cambios al momento; si no, el KV
 //    (enlazado como SPOTS), que puede tardar hasta un minuto en repartirlos. La tabla se crea sola la primera vez.
 //  · Cada spot: identificador único, autor, DX, frecuencia, banda, modo (si se sabe), hora UTC, comentario y el estado
-//    de cada destino externo (pendiente, enviado, error o deshabilitado). Solo spots originales escritos en la plataforma.
+//    de cada destino externo (pendiente, enviado, aceptado o error). Solo spots originales escritos en la plataforma.
 //  · Moderación: el autor puede retirar su spot con la clave que recibe al publicarlo (aquí solo se guarda su huella);
 //    el administrador, desde el panel de Cloudflare (D1 → acracb-cluster → Console):
 //      UPDATE spots SET retirado = 1 WHERE id = 'identificador';
@@ -63,17 +63,14 @@ const modoDe = t => { const m = String(t || "").toUpperCase().match(/\b(CW|SSB|U
 const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 const huella = async t => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(t))));
 
-// destinos externos (sistema B). Se activan uno a uno SOLO cuando su responsable confirme que acepta envíos
-// automáticos desde una web multiusuario. Mientras, «activo: false» y el spot queda como «deshabilitado» para ese destino.
-// G1FEF y N2KI quedan fuera: exigen registro previo para anunciar.
+// destinos externos (sistema B): solo nodos que, según su propia página, admiten spots sin registro ni contraseña.
+// Para añadir otro con permiso, copia una línea; para pararlo sin borrarlo, pon «activo: false».
 const DESTINOS = [
-  { nombre: "DX Summit", tipo: "api", activo: false },
-  // SpottedHam (KM6HBH-1): su página permite anunciar sin cuenta ni contraseña y conectar programas de log. Activo.
+  // SpottedHam (KM6HBH-1): su página permite anunciar sin cuenta ni contraseña y conectar programas de log.
   { nombre: "SpottedHam", tipo: "telnet", host: "spottedham.com", puerto: 7300, activo: true },
-  { nombre: "DXFun", tipo: "telnet", host: "dxfun.com", puerto: 8000, activo: false },
-  // WA9PIE-2: «todos son bienvenidos a conectarse» (ARRL, 2016); no filtra spots y está enlazado con nodos de todo el mundo. Activo.
+  // WA9PIE-2: «todos son bienvenidos a conectarse» (ARRL, 2016); no filtra spots y está enlazado con nodos de todo el mundo.
   { nombre: "WA9PIE", tipo: "telnet", host: "dxc.wa9pie.net", puerto: 8000, activo: true },
-  // EA7JXH (Málaga, CC Cluster): «free for all to use and requires no registration or password», con indicativo válido. Activo.
+  // EA7JXH (Málaga, CC Cluster): «free for all to use and requires no registration or password», con indicativo válido.
   { nombre: "EA7JXH", tipo: "telnet", host: "dx.ea7jxh.eu", puerto: 7300, activo: true },
 ];
 
@@ -129,7 +126,7 @@ async function spot(request, origen, env, ctx) {
     const dup = await duplicado(env, dx, f);
     if (dup) return json({ status: "duplicado", spot: dup }, 409, origen);
     const clave = hex(crypto.getRandomValues(new Uint8Array(16)));
-    const estado = Object.fromEntries(DESTINOS.map(x => [x.nombre, x.activo ? "pendiente" : "deshabilitado"]));
+    const estado = Object.fromEntries(DESTINOS.filter(x => x.activo).map(x => [x.nombre, "pendiente"]));
     const sp = { id: crypto.randomUUID(), ts: Date.now(), de, dx, f, banda, modo: modoDe(info), info, estado, clave: await huella(clave) };
     const donde = await guardaSpot(env, sp);
     const activos = DESTINOS.filter(x => x.activo);
@@ -144,7 +141,7 @@ async function spot(request, origen, env, ctx) {
 async function difunde(env, sp, activos) {
   const estado = Object.assign({}, sp.estado);
   await Promise.all(activos.map(async x => {
-    const r = x.tipo === "api" ? await porDXSummit(sp.de, sp.dx, sp.f, sp.info) : await porTelnet(x, sp.de, sp.dx, sp.f, sp.info);
+    const r = await porTelnet(x, sp.de, sp.dx, sp.f, sp.info);
     estado[x.nombre] = r.ok ? (r.visto ? "aceptado" : "enviado") : "error: " + r.msg;
     if (!r.ok) console.warn("difusión", x.nombre, sp.id, r.msg);
   }));
@@ -163,17 +160,6 @@ async function retirar(request, origen, env) {
   if (!h || h !== await huella(clave)) return json({ status: "no autorizado" }, 403, origen);
   await cambiaSpot(env, id, { retirado: 1 });
   return json({ status: "ok" }, 200, origen);
-}
-const DXS = "https://new.dxsummit.fi/api/v1/spots";
-async function porDXSummit(de, dx, f, info) {
-  const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
-  try {
-    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/8.0 (club de radioaficionados)" },
-      body: JSON.stringify({ de_call: de, dx_call: dx, frequency: f.toFixed(1), info }) });
-    let j = null; try { j = await r.json(); } catch (e) {}
-    const ok = r.ok && (!j || j.status == null || j.status === "ok");
-    return { ok, msg: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 60) : "respondió " + r.status) };
-  } catch (e) { return { ok: false, msg: "no respondió" }; } finally { clearTimeout(t); }
 }
 // sesión telnet corta por spot (entrar con el indicativo del autor, «dx», salir): el Worker no mantiene sesiones abiertas
 async function porTelnet(n, de, dx, f, info) {

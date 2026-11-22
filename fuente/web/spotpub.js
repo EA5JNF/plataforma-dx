@@ -1,7 +1,7 @@
 /* ---- ACRACB 2.11.39: anunciar un spot en el clúster interno de la plataforma ----
    Según el documento del proyecto: el spot se publica en el clúster interno (el intermediario del club en Cloudflare lo
    guarda una hora) y lo ven todos los socios en unos segundos, sin recargar. La difusión a clústeres externos es aparte,
-   nunca retrasa la publicación interna y solo se hace a los servicios que hayan confirmado su permiso (de momento, ninguno).
+   nunca retrasa la publicación interna y solo va a los nodos que admiten spots sin registro (SpottedHam, WA9PIE y EA7JXH).
    Nada se envía sin que lo confirmes; tu spot lo puedes retirar desde este mismo dispositivo. */
 (function(){
 "use strict";
@@ -30,7 +30,7 @@ const manual=s=>T(`Si quieres, puedes anunciarlo tú mismo en <a href="${WEB}" t
 const BRK=[[0,1800,2000],[1,3500,4000],[8,5250,5450],[2,7000,7300],[9,10100,10150],[3,14000,14350],[4,18068,18168],[5,21000,21450],[6,24890,24990],[7,28000,29700],[10,50000,54000],[11,144000,146000],[12,430000,440000]];
 function mineAll(){try{return (JSON.parse(get(KMINE)||"[]")||[]).filter(x=>Date.now()-x.ts<36e5)}catch(_){return []}}
 const saveMine=a=>put(KMINE,JSON.stringify(a.slice(-20)));
-const ESTX={deshabilitado:["en pausa (sin permiso confirmado)","paused (no confirmed permission)"],pendiente:["enviándose","sending"],enviado:["enviado","sent"],aceptado:["aceptado","accepted"]};
+const ESTX={pendiente:["enviándose","sending"],enviado:["enviado","sent"],aceptado:["aceptado","accepted"]};
 const estTxt=v=>{v=String(v||"");if(/^error/.test(v))return T("error","error")+v.slice(5);const t=ESTX[v];return t?T(t[0],t[1]):esc(v)};
 function mkSpot(m){try{const b=(BRK.find(r=>m.f>=r[1]&&m.f<=r[2])||[])[0];if(b==null)return null;const dx=window.ACRACB_areaPos?ACRACB_areaPos(m.dx):null;if(!dx)return null;
   const e=(typeof callEnt==="function")?callEnt(m.dx):null,d=new Date(m.ts);let from=[0,0];try{if(typeof TXP!=="undefined"&&TXP)from=TXP}catch(_){}
@@ -57,7 +57,7 @@ setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(pullRec,15000);s
 /* tus spots de la última hora, con su estado y el botón para retirarlos */
 function showMine(){const box=$("spmine");if(!box)return;const a=mineAll();if(!a.length){box.hidden=true;box.innerHTML="";return}
   box.hidden=false;box.innerHTML=`<p class="spmh">${T("Tus spots de la última hora","Your spots from the last hour")}</p>`+a.slice().reverse().map(m=>{const r=REC.find(x=>x.id===m.id),est=(r&&r.estado)||m.estado||{};
-    const ext=Object.entries(est).map(([k,v])=>`${esc(k)}: ${estTxt(v)}`).join(" · ");
+    const ext=Object.entries(est).filter(([k,v])=>v!=="deshabilitado").map(([k,v])=>`${esc(k)}: ${estTxt(v)}`).join(" · ");
     return `<div class="spmi"><span><b>${esc(m.dx)}</b> ${(m.f).toFixed(1)} kHz · ${new Date(m.ts).toISOString().slice(11,16)} UTC${ext?`<small class="spno">${T("Otros clústeres: ","Other clusters: ")}${ext}</small>`:""}</span><button type="button" class="btn spret" data-ret="${esc(m.id)}">${T("Retirar","Remove")}</button></div>`}).join("")}
 async function retirar(id){const a=mineAll(),m=a.find(x=>x.id===id);if(!m)return;
   try{const r=await fetch(RELAY+"/retirar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,clave:m.clave}),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
@@ -71,9 +71,9 @@ async function send(s){const b=$("spgo");b.disabled=true;msg(T("Publicando…","
   b.disabled=false;
   if(r&&r.ok&&j&&j.status==="ok"&&j.spot){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
     const m=Object.assign({},j.spot,{clave:j.clave});const a=mineAll();a.push(m);saveMine(a);putMine();showMine();
-    const pausa=Object.values(j.spot.estado||{}).every(v=>v==="deshabilitado");
+    const hay=Object.values(j.spot.estado||{}).some(v=>v!=="deshabilitado");
     msg(T(`Publicado: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en el clúster de la plataforma. Los demás socios lo verán en unos segundos.`,`Posted: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the platform cluster. Other members will see it within seconds.`)
-      +`<small class="spno">${pausa?T("La difusión a otros clústeres está en pausa hasta tener el permiso de cada servicio.","Sending to other clusters is paused until each service gives permission."):T("La difusión a otros clústeres va aparte; su estado sale abajo.","Sending to other clusters goes separately; its status is shown below.")}</small>`,"ok");return}
+      +(hay?`<small class="spno">${T("También se envía a otros clústeres de la red; su estado sale abajo.","It is also sent to other clusters on the network; their status is shown below.")}</small>`:""),"ok");return}
   if(r&&r.status===409&&j&&j.spot){msg(T(`Ese spot ya está publicado: <b>${esc(j.spot.dx)}</b> en ${(+j.spot.f).toFixed(1)} kHz, por ${esc(j.spot.de)} a las ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`,`That spot is already posted: <b>${esc(j.spot.dx)}</b> on ${(+j.spot.f).toFixed(1)} kHz, by ${esc(j.spot.de)} at ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`),"warn");return}
   if(r&&r.status===429){msg(T("Espera medio minuto entre un spot y el siguiente.","Wait half a minute between spots."),"warn");return}
   if(r&&r.status===400&&j&&j.status){msg(T(`No se ha publicado: ${esc(j.status)}.`,`Not posted: ${esc(j.status)}.`),"warn");return}

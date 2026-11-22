@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.41 — 2026-11-22
+
+- ES: Anunciar spots: solo se muestran los nodos a los que de verdad se envía (SpottedHam, WA9PIE y EA7JXH), con su estado. Comprobado con un spot real: los tres lo aceptan.
+- EN: Posting spots: only the nodes the spot is actually sent to are shown (SpottedHam, WA9PIE and EA7JXH), with their status. Checked with a real spot: all three accept it.
+
 ## 2.11.40 — 2026-11-22
 
 - ES: Difusión externa activa solo a los nodos que admiten spots sin registro según sus propias páginas: SpottedHam, WA9PIE y EA7JXH (Málaga). Agradecimientos y aviso de privacidad al día. DX Summit y DXFun siguen en pausa hasta que den permiso.
