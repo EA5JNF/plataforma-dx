@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.19 — 2026-11-22
+
+- ES: El botón de la estación es ahora solo una flecha: abre el desplegable con el locator, la antena, la altura, el suelo y el log. El locator deja de estar repetido arriba.
+- ES: Separación correcta entre las coordenadas y la zona de cálculo VOACAP («0,708° O · Zona de cálculo…»).
+- EN: The station button is now just an arrow: it opens the panel with the locator, antenna, height, ground and log. The locator is no longer repeated at the top.
+- EN: Proper spacing between the coordinates and the VOACAP area ("0.708° W · VOACAP area…").
+
 ## 2.11.18 — 2026-11-22
 
 - ES: El botón del locator ya no se vacía al pulsarlo: abre y cierra el panel de la estación y el locator se queda siempre arriba, en su sitio.

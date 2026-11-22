@@ -1541,7 +1541,7 @@ html,body,.sc,.scl,.sc *{-webkit-tap-highlight-color:transparent}
 html.vc #ssum{white-space:normal;overflow:visible;text-overflow:clip}
 html.vc #stpanel .upd,html.vc #stpanel .locw,html.vc #stpanel .stnote{display:none}
 #ssum[role=button]::after{content:none;display:none}
-#stpanel .upd+.locw::before{content:"· ";color:var(--muted)}
+#stpanel .upd+.locw::before{content:"\00a0·\00a0";color:var(--muted)}
 #stpanel .upd,#stpanel .locw{font-size:.78rem}
 /* 2.11.6: la caja de la estación en menos espacio. Los botones de la estación fluyen con los de modo, banda, potencia y
    antena (el resumen deja de ser una caja aparte); «Editar estación» pasa a ser un botón de icono (lápiz, y aspa cuando
@@ -1702,3 +1702,7 @@ html.vl .hrow .hp{text-align:right}
 .clvmb>.clvmore{grid-column:1/-1;justify-self:start;margin-top:4px}
 /* 2.11.18: en pantallas anchas los destinos de «Qué hacer» no dejan un hueco enorme entre el indicativo y la frecuencia */
 @media (min-width:900px){.ez .ezsp{grid-template-columns:minmax(9ch,max-content) auto auto auto;column-gap:18px;justify-content:start}}
+/* 2.11.19: el botón de la estación es solo una flecha cuadrada, a la altura de los demás; el locator va en el desplegable */
+.sline>#stbtn{width:34px!important;min-width:34px!important;padding:0!important;justify-content:center!important}
+.sline>#stbtn .stl{display:none!important}
+.sline>#stbtn::before{width:.8em!important;height:.8em!important;opacity:.8}

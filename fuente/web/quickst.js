@@ -27,7 +27,8 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
   const e2b=bar2();if(e2b){const h2=`${seg("locin",loc)}${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
     let w=e2b.querySelector(".qsb2");if(!w){w=document.createElement("span");w.className="qsb2";e2b.prepend(w)}if(w.dataset.qh!==h2){w.innerHTML=h2;w.dataset.qh=h2}
     const lb=$i("logbtn");if(lb&&lb.parentElement!==e2b)e2b.appendChild(lb)}
-  const sl=document.querySelector("#stbtn .stl");if(sl&&sl.textContent!==loc)sl.textContent=loc;
+  /* 2.11.19: el botón de arriba es solo una flecha; el locator está dentro del desplegable */
+  const sl=document.querySelector("#stbtn .stl");if(sl&&sl.textContent)sl.textContent="";
   return true}
 function bar2(){let b=$i("ssum2");const p=$i("stpanel");if(!b&&p){b=document.createElement("div");b.id="ssum2";b.className="qsbar ssum2";p.prepend(b)}return b}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */
@@ -75,9 +76,9 @@ function btnT(){const b=$i("stbtn");if(!b)return;if(!b.querySelector(".stl")){co
   if(p){const loc=()=>{try{return ($i("loc")&&$i("loc").value||"").toUpperCase()}catch(_){return ""}};
     b.onclick=()=>{p.hidden=!p.hidden;b.setAttribute("aria-expanded",String(!p.hidden));
       let l=b.querySelector(".stl");if(!l){b.textContent="";l=document.createElement("b");l.className="stl";l.setAttribute("aria-hidden","true");b.appendChild(l)}
-      [...b.childNodes].forEach(n=>{if(n!==l)n.remove()});if(!l.textContent)l.textContent=loc();try{sum()}catch(_){}
+      [...b.childNodes].forEach(n=>{if(n!==l)n.remove()});l.textContent="";try{sum()}catch(_){}
       if(!p.hidden)p.scrollIntoView({block:"nearest"})}}
-  const f=()=>{const t=b.getAttribute("aria-expanded")==="true"?T("Ocultar tu estación","Hide your station"):T("Tu estación: locator, antena, altitud y entorno","Your station: locator, antenna, altitude and surroundings");if(b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
+  const f=()=>{const t=b.getAttribute("aria-expanded")==="true"?T("Ocultar tu estación","Hide your station"):T("Tu estación: locator, antena, altura y suelo","Your station: locator, antenna, height and ground");if(b.title!==t){b.title=t;b.setAttribute("aria-label",t)}};f();
   new MutationObserver(f).observe(b,{attributes:true,attributeFilter:["aria-expanded"],childList:true,subtree:true,characterData:true})}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{hook();btnT()});else{hook();btnT()}
 })();
