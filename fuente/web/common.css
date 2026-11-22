@@ -1579,3 +1579,25 @@ html.vc .sline{padding:6px 8px!important}
 .qsf .qsfu{color:var(--muted)}
 .qsf .qsfo{font:inherit;font-size:.85rem;color:var(--accent);background:none;border:1px solid color-mix(in srgb,var(--accent) 50%,transparent);border-radius:7px;padding:7px 10px;cursor:pointer}
 .qsf .qsfn{margin:6px 0 0;font-size:.78rem;color:var(--bad);max-width:260px}.qsf .qsfn:empty{display:none}
+
+/* 2.11.8: estaciones de cada destino en filas iguales: indicativo y bandera, frecuencia, modo y minutos, alineados en columnas */
+.ez .ezs{display:grid!important;grid-template-columns:minmax(0,1fr) 3.7rem 2.9rem 3.1rem;gap:0 6px;align-items:center;padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.ez .ezs>*{min-width:0}.ez .ezs .call,.ez .ezs>a,.ez .ezs>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ez .ezs .ezf{text-align:right;white-space:nowrap}
+.ez .ezs .ezmd{justify-self:center;white-space:nowrap}
+.ez .ezs .ezag{margin:0!important;text-align:right;white-space:nowrap;font-size:.8rem}
+.ez .ezmore{display:block;margin:8px 0 2px}
+.ez .ezs .ezc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ez .ezs .ezmd:empty{border:0;padding:0}
+.ez .ezsp{padding:4px 10px 8px!important}.ez .ezs .ezf{font-size:.9rem!important}
+.ez .ezs .fl{display:none}
+/* 2.11.8: filtros del buscador alineados: etiquetas de una línea y los selectores siempre a la misma altura */
+.srch .srsel label{justify-content:flex-end}
+.srch .srsel span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srch .srsel select{min-height:40px;padding:6px 10px}
+/* columnas compartidas por todas las filas de un destino: cada una mide lo que su contenido y se alinean entre filas */
+.ez .ezsp{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;column-gap:10px;align-items:center}
+.ez .ezsp>.ezs,.ez .ezsp>.ezrest{display:contents!important}
+.ez .ezsp>.ezrest[hidden]{display:none!important}
+.ez .ezs>*{padding:5px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.ez .ezsp>:not(.ezs):not(.ezrest){grid-column:1/-1;justify-self:start}

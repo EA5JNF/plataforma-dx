@@ -201,7 +201,7 @@ function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw")
   if(pm==="denied"){w.innerHTML=`<p class="note nhelp">${TT("Notificaciones desactivadas para esta web.","Notifications are off for this site.")} ${deniedHelp()}</p>`;return}
   w.innerHTML=`<button class="btn" id="notifb" aria-pressed="${on}">${on?TT("Notificaciones activadas","Notifications on"):TT("Avisarme con una notificación","Notify me")}</button>`+
     (on?`<button type="button" class="btn" id="notift">${TT("Probar","Test")}</button>`:"")+
-    `<span class="note nscope">${on?TT("Te avisará de lo que te falte, de las DXpediciones y del DX raro, curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ","It will alert you to what you need, DXpeditions and the rare, unusual or far DX you choose below, in your mode and bands. ")+scopeTxt():TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>`+
+    `<span class="note nscope">${on?TT("Te avisará de lo que te falte, de las DXpediciones y del DX curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ","It will alert you to what you need, DXpeditions and the unusual or far DX you choose below, in your mode and bands. ")+scopeTxt():TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>`+
     (on?muteRow():"")+(on?nstat():"")+msg;
   const b=$("notifb");if(b)b.onclick=async()=>{NMSG="";if(notifOn()){S.set("acracb_notif","0");notifUI();return}
     if(IOSD&&!STDA){NHELP=true;w.insertAdjacentHTML("beforeend",notifHelp());return}

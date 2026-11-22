@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.8 — 2026-11-22
+
+- ES: Mapa: los triángulos de POTA, SOTA, WWFF y demás programas mantienen su tamaño al acercar; antes crecían con el zoom hasta tapar el mapa.
+- ES: Estaciones de cada destino («Qué hacer»): filas iguales en columnas alineadas (indicativo, frecuencia, modo y minutos), sin saltos de línea sueltos y sin la bandera, que ya la da el país del título. «N estaciones más» es ahora un botón que las despliega.
+- ES: Filtros del buscador del clúster alineados: «Continente del spotter» pasa a «Oído desde» y los selectores quedan a la misma altura.
+- ES: Fuera las últimas menciones a «DX raro».
+- EN: Map: POTA, SOTA, WWFF and other program triangles keep their size when zooming in; before they grew with the zoom until they covered the map.
+- EN: Stations of each destination ("What to do"): even rows in aligned columns (call, frequency, mode and minutes), with no stray line breaks and no flag, since the country is in the title. "N more stations" is now a button that shows them.
+- EN: Cluster search filters aligned: "Spotter continent" becomes "Heard from" and the selectors sit at the same height.
+- EN: Removed the last mentions of "rare DX".
+
 ## 2.11.7 — 2026-11-22
 
 - ES: Toda la estación en la misma caja. El locator, la altitud y el entorno también son botones, como modo, banda, potencia y antena: el locator y la altitud se escriben en una ventanita con «Aplicar» (y avisa si el locator no es válido), y el entorno se elige en su menú. El botón de flecha despliega, dentro de la misma caja, solo lo que sobra: el concurso, las coordenadas con la zona VOACAP y el cálculo con sus ajustes finos. Desaparecen las filas grandes de locator, altitud y entorno.

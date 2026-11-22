@@ -87,14 +87,14 @@ _i=s.index("function renderEasyS(now,full){");_j=s.index("/* ---------- glosario
 s=s[:_i]+r"""function ezWord(p){return p>=.7?"muy buena":p>=.5?"buena":"aceptable"}
 function ezAlt(lh,skip){return memo("ezalt|"+lh+"|"+MOD()+"|"+st.mode,()=>{const out=[];const T0=TG().filter(inMode);for(const b of BI()){if(b>=10)continue;let n=0,sc=0;for(const t of T0){const p=Math.max(prob(t,lh,b,false).p,prob(t,lh,b,true).p);if(p>=.3){n++;sc+=p}}if(n)out.push([b,n,sc])}return out.sort((a,c)=>c[2]-a[2])}).filter(x=>x[0]!==skip).slice(0,3)}
 /* 2.8.11: los desplegables de destinos enseñan lo que oye el clúster de esos destinos en esa banda, no la previsión */
-function ezAgoT(a){const EN=window.ACRACB_LANG==="en";return a==null||!isFinite(a)?"":a<1?(EN?"now":"ahora"):a<90?(EN?a+" min ago":"hace "+a+" min"):(EN?Math.round(a/60)+" h ago":"hace "+Math.round(a/60)+" h")}
+function ezAgoT(a){const EN=window.ACRACB_LANG==="en";return a==null||!isFinite(a)?"":a<1?(EN?"now":"ahora"):a<90?a+" min":Math.round(a/60)+" h"}
 function ezEnt(s){try{const e=callEnt(s.call);if(e&&e.name)return e.name}catch(_){}return s.dxcc&&isNaN(s.dxcc)?String(s.dxcc):s.call}
 function ezSpots(ts,b){const zs=new Set(ts.map(x=>x.t.id)),by=new Map(),now=localNow();for(const s of (L.spots||[])){if(s.band!==b)continue;let e=null;try{e=spotEval(s,now)}catch(_){}if(!e||!e.t||!zs.has(e.t.id))continue;const k=ezEnt(s);if(!by.has(k))by.set(k,{z:e.t.id,a:[]});by.get(k).a.push(s)}
   by.forEach(o=>o.a.sort((x,y)=>(spotAge(x)??1e9)-(spotAge(y)??1e9)));return by}
 function ezList(ts,h,b){const by=ezSpots(ts,b);const on=[...by.entries()].sort((x,y)=>y[1].a.length-x[1].a.length),hit=new Set(on.map(x=>x[1].z)),off=ts.filter(x=>!hit.has(x.t.id));
-  const row=s=>`<div class="ezs">${CS(s.call)} <b class="ezf">${esc(s.f)}</b>${s.mode?` <span class="ezmd">${esc(s.mode)}</span>`:""} <span class="ezag">${ezAgoT(spotAge(s))}</span></div>`;
+  const row=s=>`<div class="ezs"><span class="ezc">${CS(s.call)}</span><b class="ezf">${esc(s.f)}</b><span class="ezmd">${esc(s.mode||"")}</span><span class="ezag">${ezAgoT(spotAge(s))}</span></div>`;
   let x=`<div class="ezlist"><p class="ezhint">${on.length?`Estaciones de estos destinos que el clúster oye ahora en ${BANDS[b]}:`:`Ahora mismo el clúster no oye a ninguna estación de estos destinos en ${BANDS[b]}.`}</p>`;
-  x+=on.map(([name,o])=>{const a=o.a;return `<details class="ezdst"><summary><span class="ezdn">${esc(name)}</span><span class="ezdc">${a.length} ${a.length===1?"estación":"estaciones"}</span></summary><div class="ezsp">${a.slice(0,12).map(row).join("")}${a.length>12?`<p class="note">${a.length-12} <span>estaciones más</span></p>`:""}<button type="button" class="lnk ezdest" data-ezt="${esc(o.z)}" data-ezh="${h}" data-ezb="${b}">Ver en el mapa</button></div></details>`}).join("");
+  x+=on.map(([name,o])=>{const a=o.a;return `<details class="ezdst"><summary><span class="ezdn">${esc(name)}</span><span class="ezdc">${a.length} ${a.length===1?"estación":"estaciones"}</span></summary><div class="ezsp">${a.slice(0,12).map(row).join("")}${a.length>12?`<div class="ezrest" hidden>${a.slice(12).map(row).join("")}</div><button type="button" class="lnk ezmore" data-ezmore>Ver ${a.length-12} estaciones más</button>`:""}<button type="button" class="lnk ezdest" data-ezt="${esc(o.z)}" data-ezh="${h}" data-ezb="${b}">Ver en el mapa</button></div></details>`}).join("");
   if(off.length&&on.length)x+=`<p class="note ezoff">${off.length} ${off.length===1?"destino abierto no sale":"destinos abiertos no salen"} ahora en el clúster.</p>`;
   return x+`</div>`}
 function ezFut(ts,h,b){const it=ts.slice(0,8).map(x=>`<button type="button" class="lnk ezdest ezfd" data-ezt="${esc(x.t.id)}" data-ezh="${h}" data-ezb="${b}"><span class="ezdn">${esc(x.t.name.split(" (")[0])}</span><span class="ezdc">${ezWord(x.p)}</span></button>`).join("");
@@ -352,7 +352,7 @@ assert "ACRACB_logview()" in s
 import datetime as _dt
 VER = open(os.path.join(W, "VERSION")).read().strip() + " · " + (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=1)).strftime("%d/%m/%Y")
 w = s.replace("Se revisan solo cuando pulsas Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.").replace("Se revisan solo cuando se pulsa Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.")
-w = w.replace("DXpediciones activas y entidades raras de tu modo que aparecen en el clúster. Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.", "Lo que falta en tu log, DXpediciones y DX raro, curioso o lejano que puedes trabajar ahora. Se revisan en cada actualización.")
+w = w.replace("DXpediciones activas y entidades raras de tu modo que aparecen en el clúster. Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.", "Lo que falta en tu log, DXpediciones y DX curioso o lejano que puedes trabajar ahora. Se revisan en cada actualización.")
 import hubbuild
 HUBS_JSON = os.path.join(SP, "ext", "hubs.json")
 if os.path.exists(HUBS_JSON):
