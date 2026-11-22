@@ -1847,3 +1847,10 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
  html.vl .sc.scl>.l-tags>*{max-width:none!important;overflow:visible!important;text-overflow:clip!important}
  html.vl .sc.scl>.l-tags:not(:has(.xtag)){display:none!important}
 }
+/* 2.11.35: la bandera, a la altura de la primera línea del país aunque el nombre ocupe dos; la puntuación, destacada */
+.clvmi>.cc .ccy{align-items:flex-start!important}
+.clvmi>.cc .ccy .fl{margin-top:.2em}
+.clvmi>.pt{font-weight:700!important;font-size:.84rem!important;color:var(--fg)!important;background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:4px;padding:0 4px!important;justify-self:end;align-self:baseline;letter-spacing:0}
+.clvmb{grid-template-columns:auto minmax(min-content,1fr) auto auto auto!important;column-gap:6px!important}
+/* 2.11.35: tarjetas de multiplicadores con un mínimo de 290 px, para que quepan indicativo, zona, probabilidad y puntos sin pisarse */
+.clvm{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))!important;--gmin:290px}

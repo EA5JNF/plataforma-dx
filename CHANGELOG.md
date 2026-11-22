@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.35 — 2026-11-22
+
+- ES: Multiplicadores del clúster: la bandera, a la altura del nombre del país aunque ocupe dos líneas; los puntos, destacados; las tarjetas, algo más anchas para que nada se pise.
+- EN: Cluster multipliers: the flag lines up with the country name even when it takes two lines; points are highlighted; cards are a little wider so nothing overlaps.
+
 ## 2.11.34 — 2026-11-22
 
 - ES: Multiplicadores del clúster en concurso: nada cortado. El indicativo va entero y debajo, la bandera con el país.
