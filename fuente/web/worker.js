@@ -14,7 +14,9 @@ import { connect } from "cloudflare:sockets";
 const PERMITIDAS = ["kp.gfz-potsdam.de", "kp.gfz.de", "www.sidc.be",
   // de reserva: la plataforma las lee directamente y solo pasa por aquí si el navegador no puede
   "services.swpc.noaa.gov", "spothole.app", "www.hamqth.com", "db1.wspr.live", "api.nasa.gov", "kauai.ccmc.gsfc.nasa.gov", "celestrak.org"];
-// Páginas desde las que se puede usar (null = la plataforma abierta como archivo en el ordenador)
+// Páginas desde las que se puede usar (null = la plataforma abierta como archivo en el ordenador).
+// Si la plataforma se aloja también en otro sitio (por ejemplo, el servidor de la asociación), añade aquí su dirección
+// exacta, con https y sin barra final, por ejemplo "https://dx.ejemplo.org", y vuelve a publicar el Worker.
 const ORIGENES = ["https://ea5jnf.github.io", "null"];
 const MAX_BYTES = 8 * 1024 * 1024, MAX_URL = 2048, TIEMPO_MS = 12000, MAX_SALTOS = 3;
 

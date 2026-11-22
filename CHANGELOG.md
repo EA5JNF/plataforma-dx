@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.28 — 2026-11-22
+
+- ES: Preparada para alojarse fuera de GitHub: si la web se sirve desde otro servidor, las órbitas y el estado de los satélites se siguen leyendo de la copia que GitHub actualiza dos veces al día.
+- EN: Ready to be hosted outside GitHub: if the site is served from another server, satellite orbits and status are still read from the copy GitHub updates twice a day.
+
 ## 2.11.27 — 2026-11-22
 
 - ES: Los spots salen a la vez por dos caminos gratuitos y sin registro, a través del intermediario del club: DX Summit y el nodo de clúster SpottedHam (DXSpider). Basta con que uno funcione; la ventana dice por cuál ha salido. Requiere actualizar el intermediario en Cloudflare (ver tutorial).

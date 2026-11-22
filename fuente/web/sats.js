@@ -29,7 +29,9 @@ SATS.forEach(x=>Object.assign(x,legacy(x)));
 const TLEURL="https://celestrak.org/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle",PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=";
 /* 2.7.3: las órbitas se leen primero de la copia que la propia plataforma guarda dos veces al día (datos/tle-amateur.txt,
    descargada de CelesTrak); si no está, de CelesTrak directamente. 2.10.44: sin AMSAT como respaldo */
-const MIRROR=(()=>{try{return /^https?:$/.test(location.protocol)&&/ea5jnf\.github\.io$/.test(location.hostname)?new URL("datos/tle-amateur.txt",location.href).href:null}catch(e){return null}})();
+/* 2.11.28: alojada en otro servidor (por ejemplo, el de la asociación), lee la misma copia de GitHub Pages, que se sigue
+   actualizando sola mientras el repositorio esté en GitHub */
+const MIRROR=(()=>{try{if(!/^https?:$/.test(location.protocol))return null;return /ea5jnf\.github\.io$/.test(location.hostname)?new URL("datos/tle-amateur.txt",location.href).href:"https://ea5jnf.github.io/plataforma-dx/datos/tle-amateur.txt"}catch(e){return null}})();
 /* 2.8.29: estado de cada satélite y de sus transmisores según SatNOGS DB (Libre Space Foundation, CC BY-SA 4.0),
    copiado dos veces al día en datos/satnogs.json junto a las órbitas */
 let SN=null,snAsk=false;
