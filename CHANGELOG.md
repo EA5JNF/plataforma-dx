@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.32 — 2026-11-22
+
+- ES: Anunciar spots: preparado para enviarlos a la vez por varios nodos del clúster (intermediario versión 5). El aviso dice por cuáles ha salido y cuáles no lo aceptaron.
+- EN: Posting spots: ready to send them through several cluster nodes at once (relay version 5). The message says which ones took it and which did not.
+
 ## 2.11.31 — 2026-11-22
 
 - ES: Las tarjetas de estación (clúster, avisos DX, «Qué hacer ahora», actividad cercana) vuelven a medir todas lo mismo, también de una fila a otra, y los botones «Ya la tengo», «¿Lo oyes?» y «Anunciar» quedan alineados abajo.

@@ -37,7 +37,7 @@ async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando…","Se
   put(KCALL,s.de);const body={de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info};let st="";
   /* 2.11.26: primero, el intermediario del club (Cloudflare), que lo entrega a DX Summit sin que el navegador lo bloquee */
   try{const r=await fetch(RELAY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
-    if(r.status!==404&&r.status!==405){let j=null;try{j=await r.json()}catch(_){}if(j&&j.status!=null){st=j.status==="ok"?"ok":String(j.status);if(Array.isArray(j.via)&&j.via.length)s.via=j.via.join(T(" y "," and "))}}}catch(_){}
+    if(r.status!==404&&r.status!==405){let j=null;try{j=await r.json()}catch(_){}if(j&&j.status!=null){st=j.status==="ok"?"ok":String(j.status);if(Array.isArray(j.via)&&j.via.length){let lf=null;try{lf=new Intl.ListFormat(T("es","en"),{type:"conjunction"})}catch(_){}s.via=lf?lf.format(j.via):j.via.join(", ")}if(Array.isArray(j.no)&&j.no.length&&j.via&&j.via.length)s.no=j.no.map(x=>String(x).split(":")[0]).join(", ")}}}catch(_){}
   if(!st)try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
     let j=null;try{j=await r.json()}catch(_){}st=r.ok&&(!j||j.status==null||j.status==="ok")?"ok":(j&&j.status?String(j.status):"HTTP "+r.status)}
   catch(e){st="cors"}
@@ -45,7 +45,7 @@ async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando…","Se
     try{await fetch(API,{method:"POST",mode:"no-cors",body:new URLSearchParams(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});st="blind"}catch(_){st="net"}}
   b.disabled=false;
   if(st==="ok"||st==="blind"){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
-    msg(T(`Enviado${s.via?" por "+esc(s.via):""}: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz. Comprobando que aparece en los clústeres…`,`Sent${s.via?" via "+esc(s.via):""}: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz. Checking it shows on the clusters…`),st==="ok"?"ok":"");
+    msg(T(`Enviado${s.via?" por "+esc(s.via):""}: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz. Comprobando que aparece en los clústeres…${s.no?" (No lo aceptó: "+esc(s.no)+".)":""}`,`Sent${s.via?" via "+esc(s.via):""}: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz. Checking it shows on the clusters…${s.no?" (Not accepted by: "+esc(s.no)+".)":""}`),st==="ok"?"ok":"");
     confirmLater(s,st==="blind"?T(" como formulario"," as a form"):s.via?T(" por "," via ")+esc(s.via):"");return}
   if(st==="net"){msg(T("No hay conexión con DX Summit. ","No connection to DX Summit. ")+manual(s),"warn");return}
   msg(T(`DX Summit no lo ha aceptado (${esc(st)}). `,`DX Summit did not accept it (${esc(st)}). `)+manual(s),"warn")}

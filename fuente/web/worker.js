@@ -1,4 +1,4 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 4
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 5
 import { connect } from "cloudflare:sockets";
 // 2.11.26: además, POST /spot reenvía a DX Summit los spots que anuncian los usuarios desde la plataforma. Desde el
 // navegador no se puede (DX Summit solo acepta envíos desde su propia web); desde aquí, sí. Solo desde la plataforma,
@@ -6,6 +6,8 @@ import { connect } from "cloudflare:sockets";
 // 2.11.27: el spot sale a la vez por dos caminos gratuitos y sin registro: la API de DX Summit y el nodo DXSpider de
 // SpottedHam (telnet, puerto 7300), que no pide cuenta para anunciar. Los dos están enlazados a la red mundial de
 // clústeres; la red descarta el duplicado (mismo spot, mismo indicativo, mismo minuto). Basta con que uno funcione.
+// 2.11.32 (versión 5): el spot puede salir también por varios nodos DXSpider a la vez (lista NODOS, hasta 5), para que
+// llegue al máximo de clústeres. La respuesta dice qué caminos lo aceptaron y cuáles no, para saber cuáles funcionan.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -62,10 +64,11 @@ async function spot(request, origen) {
   const cache = caches.default;
   if (await cache.match(llave)) return json({ status: "espera unos segundos" }, 429, origen);
   await cache.put(llave, new Response("1", { headers: { "Cache-Control": "max-age=30" } }));
-  const [a, b] = await Promise.all([porDXSummit(de, dx, f, info), porTelnet(NODO, de, dx, f, info)]);
-  const via = [a.ok && "DX Summit", b.ok && NODO.nombre].filter(Boolean);
-  if (via.length) return json({ status: "ok", via }, 200, origen);
-  return json({ status: "DX Summit: " + a.msg + " · " + NODO.nombre + ": " + b.msg }, 502, origen);
+  const rs = await Promise.all([porDXSummit(de, dx, f, info).then(r => ({ nombre: "DX Summit", ...r })),
+    ...NODOS.slice(0, 5).map(n => porTelnet(n, de, dx, f, info).then(r => ({ nombre: n.nombre, ...r })))]);
+  const via = rs.filter(r => r.ok).map(r => r.nombre), no = rs.filter(r => !r.ok).map(r => r.nombre + ": " + r.msg);
+  if (via.length) return json({ status: "ok", via, no }, 200, origen);
+  return json({ status: no.join(" · "), via, no }, 502, origen);
 }
 async function porDXSummit(de, dx, f, info) {
   const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
@@ -77,8 +80,12 @@ async function porDXSummit(de, dx, f, info) {
     return { ok, msg: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 60) : "respondió " + r.status) };
   } catch (e) { return { ok: false, msg: "no respondió" }; } finally { clearTimeout(t); }
 }
-// nodo DXSpider: se entra con el indicativo de quien anuncia, se manda «dx frecuencia indicativo comentario» y se sale
-const NODO = { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 };
+// nodos DXSpider: en cada uno se entra con el indicativo de quien anuncia, se manda «dx frecuencia indicativo comentario»
+// y se sale. Para añadir un nodo, copia la línea de SpottedHam y cambia nombre, host y puerto (máximo 5 nodos).
+// Solo sirven nodos que dejan anunciar entrando con el indicativo, sin contraseña.
+const NODOS = [
+  { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 },
+];
 async function porTelnet(n, de, dx, f, info) {
   let sock;
   try {
