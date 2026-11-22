@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.46 — 2026-11-22
+
+- ES: Concursos: nueva tarjeta «En el aire, aunque no puntúen desde España» con los concursos nacionales de otros países que llenan las bandas (de momento, ARRL Sweepstakes en CW y en SSB), con sus fechas en hora española y qué significan para nosotros. Mientras uno está en marcha, aviso bajo el buscador del clúster para entender por qué hay tantas estaciones de EE. UU. y Canadá.
+- EN: Contests: new card "On the air, though they do not score from Spain" with other countries' national contests that fill the bands (for now, ARRL Sweepstakes CW and SSB), with dates in Spanish time and what they mean for us. While one is running, a note under the cluster search explains why there are so many US and Canadian stations.
+
 ## 2.11.45 — 2026-11-22
 
 - ES: «Qué hacer ahora», DXpediciones: cada tarjeta dice siempre dónde escuchar (frecuencia y modo). Si el aviso solo trae el prefijo (por ejemplo 3B8), se usa la actividad real del clúster; si no hay spots, la frecuencia habitual de las DXpediciones en tu modo, avisándolo. Con «Mi modo», no salen las que solo están activas en otros modos.

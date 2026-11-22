@@ -1880,3 +1880,9 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
  #srch>#srf[open]{grid-column:1/-1!important;grid-row:auto!important;justify-self:stretch}
  #srch>#srf .srfh{display:none}
 }
+/* 2.11.46: concursos en el aire que no puntúan desde EA */
+.ctfor h2{margin:0 0 4px}
+.ctfr{border-top:1px solid var(--line);padding:8px 0}
+.ctfr.on{border-left:3px solid var(--accent);padding-left:10px;margin-left:-2px}
+.ctfr p{margin:2px 0}
+.ctforb{margin:8px 2px 0;padding:8px 10px;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:6px}
