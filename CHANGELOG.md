@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.20 — 2026-11-22
+
+- ES: Corregidas las reglas del OK/OM DX CW: en CW solo cuentan los QSO con Chequia y Eslovaquia, a 1 punto cada uno desde Europa, y los multiplicadores son los distritos OK/OM por banda. Antes copiaba por error las reglas de la fonía.
+- EN: Fixed the OK/OM DX CW rules: in CW only QSOs with Czechia and Slovakia count, 1 point each from Europe, and the multipliers are the OK/OM districts per band. It used to copy the phone rules by mistake.
+
 ## 2.11.19 — 2026-11-22
 
 - ES: El botón de la estación es ahora solo una flecha: abre el desplegable con el locator, la antena, la altura, el suelo y el log. El locator deja de estar repetido arriba.

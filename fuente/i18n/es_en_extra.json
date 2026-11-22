@@ -503,7 +503,6 @@
 "FT4 y FT8, todos con todos: 1 punto más 1 por cada 3.000 km. Los campos del locator": "FT4 and FT8, everyone works everyone: 1 point plus 1 per 3,000 km. Locator fields",
 "La plataforma no tiene verificados los puntos de este concurso: aquí cada QSO cuenta igual para planificar bandas y horas. Consulta las bases oficiales.": "The platform has not verified the points for this contest: here every QSO counts the same to plan bands and times. Check the official rules.",
 "Mismas reglas que en fonía: Bélgica 10 puntos, Unión Europea 3 y el resto 1.": "Same rules as phone: Belgium 10 points, European Union 3 and the rest 1.",
-"Mismas reglas que en fonía: OK y OM 10 puntos, otro continente 5, Europa 3.": "Same rules as phone: OK and OM 10 points, another continent 5, Europe 3.",
 "Solo 12 horas, de 12:00 a 24:00 UTC del sábado: 1 punto por QSO. Envías RS o RST y las dos últimas cifras del año de tu primera licencia": "Only 12 hours, 12:00 to 24:00 UTC on Saturday: 1 point per QSO. You send RS or RST and the last two digits of the year of your first license",
 "Solo 160 m y solo con EE. UU. y Canadá: 5 puntos cada QSO. Todo pasa de noche, con el camino a Norteamérica abierto desde la puesta de sol aquí hasta el amanecer allí.": "160 m only and only with the US and Canada: 5 points per QSO. It all happens at night, with the path to North America open from sunset here to sunrise there.",
 "Solo Asia: 3 puntos en 160 m, 2 en 80 y 10 m y 1 en el resto.": "Asia only: 3 points on 160 m, 2 on 80 and 10 m and 1 on the rest.",
@@ -554,5 +553,7 @@
 "según las bases oficiales": "per the official rules",
 "y 3 con los DOM-TOM de otro continente. Cada departamento cuenta en cada banda.": "and 3 with DOM-TOM on another continent. Each department counts on each band.",
 "La previsión": "The forecast",
-"Lo que se mide hoy": "What is measured today"
+"Lo que se mide hoy": "What is measured today",
+"distritos OK/OM, por banda": "OK/OM districts, per band",
+"En CW solo cuentan los QSO con Chequia y Eslovaquia: 1 punto cada uno desde Europa. Cada distrito OK/OM cuenta en cada banda.": "In CW only QSOs with Czechia and Slovakia count: 1 point each from Europe. Each OK/OM district counts on each band."
 }
