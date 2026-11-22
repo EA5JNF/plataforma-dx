@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.15 — 2026-11-22
+
+- ES: Etiquetas del comentario en la vista de lista: «NUEVO» ya no deja un recuadro oscuro a su alrededor, «en 2 clústeres» ya no sale con el borde cortado y todas tienen la misma altura y alineación.
+- EN: Comment tags in list view: "NEW" no longer leaves a dark box around it, "on 2 clusters" no longer has a clipped border, and all tags share the same height and alignment.
+
 ## 2.11.14 — 2026-11-22
 
 - ES: Avisos de todos los concursos del calendario: uno una hora antes de empezar y otro al arrancar, cada uno una sola vez.

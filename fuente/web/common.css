@@ -1677,3 +1677,8 @@ html.vl .hrow .hp{text-align:right}
  html.vl .hrow .hb{grid-area:b}html.vl .hrow .hc{grid-area:c;text-align:right;max-width:42vw}
  html.vl .hrow .hp{display:none}
 }
+/* 2.11.15: etiquetas del comentario en la vista de lista: sin el brillo exterior de «NUEVO» (la celda lo recortaba en un
+   recuadro oscuro), sin desplazamiento vertical (cortaba el borde de «en 2 clústeres») y todas a la misma altura */
+.scl .l-tags{padding-block:2px}
+.scl .l-tags>.nwb,.scl .l-tags>.nsb,.scl .l-tags>.xtag{top:0!important;height:1.6em!important;line-height:1!important;box-sizing:border-box}
+.scl .l-tags>.nwb{box-shadow:0 0 0 1px rgba(255,255,255,.16) inset!important}
