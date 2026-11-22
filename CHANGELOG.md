@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.50 — 2026-11-22
+
+- ES: Franja de valores (SFI, SSN, Kp…): la cifra y su unidad ya no se separan (el viento salía con «km/s» en otra línea), y con letra grande la cifra se ajusta a su casilla en vez de partirse. La llamarada solo se parte entre «M» y «X».
+- EN: Values strip (SFI, SSN, Kp…): a figure and its unit no longer split (the wind showed "km/s" on another line), and with large text the figure fits its cell instead of breaking. The flare only breaks between "M" and "X".
+
 ## 2.11.49 — 2026-11-22
 
 - ES: Sol: la barra «Sol y propagación ahora» ya no se repite en Sol; queda arriba, en la parte general, y Sol tiene una pestaña nueva, «Propagación», con el mismo contenido abierto.

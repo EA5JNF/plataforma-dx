@@ -1891,3 +1891,14 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
 .st3h4>span small{display:block;font-size:.78em;color:var(--muted);font-weight:400;letter-spacing:0}
 .st3hr.st3best{background:color-mix(in srgb,var(--accent) 10%,transparent);border-radius:6px}
 .st3bt{display:block;font-size:.72em;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+/* 2.11.50: cifra y unidad juntas en la franja de valores */
+#sw .chip .v .nw,#sw .chip .v .nw *{white-space:nowrap!important}
+/* 2.11.50: con letra grande, la cifra se encoge lo justo para caber en su casilla en vez de salirse */
+#sw .chip{container-type:inline-size}
+#sw[data-cols="8"] .chip .v{font-size:min(1.35rem,22cqi)!important}
+#sw[data-cols="4"] .chip .v{font-size:min(1rem,22cqi)!important}
+#sw[data-cols="2"] .chip .v{font-size:min(.95rem,22cqi)!important}
+#sw[data-cols="8"] .chip:last-child .v{font-size:min(1.35rem,10.4cqi)!important}
+#sw[data-cols="4"] .chip:last-child .v{font-size:min(1rem,10.4cqi)!important}
+#sw[data-cols="2"] .chip:last-child .v{font-size:min(.95rem,10.4cqi)!important}
