@@ -74,10 +74,13 @@ async function req1(url,type,tm){const ac=new AbortController();const t=setTimeo
     if((+r.headers.get("content-length")||0)>MAXR)throw new Error("datos no válidos");const x=await r.text();if(x.length>MAXR)throw new Error("datos no válidos");
     return type==="json"?JSON.parse(x,SAFE):x}
   finally{clearTimeout(t)}}
-async function req(url,type){let h="";try{h=new URL(url).hostname}catch(e){}
+/* 2.11.43: si una fuente de reserva tarda demasiado (por ejemplo, Spothole con datos móviles), también se pide por el
+   intermediario del club, que la descarga desde su servidor; antes solo se hacía si el navegador la bloqueaba */
+async function req(url,type,tm){let h="";try{h=new URL(url).hostname}catch(e){}
   if(VIA.has(h)||VIA2.has(h))return req1(PROXY+encodeURIComponent(url),type,15000);
-  try{return await req1(url,type,TOUT)}
-  catch(e){if(!RESCUE.has(h)||(e&&e.name==="AbortError"))throw e;
+  try{return await req1(url,type,tm||TOUT)}
+  catch(e){if(!RESCUE.has(h))throw e;
+    if(e&&e.name==="AbortError")return req1(PROXY+encodeURIComponent(url),type,15000);
     const v=await req1(PROXY+encodeURIComponent(url),type,15000);VIA2.add(h);saveVia2();return v}}
 const J=u=>req(u,"json"),T=u=>req(u,"text");
 
@@ -212,7 +215,7 @@ const shPos=s=>{const src=String(pick(s,"dx_location_source")||"").toUpperCase()
 const cmtPos=c=>{c=String(c||"").toUpperCase();let m=c.match(/\b[A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?\s*(?:<[A-Z0-9]{0,4}>|<>|>|-)\s*([A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?)\b/);
   if(!m)m=c.match(/\b(?:LOC|QTH|GRID|QRA)[ :=]*([A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?)\b/);return m?gridLL(m[1]):null};
 const SP={};
-SP["Spothole"]=async()=>{let j=await J("https://spothole.app/api/v1/spots?max_age=3600");if(!Array.isArray(j))j=j.spots||j.data||[];
+SP["Spothole"]=async()=>{let j=await req("https://spothole.app/api/v1/spots?max_age=3600","json",10000);if(!Array.isArray(j))j=j.spots||j.data||[];
   /* 2.10.44: solo spots de clústeres, RBN y programas de activación; los de PSK Reporter no (sus condiciones de uso no están claras) */
   j=j.filter(s=>!/PSK/i.test(String(s&&s.source||"")));
   return j.map(s=>{const src=String(s.source||"");const refs=s.sig_refs?[].concat(s.sig_refs).map(x=>typeof x==="string"?x:(x&&x.id)||"").join(" "):"";

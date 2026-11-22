@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.43 — 2026-11-22
+
+- ES: Fuentes: si Spothole u otra fuente de reserva tarda demasiado (por ejemplo, con datos móviles), se pide también por el intermediario del club en vez de quedarse sin datos. Los spots de Spothole tienen 10 segundos de margen en lugar de 6.
+- EN: Sources: if Spothole or another backup source takes too long (for example on mobile data), it is also fetched through the club relay instead of being left without data. Spothole spots get 10 seconds instead of 6.
+
 ## 2.11.42 — 2026-11-22
 
 - ES: «Qué hacer ahora» coherente con el resumen: primero las estaciones que te faltan; después el DX de verdad, lejos y en la mejor banda del momento, antes que las estaciones cercanas (menos de 2.000 km) aunque salgan al 100 %.
