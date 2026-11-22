@@ -1755,3 +1755,16 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
 /* 2.11.29: «Anunciar spot» del buscador, discreto: contorno, como el de arriba, y no un bloque lleno a todo el ancho */
 #srch .spopen{background:transparent!important;color:var(--fg)!important;border:1.5px solid var(--accent)!important;border-radius:999px!important;font-weight:600;padding:0 14px 0 10px!important}
 #srch .spopen svg{color:var(--accent)}
+/* 2.11.30: listados muy estrechos (p. ej. «Qué hacer ahora» en el móvil): el país no cabía junto a la probabilidad y se cortaba.
+   Tres líneas: indicativo y país; frecuencia, modo, banda, probabilidad y antigüedad; etiquetas enteras debajo */
+@container (max-width:340px){
+ html.vl .sc.scl.scl{grid-template-columns:7.4ch 3.3em 4.2ch minmax(0,1fr) auto var(--lx,1.1em)!important;
+  grid-template-areas:"call call cty cty cty x" "f m b p age age" "tg tg tg tg tg tg"!important;row-gap:3px!important}
+ html.vl .sc.scl>.l-cty{display:flex!important;align-items:center;gap:6px;min-width:0;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.2;align-self:center;hyphens:manual}
+ html.vl .sc.scl>.l-cty .fl{flex:0 0 auto;margin-right:0!important}
+ html.vl .sc.scl>.l-cty *{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+ html.vl .sc.scl>.l-p{justify-self:end;text-align:right;padding-right:8px}
+ html.vl .sc.scl>.l-tags{flex-wrap:wrap;overflow:visible!important}
+ html.vl .sc.scl>.l-tags>*{max-width:none!important;overflow:visible!important;text-overflow:clip!important}
+ html.vl .sc.scl>.l-tags:not(:has(.xtag)){display:none!important}
+}
