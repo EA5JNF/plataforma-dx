@@ -180,20 +180,27 @@ function recCards(go,dxn){const out=[];
   /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
   let my=new Set();try{CMS().forEach(k=>my.add(String(MODES[k].s).toUpperCase()))}catch(_){}
   const inMy=d=>{const m=Array.isArray(d.modes)?d.modes.map(z=>String(z).toUpperCase()):[];return !m.length||!my.size||m.some(z=>my.has(z)||(z==="JS8"&&my.has("JS8CALL")))};
-  (dxn||[]).filter(x=>inMy(x.d)&&isAct(lastAge(String(x.d.call||"").split(/[ ,]/)[0]))).forEach(x=>{const d=x.d;const call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
+  (dxn||[]).filter(x=>inMy(x.d)&&isAct(lastAge(String(x.d.call||"").split(/[ ,]/)[0]))).forEach(x=>{const d=x.d;let call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
+    /* 2.11.45: si el aviso solo trae el prefijo (por ejemplo «3B8»), se usa el indicativo completo del spot más reciente
+       que empieza por él, con su frecuencia y su modo; sin eso la tarjeta no decía dónde escuchar */
+    let spx=null;if(!/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/i.test(call)){const c0=call.toUpperCase();const cand=(L.spots||[]).filter(z=>z.call&&String(z.call).toUpperCase().startsWith(c0)).sort((a,b)=>String(b.utc||b.t).localeCompare(String(a.utc||a.t)));spx=cand.find(z=>z.band===x.b)||cand[0]||null;if(spx){call=spx.call;if(spx.band!==x.b)x={...x,b:spx.band}}}
     const q=[].concat(d.qsx||[]).map(z=>String(z).match(/(\d+(?:\.\d+)?)\s*([A-Z0-9]+)?/i)).filter(Boolean).map(m=>({f:+m[1]>1000?+m[1]/1000:+m[1],m:(m[2]||"").toUpperCase()})).filter(z=>inBand(z.f,x.b));
     let my="";try{my=String(MOD()||"").toUpperCase()}catch(e){}const pick=q.find(z=>z.m&&my&&z.m===my)||q[0];
     /* 2.10.19: con «Mi modo» solo se recomienda una frecuencia de tus modos (antes podía salir FT8 con «Mi modo · SSB») */
     const MS0=new Set();try{CMS().forEach(k=>MS0.add(String(MODES[k].s).toUpperCase()))}catch(_){}const okM=m=>{if(!m)return true;const u=String(m).toUpperCase();return !MS0.size||MS0.has(u)||((u==="USB"||u==="LSB")&&MS0.has("SSB"))||(u==="JS8"&&MS0.has("JS8CALL"))};
     const pick2=q.filter(z=>okM(z.m));const pk=pick2.find(z=>z.m&&my&&z.m===my)||pick2[0];
     if(pk){f=pk.f.toFixed(3);mode=pk.m}
-    else{const sp=(L.spots||[]).filter(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b&&okM(z.mode||""))[0];if(sp){f=sp.f;mode=sp.mode||""}else if(q.length)return}
+    else{const sp=spx&&okM(spx.mode||"")?spx:((L.spots||[]).filter(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b&&okM(z.mode||""))[0]||(()=>{try{return dxSpots(d).find(o=>o.band===x.b&&okM(o.mode||""))||null}catch(_){return null}})());if(sp){f=sp.f;mode=sp.mode||""}else if(q.length)return}
     const MYS=new Set();try{CMS().forEach(k=>MYS.add(String(MODES[k].s).toUpperCase()))}catch(_){}
     let hab=false;if(!mode&&Array.isArray(d.modes)&&d.modes.length){const mm=d.modes.map(z=>String(z).toUpperCase());mode=mm.includes(my)?my:(mm.find(z=>MYS.has(z))||(mm.includes("SSB")&&!/CW|FT/.test(my)?"SSB":mm[0]))}
     /* sin QSX ni spot en esa banda: la frecuencia habitual de las DXpediciones en ese modo */
     if(!f&&mode){const H={SSB:[1.845,3.790,7.090,14.195,18.145,21.295,24.945,28.495,null,null,50.110],CW:[1.826,3.523,7.023,14.023,18.073,21.023,24.893,28.023,5.354,10.106,50.090],
       FT8:[1.840,3.573,7.074,14.074,18.100,21.074,24.915,28.074,5.357,10.136,50.313],FT4:[1.840,3.575,7.047,14.080,18.104,21.140,24.919,28.180,null,10.140,50.318],
       RTTY:[1.838,3.580,7.040,14.083,18.105,21.083,24.925,28.083,null,10.140,50.300]};const v=(H[mode]||[])[x.b];if(v){f=v.toFixed(3);hab=true}}
+    /* 2.11.45: sin modo conocido ni spots en esa banda, la frecuencia habitual en tu modo; si hay spots, pero en otro modo,
+       o no hay forma de saber la frecuencia, la tarjeta no sale (no diría dónde escuchar) */
+    if(!f&&!mode&&my&&!(L.spots||[]).some(z=>z.call&&z.call.toUpperCase()===call.toUpperCase()&&z.band===x.b)){const H2={SSB:[1.845,3.790,7.090,14.195,18.145,21.295,24.945,28.495,null,null,50.110],CW:[1.826,3.523,7.023,14.023,18.073,21.023,24.893,28.023,5.354,10.106,50.090],FT8:[1.840,3.573,7.074,14.074,18.100,21.074,24.915,28.074,5.357,10.136,50.313]};const v=(H2[my]||[])[x.b];if(v){f=v.toFixed(3);mode=my;hab=true}}
+    if(!f)return;
     const tg=[`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`];
     let pp=x.p,plp=!!x.lp;try{const mk=Object.keys(MODES).find(z=>String(MODES[z].s).toUpperCase()===String(mode).toUpperCase());const ex=mk?MODES[mk].adj-MD().adj:0;
       const t=tFor(d),lh=localNow();if(ex&&t){const a1=prob(t,lh,x.b,false,ex).p,a2=t.l?prob(t,lh,x.b,true,ex).p:0;plp=a2>a1&&a2>=.05;pp=plp?a2:a1}}catch(_){}

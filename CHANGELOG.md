@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.45 — 2026-11-22
+
+- ES: «Qué hacer ahora», DXpediciones: cada tarjeta dice siempre dónde escuchar (frecuencia y modo). Si el aviso solo trae el prefijo (por ejemplo 3B8), se usa la actividad real del clúster; si no hay spots, la frecuencia habitual de las DXpediciones en tu modo, avisándolo. Con «Mi modo», no salen las que solo están activas en otros modos.
+- EN: "What to do now", DXpeditions: every card always says where to listen (frequency and mode). If the alert only gives the prefix (for example 3B8), the real cluster activity is used; with no spots, the usual DXpedition frequency in your mode, flagged as such. With "My mode", those only active in other modes are not shown.
+
 ## 2.11.44 — 2026-11-22
 
 - ES: Spots de los socios: se consultan cada 15 segundos mientras se usa la plataforma, cada 2 minutos tras 5 minutos sin tocar nada y nunca con la página oculta. Evita pasar del límite diario gratuito de Cloudflare aunque muchos socios la dejen abierta.
