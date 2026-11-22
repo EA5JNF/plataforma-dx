@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.47 — 2026-11-22
+
+- ES: «HF para tu estación» más clara: una línea que dice para qué sirve, columnas con nombre (Ahora, De día, De noche) con su hora, solo números en las casillas y la mejor banda de ahora marcada.
+- EN: "HF for your station" is clearer: one line saying what it is for, named columns (Now, By day, At night) with their time, just numbers in the cells and the best band right now highlighted.
+
 ## 2.11.46 — 2026-11-22
 
 - ES: Concursos: nueva tarjeta «En el aire, aunque no puntúen desde España» con los concursos nacionales de otros países que llenan las bandas (de momento, ARRL Sweepstakes en CW y en SSB), con sus fechas en hora española y qué significan para nosotros. Mientras uno está en marcha, aviso bajo el buscador del clúster para entender por qué hay tantas estaciones de EE. UU. y Canadá.
