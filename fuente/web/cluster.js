@@ -458,12 +458,12 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
   const bl=bsl.length?" "+T("en","on")+" "+(bsl.length>1?bsl.slice(0,-1).join(", ")+T(" y "," and ")+bsl[bsl.length-1]:bsl[0]):"";
   let h="";const srcs=[];
   if(TYPES.has("dx")){const rows=dxs.filter(x=>inB(x.s.band));
-    if(TYPES.size>1)h+=`<p class="note clsec">DX</p>`;
     /* 2.10.24: de dónde salen (y por qué faltan) los DX: el recuento de todos los spots del clúster */
     try{const all=L.spots||[];let oM=0,oB=0,ac=0,nr=0,dx0=0;const bsx=CMBANDS(),ms=CMS();
       for(const z of all){if(isActSpot(z)){ac++;continue}if(!ms.includes(spotMode(z))){oM++;continue}if(!bsx.has(z.band)||!inB(z.band)){oB++;continue}const k=spotKind(z);if(k!=="dx"&&k!=="ind"){nr++;continue}dx0++}
-      const bits=[T(`<b>${dx0}</b> DX con tu modo y tus bandas`,`<b>${dx0}</b> DX in your mode and bands`)];if(oM)bits.push(T(`${oM} de otros modos`,`${oM} in other modes`));if(oB)bits.push(T(`${oB} de otras bandas`,`${oB} on other bands`));if(ac)bits.push(T(`${ac} activaciones (POTA, SOTA…)`,`${ac} activations (POTA, SOTA…)`));if(nr)bits.push(T(`${nr} de España`,`${nr} from Spain`));
-      h+=`<p class="note clwhy">${T(`De los ${all.length} spots del clúster`,`Of the ${all.length} cluster spots`)}: ${bits.join(" · ")}.${st.mode==="contest"?" "+T("En modo concursos «Para ti» pide más señal, porque tienen que copiarte a la primera.","In contest mode «For you» asks for a stronger signal, because they must copy you first time."):""}</p>`}catch(_){}
+      /* 2.11.12: título y recuento en una sola línea: «DX 185 con tu modo y tus bandas», y el resto, en pequeño */
+      const bits=[];if(oM)bits.push(T(`${oM} de otros modos`,`${oM} in other modes`));if(oB)bits.push(T(`${oB} de otras bandas`,`${oB} on other bands`));if(ac)bits.push(T(`${ac} activaciones (POTA, SOTA…)`,`${ac} activations (POTA, SOTA…)`));if(nr)bits.push(T(`${nr} de España`,`${nr} from Spain`));
+      h+=`<p class="clsum"><b class="clsk">DX</b> <b class="clsn">${dx0}</b> ${T("con tu modo y tus bandas","in your mode and bands")} <span class="clsx">${T(`de ${all.length} spots en total`,`of ${all.length} spots in all`)}${bits.length?" · "+bits.join(" · "):""}</span></p>${st.mode==="contest"?`<p class="note clwhy">`+T("En modo concursos «Para ti» pide más señal, porque tienen que copiarte a la primera.","In contest mode «For you» asks for a stronger signal, because they must copy you first time.")+`</p>`:""}`}catch(_){}
     /* 2.8.20: una fila por estación (sus otras frecuencias al lado), por defecto solo lo que puedes trabajar
        (oída en la última media hora y con al menos un 10 %), lo nuevo arriba y pocas filas con «Ver N más» */
     const G=new Map();rows.forEach(x=>{let pp=0;try{pp=spotProb(x.s,x.e,x.a).p}catch(_){pp=x.e.p||0}x.pp=pp;const k=SK(x.s.call);if(!G.has(k))G.set(k,[]);G.get(k).push(x)});
@@ -488,7 +488,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     bx.insertAdjacentHTML("beforeend",`<p class="note clnote">${T(`Activadores de ${pl} de todo el mundo en la última hora, en ${CMSTXT()}${bl}. Los más recientes, arriba.`,`${pl} activators worldwide in the last hour, in ${CMSTXT()}${bl}. Newest first.`)}</p>`);
     if(TYPES.has("dx"))h+=`<p class="note clsec">${pl}</p>`;
     h+=rows.length?rows.slice(0,N).map(progRow).join("")+(rows.length>N?`<p class="note">${T(`Y ${rows.length-N} más.`,`And ${rows.length-N} more.`)}</p>`:""):`<div class="empty">${T(`Ningún activador de ${pl} en ${CMSTXT()}${bl} en la última hora.`,`No ${pl} activators in ${CMSTXT()}${bl} in the last hour.`)}</div>`;
-    srcs.push((Array.isArray(L.acts)?T("POTA, SOTAwatch, WWFF Spots y Spothole","POTA, SOTAwatch, WWFF Spots and Spothole"):T("comentarios de los spots del clúster","cluster spot comments"))+(L.actsUTC?T(` · revisado a las ${String(L.actsUTC).slice(11,16)} UTC`,` · checked at ${String(L.actsUTC).slice(11,16)} UTC`):""))}
+    srcs.push((Array.isArray(L.acts)?T("Spothole","Spothole"):T("Spothole y los comentarios de los spots del clúster","Spothole and cluster spot comments"))+(L.actsUTC?T(` · revisado a las ${String(L.actsUTC).slice(11,16)} UTC`,` · checked at ${String(L.actsUTC).slice(11,16)} UTC`):""))}
   h+=`<details class="srcd"><summary>${T("Fuentes","Sources")}</summary>${srcs.map(x=>`<p class="note">${x}</p>`).join("")}</details>`;
   box.innerHTML=h;try{srchInit();if($("srchq")&&$("srchq").value)srchRun()}catch(_){}}
 window.ACRACB_clrender=render;

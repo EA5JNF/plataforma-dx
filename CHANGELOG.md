@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.12 — 2026-11-22
+
+- ES: El botón del locator en la caja de la estación es ahora igual que los de modo, banda y potencia: misma letra, mismo borde, mismo alto y texto centrado (tenía un margen y un relleno sobrantes que lo descolocaban). También «Subir log» y los selectores del concurso siguen el mismo estilo.
+- ES: Recuento del clúster en una línea: «DX 185 con tu modo y tus bandas», y en pequeño el total y lo que queda fuera (otros modos, otras bandas, activaciones, España). Desaparece el título «DX» suelto.
+- ES: La fuente de las activaciones se indica como Spothole.
+- EN: The locator button in the station box now matches the mode, band and power buttons: same font, border, height and centered text (a stray margin and padding pushed it out of place). "Upload log" and the contest selectors follow the same style.
+- EN: Cluster count on one line: "DX 185 in your mode and bands", with the total and what is left out (other modes, other bands, activations, Spain) in small print. The lone "DX" heading is gone.
+- EN: The source of activations is shown as Spothole.
+
 ## 2.11.11 — 2026-11-22
 
 - ES: Listados en el móvil (clúster, avisos, buscador, DXpediciones y demás listas tipo clúster): dos líneas limpias y alineadas entre filas. En la primera, indicativo, bandera y país, probabilidad y botones; en la segunda, la frecuencia justo debajo del indicativo, modo, banda, etiquetas en la misma línea y antigüedad a la derecha. Ya no hay una tercera línea para las etiquetas ni la frecuencia sale desplazada; si una etiqueta no cabe, se corta y se ve entera al desplegar.
