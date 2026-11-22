@@ -14,8 +14,8 @@ function seg(id,label){const s=$i(id);if(!s)return e2(label);
   return `<button type="button" class="qs" data-qs="${id}" aria-haspopup="listbox" aria-expanded="false" aria-label="${e2((s.getAttribute("aria-label")||"")+": "+label)}">${e2(label)}<span class="qsc" aria-hidden="true"></span></button>`}
 function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw="",an="";
   try{loc=String($i("loc").value||"").slice(0,6);md=MD().s;h=HB();const p=PWN().split(" ");pw=p[0]+" "+p[1];an=ANTL()}catch(_){return false}
-  const html=`<b>${e2(loc)}</b> · ${seg("modesel",md)} · ${seg("bandsel",h!=null?BANDS[h]:T("Todas las bandas","All bands"))} · ${seg("eq",pw)} · ${seg("antsel",an)}`+
-    (st.mode==="contest"?` · <b>${T("Concursos","Contests")}</b>`:"");
+  /* 2.11.4: sin puntos entre piezas (los botones ya se separan) ni «Concursos» al final, que ya lo dice el botón de modo */
+  const html=`<b class="qsl">${e2(loc)}</b>${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:T("Todas las bandas","All bands"))}${seg("eq",pw)}${seg("antsel",an)}`;
   if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
   return true}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */

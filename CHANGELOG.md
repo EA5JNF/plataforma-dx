@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.4 — 2026-11-22
+
+- ES: Línea y panel de la estación sin repeticiones. Arriba, el locator y cuatro botones (modo, banda, potencia y antena), sin puntos ni «Concursos» al final; en vista compacta ya se ve entera y no se corta la antena. En el panel ya no se repiten modo, banda, potencia ni antena (siguen guardados y se cambian con los botones): quedan el locator, «Tu estación» solo con altitud y entorno, las coordenadas con la zona de cálculo VOACAP, y «Cálculo» solo con SFI, SSN y Kp. La nota del radioclub solo sale si usas su estación. En compacta se ocultan además las coordenadas y esa nota.
+- EN: Station line and panel without repetition. At the top, the locator and four buttons (mode, band, power and antenna), with no dots or "Contests" at the end; in compact view it now shows in full and the antenna is no longer cut off. The panel no longer repeats mode, band, power or antenna (still stored, changed with the buttons): it keeps the locator, "Your station" with only altitude and surroundings, the coordinates with the VOACAP zone, and "Calculation" with just SFI, SSN and Kp. The club-station note only shows if you use that station. Compact view also hides the coordinates and that note.
+
 ## 2.11.3 — 2026-11-22
 
 - ES: Modo, banda, potencia y antena de la línea de la estación: cada uno es ahora un botón que abre un menú propio, con la opción actual marcada, igual en iPhone, iPad, Android y ordenador (también con teclado). Antes había un selector invisible encima del texto que en Safari a veces no se abría, y la raya discontinua de debajo se veía rota.
