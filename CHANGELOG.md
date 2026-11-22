@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.29 — 2026-11-22
+
+- ES: «Qué hacer»: una estación anunciada varias veces en la misma banda sale una sola vez, con el spot más reciente.
+- ES: «HF para tu estación»: columnas «A las 13:00» y «A la 1:00» en lugar de «13 h» y «1 h», que se confundían con «dentro de una hora».
+- ES: El botón «Anunciar spot» del buscador de DX es ahora un botón de contorno a su medida, no un bloque lleno a todo el ancho.
+- EN: "What to do": a station spotted several times on the same band shows only once, with the latest spot.
+- EN: "HF for your station": columns "At 1 pm" and "At 1 am" instead of the ambiguous "1 pm" and "1 am".
+- EN: The "Post spot" button by the DX search is now a fitted outline button, not a full-width block.
+
 ## 2.11.28 — 2026-11-22
 
 - ES: Preparada para alojarse fuera de GitHub: si la web se sirve desde otro servidor, las órbitas y el estado de los satélites se siguen leyendo de la copia que GitHub actualiza dos veces al día.

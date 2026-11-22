@@ -172,6 +172,8 @@ window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
+  /* 2.11.29: la misma estación anunciada varias veces en la misma banda sale una sola vez, con el spot más reciente */
+  {const m=new Map();for(const x of (go||[])){const k=SK(x.s.call)+"|"+x.s.band,y=m.get(k);if(!y||(x.a!=null&&(y.a==null||x.a<y.a)))m.set(k,x)}go=(go||[]).filter(x=>m.get(SK(x.s.call)+"|"+x.s.band)===x).slice(0,3)}
   (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("Clúster","Cluster")}</span>`].concat(st.pr);
     out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,sig:(()=>{try{return sigRow(s,e,sp)}catch(_){return ""}})(),
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
