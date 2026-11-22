@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.49 — 2026-11-22
+
+- ES: Sol: la barra «Sol y propagación ahora» ya no se repite en Sol; queda arriba, en la parte general, y Sol tiene una pestaña nueva, «Propagación», con el mismo contenido abierto.
+- ES: «HF para tu estación» va primero y se lee en tres frases: la mejor banda ahora, esta noche y mañana, y las otras abiertas. La tabla por bandas queda plegada en «Ver el detalle por banda».
+- EN: Sun: the "Sun and propagation now" bar is no longer repeated in Sun; it stays at the top, in the general area, and Sun has a new "Propagation" tab with the same content open.
+- EN: "HF for your station" comes first and reads as three sentences: the best band now, tonight and tomorrow, plus the others open. The band table is folded under "See the detail by band".
+
 ## 2.11.48 — 2026-11-22
 
 - ES: «HF para tu estación»: las columnas dicen qué hora concreta son y van en orden: Ahora, Esta noche a la 1 h y Mañana (u Hoy) a las 13 h, con una nota que lo explica.

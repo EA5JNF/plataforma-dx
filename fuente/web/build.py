@@ -229,6 +229,10 @@ R('const BANDS=["160 m","80 m","40 m","20 m","17 m","15 m","12 m","10 m","60 m",
 R('const SPOTS=','let SPOTS=')
 R('<div class="dxl dxlw" id="dxl"></div></details>',
   '<div class="dxl dxlw" id="dxl"></div></details>\n<details class="card fold" id="f_heard" data-tab="¿Me oyen?"><summary><h2>¿Quién me oye ahora?</h2><span class="fsum" id="s_heard"></span></summary><div id="heardbox"></div></details>')
+# 2.11.49: en Sol, la propagación HF para tu estación es una pestaña más (antes, una barra plegable repetida)
+if 'id="f_prop"' not in s:
+    i = s.index('<details class="card fold" id="f_cycle" data-tab="Ciclo solar">')
+    s = s[:i] + '<details class="card fold" id="f_prop" data-tab="Propagación"><summary><h2>Propagación para tu estación</h2><span class="fsum" id="s_prop"></span></summary><div id="propbox" class="fin"></div></details>\n    ' + s[i:]
 if 'id="f_qrp"' not in s:
     i = s.index('<details class="card fold" id="f_info" data-tab="Ficha">')
     s = s[:i] + '<details class="card fold" id="f_qrp" data-tab="QRP"><summary><h2>QRP: frecuencias y consejos</h2><span class="fsum" id="s_qrp"></span></summary><div id="qrpbox"></div></details>\n' + s[i:]
