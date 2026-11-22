@@ -1706,9 +1706,11 @@ html.vl .hrow .hp{text-align:right}
 .sline>#stbtn{width:34px!important;min-width:34px!important;padding:0!important;justify-content:center!important}
 .sline>#stbtn .stl{display:none!important}
 .sline>#stbtn::before{width:.8em!important;height:.8em!important;opacity:.8}
-/* 2.11.22: las tarjetas de estación miden lo que necesitan (antes se igualaban a la más alta de la fila y dejaban huecos) */
-#spots,#near,#dxl,.alc{align-items:start!important}
-@media (min-width:1100px){#spots,#near{align-items:start!important}}
+/* 2.11.31: vuelven las tarjetas de estación del mismo alto en cada fila (2.11.22 las dejaba cada una a su medida);
+   los botones («Ya la tengo», «¿Lo oyes?», «Anunciar») quedan todos abajo, a la misma altura */
+#spots,#near,.alc,.reccards{align-items:stretch!important}
+html:not(.vl) :is(#spots,#near,.alc,.reccards)>.sc{height:auto}
+html:not(.vl) :is(#spots,#near,.alc,.reccards)>.sc>.ohbox{margin-top:auto!important}
 .sc-d .sgn{display:block;margin-top:2px}
 .swim figcaption b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 2.11.25: anunciar un spot: botón destacado junto al buscador, botón en cada estación y ventana propia */

@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.31 — 2026-11-22
+
+- ES: Las tarjetas de estación (clúster, avisos DX, «Qué hacer ahora», actividad cercana) vuelven a medir todas lo mismo, también de una fila a otra, y los botones «Ya la tengo», «¿Lo oyes?» y «Anunciar» quedan alineados abajo.
+- EN: Station cards (cluster, DX alerts, "What to do now", nearby activity) are all the same size again, across rows too, with the "Got it", "Hear it?" and "Post" buttons aligned at the bottom.
+
 ## 2.11.30 — 2026-11-22
 
 - ES: Vista de lista en pantallas estrechas («Qué hacer ahora» en el móvil): el país se lee entero, junto a su bandera; la probabilidad pasa a la segunda línea y las etiquetas («Clúster», «DXpedición») van completas debajo.
