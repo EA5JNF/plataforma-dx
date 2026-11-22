@@ -108,23 +108,25 @@ window.ACRACB_tx=t=>{if(!t)return t;let x=String(t).replace(/\b(\d{1,3}\.\d{3})\
 const cTr=c=>{if(!c)return c;c=window.ACRACB_tx(c);if(window.ACRACB_LANG!=="en")return c;return String(c).replace(/oído por skimmer \(RBN\)/g,"heard by a skimmer (RBN)").replace(/decodificado \(PSK Reporter\)/g,"decoded (PSK Reporter)").replace(/, oída en /g,", heard in ").replace(/ en (\d+ ?c?m) /g," on $1 ").replace(/ con (\d\/\d)/g," with $1")};
 const ACTIVE=60;const isAct=a=>a!=null&&isFinite(a)&&a<=ACTIVE;window.ACRACB_isAct=c=>isAct(lastAge(c));
 const ageTag=(a,t)=>a!=null||t?`<span class="sc-age" title="${t?e2(t)+" UTC":""}">${ago(a)}</span>`:`<span class="sc-age">${T("sin spots recientes","no recent spots")}</span>`;
+/* 2.11.25: los mismos datos, en el mismo orden, en la tarjeta y en la fila desplegada de la vista de lista: quién lo
+   publica, split, nota, rumbo y distancia por los dos caminos (como siempre), probabilidad y señal prevista */
+function detOf(o){const g=o.geo;let rumbo="",dist="",pr="";
+  if(g){rumbo=`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`;
+    dist=`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`}
+  if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
+    if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
+    else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
+  return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Probabilidad","QSO chance"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""]].concat(o.secs||[]).filter(([,v])=>v)}
 function card(o){
   if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
   if(o.call&&document.documentElement.classList.contains("vl"))return listRow(o);
   const h=`<div class="sc-h"><span class="sc-call">${o.call?stBtn(o.call,o.band):""}</span>${o.call||o.a!=null||o.t?ageTag(o.a,o.t):""}</div>`;
   const fl=[o.f?`<b class="sc-fq" style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:"",o.mode?mb(o.mode):"",o.band!=null&&BANDS[o.band]?`<span class="sc-b"${o.f?"":` style="color:${BC[o.band]};font-weight:600"`}>${BANDS[o.band]}</span>`:""].concat(o.tags||[]).concat(o.geo?[`<span class="sc-cp">${o.geo.az}° ${cab(o.geo.az)}</span>`]:[]).concat(o.p!=null?[`<span class="sc-cp"><b>${o.p} %</b></span>`]:[]).filter(Boolean);
   const f=fl.length?`<div class="sc-f">${fl.join("")}</div>`:"";
-  const g=o.geo;let rumbo="",dist="";
-  /* 2.11.22: el camino largo solo se enseña cuando cuenta (DX lejano o si es el mejor); la probabilidad va en su propia fila
-     y, si los clústeres la cambian mucho respecto al modelo, se dice por qué */
-  if(g){const lg=o.lpb||g.km>=6000;rumbo=lg?`<span class="nw">${T("corto","short")} ${g.az}° ${cab(g.az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${g.laz}° ${cab(g.laz)}</span>`:`${g.az}° ${cab(g.az)}`;
-    dist=lg?`<span class="nw">${T("corto","short")} ${fk(g.km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(g.lkm!=null?g.lkm:Math.max(0,40030-g.km))} km</span>`:`${fk(g.km)} km`}
-  let pr="";if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
-    if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
-    else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
+  const D=detOf(o);
   const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:"";
   const acc=o.call?`${ohd?"":` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`}`:"";
-  return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${sec(o.byLbl||T("Le oyen","Heard by"),o.by)}${sec("Split / QSL",o.xs)}${sec(T("Rumbo","Bearing"),rumbo)}${sec(T("Distancia","Distance"),dist)}${sec(T("Probabilidad de QSO","QSO chance"),pr)}${sec(T("Señal prevista","Expected signal"),o.sig||"")}${sec(T("Nota","Note"),o.note)}${(o.secs||[]).map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
+  return `<div class="sc${o.old||(o.call&&(o.a!=null?!isAct(o.a):!o.t))?" old":""}${o.call?" ohc":""}"${ohd}${acc}>${h}${f}<dl class="sc-d">${D.map(([l,v])=>sec(l,v)).join("")}</dl>${window.ACRACB_ohBox&&o.call&&(o.a!=null?isAct(o.a):!!o.t)?ACRACB_ohBox(o.oh||{call:SK(o.call),b:o.band!=null&&o.band<10?o.band:null,mode:o.mode||""}):""}</div>`}
 window.ACRACB_card=o=>card(o);
 /* 2.10.31: vista de lista: una fila por estación con las columnas alineadas (como un clúster web, pero con más datos),
    en todos los listados que usan la tarjeta de estación. Al tocar la fila se despliegan los detalles. Vale con la vista
@@ -160,7 +162,7 @@ function listRow(o){const strip0=h=>String(h||"").replace(/<[^>]+>/g," ").replac
     `<span class="l-x" aria-hidden="true"></span>`+
     /* 2.10.39: lo desplegado, en fichas que llenan el ancho (antes una columna estrecha); el comentario solo si hay texto
        libre, porque las etiquetas ya se ven en la fila */
-    `<div class="sc-d ld">${[[o.byLbl||T("Le oyen","Heard by"),o.by],[T("Comentario","Comment"),(o.xs||o.note)?`<span class="l-cfull">${o.xs?`<span class="l-ct">${o.xs}</span>`:""}${o.note?`<span class="l-ct">${e2(o.note)}</span>`:""}</span>`:""],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist]].concat(o.secs||[]).filter(([,v])=>v).map(([l,v])=>`<div class="ldi"><span class="ldl">${l}</span><div class="ldv">${v}</div></div>`).join("")}</div>`+
+    `<div class="sc-d ld">${detOf(o).map(([l,v])=>`<div class="ldi"><span class="ldl">${l}</span><div class="ldv">${v}</div></div>`).join("")}</div>`+
     (oh?`<div class="l-ohx">${oh}</div>`:"")+`</div>`}
 /* 2.11.2: quién publicó el spot (los indicativos que lo anunciaron) y en qué red: clúster DX (Spothole o HamQTH) o Reverse Beacon */
 function pubBy(s){const b=CSL(s.by,", ");const V={RBN:"Reverse Beacon",Spothole:"Spothole",HamQTH:"HamQTH",POTA:"POTA",SOTA:"SOTA"};
@@ -170,7 +172,7 @@ window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
-  (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
+  (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("Clúster","Cluster")}</span>`].concat(st.pr);
     out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,sig:(()=>{try{return sigRow(s,e,sp)}catch(_){return ""}})(),
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
   /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
@@ -206,7 +208,7 @@ function lastOwn(call,b,dir){dir=dir||"rx";try{for(let i=OBS.length-1;i>=0;i--){
 window.ACRACB_ohBox=oh=>{if(oh.b!=null&&oh.b>=10)return "";if(oh.b===""||oh.b===undefined)oh=Object.assign({},oh,{b:null});const last=lastOwn(oh.call,oh.b),tx=lastOwn(oh.call,oh.b,"tx");
   const bb=o=>oh.b==null&&o&&BANDS[o.b]?" · "+BANDS[o.b]:"";
   const st=last?(last.h?`<span class="ohs y">${T("Lo oyes","You hear it")}${bb(last)}${last.r!=null?" · R"+last.r:""}${last.s!=null?" · "+sTxt(last.s):""}${last.db!=null?" · "+(last.db>0?"+":"")+last.db+" dB":""}</span>`:`<span class="ohs n">${T("No lo oyes","You don't hear it")}${bb(last)}</span>`):"";
-  return `<div class="ohbox"><div class="ohr"><button type="button" class="ohq" data-ohq data-t="${e2(oh.t||"")}" data-b="${oh.b==null?"":oh.b}" data-call="${e2(oh.call)}" data-mode="${e2(oh.mode||"")}">${T("¿Lo oyes?","Do you hear it?")}</button>${st}${tx?(tx.h?`<span class="ohs y">${T("Te oyen","They hear you")}${bb(tx)}${tx.r!=null?" · R"+tx.r:""}${tx.s!=null?" · "+sTxt(tx.s):""}${tx.db!=null?" · "+(tx.db>0?"+":"")+tx.db+" dB":""}</span>`:`<span class="ohs n">${T("No te oyen","They don't hear you")}${bb(tx)}</span>`):""}</div></div>`};
+  return `<div class="ohbox"><div class="ohr"><button type="button" class="ohq" data-ohq data-t="${e2(oh.t||"")}" data-b="${oh.b==null?"":oh.b}" data-call="${e2(oh.call)}" data-mode="${e2(oh.mode||"")}">${T("¿Lo oyes?","Do you hear it?")}</button>${st}${tx?(tx.h?`<span class="ohs y">${T("Te oyen","They hear you")}${bb(tx)}${tx.r!=null?" · R"+tx.r:""}${tx.s!=null?" · "+sTxt(tx.s):""}${tx.db!=null?" · "+(tx.db>0?"+":"")+tx.db+" dB":""}</span>`:`<span class="ohs n">${T("No te oyen","They don't hear you")}${bb(tx)}</span>`):""}<button type="button" class="ohsp" data-spot="${e2(oh.call)}" title="${T("Anunciar este spot en los clústeres","Post this spot to the clusters")}">${window.ACRACB_spotIcon||""}<span>${T("Anunciar","Spot it")}</span></button></div></div>`};
 /* diálogo «¿Lo oyes?»: se abre solo al tocar el texto «¿Lo oyes?» de la tarjeta (2.8.16) */
 const VOICE=m=>/^(SSB|USB|LSB|AM|FM|PHONE)?$/i.test(String(m||"").trim());
 const RTXT={1:["ilegible","unreadable"],2:["apenas","barely"],3:["con esfuerzo","with effort"],4:["casi sin problema","almost perfect"],5:["perfecto","perfect"]};
@@ -397,11 +399,12 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}const need=g.req-ex;
   const mn=k==="cw"?"CW":["ft8","ft4","jt65","js8","psk","rtty"].includes(k)?k.toUpperCase():T("la fonía","phone");
   const rep=x=>{const m=x.snr-need,v=Math.min(x.s,9+40),pc=Math.round(Math.min(1,v/13)*100),c=m>=6?"sg-g":m>=0?"sg-y":"sg-r";
-    const w=m>=6?T("de sobra para ","plenty for ")+mn:m>=0?T("justa para ","just enough for ")+mn:T("no le basta a ","not enough for ")+mn;
-    return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b>`+` <span class="sgx">${w}${x.low?T(` · ruido ${sTxt(x.ns)}`,` · noise ${sTxt(x.ns)}`):""}</span>`};
-  const same=g.rx.s===g.tx.s&&Math.abs(g.rx.snr-g.tx.snr)<3;
-  let h=same?`<span class="sgl"><span class="sgk">${T("En los dos sentidos","Both ways")}</span>${rep(g.rx)}</span>`
-    :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear them")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","They hear you")}</span>${rep(g.tx)}</span>`;
+    const w=m>=6?T("de sobra","plenty"):m>=0?T("justa","just enough"):T("no basta","not enough");
+    return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b><span class="sgx" title="${T("para ","for ")}${mn}${x.low?T(` · ruido ${sTxt(x.ns)}`,` · noise ${sTxt(x.ns)}`):""}">${w}</span>`};
+  const cl=x=>{const m=x.snr-need;return m>=6?2:m>=0?1:0};
+  const same=g.rx.s===g.tx.s&&cl(g.rx)===cl(g.tx);
+  let h=same?`<span class="sgl"><span class="sgk">${T("Ida y vuelta","Both ways")}</span>${rep(g.rx)}</span>`
+    :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","Hears you")}</span>${rep(g.tx)}</span>`;
   h=`<span class="sgw" title="${T("Mediana del mes según el modelo","Monthly median from the model")}">${h}</span>`;
   const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
   if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}

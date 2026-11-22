@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.25 — 2026-11-22
+
+- ES: Anunciar spots, más visible y más fiable: botón «Anunciar spot» junto al buscador de DX y botón «Anunciar» en cada estación (tarjeta o fila), que abre una ventana ya rellena con el indicativo y la frecuencia. Si el navegador no deja leer la respuesta de DX Summit, se envía como formulario, y en los dos casos se comprueba en los clústeres que el spot ha salido de verdad; si en 3 minutos no aparece, se dice y se explica cómo hacerlo en DX Summit.
+- ES: Camino largo siempre visible, como antes, en rumbo y distancia.
+- ES: La fila desplegada de la vista de lista muestra lo mismo que la tarjeta, incluidas la probabilidad y la señal, y los nombres largos ya no se montan sobre la columna de al lado.
+- ES: Señal prevista en una línea por sentido («Le oirás ▬ S9 de sobra»), una sola si es igual en los dos; etiquetas más cortas («Probabilidad», «Señal») y «Clúster» en lugar de «En el clúster».
+- EN: Posting spots, more visible and more reliable: a "Post spot" button next to the DX search and a "Spot it" button on every station (card or row), which opens a window already filled with the callsign and frequency. If the browser does not allow reading DX Summit's answer, it is sent as a form, and in both cases the clusters are checked to see that the spot really went out; if it does not show within 3 minutes, you are told and shown how to do it on DX Summit.
+- EN: Long path always shown again, as before, in bearing and distance.
+- EN: The expanded row in list view shows the same as the card, including chance and signal, and long names no longer overlap the next column.
+- EN: Expected signal on one line per direction, a single one if both are the same; shorter labels ("Chance", "Signal") and "Cluster" instead of "On the cluster".
+
 ## 2.11.24 — 2026-11-22
 
 - ES: RSGB IOTA: los spots del clúster que llevan una referencia IOTA en el comentario (como EU-005) cuentan 15 puntos; el resto, 2.
