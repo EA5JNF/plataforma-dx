@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.48 — 2026-11-22
+
+- ES: «HF para tu estación»: las columnas dicen qué hora concreta son y van en orden: Ahora, Esta noche a la 1 h y Mañana (u Hoy) a las 13 h, con una nota que lo explica.
+- EN: "HF for your station": the columns say which specific hour they are and run in order: Now, Tonight at 1 am and Tomorrow (or Today) at 1 pm, with a note explaining it.
+
 ## 2.11.47 — 2026-11-22
 
 - ES: «HF para tu estación» más clara: una línea que dice para qué sirve, columnas con nombre (Ahora, De día, De noche) con su hora, solo números en las casillas y la mejor banda de ahora marcada.
