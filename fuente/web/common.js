@@ -12,10 +12,19 @@ const $=id=>document.getElementById(id);
 const S={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 /* ---------- al abrir, la página empieza siempre arriba, con la cabecera a la vista ---------- */
 try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
-let touched=false;["touchstart","wheel","keydown","mousedown"].forEach(ev=>addEventListener(ev,()=>{touched=true},{once:true,passive:true}));
-function toTop(){[0,200,600,1200,2500].forEach(t=>setTimeout(()=>{if(!touched&&scrollY>0)scrollTo(0,0)},t))}
-toTop();addEventListener("pageshow",()=>{touched=false;toTop()});
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&scrollY<400){touched=false;toTop()}});
+/* 2.11.16: la subida automática solo se hace al abrir y mientras no hayas tocado nada. Antes los avisos de «has tocado» se
+   quitaban tras el primer uso y, al volver a la pestaña, se reiniciaban sin volver a escucharse: la página podía subir
+   sola mientras hacías scroll. */
+let touched=false;const T0=Date.now();["touchstart","touchmove","wheel","keydown","mousedown","pointerdown"].forEach(ev=>addEventListener(ev,()=>{touched=true},{passive:true,capture:true}));
+function toTop(){[0,200,600,1200,2500].forEach(t=>setTimeout(()=>{if(!touched&&scrollY>0&&Date.now()-T0<4000)scrollTo(0,0)},t))}
+toTop();
+/* 2.11.16: cuando una parte de la página se redibuja, la altura puede encoger un instante y el navegador sube la vista;
+   mientras se redibuja se sujeta la altura que estabas viendo (sin medir nada, para no forzar ese salto) */
+(function(){let need=0,tm=0;
+  addEventListener("scroll",()=>{need=scrollY>0?Math.ceil(scrollY+innerHeight):0},{passive:true});
+  /* lo que cierras o cambias tú sí puede acortar la página al momento */
+  ["click","keydown","change"].forEach(ev=>addEventListener(ev,()=>{need=0;clearTimeout(tm);tm=0;if(document.body)document.body.style.minHeight=""},{capture:true,passive:true}));
+  new MutationObserver(()=>{const b=document.body;if(!b||!need||tm)return;b.style.minHeight=need+"px";tm=setTimeout(()=>{b.style.minHeight="";tm=0},1500)}).observe(document.documentElement,{childList:true,subtree:true});})();
 /* ---------- tema claro / oscuro ---------- */
 function setTheme(t,save){document.documentElement.setAttribute("data-theme",t);
   const b=$("thbtn");if(b){b.setAttribute("aria-label",t==="light"?"Cambiar a modo oscuro":"Cambiar a modo claro");b.title=b.getAttribute("aria-label")}

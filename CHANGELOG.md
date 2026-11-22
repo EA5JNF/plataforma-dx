@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.16 — 2026-11-22
+
+- ES: La pantalla ya no sube sola mientras haces scroll. La subida automática al abrir la plataforma dejaba de detectar que estabas tocando la pantalla al volver a la pestaña, y algunos redibujados encogían la página un instante; ahora la subida solo ocurre al abrir y la altura se sujeta mientras se redibuja. En todos los dispositivos.
+- ES: «Cómo se calcula» ordenado en dos grupos con título: «La previsión» y «Lo que se mide hoy». El párrafo suelto y «Clúster» ya no quedan descolgados.
+- ES: Multiplicadores del clúster en concurso: columnas alineadas (frecuencia, indicativo y país, zona, probabilidad y puntos); el país se corta en vez de partir la línea.
+- EN: The screen no longer jumps up on its own while you scroll. The automatic scroll to the top on opening stopped noticing your touches after you returned to the tab, and some redraws shrank the page for a moment; now it only happens on opening and the height is held while redrawing. On every device.
+- EN: "How it is calculated" grouped under two headings: "The forecast" and "What is measured today". The loose paragraph and "Cluster" no longer hang at the end.
+- EN: Cluster multipliers in contests: aligned columns (frequency, call and country, zone, probability and points); the country is truncated instead of wrapping the line.
+
 ## 2.11.15 — 2026-11-22
 
 - ES: Etiquetas del comentario en la vista de lista: «NUEVO» ya no deja un recuadro oscuro a su alrededor, «en 2 clústeres» ya no sale con el borde cortado y todas tienen la misma altura y alineación.

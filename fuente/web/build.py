@@ -416,6 +416,23 @@ def assemble(w, upd, LANG, TITLE):
 
     return w
 
+# 2.11.16: «Cómo se calcula» ordenado en dos grupos con título (la previsión y lo que se mide hoy); antes era una lista
+#   suelta con un párrafo en medio y «Clúster» descolgado al final
+def _met(w):
+    i = w.index('<div class="note mlist2">') + len('<div class="note mlist2">'); j = w.index('</div>\n      <p class="note" id="src">', i)
+    b = w[i:j]
+    D = {}
+    for m in re.finditer(r'<details class="mdet"><summary>(.*?)</summary>.*?</details>(?=\s*(?:<details class="mdet">|<p>VOACAP da|$))', b, re.S):
+        D[m.group(1)] = m.group(0)
+    intro = re.search(r'<p>VOACAP da .*?</p>', b, re.S).group(0)
+    A = ["VOACAP real", "Modos y bandas", "Antenas", "Física de antenas cotejada", "Saltos", "Probabilidad", "Modelos físicos que se suman a VOACAP"]
+    B = ["Clúster", "Equilibrio con los clústeres", "Ionosonda", "Cotejo de fuentes", "Tu calibración"]
+    rest = [k for k in D if k not in A + B]
+    assert all(k in D for k in A + B), [k for k in A + B if k not in D]
+    out = '\n        <h3 class="mgh">La previsión</h3>' + "".join("\n        " + D[k] for k in A + rest)
+    out += '\n        <h3 class="mgh">Lo que se mide hoy</h3>\n        ' + intro.replace("<p>", '<p class="mgi">', 1) + "".join("\n        " + D[k] for k in B) + "\n      "
+    return w[:i] + out + w[j:]
+w = _met(w)
 upd = open(os.path.join(W, "updater.js"), encoding="utf-8").read()
 w_es = assemble(w, upd, "es", "ACRACB - DX EA5RKB")
 w_es = w_es.replace('<head>\n<meta charset="utf-8">', '<head>\n<meta charset="utf-8">\n<script>try{if(localStorage.getItem("acracb_lang")==="en"&&!/[?&]es\\b/.test(location.search))location.replace("en.html"+location.hash)}catch(e){}</script>', 1)

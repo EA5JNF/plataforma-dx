@@ -1682,3 +1682,19 @@ html.vl .hrow .hp{text-align:right}
 .scl .l-tags{padding-block:2px}
 .scl .l-tags>.nwb,.scl .l-tags>.nsb,.scl .l-tags>.xtag{top:0!important;height:1.6em!important;line-height:1!important;box-sizing:border-box}
 .scl .l-tags>.nwb{box-shadow:0 0 0 1px rgba(255,255,255,.16) inset!important}
+/* 2.11.16: «Cómo se calcula» en dos grupos con título */
+.mlist2 .mgh{margin:14px 0 4px;font:600 .72rem/1.3 var(--f-m,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mlist2 .mgh:first-child{margin-top:4px}
+.mlist2 .mgi{margin:2px 0 8px}
+/* 2.11.16: multiplicadores del clúster en concurso: columnas alineadas (frecuencia, indicativo y país, zona, probabilidad,
+   puntos); el país se corta con puntos suspensivos en vez de partir la línea */
+.clvmb{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto;column-gap:8px;align-items:baseline}
+.clvmb>.clvmh{grid-column:1/-1}
+.clvmb>.clvmi{display:contents}
+.clvmi>*{padding:2px 0;min-width:0;white-space:nowrap}
+.clvmi>.f{text-align:right}
+.clvmi>.cc{overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.clvmi>.cc .cs{display:inline}.clvmi>.cc .cty{font-weight:400;color:var(--muted)}
+.clvmi>.pp,.clvmi>.pt{text-align:right;font-variant-numeric:tabular-nums}
+.clvmi>.mk:empty{padding:0}
+.clvmb{align-content:start}
