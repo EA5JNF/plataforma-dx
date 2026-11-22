@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.27 — 2026-11-22
+
+- ES: Los spots salen a la vez por dos caminos gratuitos y sin registro, a través del intermediario del club: DX Summit y el nodo de clúster SpottedHam (DXSpider). Basta con que uno funcione; la ventana dice por cuál ha salido. Requiere actualizar el intermediario en Cloudflare (ver tutorial).
+- EN: Spots go out through two free, sign-up-free routes at once, via the club relay: DX Summit and the SpottedHam cluster node (DXSpider). One working is enough; the window says which one it went through. Requires updating the relay on Cloudflare (see tutorial).
+
 ## 2.11.26 — 2026-11-22
 
 - ES: Botón «Anunciar spot» junto a «Actualizar», visible desde cualquier pestaña, para anunciar a mano cualquier estación que oigas aunque no esté en ningún listado. En la pestaña DX sigue junto al buscador, con texto también en el móvil.

@@ -1,7 +1,11 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 3
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 4
+import { connect } from "cloudflare:sockets";
 // 2.11.26: además, POST /spot reenvía a DX Summit los spots que anuncian los usuarios desde la plataforma. Desde el
 // navegador no se puede (DX Summit solo acepta envíos desde su propia web); desde aquí, sí. Solo desde la plataforma,
 // con los datos revisados, un spot cada 30 segundos por conexión y sin guardar nada.
+// 2.11.27: el spot sale a la vez por dos caminos gratuitos y sin registro: la API de DX Summit y el nodo DXSpider de
+// SpottedHam (telnet, puerto 7300), que no pide cuenta para anunciar. Los dos están enlazados a la red mundial de
+// clústeres; la red descarta el duplicado (mismo spot, mismo indicativo, mismo minuto). Basta con que uno funcione.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -56,16 +60,45 @@ async function spot(request, origen) {
   const cache = caches.default;
   if (await cache.match(llave)) return json({ status: "espera unos segundos" }, 429, origen);
   await cache.put(llave, new Response("1", { headers: { "Cache-Control": "max-age=30" } }));
+  const [a, b] = await Promise.all([porDXSummit(de, dx, f, info), porTelnet(NODO, de, dx, f, info)]);
+  const via = [a.ok && "DX Summit", b.ok && NODO.nombre].filter(Boolean);
+  if (via.length) return json({ status: "ok", via }, 200, origen);
+  return json({ status: "DX Summit: " + a.msg + " · " + NODO.nombre + ": " + b.msg }, 502, origen);
+}
+async function porDXSummit(de, dx, f, info) {
   const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
   try {
-    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/3.0 (club de radioaficionados)" },
+    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/4.0 (club de radioaficionados)" },
       body: JSON.stringify({ de_call: de, dx_call: dx, frequency: f.toFixed(1), info }) });
     let j = null; try { j = await r.json(); } catch (e) {}
     const ok = r.ok && (!j || j.status == null || j.status === "ok");
-    return json({ status: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 80) : "DX Summit respondió " + r.status) }, ok ? 200 : 502, origen);
-  } catch (e) {
-    return json({ status: "DX Summit no respondió" }, 502, origen);
-  } finally { clearTimeout(t); }
+    return { ok, msg: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 60) : "respondió " + r.status) };
+  } catch (e) { return { ok: false, msg: "no respondió" }; } finally { clearTimeout(t); }
+}
+// nodo DXSpider: se entra con el indicativo de quien anuncia, se manda «dx frecuencia indicativo comentario» y se sale
+const NODO = { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 };
+async function porTelnet(n, de, dx, f, info) {
+  let sock;
+  try {
+    sock = connect({ hostname: n.host, port: n.puerto });
+    const w = sock.writable.getWriter(), r = sock.readable.getReader(), dec = new TextDecoder();
+    let buf = "", fin = false;
+    (async () => { try { for (;;) { const { done, value } = await r.read(); if (done) break; buf += dec.decode(value, { stream: true }); if (buf.length > 65536) buf = buf.slice(-16384); } } catch (e) {} fin = true; })();
+    const espera = async (re, ms, desde = 0) => { const lim = Date.now() + ms; while (Date.now() < lim && !fin) { if (re.test(buf.slice(desde))) return true; await new Promise(z => setTimeout(z, 100)); } return re.test(buf.slice(desde)); };
+    const manda = t => w.write(new TextEncoder().encode(t + "\r\n"));
+    if (!await espera(/login:|call(sign)?:|enter your call/i, 7000)) return { ok: false, msg: "no pidió el indicativo" };
+    await manda(de);
+    if (!await espera(/>\s*$|dxspider|welcome|hello/i, 7000)) return { ok: false, msg: "no dejó entrar" };
+    await new Promise(z => setTimeout(z, 600));
+    const desde = buf.length;
+    await manda(`dx ${f.toFixed(1)} ${dx} ${info}`.trim());
+    await espera(/DX de|sorry|not (allowed|registered)|registered|invalid|error/i, 4000, desde);
+    const resp = buf.slice(desde);
+    try { await manda("bye"); } catch (e) {}
+    if (/sorry|not allowed|not registered|need to (be )?regist|invalid|error/i.test(resp)) return { ok: false, msg: resp.replace(/\s+/g, " ").trim().slice(0, 60) || "lo rechazó" };
+    return { ok: true, msg: "ok" };
+  } catch (e) { return { ok: false, msg: "no respondió" };
+  } finally { try { sock && sock.close(); } catch (e) {} }
 }
 
 export default {
