@@ -124,7 +124,7 @@ window.ACRACB_card=o=>card(o);
 /* 2.10.31: vista de lista: una fila por estación con las columnas alineadas (como un clúster web, pero con más datos),
    en todos los listados que usan la tarjeta de estación. Al tocar la fila se despliegan los detalles. Vale con la vista
    completa y con la compacta. */
-function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
+function listRow(o){const strip0=h=>String(h||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
   /* 2.10.35: fila alineada como un clúster web (URE): una columna por dato, números a la derecha, lo que no cabe se corta
      con «…» y se ve entero al desplegar la fila (y al pasar el ratón por encima) */
   const ohd=o.oh&&o.oh.b!=null&&o.oh.b<10?` data-ohc="1" data-t="${e2(o.oh.t)}" data-b="${o.oh.b}" data-call="${e2(o.oh.call)}" data-mode="${e2(o.oh.mode||"")}" data-f="${e2(o.f||"")}"`:` data-mode="${e2(o.mode||"")}" data-f="${e2(o.f||"")}"`;
@@ -135,6 +135,8 @@ function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
   const sa=String(ago(o.a)||"").replace(/^hace\s+/,"").replace(/\s+ago$/,"").replace(/^más de un día$/,T("+1 día","1 d+")).replace(/^over a day$/,"1 d+");
   const byc=[...String(o.by||"").matchAll(/data-call="([^"]+)"/g)].map(m=>m[1]);const byTx=byc.length?byc[0]+(byc.length>1?` +${byc.length-1}`:""):String(o.by||"").replace(/<[^>]+>/g,"");
   const strip=h=>String(h||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+  /* 2.11.11: sin la etiqueta que repite el país (p. ej. «Móvil marítimo» junto a «móvil marítimo») */
+  const ctyL=String(cty||"").toLowerCase();o=Object.assign({},o,{tags:(o.tags||[]).filter(t=>!ctyL||strip0(t).toLowerCase()!==ctyL)});
   const com=(o.tags||[]).join("")+(o.xs?`<span class="l-ct">${o.xs}</span>`:"")+(o.note?`<span class="l-ct">${e2(o.note)}</span>`:"");
   const comT=[strip((o.tags||[]).join(" · ")),strip(o.xs),o.note||""].filter(Boolean).join(" · ");
   return `<div class="sc scl ohc${old?" old":""}"${ohd}>`+

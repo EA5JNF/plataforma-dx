@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.11 — 2026-11-22
+
+- ES: Listados en el móvil (clúster, avisos, buscador, DXpediciones y demás listas tipo clúster): dos líneas limpias y alineadas entre filas. En la primera, indicativo, bandera y país, probabilidad y botones; en la segunda, la frecuencia justo debajo del indicativo, modo, banda, etiquetas en la misma línea y antigüedad a la derecha. Ya no hay una tercera línea para las etiquetas ni la frecuencia sale desplazada; si una etiqueta no cabe, se corta y se ve entera al desplegar.
+- ES: Fuera la etiqueta que repetía el país («Móvil marítimo» junto a «móvil marítimo»).
+- ES: En vista compacta de tarjetas, «Ya la tengo» es solo el icono, como en el listado.
+- EN: Phone lists (cluster, alerts, search, DXpeditions and other cluster-style lists): two clean lines aligned across rows. First, call, flag and country, probability and buttons; second, the frequency right under the call, mode, band, tags on the same line and age on the right. No third line for tags and no offset frequency; a tag that does not fit is cut and shown in full when the row is expanded.
+- EN: Removed the tag that repeated the country ("Maritime mobile" next to "maritime mobile").
+- EN: In compact card view, "Got it" is just the icon, as in the list.
+
 ## 2.11.10 — 2026-11-22
 
 - ES: «Tus descansos a medida» (Concursos) con las mismas casillas que el ritmo por horas: hora, QSO/h y banda en cada una, en 8, 12 o 24 columnas según la pantalla; las horas de descanso salen apagadas con «zz» y «pausa». Antes las cifras se montaban unas sobre otras y las horas salían pegadas («000102…»).

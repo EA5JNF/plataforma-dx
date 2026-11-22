@@ -1622,3 +1622,29 @@ html.vc .ssum2>.logbtn{display:none}
 /* 2.11.10: descansos a medida con las mismas casillas que el ritmo por horas; las horas de pausa, apagadas y con «zz» */
 .crate .crh.rest{opacity:.55;color:var(--muted);border:1px dashed color-mix(in srgb,var(--fg) 25%,transparent)}
 .sline>#stpanel{min-width:0!important;max-width:100%!important;box-sizing:border-box}
+/* 2.11.11: listados en el móvil (clúster, avisos, buscador…): dos líneas limpias y alineadas entre filas.
+   1.ª: indicativo, bandera y país, probabilidad y botones. 2.ª: frecuencia (alineada a la izquierda, bajo el indicativo),
+   modo, banda, etiquetas en la misma línea y antigüedad a la derecha. Sin tercera línea para las etiquetas */
+@container (max-width:560px){
+ html.vl .sc.scl{grid-template-columns:7.6ch 3.9em 4.3ch minmax(0,1fr) auto var(--lx,1.1em)!important;
+  grid-template-areas:"call call cty cty p x" "f m b tg age age"!important;column-gap:8px!important;row-gap:2px!important;padding:7px 10px!important}
+ .scl>.l-f{text-align:left!important}.scl>.l-m{text-align:left!important;justify-self:start}.scl>.l-b{text-align:left}
+ .scl>.l-cty{min-width:0}
+ .scl>.l-tags{display:flex!important;grid-area:tg;min-width:0;overflow:hidden;gap:4px}
+ .scl>.l-tags:not(:has(.xtag)){visibility:hidden}
+ .scl>.l-tags>*{flex:0 1 auto!important;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .scl>.l-tags .l-ct{display:none!important}
+ .scl>.l-age{text-align:right;padding-left:0!important;white-space:nowrap}
+ .scl>.l-p{white-space:nowrap}
+}
+@container (max-width:560px){
+ .scl>.l-tags{justify-content:flex-start}
+ .scl>.l-tags>*{display:block!important;text-align:left!important;font-size:.7rem!important;padding:1px 5px!important;letter-spacing:0!important}
+}
+@container (max-width:560px){
+ html.vl .sc.scl{grid-template-columns:7.4ch 3.3em 4.2ch minmax(0,1fr) auto max(var(--lx,1.1em),6.6ch)!important;grid-template-areas:"call call cty cty p x" "f m b tg tg age"!important}
+ .scl>.l-x{justify-self:end}
+}
+/* 2.11.11: en vista compacta de tarjetas, «Ya la tengo» es solo el icono (como en el listado) */
+html.vc .sc:not(.scl) .alhave:not(.alhi)>span{display:none}
+html.vc .sc:not(.scl) .alhave:not(.alhi){padding:0;width:2.1em;height:2.1em;min-height:0;justify-content:center;border-color:transparent;background:transparent;color:color-mix(in srgb,var(--ok,#22c55e) 70%,var(--muted))}
