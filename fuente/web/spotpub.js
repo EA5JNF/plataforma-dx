@@ -37,11 +37,15 @@ function mkSpot(m){try{const b=(BRK.find(r=>m.f>=r[1]&&m.f<=r[2])||[])[0];if(b==
   const e=(typeof callEnt==="function")?callEnt(m.dx):null,d=new Date(m.ts);let from=[0,0];try{if(typeof TXP!=="undefined"&&TXP)from=TXP}catch(_){}
   return {call:m.dx,f:String(+(m.f/1000).toFixed(4)),band:b,mode:/\bCW\b/i.test(m.info)?"CW":/FT8/i.test(m.info)?"FT8":/FT4/i.test(m.info)?"FT4":/RTTY/i.test(m.info)?"RTTY":"",t:d.toISOString().slice(11,16),utc:d.toISOString(),
     by:[m.de],from:[from],dx,dxcc:e&&e.dxcc||null,kind:e&&+e.dxcc===281?"near":"dx",c:[m.info,T("anunciado desde la plataforma","posted from the platform")].filter(Boolean).join(" · "),nw:true,ns:1,src:["ACRACB"],dxp:false,mine:true}}catch(_){return null}}
+/* 2.11.38: también los que anuncian los demás socios desde la plataforma (el intermediario los guarda una hora) */
+let REC=[],recOff=false;
+async function pullRec(){if(recOff||document.hidden)return;try{const r=await fetch(RELAY.replace(/\/spot$/,"/recientes"),{cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
+  if(r.status===404||r.status===405){recOff=true;return}if(!r.ok)return;const j=await r.json();if(Array.isArray(j)){REC=j.filter(x=>x&&typeof x.dx==="string"&&isFinite(+x.f)&&isFinite(+x.ts)&&Date.now()-x.ts<36e5).map(x=>({de:String(x.de||"").slice(0,15),dx:x.dx.slice(0,15),f:+x.f,info:String(x.info||"").slice(0,30),ts:+x.ts}));putMine()}}catch(_){}}
 function putMine(){try{if(typeof L==="undefined"||!L||!Array.isArray(L.spots))return;const k=x=>String(x.call).toUpperCase()+"|"+Math.round(parseFloat(x.f)*500);
-  const have=new Set(L.spots.map(k));let add=0;for(const m of mineAll()){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);add++}}
+  const have=new Set(L.spots.map(k));let add=0;for(const m of mineAll().concat(REC)){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);add++}}
   if(add){try{CACHE.clear()}catch(_){}try{refresh()}catch(_){}}}catch(_){}}
 function addMine(s){try{const a=mineAll();a.push({de:s.de,dx:s.dx,f:s.f,info:s.info||"",ts:Date.now()});localStorage.setItem(KMINE,JSON.stringify(a.slice(-20)))}catch(_){}putMine()}
-setInterval(putMine,15000);setTimeout(putMine,4000);
+setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(pullRec,30000);setTimeout(pullRec,5000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullRec()});
 function confirmLater(s,how){const t0=Date.now();let n=0;
   const tick=async()=>{n++;const r=await seen(s);
     if(r===true){msg(T(`Hecho: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en los clústeres.`,`Done: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the clusters.`),"ok");return}

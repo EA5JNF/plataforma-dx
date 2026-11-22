@@ -63,6 +63,10 @@ const PROXY="https://acracb-dx.ea5jnf.workers.dev/?u=",VIA=new Set(["kp.gfz-pots
 /* fuentes que se leen directamente; si el navegador no las deja leer (o no responden), se reintenta a través del
    intermediario propio del club (Cloudflare). Las que funcionan así se recuerdan durante la sesión. */
 const RESCUE=new Set(["services.swpc.noaa.gov","spothole.app","www.hamqth.com","db1.wspr.live","api.nasa.gov","kauai.ccmc.gsfc.nasa.gov"]),VIA2=new Set();
+/* 2.11.38: rapidez. Las fuentes que el navegador no deja leer directamente se recuerdan 24 horas en el dispositivo
+   (antes, solo durante la sesión), así que al volver a abrir la plataforma se piden ya por el intermediario sin esperar al fallo */
+try{const v=JSON.parse(localStorage.getItem("acracb_via2")||"null");if(v&&Date.now()-v.t<864e5)(v.h||[]).forEach(h=>{if(RESCUE.has(h))VIA2.add(h)})}catch(e){}
+const saveVia2=()=>{try{localStorage.setItem("acracb_via2",JSON.stringify({t:Date.now(),h:[...VIA2]}))}catch(e){}};
 async function req1(url,type,tm){const ac=new AbortController();const t=setTimeout(()=>ac.abort(),tm);
   try{const r=await fetch(url,{signal:ac.signal,cache:"no-store",mode:"cors",credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);
     /* límite de tamaño: una fuente que devuelva algo enorme (por error o a propósito) se descarta sin colgar la página */
@@ -73,7 +77,7 @@ async function req(url,type){let h="";try{h=new URL(url).hostname}catch(e){}
   if(VIA.has(h)||VIA2.has(h))return req1(PROXY+encodeURIComponent(url),type,15000);
   try{return await req1(url,type,TOUT)}
   catch(e){if(!RESCUE.has(h)||(e&&e.name==="AbortError"))throw e;
-    const v=await req1(PROXY+encodeURIComponent(url),type,15000);VIA2.add(h);return v}}
+    const v=await req1(PROXY+encodeURIComponent(url),type,15000);VIA2.add(h);saveVia2();return v}}
 const J=u=>req(u,"json"),T=u=>req(u,"text");
 
 /* ---------------- entidades (con las tablas de la propia página) ---------------- */
@@ -328,7 +332,7 @@ for(const n in SLOW){if(!SRC[n])continue;const f=SRC[n];SRC[n]=async()=>{const m
    Ahora se pintan los datos a los DL ms con todo lo que haya llegado; las fuentes lentas siguen buscando por detrás y,
    cuando terminan, se vuelve a montar todo sin pedir nada otra vez (con los resultados ya recibidos en esta vuelta).
    Una fuente que aún sigue buscando de la vuelta anterior no se pide dos veces: se mantiene su último dato bueno. */
-const DL=3000,RES={},PEND={};let MERGEQ=false;
+const DL=2000,RES={},PEND={};let MERGEQ=false;
 /* 2.11.1: mientras se consulta, la lista de fuentes se va rellenando en directo (✓ o ✕ según responde cada una) y la línea
    de estado cuenta cuántas han respondido; antes no se veía nada hasta el final */
 let LIVET=0;function liveSrc(){if(LIVET)return;LIVET=setTimeout(()=>{LIVET=0;if(!BUSY)return;const v=Object.values(LAST),ok=v.filter(x=>x.ok).length,done=v.filter(x=>!x.wait).length;

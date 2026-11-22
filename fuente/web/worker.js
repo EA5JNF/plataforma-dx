@@ -1,4 +1,4 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 6
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 7
 import { connect } from "cloudflare:sockets";
 // 2.11.26: además, POST /spot reenvía a DX Summit los spots que anuncian los usuarios desde la plataforma. Desde el
 // navegador no se puede (DX Summit solo acepta envíos desde su propia web); desde aquí, sí. Solo desde la plataforma,
@@ -8,6 +8,10 @@ import { connect } from "cloudflare:sockets";
 // clústeres; la red descarta el duplicado (mismo spot, mismo indicativo, mismo minuto). Basta con que uno funcione.
 // 2.11.32 (versión 5): el spot puede salir también por varios nodos DXSpider a la vez (lista NODOS, hasta 5), para que
 // llegue al máximo de clústeres. La respuesta dice qué caminos lo aceptaron y cuáles no, para saber cuáles funcionan.
+// 2.11.38 (versión 7): los spots anunciados desde la plataforma se guardan una hora en el almacén gratuito de Cloudflare
+// (Workers KV, enlazado con el nombre SPOTS) y GET /recientes los devuelve, para que la plataforma de cada socio los
+// enseñe en cuanto se anuncian, sin esperar a que vuelvan de la red. Solo se guarda lo que ya es público en el spot.
+// Si el almacén no está enlazado, todo lo demás funciona igual.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -50,7 +54,7 @@ function valida(u) {
 const DXS = "https://new.dxsummit.fi/api/v1/spots";
 const INDICATIVO = /^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
 const json = (o, status, origen) => { const h = cabeceras(origen); h.set("Content-Type", "application/json; charset=utf-8"); h.set("Cache-Control", "no-store"); return new Response(JSON.stringify(o), { status, headers: h }); };
-async function spot(request, origen) {
+async function spot(request, origen, env) {
   if (!origen || origen === "null" || !ORIGENES.includes(origen)) return json({ status: "origen no permitido" }, 403, origen);
   const largo = +(request.headers.get("Content-Length") || 0);
   if (largo > 1024) return json({ status: "demasiado largo" }, 413, origen);
@@ -67,8 +71,27 @@ async function spot(request, origen) {
   const rs = await Promise.all([porDXSummit(de, dx, f, info).then(r => ({ nombre: "DX Summit", ...r })),
     ...NODOS.slice(0, 5).map(n => porTelnet(n, de, dx, f, info).then(r => ({ nombre: n.nombre, ...r })))]);
   const via = rs.filter(r => r.ok).map(r => r.nombre), no = rs.filter(r => !r.ok).map(r => r.nombre + ": " + r.msg);
-  if (via.length) return json({ status: "ok", via, no }, 200, origen);
+  if (via.length) { try { await guarda(env, { de, dx, f, info, ts: Date.now() }); } catch (e) {} return json({ status: "ok", via, no }, 200, origen); }
   return json({ status: no.join(" · "), via, no }, 502, origen);
+}
+// ---- spots anunciados desde la plataforma, para todos los socios ----
+const LLAVE_REC = new Request("https://acracb-dx.invalid/recientes");
+async function lista(env) {
+  if (!env || !env.SPOTS) return [];
+  let a = []; try { a = JSON.parse(await env.SPOTS.get("recientes", { cacheTtl: 30 }) || "[]"); } catch (e) { a = []; }
+  return (Array.isArray(a) ? a : []).filter(x => x && Date.now() - x.ts < 3600000).slice(-50);
+}
+async function guarda(env, sp) {
+  if (!env || !env.SPOTS) return;
+  const a = (await lista(env)).filter(x => !(x.dx === sp.dx && Math.abs(x.f - sp.f) < 1)).concat([sp]).slice(-50);
+  await env.SPOTS.put("recientes", JSON.stringify(a), { expirationTtl: 7200 });
+  try { await caches.default.delete(LLAVE_REC); } catch (e) {}
+}
+async function recientes(origen, env) {
+  const c = caches.default; let r = await c.match(LLAVE_REC);
+  if (!r) { r = new Response(JSON.stringify(await lista(env)), { headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "max-age=15" } }); try { await c.put(LLAVE_REC, r.clone()); } catch (e) {} }
+  const h = cabeceras(origen); h.set("Content-Type", "application/json; charset=utf-8"); h.set("Cache-Control", "public, max-age=15");
+  return new Response(await r.text(), { status: 200, headers: h });
 }
 async function porDXSummit(de, dx, f, info) {
   const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
@@ -117,11 +140,12 @@ async function porTelnet(n, de, dx, f, info) {
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const origen = request.headers.get("Origin");
     if (origen && !ORIGENES.includes(origen)) return texto("Origen no permitido", 403, null);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cabeceras(origen) });
-    if (request.method === "POST" && new URL(request.url).pathname === "/spot") return spot(request, origen);
+    if (request.method === "POST" && new URL(request.url).pathname === "/spot") return spot(request, origen, env);
+    if (request.method === "GET" && new URL(request.url).pathname === "/recientes") return recientes(origen, env);
     if (request.method !== "GET" && request.method !== "HEAD") return texto("Método no permitido", 405, origen);
     if (request.url.length > MAX_URL) return texto("Dirección demasiado larga", 414, origen);
     const u = new URL(request.url).searchParams.get("u");

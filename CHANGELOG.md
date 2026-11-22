@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.38 — 2026-11-22
+
+- ES: Spots al instante para todos: lo que anuncia cualquier socio desde la plataforma sale en el clúster de los demás en menos de un minuto, sin esperar a que vuelva de la red (intermediario versión 7, con el almacén gratuito de Cloudflare; solo guarda lo que ya es público en el spot, durante una hora).
+- ES: Rapidez: la plataforma prepara la conexión con las fuentes principales nada más abrirse, enseña los datos a los 2 segundos con lo que ya ha llegado (antes, 3) y recuerda un día qué fuentes hay que pedir por el intermediario, sin esperar al fallo.
+- EN: Instant spots for everyone: what any member posts from the platform shows on everyone else's cluster in under a minute, without waiting for it to come back from the network (relay version 7, using Cloudflare's free store; it only keeps what is already public in the spot, for one hour).
+- EN: Speed: the platform warms up the connection to the main sources as soon as it opens, shows data after 2 seconds with whatever has arrived (3 before) and remembers for a day which sources must go through the relay, without waiting for them to fail.
+
 ## 2.11.37 — 2026-11-22
 
 - ES: Anunciar spots: lo que anuncias sale al momento en el clúster de la plataforma, sin esperar a que vuelva de la red. Mientras comprueba el resto, el aviso sigue diciendo qué nodos no lo aceptaron y por qué. Intermediario versión 6: cinco nodos (DXFun, WA9PIE, SpottedHam, G1FEF y N2KI), el máximo que Cloudflare deja abrir a la vez junto con DX Summit.
