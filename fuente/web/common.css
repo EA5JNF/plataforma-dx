@@ -1857,3 +1857,5 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
 .spno{display:block;margin-top:6px;color:var(--muted);font-size:.82em;line-height:1.4}
 /* 2.11.36: multiplicadores: el país siempre debajo del indicativo, en todas las filas igual */
 .clvmi>.cc .ccy{display:flex!important;margin-top:1px}
+/* 2.11.37: «Cómo se calcula»: los dos grupos iguales, título y una línea que lo explica; todo lo demás, plegado */
+.mlist2 .mgi{margin:0 0 6px;color:var(--muted);font-size:.9em}

@@ -27,10 +27,25 @@ const manual=s=>T(`<a href="${WEB}" target="_blank" rel="noopener noreferrer" da
 /* ¿ha salido? se busca en los clústeres (Spothole) un spot de ese DX anunciado por ti, cerca de esa frecuencia */
 async function seen(s){try{const r=await fetch(CHK,{cache:"no-store",credentials:"omit"});let j=await r.json();if(!Array.isArray(j))j=j.spots||j.data||[];
   return j.some(x=>{const dx=base(x.dx_call||x.dx||x.callsign),de=base(x.de_call||x.spotter||x.de);let f=+(x.freq||x.frequency||0);if(f>=1e5)f=f/1000;else if(f>0&&f<1000)f=f*1000;return dx===base(s.dx)&&de===base(s.de)&&(!f||Math.abs(f-s.f)<3)})}catch(_){return null}}
+
+/* 2.11.37: lo que anuncias sale al momento en el clúster de la plataforma, sin esperar a que vuelva de la red.
+   Se guarda una hora en el dispositivo y se vuelve a poner si una actualización lo quita antes de que llegue por Spothole */
+const KMINE="acracb_myspots";
+const BRK=[[0,1800,2000],[1,3500,4000],[8,5250,5450],[2,7000,7300],[9,10100,10150],[3,14000,14350],[4,18068,18168],[5,21000,21450],[6,24890,24990],[7,28000,29700],[10,50000,54000],[11,144000,146000],[12,430000,440000]];
+function mineAll(){try{return (JSON.parse(localStorage.getItem(KMINE)||"[]")||[]).filter(x=>Date.now()-x.ts<36e5)}catch(_){return []}}
+function mkSpot(m){try{const b=(BRK.find(r=>m.f>=r[1]&&m.f<=r[2])||[])[0];if(b==null)return null;const dx=window.ACRACB_areaPos?ACRACB_areaPos(m.dx):null;if(!dx)return null;
+  const e=(typeof callEnt==="function")?callEnt(m.dx):null,d=new Date(m.ts);let from=[0,0];try{if(typeof TXP!=="undefined"&&TXP)from=TXP}catch(_){}
+  return {call:m.dx,f:String(+(m.f/1000).toFixed(4)),band:b,mode:/\bCW\b/i.test(m.info)?"CW":/FT8/i.test(m.info)?"FT8":/FT4/i.test(m.info)?"FT4":/RTTY/i.test(m.info)?"RTTY":"",t:d.toISOString().slice(11,16),utc:d.toISOString(),
+    by:[m.de],from:[from],dx,dxcc:e&&e.dxcc||null,kind:e&&+e.dxcc===281?"near":"dx",c:[m.info,T("anunciado desde la plataforma","posted from the platform")].filter(Boolean).join(" · "),nw:true,ns:1,src:["ACRACB"],dxp:false,mine:true}}catch(_){return null}}
+function putMine(){try{if(typeof L==="undefined"||!L||!Array.isArray(L.spots))return;const k=x=>String(x.call).toUpperCase()+"|"+Math.round(parseFloat(x.f)*500);
+  const have=new Set(L.spots.map(k));let add=0;for(const m of mineAll()){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);add++}}
+  if(add){try{CACHE.clear()}catch(_){}try{refresh()}catch(_){}}}catch(_){}}
+function addMine(s){try{const a=mineAll();a.push({de:s.de,dx:s.dx,f:s.f,info:s.info||"",ts:Date.now()});localStorage.setItem(KMINE,JSON.stringify(a.slice(-20)))}catch(_){}putMine()}
+setInterval(putMine,15000);setTimeout(putMine,4000);
 function confirmLater(s,how){const t0=Date.now();let n=0;
   const tick=async()=>{n++;const r=await seen(s);
     if(r===true){msg(T(`Hecho: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en los clústeres.`,`Done: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the clusters.`),"ok");return}
-    if(Date.now()-t0<180000){msg(T(`Enviado${how}. Comprobando que aparece en los clústeres… (${n})`,`Sent${how}. Checking it shows on the clusters… (${n})`));setTimeout(tick,30000);return}
+    if(Date.now()-t0<180000){msg(T(`Enviado${how}. Ya sale en el clúster de la plataforma. Comprobando que aparece en el resto… (${n})`,`Sent${how}. It already shows on the platform cluster. Checking it shows on the others… (${n})`)+(s.no?`<small class="spno">${T("No lo aceptaron: ","Not accepted by: ")}${esc(s.no)}</small>`:""));setTimeout(tick,30000);return}
     msg(T("No aparece en los clústeres después de 3 minutos, así que puede que DX Summit no lo haya aceptado. ","It does not show on the clusters after 3 minutes, so DX Summit may not have accepted it. ")+manual(s),"warn")};
   setTimeout(tick,20000)}
 async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando a los clústeres… puede tardar hasta medio minuto.","Sending to the clusters… it can take up to half a minute."));
@@ -46,6 +61,7 @@ async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando a los c
   b.disabled=false;
   if(st==="ok"||st==="blind"){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
     msg(T(`Enviado${s.via?" por "+esc(s.via):""}: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz. Comprobando que aparece en los clústeres…${s.no?"<br><small class=\"spno\">No lo aceptaron: "+esc(s.no)+"</small>":""}`,`Sent${s.via?" via "+esc(s.via):""}: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz. Checking it shows on the clusters…${s.no?"<br><small class=\"spno\">Not accepted by: "+esc(s.no)+"</small>":""}`),st==="ok"?"ok":"");
+    if(st==="ok")addMine(s);
     confirmLater(s,st==="blind"?T(" como formulario"," as a form"):s.via?T(" por "," via ")+esc(s.via):"");return}
   if(st==="net"){msg(T("No hay conexión con DX Summit. ","No connection to DX Summit. ")+manual(s),"warn");return}
   msg(T(`DX Summit no lo ha aceptado (${esc(st)}). `,`DX Summit did not accept it (${esc(st)}). `)+manual(s),"warn")}

@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.37 — 2026-11-22
+
+- ES: Anunciar spots: lo que anuncias sale al momento en el clúster de la plataforma, sin esperar a que vuelva de la red. Mientras comprueba el resto, el aviso sigue diciendo qué nodos no lo aceptaron y por qué. Intermediario versión 6: cinco nodos (DXFun, WA9PIE, SpottedHam, G1FEF y N2KI), el máximo que Cloudflare deja abrir a la vez junto con DX Summit.
+- ES: «Cómo se calcula»: los dos grupos con el mismo formato, título y una línea que lo explica.
+- EN: Posting spots: what you post shows at once on the platform cluster, without waiting for it to come back from the network. While it checks the rest, the message keeps saying which nodes did not take it and why. Relay version 6: five nodes (DXFun, WA9PIE, SpottedHam, G1FEF and N2KI), the most Cloudflare can open at once together with DX Summit.
+- EN: "How it is calculated": both groups in the same format, a heading and one line explaining it.
+
 ## 2.11.36 — 2026-11-22
 
 - ES: Multiplicadores del clúster: el país va siempre debajo del indicativo, igual en todas las filas.

@@ -429,7 +429,7 @@ def _met(w):
     B = ["Clúster", "Equilibrio con los clústeres", "Ionosonda", "Cotejo de fuentes", "Tu calibración"]
     rest = [k for k in D if k not in A + B]
     assert all(k in D for k in A + B), [k for k in A + B if k not in D]
-    out = '\n        <h3 class="mgh">La previsión</h3>' + "".join("\n        " + D[k] for k in A + rest)
+    out = '\n        <h3 class="mgh">La previsión</h3>\n        <p class="mgi">Lo que calcula VOACAP para tu estación y cómo se ajusta a tu antena, tu modo y el Sol de hoy.</p>' + "".join("\n        " + D[k] for k in A + rest)
     out += '\n        <h3 class="mgh">Lo que se mide hoy</h3>\n        ' + intro.replace("<p>", '<p class="mgi">', 1) + "".join("\n        " + D[k] for k in B) + "\n      "
     return w[:i] + out + w[j:]
 w = _met(w)
