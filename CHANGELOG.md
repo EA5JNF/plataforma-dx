@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.40 — 2026-11-22
+
+- ES: Difusión externa activa solo a los nodos que admiten spots sin registro según sus propias páginas: SpottedHam, WA9PIE y EA7JXH (Málaga). Agradecimientos y aviso de privacidad al día. DX Summit y DXFun siguen en pausa hasta que den permiso.
+- EN: External forwarding enabled only to the nodes that accept spots without registration according to their own pages: SpottedHam, WA9PIE and EA7JXH (Málaga). Credits and privacy note updated. DX Summit and DXFun stay paused until they give permission.
+
 ## 2.11.39 — 2026-11-22
 
 - ES: Clúster interno, según el documento del proyecto: el spot se publica primero en el clúster de la plataforma y lo ven todos los socios en unos segundos, sin recargar; lleva identificador, banda, modo (si se sabe) y hora UTC, y el autor lo puede retirar desde su dispositivo. Los spots de socios llevan la etiqueta «Socio» para distinguirlos de las observaciones de la red.

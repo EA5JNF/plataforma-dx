@@ -1,4 +1,4 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8.1
 import { connect } from "cloudflare:sockets";
 // Dos funciones, separadas:
 //  1) Recepción: lee las webs públicas de la lista PERMITIDAS y se las pasa a la plataforma (solo GET, ver abajo).
@@ -68,9 +68,13 @@ const huella = async t => hex(await crypto.subtle.digest("SHA-256", new TextEnco
 // G1FEF y N2KI quedan fuera: exigen registro previo para anunciar.
 const DESTINOS = [
   { nombre: "DX Summit", tipo: "api", activo: false },
-  { nombre: "SpottedHam", tipo: "telnet", host: "spottedham.com", puerto: 7300, activo: false },
+  // SpottedHam (KM6HBH-1): su página permite anunciar sin cuenta ni contraseña y conectar programas de log. Activo.
+  { nombre: "SpottedHam", tipo: "telnet", host: "spottedham.com", puerto: 7300, activo: true },
   { nombre: "DXFun", tipo: "telnet", host: "dxfun.com", puerto: 8000, activo: false },
-  { nombre: "WA9PIE", tipo: "telnet", host: "dxc.wa9pie.net", puerto: 8000, activo: false },
+  // WA9PIE-2: «todos son bienvenidos a conectarse» (ARRL, 2016); no filtra spots y está enlazado con nodos de todo el mundo. Activo.
+  { nombre: "WA9PIE", tipo: "telnet", host: "dxc.wa9pie.net", puerto: 8000, activo: true },
+  // EA7JXH (Málaga, CC Cluster): «free for all to use and requires no registration or password», con indicativo válido. Activo.
+  { nombre: "EA7JXH", tipo: "telnet", host: "dx.ea7jxh.eu", puerto: 7300, activo: true },
 ];
 
 // ---- almacén: D1 si está enlazado; si no, KV ----
@@ -182,8 +186,10 @@ async function porTelnet(n, de, dx, f, info) {
     const espera = async (re, ms, desde = 0) => { const lim = Date.now() + ms; while (Date.now() < lim && !fin) { if (re.test(buf.slice(desde))) return true; await new Promise(z => setTimeout(z, 100)); } return re.test(buf.slice(desde)); };
     const manda = t => w.write(new TextEncoder().encode(t + "\r\n"));
     if (!await espera(/login:|call(sign)?:|enter your call/i, 7000)) return { ok: false, msg: "no pidió el indicativo" };
+    const tras = buf.length;
     await manda(de);
-    if (!await espera(/>\s*$|dxspider|welcome|hello/i, 7000)) return { ok: false, msg: "no dejó entrar" };
+    if (!await espera(/>\s*$|dxspider|cc ?cluster|welcome|hello|password/i, 7000, tras)) return { ok: false, msg: "no dejó entrar" };
+    if (/password/i.test(buf.slice(tras))) { try { await manda("bye"); } catch (e) {} return { ok: false, msg: "pide contraseña" }; }
     await new Promise(z => setTimeout(z, 600));
     const desde = buf.length;
     await manda(`dx ${f.toFixed(1)} ${dx} ${info}`.trim());
