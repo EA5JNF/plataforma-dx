@@ -1698,3 +1698,5 @@ html.vl .hrow .hp{text-align:right}
 .clvmi>.pp,.clvmi>.pt{text-align:right;font-variant-numeric:tabular-nums}
 .clvmi>.mk:empty{padding:0}
 .clvmb{align-content:start}
+.clvmb>.clvmi[hidden]{display:none!important}
+.clvmb>.clvmore{grid-column:1/-1;justify-self:start;margin-top:4px}

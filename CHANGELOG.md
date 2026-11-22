@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.17 — 2026-11-22
+
+- ES: Multiplicadores del clúster en concurso: el recuento y la lista ya coinciden. Se ven los 8 mejores y, si hay más, «Ver N más» despliega el resto (antes decía 9 y solo enseñaba 8).
+- EN: Cluster multipliers in contests: the count and the list now match. The best 8 are shown and, if there are more, "Show N more" reveals the rest (it used to say 9 and show only 8).
+
 ## 2.11.16 — 2026-11-22
 
 - ES: La pantalla ya no sube sola mientras haces scroll. La subida automática al abrir la plataforma dejaba de detectar que estabas tocando la pantalla al volver a la pestaña, y algunos redibujados encogían la página un instante; ahora la subida solo ocurre al abrir y la altura se sujeta mientras se redibuja. En todos los dispositivos.
