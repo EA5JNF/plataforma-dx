@@ -586,5 +586,7 @@
  "como EU-005": "like EU-005",
  " cuentan 15; ": " count 15; ",
  "cuentan 15": "count 15",
- "Lo que calcula VOACAP para tu estación y cómo se ajusta a tu antena, tu modo y el Sol de hoy.": "What VOACAP calculates for your station and how it is adjusted to your antenna, your mode and today's Sun."
+ "Lo que calcula VOACAP para tu estación y cómo se ajusta a tu antena, tu modo y el Sol de hoy.": "What VOACAP calculates for your station and how it is adjusted to your antenna, your mode and today's Sun.",
+ "Transformaciones: la plataforma no reproduce los datos tal cual. Combina el Kp de NOAA y de GFZ y el número de manchas de SILSO y de NOAA con la mediana de las fuentes, y redondea y resume los valores para mostrarlos y para calcular la previsión.": "Transformations: the platform does not reproduce the data as is. It combines the Kp from NOAA and GFZ and the sunspot number from SILSO and NOAA using the median of the sources, and rounds and summarizes the values to display them and to compute the forecast.",
+ "Y los radioaficionados de todo el mundo que publican los spots, también los socios que los comunican desde el clúster interno de la plataforma.": "And the radio amateurs around the world who post the spots, including members who report them from the platform's internal cluster."
 }

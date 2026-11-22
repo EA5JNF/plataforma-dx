@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.39 — 2026-11-22
+
+- ES: Clúster interno, según el documento del proyecto: el spot se publica primero en el clúster de la plataforma y lo ven todos los socios en unos segundos, sin recargar; lleva identificador, banda, modo (si se sabe) y hora UTC, y el autor lo puede retirar desde su dispositivo. Los spots de socios llevan la etiqueta «Socio» para distinguirlos de las observaciones de la red.
+- ES: Difusión a clústeres externos aparte y en pausa: ningún servicio ha confirmado todavía que acepte envíos automáticos desde una web multiusuario. Se activará uno a uno cuando lo autoricen. Fuera los envíos directos del navegador a DX Summit.
+- ES: Agradecimientos con enlace a cada licencia Creative Commons y nota de las transformaciones de los datos. Aviso de privacidad al día.
+- ES: Móvil: el buscador del clúster, ordenado; debajo, «Anunciar spot» a la izquierda y «Filtros» a la derecha.
+- EN: Internal cluster, per the project document: the spot is first published on the platform cluster and every member sees it within seconds, without reloading; it carries an ID, band, mode (when known) and UTC time, and the author can remove it from their device. Member spots carry a "Member" tag to tell them apart from network observations.
+- EN: Sending to external clusters is separate and paused: no service has yet confirmed it accepts automated posts from a multi-user website. Each will be enabled once it gives permission. Direct browser posts to DX Summit removed.
+- EN: Credits link to each Creative Commons licence and explain how the data are transformed. Privacy note updated.
+- EN: Mobile: tidier cluster search; below it, "Post spot" on the left and "Filters" on the right.
+
 ## 2.11.38 — 2026-11-22
 
 - ES: Spots al instante para todos: lo que anuncia cualquier socio desde la plataforma sale en el clúster de los demás en menos de un minuto, sin esperar a que vuelva de la red (intermediario versión 7, con el almacén gratuito de Cloudflare; solo guarda lo que ya es público en el spot, durante una hora).

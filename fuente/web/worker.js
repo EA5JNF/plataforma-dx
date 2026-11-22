@@ -1,17 +1,9 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 7
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8
 import { connect } from "cloudflare:sockets";
-// 2.11.26: además, POST /spot reenvía a DX Summit los spots que anuncian los usuarios desde la plataforma. Desde el
-// navegador no se puede (DX Summit solo acepta envíos desde su propia web); desde aquí, sí. Solo desde la plataforma,
-// con los datos revisados, un spot cada 30 segundos por conexión y sin guardar nada.
-// 2.11.27: el spot sale a la vez por dos caminos gratuitos y sin registro: la API de DX Summit y el nodo DXSpider de
-// SpottedHam (telnet, puerto 7300), que no pide cuenta para anunciar. Los dos están enlazados a la red mundial de
-// clústeres; la red descarta el duplicado (mismo spot, mismo indicativo, mismo minuto). Basta con que uno funcione.
-// 2.11.32 (versión 5): el spot puede salir también por varios nodos DXSpider a la vez (lista NODOS, hasta 5), para que
-// llegue al máximo de clústeres. La respuesta dice qué caminos lo aceptaron y cuáles no, para saber cuáles funcionan.
-// 2.11.38 (versión 7): los spots anunciados desde la plataforma se guardan una hora en el almacén gratuito de Cloudflare
-// (Workers KV, enlazado con el nombre SPOTS) y GET /recientes los devuelve, para que la plataforma de cada socio los
-// enseñe en cuanto se anuncian, sin esperar a que vuelvan de la red. Solo se guarda lo que ya es público en el spot.
-// Si el almacén no está enlazado, todo lo demás funciona igual.
+// Dos funciones, separadas:
+//  1) Recepción: lee las webs públicas de la lista PERMITIDAS y se las pasa a la plataforma (solo GET, ver abajo).
+//  2) Clúster interno de la plataforma (POST /spot, GET /recientes, POST /retirar) y, aparte, difusión a clústeres
+//     externos solo a los destinos con permiso confirmado (lista DESTINOS más abajo). Detalles junto a su código.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
 // sin cookies ni cabeceras de la web de origen, y la respuesta nunca puede ejecutarse como página en el navegador.
@@ -50,71 +42,136 @@ function valida(u) {
   return d;
 }
 
-// ---- anunciar un spot ----
-const DXS = "https://new.dxsummit.fi/api/v1/spots";
+// ---- clúster interno de la plataforma (sistema A) y difusión externa (sistema B) ----
+// 2.11.39 (versión 8), según el documento del proyecto:
+//  · El spot se guarda PRIMERO en el clúster interno y se responde al momento; la difusión externa va después, aparte,
+//    y nunca retrasa ni impide la publicación interna.
+//  · Almacén: Cloudflare D1 (enlazado con el nombre DB) si existe, porque reparte los cambios al momento; si no, el KV
+//    (enlazado como SPOTS), que puede tardar hasta un minuto en repartirlos. La tabla se crea sola la primera vez.
+//  · Cada spot: identificador único, autor, DX, frecuencia, banda, modo (si se sabe), hora UTC, comentario y el estado
+//    de cada destino externo (pendiente, enviado, error o deshabilitado). Solo spots originales escritos en la plataforma.
+//  · Moderación: el autor puede retirar su spot con la clave que recibe al publicarlo (aquí solo se guarda su huella);
+//    el administrador, desde el panel de Cloudflare (D1 → acracb-cluster → Console):
+//      UPDATE spots SET retirado = 1 WHERE id = 'identificador';
+//  · Sin registro: el spot solo se acepta desde la propia web, uno cada 30 s por conexión, y el mismo spot (mismo DX,
+//    ±1 kHz) no se repite en 10 minutos. Los errores quedan en los registros del Worker (Observability).
 const INDICATIVO = /^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
 const json = (o, status, origen) => { const h = cabeceras(origen); h.set("Content-Type", "application/json; charset=utf-8"); h.set("Cache-Control", "no-store"); return new Response(JSON.stringify(o), { status, headers: h }); };
-async function spot(request, origen, env) {
+const BANDAS = [[1800, 2000, "160m"], [3500, 4000, "80m"], [5250, 5450, "60m"], [7000, 7300, "40m"], [10100, 10150, "30m"], [14000, 14350, "20m"], [18068, 18168, "17m"], [21000, 21450, "15m"], [24890, 24990, "12m"], [28000, 29700, "10m"], [50000, 54000, "6m"], [70000, 70500, "4m"], [144000, 148000, "2m"], [430000, 440000, "70cm"]];
+const bandaDe = f => { const b = BANDAS.find(x => f >= x[0] && f <= x[1]); return b ? b[2] : null; };
+const modoDe = t => { const m = String(t || "").toUpperCase().match(/\b(CW|SSB|USB|LSB|AM|FM|FT8|FT4|RTTY|PSK31|PSK|JT65|MSK144|Q65|SSTV|DV)\b/); return m ? (m[1] === "USB" || m[1] === "LSB" ? "SSB" : m[1]) : null; };
+const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+const huella = async t => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(t))));
+
+// destinos externos (sistema B). Se activan uno a uno SOLO cuando su responsable confirme que acepta envíos
+// automáticos desde una web multiusuario. Mientras, «activo: false» y el spot queda como «deshabilitado» para ese destino.
+// G1FEF y N2KI quedan fuera: exigen registro previo para anunciar.
+const DESTINOS = [
+  { nombre: "DX Summit", tipo: "api", activo: false },
+  { nombre: "SpottedHam", tipo: "telnet", host: "spottedham.com", puerto: 7300, activo: false },
+  { nombre: "DXFun", tipo: "telnet", host: "dxfun.com", puerto: 8000, activo: false },
+  { nombre: "WA9PIE", tipo: "telnet", host: "dxc.wa9pie.net", puerto: 8000, activo: false },
+];
+
+// ---- almacén: D1 si está enlazado; si no, KV ----
+const ESQUEMA = "CREATE TABLE IF NOT EXISTS spots (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, de TEXT NOT NULL, dx TEXT NOT NULL, f REAL NOT NULL, banda TEXT, modo TEXT, info TEXT, estado TEXT, clave TEXT, retirado INTEGER DEFAULT 0)";
+let esquemaListo = false;
+async function d1(env) { if (!env || !env.DB) return null; if (!esquemaListo) { await env.DB.prepare(ESQUEMA).run(); await env.DB.prepare("CREATE INDEX IF NOT EXISTS spots_ts ON spots(ts)").run(); esquemaListo = true; } return env.DB; }
+const publico = r => ({ id: r.id, ts: r.ts, de: r.de, dx: r.dx, f: r.f, banda: r.banda, modo: r.modo, info: r.info, estado: typeof r.estado === "string" ? JSON.parse(r.estado || "{}") : (r.estado || {}) });
+async function listaKV(env) { if (!env || !env.SPOTS) return []; try { const a = JSON.parse(await env.SPOTS.get("recientes") || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+async function recientesDe(env, horas = 1) {
+  const desde = Date.now() - horas * 3600000, db = await d1(env);
+  if (db) { const { results } = await db.prepare("SELECT id, ts, de, dx, f, banda, modo, info, estado FROM spots WHERE ts > ? AND retirado = 0 ORDER BY ts DESC LIMIT 100").bind(desde).all(); return (results || []).map(publico); }
+  return (await listaKV(env)).filter(x => x && x.ts > desde && !x.retirado).map(publico).reverse();
+}
+async function duplicado(env, dx, f) { return (await recientesDe(env, 1 / 6)).find(x => x.dx === dx && Math.abs(x.f - f) <= 1) || null; }
+async function guardaSpot(env, sp) {
+  const db = await d1(env);
+  if (db) { await db.prepare("INSERT INTO spots (id, ts, de, dx, f, banda, modo, info, estado, clave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(sp.id, sp.ts, sp.de, sp.dx, sp.f, sp.banda, sp.modo, sp.info, JSON.stringify(sp.estado), sp.clave).run(); return "D1"; }
+  if (env && env.SPOTS) { const a = (await listaKV(env)).filter(x => Date.now() - x.ts < 3600000).concat([sp]).slice(-80); await env.SPOTS.put("recientes", JSON.stringify(a), { expirationTtl: 7200 }); return "KV"; }
+  return null;
+}
+async function cambiaSpot(env, id, cambio) {
+  const db = await d1(env);
+  if (db) {
+    if (cambio.estado) await db.prepare("UPDATE spots SET estado = ? WHERE id = ?").bind(JSON.stringify(cambio.estado), id).run();
+    if (cambio.retirado) await db.prepare("UPDATE spots SET retirado = 1 WHERE id = ?").bind(id).run();
+    return;
+  }
+  if (env && env.SPOTS) { const a = await listaKV(env); const x = a.find(z => z.id === id); if (!x) return; Object.assign(x, cambio); await env.SPOTS.put("recientes", JSON.stringify(a), { expirationTtl: 7200 }); }
+}
+async function claveDe(env, id) {
+  const db = await d1(env);
+  if (db) { const r = await db.prepare("SELECT clave FROM spots WHERE id = ?").bind(id).first(); return r ? r.clave : null; }
+  const x = (await listaKV(env)).find(z => z.id === id); return x ? x.clave : null;
+}
+
+async function spot(request, origen, env, ctx) {
   if (!origen || origen === "null" || !ORIGENES.includes(origen)) return json({ status: "origen no permitido" }, 403, origen);
-  const largo = +(request.headers.get("Content-Length") || 0);
-  if (largo > 1024) return json({ status: "demasiado largo" }, 413, origen);
+  if (+(request.headers.get("Content-Length") || 0) > 1024) return json({ status: "demasiado largo" }, 413, origen);
   let d; try { d = JSON.parse((await request.text()).slice(0, 1024)); } catch (e) { return json({ status: "datos no válidos" }, 400, origen); }
   const de = String(d.de_call || "").trim().toUpperCase(), dx = String(d.dx_call || "").trim().toUpperCase();
   const f = Math.round(parseFloat(d.frequency) * 10) / 10, info = String(d.info || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 30);
   if (!INDICATIVO.test(de) || !INDICATIVO.test(dx) || de === dx) return json({ status: "indicativo no válido" }, 400, origen);
   if (!(f >= 1800 && f <= 450000)) return json({ status: "frecuencia no válida" }, 400, origen);
-  // un spot cada 30 segundos por conexión (se recuerda en la caché del propio Worker, sin guardar datos)
-  const ip = request.headers.get("CF-Connecting-IP") || "x", llave = new Request("https://acracb-dx.invalid/rl/" + encodeURIComponent(ip));
-  const cache = caches.default;
+  const banda = bandaDe(f);
+  if (!banda) return json({ status: "frecuencia fuera de las bandas de aficionado" }, 400, origen);
+  if (!(env && (env.DB || env.SPOTS))) return json({ status: "clúster interno sin almacén enlazado" }, 503, origen);
+  // un spot cada 30 segundos por conexión (caché del propio Worker; no se guarda la dirección)
+  const cache = caches.default, llave = new Request("https://acracb-dx.invalid/rl/" + await huella(request.headers.get("CF-Connecting-IP") || "x"));
   if (await cache.match(llave)) return json({ status: "espera unos segundos" }, 429, origen);
   await cache.put(llave, new Response("1", { headers: { "Cache-Control": "max-age=30" } }));
-  const rs = await Promise.all([porDXSummit(de, dx, f, info).then(r => ({ nombre: "DX Summit", ...r })),
-    ...NODOS.slice(0, 5).map(n => porTelnet(n, de, dx, f, info).then(r => ({ nombre: n.nombre, ...r })))]);
-  const via = rs.filter(r => r.ok).map(r => r.nombre), no = rs.filter(r => !r.ok).map(r => r.nombre + ": " + r.msg);
-  if (via.length) { try { await guarda(env, { de, dx, f, info, ts: Date.now() }); } catch (e) {} return json({ status: "ok", via, no }, 200, origen); }
-  return json({ status: no.join(" · "), via, no }, 502, origen);
+  try {
+    const dup = await duplicado(env, dx, f);
+    if (dup) return json({ status: "duplicado", spot: dup }, 409, origen);
+    const clave = hex(crypto.getRandomValues(new Uint8Array(16)));
+    const estado = Object.fromEntries(DESTINOS.map(x => [x.nombre, x.activo ? "pendiente" : "deshabilitado"]));
+    const sp = { id: crypto.randomUUID(), ts: Date.now(), de, dx, f, banda, modo: modoDe(info), info, estado, clave: await huella(clave) };
+    const donde = await guardaSpot(env, sp);
+    const activos = DESTINOS.filter(x => x.activo);
+    if (activos.length) ctx.waitUntil(difunde(env, sp, activos));
+    return json({ status: "ok", almacen: donde, clave, spot: publico(sp) }, 200, origen);
+  } catch (e) {
+    console.error("clúster interno: no se pudo guardar", String(e && e.message || e));
+    return json({ status: "no se pudo guardar el spot" }, 500, origen);
+  }
 }
-// ---- spots anunciados desde la plataforma, para todos los socios ----
-const LLAVE_REC = new Request("https://acracb-dx.invalid/recientes");
-async function lista(env) {
-  if (!env || !env.SPOTS) return [];
-  let a = []; try { a = JSON.parse(await env.SPOTS.get("recientes", { cacheTtl: 30 }) || "[]"); } catch (e) { a = []; }
-  return (Array.isArray(a) ? a : []).filter(x => x && Date.now() - x.ts < 3600000).slice(-50);
-}
-async function guarda(env, sp) {
-  if (!env || !env.SPOTS) return;
-  const a = (await lista(env)).filter(x => !(x.dx === sp.dx && Math.abs(x.f - sp.f) < 1)).concat([sp]).slice(-50);
-  await env.SPOTS.put("recientes", JSON.stringify(a), { expirationTtl: 7200 });
-  try { await caches.default.delete(LLAVE_REC); } catch (e) {}
+// sistema B: después de publicar, cada destino activo por separado; un intento por destino, sin reintentos repetidos
+async function difunde(env, sp, activos) {
+  const estado = Object.assign({}, sp.estado);
+  await Promise.all(activos.map(async x => {
+    const r = x.tipo === "api" ? await porDXSummit(sp.de, sp.dx, sp.f, sp.info) : await porTelnet(x, sp.de, sp.dx, sp.f, sp.info);
+    estado[x.nombre] = r.ok ? (r.visto ? "aceptado" : "enviado") : "error: " + r.msg;
+    if (!r.ok) console.warn("difusión", x.nombre, sp.id, r.msg);
+  }));
+  try { await cambiaSpot(env, sp.id, { estado }); } catch (e) { console.error("estado no guardado", sp.id, String(e)); }
 }
 async function recientes(origen, env) {
-  const c = caches.default; let r = await c.match(LLAVE_REC);
-  if (!r) { r = new Response(JSON.stringify(await lista(env)), { headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "max-age=15" } }); try { await c.put(LLAVE_REC, r.clone()); } catch (e) {} }
-  const h = cabeceras(origen); h.set("Content-Type", "application/json; charset=utf-8"); h.set("Cache-Control", "public, max-age=15");
-  return new Response(await r.text(), { status: 200, headers: h });
+  try { return json(await recientesDe(env, 1), 200, origen); }
+  catch (e) { console.error("recientes", String(e)); return json([], 200, origen); }
 }
+async function retirar(request, origen, env) {
+  if (!origen || origen === "null" || !ORIGENES.includes(origen)) return json({ status: "origen no permitido" }, 403, origen);
+  let d; try { d = JSON.parse((await request.text()).slice(0, 512)); } catch (e) { return json({ status: "datos no válidos" }, 400, origen); }
+  const id = String(d.id || ""), clave = String(d.clave || "");
+  if (!/^[0-9a-f-]{36}$/.test(id) || !/^[0-9a-f]{32}$/.test(clave)) return json({ status: "datos no válidos" }, 400, origen);
+  const h = await claveDe(env, id);
+  if (!h || h !== await huella(clave)) return json({ status: "no autorizado" }, 403, origen);
+  await cambiaSpot(env, id, { retirado: 1 });
+  return json({ status: "ok" }, 200, origen);
+}
+const DXS = "https://new.dxsummit.fi/api/v1/spots";
 async function porDXSummit(de, dx, f, info) {
   const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIEMPO_MS);
   try {
-    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/4.0 (club de radioaficionados)" },
+    const r = await fetch(DXS, { method: "POST", signal: ac.signal, headers: { "Content-Type": "application/json", "User-Agent": "ACRACB-PlataformaDX/8.0 (club de radioaficionados)" },
       body: JSON.stringify({ de_call: de, dx_call: dx, frequency: f.toFixed(1), info }) });
     let j = null; try { j = await r.json(); } catch (e) {}
     const ok = r.ok && (!j || j.status == null || j.status === "ok");
     return { ok, msg: ok ? "ok" : (j && j.status ? String(j.status).slice(0, 60) : "respondió " + r.status) };
   } catch (e) { return { ok: false, msg: "no respondió" }; } finally { clearTimeout(t); }
 }
-// nodos DXSpider: en cada uno se entra con el indicativo de quien anuncia, se manda «dx frecuencia indicativo comentario»
-// y se sale. Uno o dos por zona de la red, para que el spot llegue al máximo de clústeres; cada nodo lo reparte a los suyos.
-// Todos dejan entrar con el indicativo, sin contraseña (lista de NG3K). Para cambiar uno, cambia su línea. Máximo 5: Cloudflare abre como mucho 6 conexiones a la vez
-// (DX Summit y 5 nodos); con más, las que esperan se quedan sin tiempo y fallan.
-// URE (ea4ure.com:7300) no está: desde julio de 2025 pide indicativo registrado y contraseña.
-const NODOS = [
-  { nombre: "DXFun", host: "dxfun.com", puerto: 8000 },             // EA4RCH, Madrid (comprobado: acepta)
-  { nombre: "WA9PIE", host: "dxc.wa9pie.net", puerto: 8000 },       // Texas, enlazado con nodos de todo el mundo (comprobado)
-  { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 },   // California (comprobado)
-  { nombre: "G1FEF", host: "dxc.hamserve.uk", puerto: 7300 },       // Reino Unido, nodo del autor de la wiki de DXSpider
-  { nombre: "N2KI", host: "dxc.n2ki.com", puerto: 7300 },           // Nueva York, gran nodo de EE. UU.
-];
+// sesión telnet corta por spot (entrar con el indicativo del autor, «dx», salir): el Worker no mantiene sesiones abiertas
 async function porTelnet(n, de, dx, f, info) {
   let sock;
   try {
@@ -134,18 +191,20 @@ async function porTelnet(n, de, dx, f, info) {
     const resp = buf.slice(desde);
     try { await manda("bye"); } catch (e) {}
     if (/sorry|not allowed|not registered|need to (be )?regist|invalid|error/i.test(resp)) return { ok: false, msg: resp.replace(/\s+/g, " ").trim().slice(0, 60) || "lo rechazó" };
-    return { ok: true, msg: "ok" };
+    return { ok: true, visto: /DX de/i.test(resp), msg: "ok" };
   } catch (e) { return { ok: false, msg: "no respondió" };
   } finally { try { sock && sock.close(); } catch (e) {} }
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origen = request.headers.get("Origin");
     if (origen && !ORIGENES.includes(origen)) return texto("Origen no permitido", 403, null);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cabeceras(origen) });
-    if (request.method === "POST" && new URL(request.url).pathname === "/spot") return spot(request, origen, env);
-    if (request.method === "GET" && new URL(request.url).pathname === "/recientes") return recientes(origen, env);
+    const ruta = new URL(request.url).pathname;
+    if (request.method === "POST" && ruta === "/spot") return spot(request, origen, env, ctx);
+    if (request.method === "POST" && ruta === "/retirar") return retirar(request, origen, env);
+    if (request.method === "GET" && ruta === "/recientes") return recientes(origen, env);
     if (request.method !== "GET" && request.method !== "HEAD") return texto("Método no permitido", 405, origen);
     if (request.url.length > MAX_URL) return texto("Dirección demasiado larga", 414, origen);
     const u = new URL(request.url).searchParams.get("u");

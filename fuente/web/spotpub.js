@@ -1,13 +1,13 @@
-/* ---- ACRACB 2.11.23 / 2.11.25: anunciar un spot ----
-   Va a DX Summit (dxsummit.fi), que lo reparte por la red mundial de clústeres. Gratis y sin registro: basta tu indicativo.
-   2.11.25: ventana propia (botón «Anunciar spot» junto al buscador y en cada estación, ya rellena); el envío prueba primero
-   la API pública de DX Summit y, si el navegador no deja leer la respuesta, la envía como formulario; después se comprueba
-   en los clústeres (vía Spothole) que el spot ha salido de verdad. Nada se envía sin que lo confirmes. */
+/* ---- ACRACB 2.11.39: anunciar un spot en el clúster interno de la plataforma ----
+   Según el documento del proyecto: el spot se publica en el clúster interno (el intermediario del club en Cloudflare lo
+   guarda una hora) y lo ven todos los socios en unos segundos, sin recargar. La difusión a clústeres externos es aparte,
+   nunca retrasa la publicación interna y solo se hace a los servicios que hayan confirmado su permiso (de momento, ninguno).
+   Nada se envía sin que lo confirmes; tu spot lo puedes retirar desde este mismo dispositivo. */
 (function(){
 "use strict";
 const T=(a,b)=>window.ACRACB_LANG==="en"?b:a,$=id=>document.getElementById(id);
-const RELAY="https://acracb-dx.ea5jnf.workers.dev/spot",API="https://new.dxsummit.fi/api/v1/spots",WEB="https://www.dxsummit.fi/",CHK="https://spothole.app/api/v1/spots?max_age=900";
-const KCALL="acracb_mycall",KLAST="acracb_spotlast";
+const RELAY="https://acracb-dx.ea5jnf.workers.dev",WEB="https://www.dxsummit.fi/";
+const KCALL="acracb_mycall",KLAST="acracb_spotlast",KMINE="acracb_myspots2";
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CALL=/^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
 const get=k=>{try{return localStorage.getItem(k)||""}catch(_){return ""}},put=(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}};
@@ -23,55 +23,64 @@ function check(){const de=$("spde").value.trim().toUpperCase(),dx=$("spdx").valu
   try{const L=JSON.parse(get(KLAST)||"null");if(L&&L.dx===dx&&Math.abs(L.f-f)<1&&Date.now()-L.at<6e5)return {err:T("Ya anunciaste este spot hace menos de 10 minutos.","You posted this spot less than 10 minutes ago."),el:"spdx"}}catch(_){}
   return {de,dx,f,info:info.slice(0,30)}}
 function msg(h,c){const m=$("spmsg");m.className="spmsg"+(c?" "+c:"");m.innerHTML=h;m.hidden=!h}
-const manual=s=>T(`<a href="${WEB}" target="_blank" rel="noopener noreferrer" data-ext>Abre DX Summit</a> y escribe en «Share a Spot»: tu indicativo <b>${esc(s.de)}</b>, DX <b>${esc(s.dx)}</b>, <b>${s.f.toFixed(1)}</b> kHz${s.info?`, «${esc(s.info)}»`:""}.`,`<a href="${WEB}" target="_blank" rel="noopener noreferrer" data-ext>Open DX Summit</a> and type in “Share a Spot”: your call <b>${esc(s.de)}</b>, DX <b>${esc(s.dx)}</b>, <b>${s.f.toFixed(1)}</b> kHz${s.info?`, “${esc(s.info)}”`:""}.`);
-/* ¿ha salido? se busca en los clústeres (Spothole) un spot de ese DX anunciado por ti, cerca de esa frecuencia */
-async function seen(s){try{const r=await fetch(CHK,{cache:"no-store",credentials:"omit"});let j=await r.json();if(!Array.isArray(j))j=j.spots||j.data||[];
-  return j.some(x=>{const dx=base(x.dx_call||x.dx||x.callsign),de=base(x.de_call||x.spotter||x.de);let f=+(x.freq||x.frequency||0);if(f>=1e5)f=f/1000;else if(f>0&&f<1000)f=f*1000;return dx===base(s.dx)&&de===base(s.de)&&(!f||Math.abs(f-s.f)<3)})}catch(_){return null}}
+const manual=s=>T(`Si quieres, puedes anunciarlo tú mismo en <a href="${WEB}" target="_blank" rel="noopener noreferrer" data-ext>DX Summit</a>: tu indicativo <b>${esc(s.de)}</b>, DX <b>${esc(s.dx)}</b>, <b>${s.f.toFixed(1)}</b> kHz${s.info?`, «${esc(s.info)}»`:""}.`,`If you like, you can post it yourself on <a href="${WEB}" target="_blank" rel="noopener noreferrer" data-ext>DX Summit</a>: your call <b>${esc(s.de)}</b>, DX <b>${esc(s.dx)}</b>, <b>${s.f.toFixed(1)}</b> kHz${s.info?`, “${esc(s.info)}”`:""}.`);
 
-/* 2.11.37: lo que anuncias sale al momento en el clúster de la plataforma, sin esperar a que vuelva de la red.
-   Se guarda una hora en el dispositivo y se vuelve a poner si una actualización lo quita antes de que llegue por Spothole */
-const KMINE="acracb_myspots";
+/* ---- spots de los socios: llegan del intermediario cada 15 s (con la página a la vista) y entran en el clúster de la
+   plataforma marcados como «comunicados por un socio»; los tuyos salen al momento en tu dispositivo ---- */
 const BRK=[[0,1800,2000],[1,3500,4000],[8,5250,5450],[2,7000,7300],[9,10100,10150],[3,14000,14350],[4,18068,18168],[5,21000,21450],[6,24890,24990],[7,28000,29700],[10,50000,54000],[11,144000,146000],[12,430000,440000]];
-function mineAll(){try{return (JSON.parse(localStorage.getItem(KMINE)||"[]")||[]).filter(x=>Date.now()-x.ts<36e5)}catch(_){return []}}
+function mineAll(){try{return (JSON.parse(get(KMINE)||"[]")||[]).filter(x=>Date.now()-x.ts<36e5)}catch(_){return []}}
+const saveMine=a=>put(KMINE,JSON.stringify(a.slice(-20)));
+const ESTX={deshabilitado:["en pausa (sin permiso confirmado)","paused (no confirmed permission)"],pendiente:["enviándose","sending"],enviado:["enviado","sent"],aceptado:["aceptado","accepted"]};
+const estTxt=v=>{v=String(v||"");if(/^error/.test(v))return T("error","error")+v.slice(5);const t=ESTX[v];return t?T(t[0],t[1]):esc(v)};
 function mkSpot(m){try{const b=(BRK.find(r=>m.f>=r[1]&&m.f<=r[2])||[])[0];if(b==null)return null;const dx=window.ACRACB_areaPos?ACRACB_areaPos(m.dx):null;if(!dx)return null;
   const e=(typeof callEnt==="function")?callEnt(m.dx):null,d=new Date(m.ts);let from=[0,0];try{if(typeof TXP!=="undefined"&&TXP)from=TXP}catch(_){}
-  return {call:m.dx,f:String(+(m.f/1000).toFixed(4)),band:b,mode:/\bCW\b/i.test(m.info)?"CW":/FT8/i.test(m.info)?"FT8":/FT4/i.test(m.info)?"FT4":/RTTY/i.test(m.info)?"RTTY":"",t:d.toISOString().slice(11,16),utc:d.toISOString(),
-    by:[m.de],from:[from],dx,dxcc:e&&e.dxcc||null,kind:e&&+e.dxcc===281?"near":"dx",c:[m.info,T("anunciado desde la plataforma","posted from the platform")].filter(Boolean).join(" · "),nw:true,ns:1,src:["ACRACB"],dxp:false,mine:true}}catch(_){return null}}
-/* 2.11.38: también los que anuncian los demás socios desde la plataforma (el intermediario los guarda una hora) */
-let REC=[],recOff=false;
-async function pullRec(){if(recOff||document.hidden)return;try{const r=await fetch(RELAY.replace(/\/spot$/,"/recientes"),{cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
-  if(r.status===404||r.status===405){recOff=true;return}if(!r.ok)return;const j=await r.json();if(Array.isArray(j)){REC=j.filter(x=>x&&typeof x.dx==="string"&&isFinite(+x.f)&&isFinite(+x.ts)&&Date.now()-x.ts<36e5).map(x=>({de:String(x.de||"").slice(0,15),dx:x.dx.slice(0,15),f:+x.f,info:String(x.info||"").slice(0,30),ts:+x.ts}));putMine()}}catch(_){}}
+  const md=m.modo||(/\bCW\b/i.test(m.info)?"CW":/FT8/i.test(m.info)?"FT8":/FT4/i.test(m.info)?"FT4":/RTTY/i.test(m.info)?"RTTY":"");
+  return {call:m.dx,f:String(+(m.f/1000).toFixed(4)),band:b,mode:md,t:d.toISOString().slice(11,16),utc:d.toISOString(),
+    by:[m.de],from:[from],dx,dxcc:e&&e.dxcc||null,kind:e&&+e.dxcc===281?"near":"dx",c:m.info||"",nw:true,ns:1,src:["ACRACB"],sid:m.id||null,dxp:false,mine:!!m.clave}}catch(_){return null}}
+let REC=[],recOK=false,recOff=false;
+async function pullRec(){if(recOff||document.hidden)return;try{const r=await fetch(RELAY+"/recientes",{cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
+  if(r.status===404||r.status===405){recOff=true;return}if(!r.ok)return;const j=await r.json();if(!Array.isArray(j))return;
+  REC=j.filter(x=>x&&typeof x.dx==="string"&&isFinite(+x.f)&&isFinite(+x.ts)&&Date.now()-x.ts<36e5).map(x=>({id:/^[0-9a-f-]{36}$/.test(x.id||"")?x.id:null,de:String(x.de||"").slice(0,15),dx:x.dx.slice(0,15),f:+x.f,info:String(x.info||"").slice(0,30),modo:typeof x.modo==="string"?x.modo.slice(0,8):"",ts:+x.ts,estado:x.estado&&typeof x.estado==="object"?x.estado:{}}));
+  recOK=true;putMine();showMine()}catch(_){}}
 function putMine(){try{if(typeof L==="undefined"||!L||!Array.isArray(L.spots))return;const k=x=>String(x.call).toUpperCase()+"|"+Math.round(parseFloat(x.f)*500);
-  const have=new Set(L.spots.map(k));let add=0;for(const m of mineAll().concat(REC)){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);add++}}
-  if(add){try{CACHE.clear()}catch(_){}try{refresh()}catch(_){}}}catch(_){}}
-function addMine(s){try{const a=mineAll();a.push({de:s.de,dx:s.dx,f:s.f,info:s.info||"",ts:Date.now()});localStorage.setItem(KMINE,JSON.stringify(a.slice(-20)))}catch(_){}putMine()}
-setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(pullRec,30000);setTimeout(pullRec,5000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullRec()});
-function confirmLater(s,how){const t0=Date.now();let n=0;
-  const tick=async()=>{n++;const r=await seen(s);
-    if(r===true){msg(T(`Hecho: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en los clústeres.`,`Done: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the clusters.`),"ok");return}
-    if(Date.now()-t0<180000){msg(T(`Enviado${how}. Ya sale en el clúster de la plataforma. Comprobando que aparece en el resto… (${n})`,`Sent${how}. It already shows on the platform cluster. Checking it shows on the others… (${n})`)+(s.no?`<small class="spno">${T("No lo aceptaron: ","Not accepted by: ")}${esc(s.no)}</small>`:""));setTimeout(tick,30000);return}
-    msg(T("No aparece en los clústeres después de 3 minutos, así que puede que DX Summit no lo haya aceptado. ","It does not show on the clusters after 3 minutes, so DX Summit may not have accepted it. ")+manual(s),"warn")};
-  setTimeout(tick,20000)}
-async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando a los clústeres… puede tardar hasta medio minuto.","Sending to the clusters… it can take up to half a minute."));
-  put(KCALL,s.de);const body={de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info};let st="";
-  /* 2.11.26: primero, el intermediario del club (Cloudflare), que lo entrega a DX Summit sin que el navegador lo bloquee */
-  try{const r=await fetch(RELAY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
-    if(r.status!==404&&r.status!==405){let j=null;try{j=await r.json()}catch(_){}if(j&&j.status!=null){st=j.status==="ok"?"ok":String(j.status);if(Array.isArray(j.via)&&j.via.length){let lf=null;try{lf=new Intl.ListFormat(T("es","en"),{type:"conjunction"})}catch(_){}s.via=lf?lf.format(j.via):j.via.join(", ")}if(Array.isArray(j.no)&&j.no.length&&j.via&&j.via.length)s.no=j.no.map(x=>String(x)).join(" · ")}}}catch(_){}
-  if(!st)try{const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
-    let j=null;try{j=await r.json()}catch(_){}st=r.ok&&(!j||j.status==null||j.status==="ok")?"ok":(j&&j.status?String(j.status):"HTTP "+r.status)}
-  catch(e){st="cors"}
-  if(st==="cors"){/* el navegador no deja leer la respuesta de DX Summit: se envía como formulario, que no necesita permiso, y se comprueba después */
-    try{await fetch(API,{method:"POST",mode:"no-cors",body:new URLSearchParams(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});st="blind"}catch(_){st="net"}}
+  const mine=mineAll(),ids=new Set(REC.map(x=>x.id).concat(mine.map(x=>x.id)).filter(Boolean));let ch=0;
+  /* los spots de socios que ya no están (retirados o caducados) salen también del clúster de la plataforma */
+  if(recOK){const n0=L.spots.length;L.spots=L.spots.filter(x=>!(x.src&&x.src.includes("ACRACB")&&x.sid&&!ids.has(x.sid)));ch+=n0-L.spots.length}
+  const have=new Set(L.spots.map(k));for(const m of REC.concat(mine.filter(x=>!REC.some(r=>r.id===x.id)))){const sp=mkSpot(m);if(sp&&!have.has(k(sp))){L.spots.unshift(sp);have.add(k(sp));ch++}}
+  if(ch){try{CACHE.clear()}catch(_){}try{refresh()}catch(_){}}}catch(_){}}
+setInterval(putMine,15000);setTimeout(putMine,4000);setInterval(pullRec,15000);setTimeout(pullRec,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)pullRec()});
+/* etiqueta «Socio» en las tarjetas y filas del clúster: un spot comunicado por un socio no es una predicción ni una
+   observación automática de la red */
+(function tag(){const f=window.ACRACB_tags;if(typeof f!=="function"||f.__socio){setTimeout(tag,300);return}
+  const w=function(s,inline){const t=f.apply(this,arguments)||"";return s&&s.src&&s.src.includes("ACRACB")?`<span class="xtag xsoc" title="${T("Comunicado por un socio desde la plataforma","Reported by a member from the platform")}">${T("Socio","Member")}</span>`+t:t};w.__socio=1;window.ACRACB_tags=w})();
+
+/* tus spots de la última hora, con su estado y el botón para retirarlos */
+function showMine(){const box=$("spmine");if(!box)return;const a=mineAll();if(!a.length){box.hidden=true;box.innerHTML="";return}
+  box.hidden=false;box.innerHTML=`<p class="spmh">${T("Tus spots de la última hora","Your spots from the last hour")}</p>`+a.slice().reverse().map(m=>{const r=REC.find(x=>x.id===m.id),est=(r&&r.estado)||m.estado||{};
+    const ext=Object.entries(est).map(([k,v])=>`${esc(k)}: ${estTxt(v)}`).join(" · ");
+    return `<div class="spmi"><span><b>${esc(m.dx)}</b> ${(m.f).toFixed(1)} kHz · ${new Date(m.ts).toISOString().slice(11,16)} UTC${ext?`<small class="spno">${T("Otros clústeres: ","Other clusters: ")}${ext}</small>`:""}</span><button type="button" class="btn spret" data-ret="${esc(m.id)}">${T("Retirar","Remove")}</button></div>`}).join("")}
+async function retirar(id){const a=mineAll(),m=a.find(x=>x.id===id);if(!m)return;
+  try{const r=await fetch(RELAY+"/retirar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,clave:m.clave}),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});
+    if(!r.ok){msg(T("No se ha podido retirar. Vuelve a intentarlo en un momento.","It could not be removed. Try again in a moment."),"warn");return}}catch(_){msg(T("Sin conexión: no se ha podido retirar.","No connection: it could not be removed."),"warn");return}
+  saveMine(a.filter(x=>x.id!==id));REC=REC.filter(x=>x.id!==id);recOK=true;putMine();showMine();msg(T(`Retirado: <b>${esc(m.dx)}</b> ya no sale en el clúster de la plataforma.`,`Removed: <b>${esc(m.dx)}</b> no longer shows on the platform cluster.`),"ok")}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-ret]");if(b){e.preventDefault();retirar(b.dataset.ret)}});
+
+async function send(s){const b=$("spgo");b.disabled=true;msg(T("Publicando…","Posting…"));put(KCALL,s.de);
+  let r=null,j=null;
+  try{r=await fetch(RELAY+"/spot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info}),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});try{j=await r.json()}catch(_){}}catch(_){}
   b.disabled=false;
-  if(st==="ok"||st==="blind"){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
-    msg(T(`Enviado${s.via?" por "+esc(s.via):""}: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz. Comprobando que aparece en los clústeres…${s.no?"<br><small class=\"spno\">No lo aceptaron: "+esc(s.no)+"</small>":""}`,`Sent${s.via?" via "+esc(s.via):""}: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz. Checking it shows on the clusters…${s.no?"<br><small class=\"spno\">Not accepted by: "+esc(s.no)+"</small>":""}`),st==="ok"?"ok":"");
-    if(st==="ok")addMine(s);
-    confirmLater(s,st==="blind"?T(" como formulario"," as a form"):s.via?T(" por "," via ")+esc(s.via):"");return}
-  if(st==="net"){msg(T("No hay conexión con DX Summit. ","No connection to DX Summit. ")+manual(s),"warn");return}
-  msg(T(`DX Summit no lo ha aceptado (${esc(st)}). `,`DX Summit did not accept it (${esc(st)}). `)+manual(s),"warn")}
+  if(r&&r.ok&&j&&j.status==="ok"&&j.spot){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
+    const m=Object.assign({},j.spot,{clave:j.clave});const a=mineAll();a.push(m);saveMine(a);putMine();showMine();
+    const pausa=Object.values(j.spot.estado||{}).every(v=>v==="deshabilitado");
+    msg(T(`Publicado: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en el clúster de la plataforma. Los demás socios lo verán en unos segundos.`,`Posted: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the platform cluster. Other members will see it within seconds.`)
+      +`<small class="spno">${pausa?T("La difusión a otros clústeres está en pausa hasta tener el permiso de cada servicio.","Sending to other clusters is paused until each service gives permission."):T("La difusión a otros clústeres va aparte; su estado sale abajo.","Sending to other clusters goes separately; its status is shown below.")}</small>`,"ok");return}
+  if(r&&r.status===409&&j&&j.spot){msg(T(`Ese spot ya está publicado: <b>${esc(j.spot.dx)}</b> en ${(+j.spot.f).toFixed(1)} kHz, por ${esc(j.spot.de)} a las ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`,`That spot is already posted: <b>${esc(j.spot.dx)}</b> on ${(+j.spot.f).toFixed(1)} kHz, by ${esc(j.spot.de)} at ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`),"warn");return}
+  if(r&&r.status===429){msg(T("Espera medio minuto entre un spot y el siguiente.","Wait half a minute between spots."),"warn");return}
+  if(r&&r.status===400&&j&&j.status){msg(T(`No se ha publicado: ${esc(j.status)}.`,`Not posted: ${esc(j.status)}.`),"warn");return}
+  msg(T("No se ha podido publicar en el clúster de la plataforma ahora mismo. ","It could not be posted to the platform cluster right now. ")+manual(s),"warn")}
 function dlg(){let d=$("spdlg");if(d)return d;d=document.createElement("dialog");d.id="spdlg";d.className="spdlg";d.setAttribute("aria-labelledby","spdlgt");
   d.innerHTML=`<form method="dialog" class="spdh"><h3 id="spdlgt">${ICON} ${T("Anunciar un spot","Post a spot")}</h3><button class="spx" value="x" aria-label="${T("Cerrar","Close")}">×</button></form>
-    <p class="spsub">${T("A la red mundial de clústeres, por DX Summit y varios nodos del clúster a la vez. Gratis y sin registro.","To the worldwide cluster network, through DX Summit and several cluster nodes at once. Free, no sign-up.")}</p>
+    <p class="spsub">${T("Al clúster de la plataforma: lo ven todos los socios en unos segundos. Gratis y sin registro.","To the platform cluster: every member sees it within seconds. Free, no sign-up.")}</p>
     <div class="spfrm">
       <label><span>${T("Tu indicativo","Your call")}</span><input id="spde" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="15" value="${esc(get(KCALL))}"></label>
       <label><span>DX</span><input id="spdx" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="15"></label>
@@ -81,6 +90,7 @@ function dlg(){let d=$("spdlg");if(d)return d;d=document.createElement("dialog")
     <div id="spconf" class="spconf" hidden></div>
     <div class="spbtn"><button type="button" class="btn primary" id="sprev">${T("Revisar","Review")}</button></div>
     <p id="spmsg" class="spmsg" hidden aria-live="polite"></p>
+    <div id="spmine" class="spmine" hidden></div>
     <p class="note">${T("El spot es público y lleva tu indicativo: anuncia solo estaciones que hayas oído tú.","The spot is public and carries your callsign: only spot stations you have heard yourself.")}</p>`;
   document.body.appendChild(d);
   d.querySelector(".spfrm").addEventListener("input",()=>{$("spconf").hidden=true;$("sprev").hidden=false});
@@ -90,15 +100,15 @@ function dlg(){let d=$("spdlg");if(d)return d;d=document.createElement("dialog")
     cf.hidden=false;$("sprev").hidden=true;$("spgo").onclick=()=>send(c);$("spno").onclick=()=>{cf.hidden=true;$("sprev").hidden=false;$("spdx").focus()};$("spgo").focus()});
   return d}
 function open(call,f){const d=dlg();$("spconf").hidden=true;$("sprev").hidden=false;msg("");if(call!=null){$("spdx").value=String(call||"").toUpperCase();const k=khz(f);$("spf").value=k?k.toFixed(1):""}
-  try{d.showModal()}catch(_){d.setAttribute("open","")}($("spde").value?(call?$("spi"):$("spdx")):$("spde")).focus()}
+  showMine();try{d.showModal()}catch(_){d.setAttribute("open","")}($("spde").value?(call?$("spi"):$("spdx")):$("spde")).focus()}
 window.ACRACB_spotFill=open;
 /* botón visible junto al buscador de la pestaña DX */
 function btn(){const r=document.querySelector("#srch .srrow");if(!r)return false;if($("spopen"))return true;
-  const b=document.createElement("button");b.type="button";b.id="spopen";b.className="btn spopen";b.innerHTML=`${ICON}<span>${T("Anunciar spot","Post spot")}</span>`;b.setAttribute("aria-label",T("Anunciar un spot","Post a spot"));b.title=T("Anunciar un spot en los clústeres","Post a spot to the clusters");b.onclick=()=>open();r.appendChild(b);return true}
+  const b=document.createElement("button");b.type="button";b.id="spopen";b.className="btn spopen";b.innerHTML=`${ICON}<span>${T("Anunciar spot","Post spot")}</span>`;b.setAttribute("aria-label",T("Anunciar un spot","Post a spot"));b.title=T("Anunciar un spot en el clúster de la plataforma","Post a spot to the platform cluster");b.onclick=()=>open();r.appendChild(b);return true}
 /* el botón de cada estación (tarjeta o fila) abre la ventana ya rellena */
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-spot]");if(!b)return;e.preventDefault();e.stopPropagation();const fh=b.dataset.spf||((b.closest("[data-f]")||{}).dataset||{}).f||"";open(b.dataset.spot,fh)},true);
 /* 2.11.26: también arriba, junto a «Actualizar», para tenerlo a mano desde cualquier pestaña */
 function top(){const r=document.querySelector(".updrow");if(!r)return false;if($("sptop"))return true;
-  const b=document.createElement("button");b.type="button";b.id="sptop";b.className="sptop";b.innerHTML=`<span class="ic">${ICON}</span><span class="tx">${T("Anunciar spot","Post spot")}</span>`;b.title=T("Anunciar en los clústeres una estación que oyes","Post to the clusters a station you hear");b.onclick=()=>open();const u=document.getElementById("updbtn");if(u)u.after(b);else r.appendChild(b);return true}
+  const b=document.createElement("button");b.type="button";b.id="sptop";b.className="sptop";b.innerHTML=`<span class="ic">${ICON}</span><span class="tx">${T("Anunciar spot","Post spot")}</span>`;b.title=T("Anunciar en el clúster de la plataforma una estación que oyes","Post to the platform cluster a station you hear");b.onclick=()=>open();const u=document.getElementById("updbtn");if(u)u.after(b);else r.appendChild(b);return true}
 let n=0;(function go(){const a=btn(),b=top();if(a&&b)return;if(++n<60)setTimeout(go,250)})();
 })();

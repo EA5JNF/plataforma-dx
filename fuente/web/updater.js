@@ -24,7 +24,8 @@ const POSMAX={15:4500,54:2500,291:3500,1:3500,6:2000,150:3000,108:3000,100:2500,
 function posOK(pos,e){return !(pos&&e&&e.pos&&distKm(pos,e.pos)>(POSMAX[e.dxcc]||1300))}
 function areaPos(call,e){try{if(!e||!AREA[e.dxcc])return e?e.pos:null;const A=AREA[e.dxcc];const c=String(call||"").toUpperCase();
   const sl=c.match(/\/(\d)$/);const d=sl?sl[1]:((c.split("/").find(x=>A.re.test(x))||"").match(A.re)||[])[1];return (d!=null&&A.p[d])||e.pos}catch(x){return e?e.pos:null}}
-window.ACRACB_areaPos=(call)=>{try{const e=callEnt(call);if(!e||!e.dxcc)return null;return areaPos(call,{dxcc:e.dxcc,pos:(()=>{try{const m=(V.meta||[]).find(x=>x[2]===e.dxcc);return m?[m[5],m[4]]:null}catch(x){return null}})()})}catch(e){return null}};
+/* 2.11.39: posición de la entidad también para las que no tienen zona VOACAP (Eslovenia, Bulgaria...), como en el clúster */
+window.ACRACB_areaPos=(call)=>{try{const e0=ent(call);if(e0){const p=areaPos(call,e0);if(p)return p}}catch(_){}try{const e=callEnt(call);if(!e||!e.dxcc)return null;return areaPos(call,{dxcc:e.dxcc,pos:(()=>{try{const m=(V.meta||[]).find(x=>x[2]===e.dxcc);return m?[m[5],m[4]]:null}catch(x){return null}})()})}catch(e){return null}};
 if(window.claude&&window.claude.use)return;           /* dentro del Artifact manda el otro sistema */
 const KEY="acracb_live_v2",TOUT=6000;
 const $=id=>document.getElementById(id);
