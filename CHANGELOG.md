@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.10 — 2026-11-22
+
+- ES: «Tus descansos a medida» (Concursos) con las mismas casillas que el ritmo por horas: hora, QSO/h y banda en cada una, en 8, 12 o 24 columnas según la pantalla; las horas de descanso salen apagadas con «zz» y «pausa». Antes las cifras se montaban unas sobre otras y las horas salían pegadas («000102…»).
+- ES: Al desplegar la estación con los ajustes finos, el móvil ya no aleja la página: el panel se ajusta al ancho de la pantalla y la tabla de antenas se desliza dentro de su caja.
+- ES: Fuera las últimas menciones a la ionosonda: la MUF del día se corrige con lo que se oye en el clúster.
+- EN: "Your breaks, tailored" (Contests) uses the same cells as the hourly rate: hour, QSOs/h and band in each, in 8, 12 or 24 columns depending on the screen; rest hours are dimmed with "zz" and "rest". Before, figures overlapped and the hours ran together ("000102…").
+- EN: Opening the station with its fine settings no longer zooms the page out on phones: the panel fits the screen width and the antenna table scrolls inside its box.
+- EN: Removed the last mentions of the ionosonde: the day's MUF is corrected with what the cluster hears.
+
 ## 2.11.9 — 2026-11-22
 
 - ES: Caja de la estación en dos filas: el selector DX/concursos y, debajo, solo lo que se cambia a menudo (modo, banda y potencia) más un botón con tu locator. Ese botón despliega en la misma caja lo que casi nunca se toca: locator, antena, altitud, entorno y «Subir log», y después el concurso, las coordenadas y el cálculo.

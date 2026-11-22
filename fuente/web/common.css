@@ -1619,3 +1619,6 @@ html.vc .sline{padding:6px 8px!important}
 html.vc .ssum2>.logbtn{display:none}
 .sline>#stbtn{min-width:0!important;justify-content:center!important}.sline>#stbtn>svg{display:none!important}
 .sline>#stbtn{align-items:center!important;line-height:1!important}.sline>#stbtn>span{margin:-1px!important;padding:0!important}.sline>#stbtn .stl{line-height:1;display:block}
+/* 2.11.10: descansos a medida con las mismas casillas que el ritmo por horas; las horas de pausa, apagadas y con «zz» */
+.crate .crh.rest{opacity:.55;color:var(--muted);border:1px dashed color-mix(in srgb,var(--fg) 25%,transparent)}
+.sline>#stpanel{min-width:0!important;max-width:100%!important;box-sizing:border-box}
