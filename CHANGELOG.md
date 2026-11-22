@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.2 — 2026-11-22
+
+- ES: En el clúster consta quién publicó cada spot: «Publicado por» con el indicativo (o los indicativos) que lo anunciaron y la red por la que llegó (Spothole, HamQTH o Reverse Beacon). En la vista lista, la columna se llama «Publica».
+- EN: The cluster now shows who published each spot: "Spotted by" with the callsign (or callsigns) that announced it and the network it came through (Spothole, HamQTH or Reverse Beacon). In list view the column is called "Spotter".
+
 ## 2.11.1 — 2026-11-22
 
 - ES: Autoría: «Idea original, diseño y realización: Alfredo, EA5JNF», sin «su único autor».

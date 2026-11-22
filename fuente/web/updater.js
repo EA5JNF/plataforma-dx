@@ -287,7 +287,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const old=pm.get(key);let ns=g.srcs.size;if(old)ns=Math.max(ns,+old.ns||1);const nw=!old;
     const note=[];if(g.ref)note.push(g.ref);const cm=(g.c[0]||"").replace(/\s+/g," ").trim();if(cm&&cm.length<=40&&!/WPM/i.test(cm))note.push(cm);
     if(g.skim&&[...g.srcs].every(x=>x==="RBN"))note.push("oído por skimmer (RBN)");
-    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,utc:iso(g.t),dxp:!!g.dxpos,eu:!!g.eu,_t:+g.t});
+    spots.push({call:g.call,f:fmtF(g.f),band:g.band,mode:modeFrom(g.f,g.c.join(" "),g.mode),t:new Date(g.t).toISOString().slice(11,16),by:g.by,from:g.from,dx,dxcc,kind,cont,c:note.join(" · "),nw,ns,src:[...new Set([...g.srcs].concat(old&&old.src||[]))].slice(0,4),utc:iso(g.t),dxp:!!g.dxpos,eu:!!g.eu,_t:+g.t});
     if(nw)nn++;if(ns>1)cf++}
   /* 2.8.33: los spots aún vigentes de la actualización anterior se conservan aunque esta vez no los traiga ninguna fuente
      (una fuente que no responde ya no hace desaparecer estaciones del mapa), y el tope se aplica por antigüedad: antes se

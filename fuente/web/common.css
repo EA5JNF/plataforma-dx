@@ -1525,3 +1525,4 @@ html,body,.sc,.scl,.sc *{-webkit-tap-highlight-color:transparent}
 @media (max-width:640px){.swim{gap:8px}.swim .swd{display:none}.swim figcaption{font-size:.78rem}}
 .swim figure{margin:0;min-width:0}.swim img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:10px;background:#000;object-fit:cover}
 .swim figcaption{font-size:.84rem;line-height:1.4;margin-top:6px;color:var(--muted)}.swim figcaption b{color:var(--fg)}.swim figcaption small{display:block;margin-top:2px}
+.sc-via{display:block;color:var(--muted);font-size:.85em;white-space:normal;overflow-wrap:anywhere;margin-top:2px}

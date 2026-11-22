@@ -155,13 +155,16 @@ function listRow(o){const g=o.geo,old=o.old||(o.a!=null?!isAct(o.a):!o.t);
        libre, porque las etiquetas ya se ven en la fila */
     `<div class="sc-d ld">${[[o.byLbl||T("Le oyen","Heard by"),o.by],[T("Comentario","Comment"),(o.xs||o.note)?`<span class="l-cfull">${o.xs?`<span class="l-ct">${o.xs}</span>`:""}${o.note?`<span class="l-ct">${e2(o.note)}</span>`:""}</span>`:""],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist]].concat(o.secs||[]).filter(([,v])=>v).map(([l,v])=>`<div class="ldi"><span class="ldl">${l}</span><div class="ldv">${v}</div></div>`).join("")}</div>`+
     (oh?`<div class="l-ohx">${oh}</div>`:"")+`</div>`}
-window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-age">${T("Hace","Ago")}</span><span class="l-f">${T("Frec.","Freq.")}</span><span class="l-m">${T("Modo","Mode")}</span><span class="l-b">${T("Banda","Band")}</span><span class="l-call">DX</span><span class="l-cty">${T("País","Country")}</span><span class="l-tags">${T("Comentario","Comment")}</span><span class="l-by">${T("Le oyen","Heard by")}</span><span class="l-az">${T("Rumbo","Bearing")}</span><span class="l-km">km</span><span class="l-p">QSO</span><span class="l-oh"></span><span class="l-x"></span></div>`;
+/* 2.11.2: quién publicó el spot (los indicativos que lo anunciaron) y en qué red: clúster DX (Spothole o HamQTH) o Reverse Beacon */
+function pubBy(s){const b=CSL(s.by,", ");const V={RBN:"Reverse Beacon",Spothole:"Spothole",HamQTH:"HamQTH",POTA:"POTA",SOTA:"SOTA"};
+  const v=[...new Set((s.src||[]).map(x=>V[x]||x))];return b+(v.length?` <span class="sc-via">${T("vía","via")} ${e2(v.join(", "))}</span>`:"")}
+window.ACRACB_listHead=()=>`<div class="sclh" aria-hidden="true"><span class="l-age">${T("Hace","Ago")}</span><span class="l-f">${T("Frec.","Freq.")}</span><span class="l-m">${T("Modo","Mode")}</span><span class="l-b">${T("Banda","Band")}</span><span class="l-call">DX</span><span class="l-cty">${T("País","Country")}</span><span class="l-tags">${T("Comentario","Comment")}</span><span class="l-by">${T("Publica","Spotter")}</span><span class="l-az">${T("Rumbo","Bearing")}</span><span class="l-km">km</span><span class="l-p">QSO</span><span class="l-oh"></span><span class="l-x"></span></div>`;
 /* 2.4.4: «Qué hacer»: cada estación recomendada en una tarjeta como las del resto de la plataforma:
    frecuencia, modo, banda, rumbo y distancia por el camino corto y el largo, y la probabilidad de QSO */
 const inBand=(f,b)=>{const m=MHZ[b];return m&&isFinite(f)&&Math.abs(f-m)/m<.12};
 function recCards(go,dxn){const out=[];
   (go||[]).forEach(({s,e,a})=>{const st=splitTags(s);const sp=spotProb(s,e,a);const tg=[`<span class="xtag xr">${T("En el clúster","On the cluster")}</span>`].concat(st.pr);
-    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,
+    out.push(card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tg,byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:modeOf(s)}:null,
       note:/up|arriba|split/i.test(s.c||"")?T("Escucha arriba: trabaja en split.","Listen up: working split."):""}))});
   /* 2.5.6: solo las DXpediciones que trabajan en alguno de tus modos (el de tu estación y los añadidos en el clúster) */
   let my=new Set();try{CMS().forEach(k=>my.add(String(MODES[k].s).toUpperCase()))}catch(_){}
@@ -393,13 +396,13 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   if(cmp.length)h+=`<div class="sgcmp">${T("Con lo que has anotado","With what you noted")}: ${cmp.join("; ")}.</div>`;
   return h}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
-  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,secs:(()=>{const r=sigRow(s,e,sp);return r?[[T("Señal prevista","Expected signal"),r]]:[]})()})}
+  return card({call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx)||{az:e.az,laz:e.laz,km:e.km},p:Math.round(sp.p*100),p0:Math.round(sp.p0*100),lpb:sp.lp,oh:e.t?{t:e.t.id,b:s.band,call:s.call,mode:s.mode}:null,old:a>60,secs:(()=>{const r=sigRow(s,e,sp);return r?[[T("Señal prevista","Expected signal"),r]]:[]})()})}
 function progRow(o){const u=refUrl(o.prog,o.ref),pn=PNAME[o.prog];const tag=u?`<a class="xtag xr" href="${u}" target="_blank" rel="noopener noreferrer" data-ext title="${T("Ficha del","Page of the")} ${T(pn[0],pn[1])}">${e2(o.prog)} ${e2(o.ref)}</a>`:`<span class="xtag xr">${e2(o.prog)} ${e2(o.ref)}</span>`;
   return card({...PC({call:o.call,band:o.band,mode:o.mode,f:o.f,dx:o.dx,t:o.t,c:o.c},o.a),call:o.call,a:o.a,t:o.t,f:o.f,band:o.band,mode:o.mode,tags:[tag],byLbl:T("Spot de","Spotted by"),by:o.by?e2(o.by):"",geo:geoOf(o.dx),note:o.c?e2(cTr(o.c)):"",old:o.a>30})}
 const NREF=/(POTA|SOTA|WWFF|GMA|DME|DVGE|DFE|IOTA|DIE|DCE|DMVE|DEE)[ :-]*[A-Z0-9/-]+/i;
 function nearRow(s,a){const st=splitTags(s);const tags=[];if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
   const m=String(s.c||"").match(NREF);if(m&&!st.pr.length)tags.push(`<span class="xtag xr">${e2(m[0].toUpperCase())}</span>`);
-  return card({...PC(s,a),call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),by:CSL(s.by,", "),xs:st.xs,geo:geoOf(s.dx),old:a>60})}
+  return card({...PC(s,a),call:s.call,a,t:s.t,f:s.f,band:s.band,mode:modeOf(s),tags:tags.concat(st.pr),byLbl:T("Publicado por","Spotted by"),by:pubBy(s),xs:st.xs,geo:geoOf(s.dx),old:a>60})}
 function renderNear(){const box=$("near");if(!box||typeof SPOTS!=="function")return;const keep=[...box.children].filter(x=>x.matches&&x.matches("p.note"));
   const nr=SPOTS().filter(s=>spotKind(s)==="near").map(s=>({s,a:spotAge(s)})).sort((x,y)=>(x.a??1e9)-(y.a??1e9));
   box.innerHTML=(nr.length?nr.map(({s,a})=>nearRow(s,a)).join(""):`<div class="empty">${T(`Sin spots de España en ${CMSTXT()} ahora.`,`No spots from Spain in ${CMSTXT()} right now.`)}</div>`);keep.forEach(k=>box.appendChild(k))}
