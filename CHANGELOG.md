@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.1 — 2026-11-22
+
+- ES: Autoría: «Idea original, diseño y realización: Alfredo, EA5JNF», sin «su único autor».
+- ES: Al actualizar, la lista «Fuentes de esta actualización» y la línea de estado se rellenan en directo: cada fuente sale con ✓ o ✕ en cuanto contesta, y se cuenta cuántas han respondido. Los datos se pintan a los 3 s (antes, 4,5 s) y las fuentes lentas se suman al llegar.
+- EN: Authorship: "Original idea, design and development: Alfredo, EA5JNF", without "its sole author".
+- EN: When updating, the "Sources of this update" list and the status line fill in live: each source shows ✓ or ✕ as soon as it answers, with a count of how many have replied. Data are drawn at 3 s (was 4.5 s) and slow sources are added as they arrive.
+
 ## 2.11.0 — 2026-11-22
 
 - ES: Solo fuentes con permiso de uso claro. Se retiran las que no lo tenían: HamQSL, observatorio de Penticton (NRCan), ionosondas de KC2G y GIRO, previsión del BOM australiano, NG3K, Club Log (Most Wanted), DX Summit, PSK Reporter, las API de POTA, SOTA y WWFF (sus spots siguen llegando a través de Spothole), las listas de LoTW y eQSL, AMSAT como respaldo de órbitas y el calendario WA7BNM. Fuera también lo que dependía de ellas: el aviso de «entidades raras», la etiqueta «Most Wanted», la prioridad «confirma por LoTW» y la columna HamQSL de «Tus bandas ahora».

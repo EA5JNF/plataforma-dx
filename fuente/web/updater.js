@@ -325,16 +325,20 @@ for(const n in SLOW){if(!SRC[n])continue;const f=SRC[n];SRC[n]=async()=>{const m
    Ahora se pintan los datos a los DL ms con todo lo que haya llegado; las fuentes lentas siguen buscando por detrás y,
    cuando terminan, se vuelve a montar todo sin pedir nada otra vez (con los resultados ya recibidos en esta vuelta).
    Una fuente que aún sigue buscando de la vuelta anterior no se pide dos veces: se mantiene su último dato bueno. */
-const DL=4500,RES={},PEND={};let MERGEQ=false;
+const DL=3000,RES={},PEND={};let MERGEQ=false;
+/* 2.11.1: mientras se consulta, la lista de fuentes se va rellenando en directo (✓ o ✕ según responde cada una) y la línea
+   de estado cuenta cuántas han respondido; antes no se veía nada hasta el final */
+let LIVET=0;function liveSrc(){if(LIVET)return;LIVET=setTimeout(()=>{LIVET=0;if(!BUSY)return;const v=Object.values(LAST),ok=v.filter(x=>x.ok).length,done=v.filter(x=>!x.wait).length;
+  const EN=window.ACRACB_LANG==="en";status(EN?`Querying the sources… ${done} of ${v.length} answered (${ok} with data)`:`Consultando las fuentes… ${done} de ${v.length} han contestado (${ok} con datos)`,"updst-run");renderSrc()},150)}
 function lateMerge(){if(MERGEQ)return;const ps=Object.values(PEND);if(!ps.length)return;MERGEQ=true;
   Promise.allSettled(ps).then(()=>{const go=()=>{if(BUSY)return setTimeout(go,500);MERGEQ=false;updateAll(true,true)};go()})}
 async function updateAll(auto,merge){if(BUSY)return;BUSY=true;const t0=merge?LASTRUN:Date.now();if(!merge){LASTRUN=t0;setBtn(true,auto);status(auto?"Actualización automática en curso…":"Buscando datos en todas las fuentes a la vez…","updst-run")}
   const dl=new Promise(ok=>setTimeout(ok,DL,RES));
   const run=async(tab,n)=>{if(merge){const r=RES[n];return [n,r?r.v:null]}
     if(PEND[n]){LAST[n]={ok:false,late:true,ms:0,err:"sigue buscando"};return [n,null]}
-    const s=Date.now();
-    const p=(async()=>{try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"&&n!=="NOAA avisos"),ms:Date.now()-s,note:v&&v.__note||""};RES[n]={v};return v}
-      catch(e){if(e&&e.nd)LAST[n]={ok:false,nd:true,ms:Date.now()-s,err:e.nd};else LAST[n]={ok:false,ms:Date.now()-s,err:e&&e.name==="AbortError"?"sin respuesta":/^HTTP \d+/.test(e&&e.message||"")?"respondió "+e.message.replace("HTTP ","error "):(e instanceof TypeError?"conexión rechazada":"datos no válidos")};RES[n]={v:null};return null}
+    const s=Date.now();LAST[n]={ok:false,late:true,wait:true,ms:0,err:"consultando…"};liveSrc();
+    const p=(async()=>{try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"&&n!=="NOAA avisos"),ms:Date.now()-s,note:v&&v.__note||""};RES[n]={v};liveSrc();return v}
+      catch(e){if(e&&e.nd)LAST[n]={ok:false,nd:true,ms:Date.now()-s,err:e.nd};else LAST[n]={ok:false,ms:Date.now()-s,err:e&&e.name==="AbortError"?"sin respuesta":/^HTTP \d+/.test(e&&e.message||"")?"respondió "+e.message.replace("HTTP ","error "):(e instanceof TypeError?"conexión rechazada":"datos no válidos")};RES[n]={v:null};liveSrc();return null}
       finally{delete PEND[n]}})();
     PEND[n]=p;const r=await Promise.race([p,dl]);
     if(r===RES&&PEND[n]){LAST[n]={ok:false,late:true,ms:DL,err:"sigue buscando"};return [n,null]}

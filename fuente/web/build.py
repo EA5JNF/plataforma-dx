@@ -587,7 +587,7 @@ w_es = _FQ.sub(r'\1\2MHz', w_es); w_en = _FQ.sub(r'\1\2MHz', w_en)
 # 2.9.0: en inglés de EE. UU. el porcentaje va pegado al número (24%); en español, con espacio (24 %)
 w_en = re.sub(r'(\}|\d) %(?![\w(])', r'\1%', w_en)
 w_en = w_en.replace('<optgroup label="Ver todo">', '<optgroup label="Show all">')
-w_en = w_en.replace('<meta name="copyright" content="© 2026 ACRACB. Idea original, diseño y realización: Alfredo, EA5JNF, su único autor. Todos los derechos reservados.">', '<meta name="copyright" content="© 2026 ACRACB. Original idea, design and development: Alfredo, EA5JNF, its sole author. All rights reserved.">')
+w_en = w_en.replace('<meta name="copyright" content="© 2026 ACRACB. Idea original, diseño y realización: Alfredo, EA5JNF. Todos los derechos reservados.">', '<meta name="copyright" content="© 2026 ACRACB. Original idea, design and development: Alfredo, EA5JNF. All rights reserved.">')
 # 2.10.2: comillas al estilo de EE. UU. en la versión inglesa
 w_en = w_en.replace('«', '“').replace('»', '”')
 w_en = w_en.replace('ionosfera sobre tu QTH con el modelo <b>GloTEC</b> (TEC, foF2 y altura de la capa F2)', 'ionosphere over your QTH from the <b>GloTEC</b> model (TEC, foF2 and F2-layer height)')

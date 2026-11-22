@@ -1,6 +1,6 @@
 # Código fuente de la Plataforma DX ACRACB
 
-© 2026 ACRACB, todos los derechos reservados. Idea original, diseño y realización: Alfredo, EA5JNF, su único autor. Las bibliotecas, letras y datos de terceros siguen bajo sus licencias (ver licencias/).
+© 2026 ACRACB, todos los derechos reservados. Idea original, diseño y realización: Alfredo, EA5JNF. Las bibliotecas, letras y datos de terceros siguen bajo sus licencias (ver licencias/).
 
 La web publicada (raíz del repositorio: `index.html`, `en.html`, `lib/`, `sw.js`) se genera a partir de esta carpeta.
 No se edita a mano: se cambia aquí y se vuelve a montar.
