@@ -33,7 +33,7 @@ function confirmLater(s,how){const t0=Date.now();let n=0;
     if(Date.now()-t0<180000){msg(T(`Enviado${how}. Comprobando que aparece en los clústeres… (${n})`,`Sent${how}. Checking it shows on the clusters… (${n})`));setTimeout(tick,30000);return}
     msg(T("No aparece en los clústeres después de 3 minutos, así que puede que DX Summit no lo haya aceptado. ","It does not show on the clusters after 3 minutes, so DX Summit may not have accepted it. ")+manual(s),"warn")};
   setTimeout(tick,20000)}
-async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando…","Sending…"));
+async function send(s){const b=$("spgo");b.disabled=true;msg(T("Enviando a los clústeres… puede tardar hasta medio minuto.","Sending to the clusters… it can take up to half a minute."));
   put(KCALL,s.de);const body={de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info};let st="";
   /* 2.11.26: primero, el intermediario del club (Cloudflare), que lo entrega a DX Summit sin que el navegador lo bloquee */
   try{const r=await fetch(RELAY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});

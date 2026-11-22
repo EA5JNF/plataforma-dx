@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.33 — 2026-11-22
+
+- ES: Anunciar spots: el intermediario (versión 5) lo envía a la vez por DX Summit y por siete nodos del clúster sin contraseña repartidos por la red (España, Reino Unido, Países Bajos, Alemania y Estados Unidos). Mientras envía, avisa de que puede tardar hasta medio minuto.
+- EN: Posting spots: the relay (version 5) sends it at once via DX Summit and seven password-free cluster nodes spread across the network (Spain, UK, Netherlands, Germany and USA). While sending, it warns it can take up to half a minute.
+
 ## 2.11.32 — 2026-11-22
 
 - ES: Anunciar spots: preparado para enviarlos a la vez por varios nodos del clúster (intermediario versión 5). El aviso dice por cuáles ha salido y cuáles no lo aceptaron.

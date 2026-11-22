@@ -6,7 +6,7 @@ import { connect } from "cloudflare:sockets";
 // 2.11.27: el spot sale a la vez por dos caminos gratuitos y sin registro: la API de DX Summit y el nodo DXSpider de
 // SpottedHam (telnet, puerto 7300), que no pide cuenta para anunciar. Los dos están enlazados a la red mundial de
 // clústeres; la red descarta el duplicado (mismo spot, mismo indicativo, mismo minuto). Basta con que uno funcione.
-// 2.11.32 (versión 5): el spot puede salir también por varios nodos DXSpider a la vez (lista NODOS, hasta 5), para que
+// 2.11.32 (versión 5): el spot puede salir también por varios nodos DXSpider a la vez (lista NODOS, hasta 10), para que
 // llegue al máximo de clústeres. La respuesta dice qué caminos lo aceptaron y cuáles no, para saber cuáles funcionan.
 // Solo lee las webs públicas de la lista y se las pasa a la plataforma. Guarda cada respuesta 10 minutos.
 // Seguridad: solo GET, solo https, solo las webs de la lista (también tras redirecciones), tamaño máximo, tiempo máximo,
@@ -65,7 +65,7 @@ async function spot(request, origen) {
   if (await cache.match(llave)) return json({ status: "espera unos segundos" }, 429, origen);
   await cache.put(llave, new Response("1", { headers: { "Cache-Control": "max-age=30" } }));
   const rs = await Promise.all([porDXSummit(de, dx, f, info).then(r => ({ nombre: "DX Summit", ...r })),
-    ...NODOS.slice(0, 5).map(n => porTelnet(n, de, dx, f, info).then(r => ({ nombre: n.nombre, ...r })))]);
+    ...NODOS.slice(0, 10).map(n => porTelnet(n, de, dx, f, info).then(r => ({ nombre: n.nombre, ...r })))]);
   const via = rs.filter(r => r.ok).map(r => r.nombre), no = rs.filter(r => !r.ok).map(r => r.nombre + ": " + r.msg);
   if (via.length) return json({ status: "ok", via, no }, 200, origen);
   return json({ status: no.join(" · "), via, no }, 502, origen);
@@ -81,10 +81,17 @@ async function porDXSummit(de, dx, f, info) {
   } catch (e) { return { ok: false, msg: "no respondió" }; } finally { clearTimeout(t); }
 }
 // nodos DXSpider: en cada uno se entra con el indicativo de quien anuncia, se manda «dx frecuencia indicativo comentario»
-// y se sale. Para añadir un nodo, copia la línea de SpottedHam y cambia nombre, host y puerto (máximo 5 nodos).
-// Solo sirven nodos que dejan anunciar entrando con el indicativo, sin contraseña.
+// y se sale. Uno o dos por zona de la red, para que el spot llegue al máximo de clústeres; cada nodo lo reparte a los suyos.
+// Todos dejan entrar con el indicativo, sin contraseña (lista de NG3K). Para añadir uno, copia una línea (máximo 10).
+// URE (ea4ure.com:7300) no está: desde julio de 2025 pide indicativo registrado y contraseña.
 const NODOS = [
-  { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 },
+  { nombre: "DXFun", host: "dxfun.com", puerto: 8000 },             // EA4RCH, Madrid
+  { nombre: "G1FEF", host: "dxc.hamserve.uk", puerto: 7300 },       // Reino Unido, nodo del autor de la wiki de DXSpider
+  { nombre: "PI4CC", host: "dxc.pi4cc.nl", puerto: 8000 },          // Róterdam, Países Bajos
+  { nombre: "DA0BCC", host: "dx.da0bcc.de", puerto: 7300 },         // Múnich, Alemania
+  { nombre: "N2KI", host: "dxc.n2ki.com", puerto: 7300 },           // Nueva York, gran nodo de EE. UU.
+  { nombre: "WA9PIE", host: "dxc.wa9pie.net", puerto: 8000 },       // Texas, enlazado con nodos de todo el mundo
+  { nombre: "SpottedHam", host: "spottedham.com", puerto: 7300 },   // California
 ];
 async function porTelnet(n, de, dx, f, info) {
   let sock;
