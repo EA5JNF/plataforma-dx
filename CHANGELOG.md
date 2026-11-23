@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.53 — 2026-11-23
+
+- ES: Con la letra ampliada desde «Aa», las etiquetas de las tarjetas (Entidad sin confirmar, DXpedición, Socio…) ya no se salen ni se descuadran: si no caben en una línea, pasan a dos dentro de su recuadro. Los nombres de país ya no se parten a mitad de palabra (Chequi-a, Poloni-a).
+- EN: With text enlarged from "Aa", card labels (Entity not confirmed, DXpedition, Member…) no longer overflow or misalign: if they do not fit on one line they wrap inside their box. Country names no longer break mid-word.
+
 ## 2.11.52 — 2026-11-23
 
 - ES: El modo elegido arriba (SSB, CW, FT8…) manda en toda la plataforma: Ahora, DX, Mapa, Concursos y el aviso DX muestran solo ese modo. Lo que elijas dentro de una sección (los modos del mapa, los del clúster en DX o «Mi modo / Todos» en Ahora) vale solo para esa sección y se olvida al cambiar el modo de arriba. Tocar modos en el mapa o en DX ya no cambia el modo de arriba.

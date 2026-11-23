@@ -1902,3 +1902,11 @@ html.vc .sc.ohc:not(.scx) .ohsp{display:none!important}
 #sw[data-cols="8"] .chip:last-child .v{font-size:min(1.35rem,10.4cqi)!important}
 #sw[data-cols="4"] .chip:last-child .v{font-size:min(1rem,10.4cqi)!important}
 #sw[data-cols="2"] .chip:last-child .v{font-size:min(.95rem,10.4cqi)!important}
+/* 2.11.53: con la letra grande de «Aa», las etiquetas (Entidad sin confirmar, DXpedición…) no se salen de la tarjeta:
+   si no caben en una línea, pasan a dos dentro de su recuadro */
+.xtag{max-width:100%;white-space:normal!important;height:auto!important;min-height:1.6em;padding:.12em .5em!important;line-height:1.3;text-align:left;overflow-wrap:break-word}
+/* y los nombres de país ya no se parten a mitad de palabra (Chequi-a) */
+html.bigt .sc .nw,html.bigt .sp .nw{overflow-wrap:break-word}
+html.bigt .sc dd,html.bigt .sc-d dd{overflow-wrap:break-word;min-width:0}
+html.bigt .sc-d .cs{white-space:normal}
+html.bigt .sc-d .cs .cty,html.bigt .sc-d .cs{overflow-wrap:normal!important;word-break:normal!important}
