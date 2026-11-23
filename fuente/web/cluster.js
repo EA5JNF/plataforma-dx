@@ -309,7 +309,8 @@ const allOn=()=>{try{return CMS().length===Object.keys(MODES).length}catch(_){re
 const mineOn=()=>{try{const c=CMS();return c.length===1&&c[0]===MOD()}catch(_){return false}};
 window.ACRACB_recModes=()=>{const on=allOn(),mine=!on&&mineOn();let my="";try{my=MODES[MOD()].s}catch(_){}let mix="";if(!on&&!mine){try{mix=CMSTXT()}catch(_){}}
   return `<div class="recm seg" role="group" aria-label="${T("Modos","Modes")}"><button type="button" data-recm="0" aria-pressed="${mine}">${T("Mi modo","My mode")}${my?" · "+e2(my):""}</button><button type="button" data-recm="1" aria-pressed="${on}">${T("Todos los modos","All modes")}</button></div>`+(mix?`<p class="note recmix">${T("Ahora ves","Now showing")}: ${e2(mix)}</p>`:"")};
-function syncAll(){const m=document.getElementById("modesel");if(!m)return;const a=allOn();
+/* 2.11.52: lo elegido en una sección ya no cambia el modo de arriba */
+function syncAll(){return;const m=document.getElementById("modesel");if(!m)return;const a=allOn();
   if(a&&m.value!=="all"){m.value="all";try{store.set("c_modesel","all")}catch(_){}}
   else if(!a&&m.value==="all"){let b="ssb";try{b=MOD()}catch(_){}m.value=b;try{store.set("c_modesel",b)}catch(_){}}}
 /* 2.10.20: elegir en la lista un modo concreto deja solo ese modo; elegir «Todos los modos» los enciende todos */

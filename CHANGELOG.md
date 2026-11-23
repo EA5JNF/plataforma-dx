@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.52 — 2026-11-23
+
+- ES: El modo elegido arriba (SSB, CW, FT8…) manda en toda la plataforma: Ahora, DX, Mapa, Concursos y el aviso DX muestran solo ese modo. Lo que elijas dentro de una sección (los modos del mapa, los del clúster en DX o «Mi modo / Todos» en Ahora) vale solo para esa sección y se olvida al cambiar el modo de arriba. Tocar modos en el mapa o en DX ya no cambia el modo de arriba.
+- ES: Mapa: la predicción es siempre la del modo de arriba, y se dice qué modos se ven en el mapa.
+- ES: Sol → Propagación: «Ver el detalle por banda» ya no se cierra solo al refrescar, y las columnas van en orden Ahora · 13 h · 1 h, igual que las frases.
+- EN: The mode chosen at the top (SSB, CW, FT8…) rules the whole platform: Now, DX, Map, Contests and the DX alert show only that mode. What you choose inside a section (the map's modes, the DX cluster's, or "My mode / All" in Now) applies only to that section and is forgotten when the top mode changes. Tapping modes on the map or in DX no longer changes the top mode.
+- EN: Map: the prediction always uses the top mode, and it says which modes the map shows.
+- EN: Sun → Propagation: "See the detail by band" no longer closes by itself on refresh, and the columns go Now · 1 pm · 1 am, like the sentences.
+
 ## 2.11.51 — 2026-11-22
 
 - ES: El botón «Anunciar spot» del buscador de DX faltaba si se abría la pestaña DX pasados 15 segundos desde que cargó la plataforma (pasaba sobre todo en el iPad). Ahora aparece siempre, en todos los tamaños de pantalla y vistas.
