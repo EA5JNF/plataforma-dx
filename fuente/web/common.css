@@ -1949,3 +1949,18 @@ html body #sw .chip .k{font-size:.68rem!important;letter-spacing:.08em}
 html body #sw .chip .v{font-family:var(--f-b,inherit)!important;font-size:.98rem!important;font-weight:600!important;color:var(--fg,inherit)!important;font-variant-numeric:tabular-nums;white-space:nowrap!important}
 html body #sw .chip .v small{font-size:.75em!important;font-weight:500!important;opacity:.7}
 @media (max-width:600px){html body #sw{display:grid!important;grid-template-columns:1fr 1fr!important}html body #sw .chip{border-right:0!important;padding:6px 10px!important}html body #sw .chip:last-child{grid-column:1/-1!important}}
+
+/* 2.11.68: detalle por banda como mapa de calor */
+.hmt{display:grid;gap:3px;margin:.4em 0}
+.hmr{display:grid;grid-template-columns:minmax(4.5em,1fr) repeat(3,minmax(0,1.2fr));gap:3px;align-items:stretch}
+.hmh{font-size:.8em;color:var(--muted);align-items:end;padding-bottom:2px}
+.hmh>span:not(:first-child){text-align:center}
+.hmh small{display:block;font-size:.85em;opacity:.8}
+.hmb{display:flex;flex-direction:column;justify-content:center;padding:4px 6px 4px 0;font-variant-numeric:tabular-nums}
+.hmb small{font-size:.68em;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.hmc{display:flex;align-items:center;justify-content:center;min-height:2em;border-radius:6px;font-weight:600;font-variant-numeric:tabular-nums;
+  background:color-mix(in srgb,var(--hmcol,#2e9d5b) var(--hm,20%),transparent)}
+.hmc.hmg{--hmcol:#2e9d5b}.hmc.hmy{--hmcol:#c9921f}.hmc.hmo{--hmcol:#c9721f}
+.hm0{background:none;color:var(--muted);opacity:.55;font-weight:400}
+.hmbest .hmb{font-weight:700}
+.hmbest .hmc:nth-child(2){outline:2px solid var(--accent);outline-offset:-2px}

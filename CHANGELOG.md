@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.68 — 2026-11-28
+
+- ES: Sol → Propagación: las columnas y las tres frases van siempre por orden de hora (ahora y después la 1 h o las 13 h, según cuál llegue antes). Por la tarde, «Mañana» queda a la derecha.
+- ES: «Ver el detalle por banda» es ahora un mapa de calor: cada casilla con su número de destinos y un fondo más intenso cuantos más hay, y «—» discreto para una banda cerrada, en vez de la palabra «cerrada» en rojo por toda la tabla.
+- ES: «La mejor ahora» de la tabla es la misma banda que dicen la frase de arriba y la barra de Sol.
+- EN: Sun → Propagation: the columns and the three sentences always follow the order of time (now, then 1 am or 1 pm, whichever comes first). In the afternoon, "Tomorrow" is on the right.
+- EN: "See the detail by band" is now a heat map: each cell with its number of destinations and a stronger background the more there are, and a discreet "—" for a closed band, instead of the word "closed" in red across the table.
+- EN: The table's "best now" is the same band as the sentence above and the Sun bar.
+
 ## 2.11.67 — 2026-11-28
 
 - ES: Una DXpedición de la que solo se conoce el prefijo («3B8») ya no se recomienda en «Qué hacer» ni en los avisos con una frecuencia inventada: solo sale si algún spot reciente da su indicativo completo, y entonces con su frecuencia y su modo reales.
