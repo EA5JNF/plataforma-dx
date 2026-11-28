@@ -685,5 +685,8 @@
  "Tormentas · escalas NOAA": "Storms · NOAA scales",
  "G: tormenta geomagnética; R: apagón de radio; S: tormenta de protones. De 1 (menor) a 5 (extrema)": "G: geomagnetic storm; R: radio blackout; S: proton storm. From 1 (minor) to 5 (extreme)",
  "Sin tormentas: G (geomagnética), R (apagón de radio) y S (protones) a 0": "No storms: G (geomagnetic), R (radio blackout) and S (protons) at 0",
- "Tormentas": "Storms"
+ "Tormentas": "Storms",
+ "5 W · QRP (≤5 W)": "5 W · QRP (≤5 W)",
+ "100 W · Low Power (≤100 W)": "100 W · Low Power (≤100 W)",
+ "1 kW · High Power (DXpedición o concursero)": "1 kW · High Power (DXpedition or contester)"
 }

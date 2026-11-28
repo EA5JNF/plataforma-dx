@@ -2135,3 +2135,27 @@ details.sterr .sthvu i{max-width:200px;overflow:hidden;text-overflow:ellipsis}de
 .hmlg{display:inline-flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap}
 .hmlg i{display:inline-block;width:.8em;height:.8em;border-radius:3px;margin-left:4px}
 .hmlg i.hmg{background:var(--ok)}.hmlg i.hmy{background:var(--warn)}.hmlg i.hmo{background:color-mix(in srgb,var(--warn) 50%,var(--bad))}
+/* 2.11.91: el panel en el teléfono: índices en tres columnas por temas (Sol · campo · Bz y tormentas), etiqueta encima del valor */
+@media (max-width:600px){
+ html body #sw{grid-template-columns:repeat(3,minmax(0,1fr))!important;padding:2px 0!important}
+ html body #sw .chip{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;padding:7px 10px!important;position:relative;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)!important}
+ html body #sw .chip:nth-child(3),html body #sw .chip:last-child{grid-column:auto!important}
+ html body #sw .chip:last-child{grid-column:span 2!important}
+ html body #sw .chip:nth-last-child(-n+2){border-bottom:0!important}
+ html body #sw .chip .k{font-size:.62rem!important;white-space:nowrap}
+ html body #sw .chip .v{font-size:1rem!important;white-space:nowrap}
+ html body #sw .chip:nth-child(3) .v{font-size:.86rem!important}
+ html body #sw .chip .t{display:none!important}
+ details.sterr>summary{padding:10px 12px 12px}
+ details.sterr .sth-t{font-size:1.02rem}details.sterr .sth-q{font-size:.8rem}
+ details.sterr .sth-chips{gap:6px}
+ details.sterr .sthc{padding:6px 9px}
+ details.sterr .sth-go{padding:9px 14px}
+}
+@media (max-width:600px){
+ html body #sw .chip{padding-left:20px!important}
+ html body #sw .chip::before{position:absolute!important;left:8px!important;top:11px!important;align-self:auto!important}
+ html body #sw .chip:nth-child(3) .v{white-space:normal!important;line-height:1.2}
+ details.sterr .sthvu i{white-space:normal;max-width:none;line-height:1.25}
+}
+@media (max-width:600px){html body div#sw.sw>.chip{padding-left:22px!important}html body div#sw.sw>.chip::before{position:absolute!important;left:9px!important;top:12px!important;margin:0!important}}

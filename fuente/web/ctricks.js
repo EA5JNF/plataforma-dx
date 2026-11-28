@@ -1,6 +1,6 @@
 /* ---- ACRACB 2.10.37: trucos de concurso a tu medida ----
    En Concursos › Trucos se elige la categoría con la que participas (monooperador, asistido o multioperador), la potencia
-   (QRP, baja o alta), si vas a todas las bandas o a una sola y, en los concursos con varios modos, el modo. Los trucos
+   (QRP, Low Power o High Power), si vas a todas las bandas o a una sola y, en los concursos con varios modos, el modo. Los trucos
    se arman con tres piezas: las reglas de ese concurso (las de siempre), las de tu categoría y potencia, y las de tu modo.
    Lo que depende de las bases de cada concurso se dice así, y se remite a ellas. */
 (function(){
@@ -26,8 +26,8 @@ function catTips(o,c){const L=[],a=(es,en)=>L.push(T(es,en));
   if(o.op!=="multi"&&c.so)a(`Como monooperador puedes operar ${c.so} de las ${c.h} h: abajo tienes las mejores horas para las pausas.`,`As a single operator you can operate ${c.so} of the ${c.h} hours: the best times for your breaks are below.`);
   if(o.pw==="qrp"){a("QRP (5 W o menos): busca tú (S&P) más que llamar CQ, y aprovecha las primeras horas de cada apertura, cuando aún no hay colas.","QRP (5 W or less): search and pounce rather than calling CQ, and use the first hours of each opening, before the pile-ups.");
     a("Llama justo cuando la otra estación termina el QSO anterior y repite tu indicativo completo una sola vez.","Call right as the other station finishes the previous QSO and give your full callsign once.")}
-  if(o.pw==="lp")a("Baja potencia (100 W): llama CQ en las bandas altas cuando estén abiertas y busca tú en las bajas, donde manda la potencia.","Low power (100 W): call CQ on the high bands when they are open and search and pounce on the low bands, where power rules.");
-  if(o.pw==="hp")a("Alta potencia: ocupa una frecuencia pronto y no la sueltes; en las bandas bajas, de noche, es donde más diferencia marca.","High power: claim a frequency early and hold it; the low bands at night are where it makes the biggest difference.");
+  if(o.pw==="lp")a("Low Power (hasta 100 W): llama CQ en las bandas altas cuando estén abiertas y busca tú en las bajas, donde manda la potencia.","Low Power (up to 100 W): call CQ on the high bands when they are open and search and pounce on the low bands, where power rules.");
+  if(o.pw==="hp")a("High Power (más de 100 W): ocupa una frecuencia pronto y no la sueltes; en las bandas bajas, de noche, es donde más diferencia marca.","High Power (over 100 W): claim a frequency early and hold it; the low bands at night are where it makes the biggest difference.");
   if(o.bd!=="all"){const b=+o.bd;a(`Monobanda en ${BANDS[b]}: todos los multiplicadores tienen que salir de esa banda. Llama CQ en cuanto abra y aprovecha la línea gris en los extremos de la apertura.`,`Single band on ${BANDS[b]}: every multiplier has to come from that band. Call CQ as soon as it opens and use the greyline at the edges of the opening.`)}
   return L}
 function modeTips(m){const L=[],a=(es,en)=>L.push(T(es,en));
@@ -42,7 +42,7 @@ function ui(o,c){const opt=(k,v,on,tx)=>`<button type="button" role="radio" aria
   const bs=(c.bands||[]).length>1?`<div class="ctg"><span class="ctl">${T("Bandas","Bands")}</span><select data-ctb aria-label="${T("Bandas","Bands")}"><option value="all"${o.bd==="all"?" selected":""}>${T("Todas","All")}</option>${c.bands.map(b=>`<option value="${b}"${String(b)===o.bd?" selected":""}>${T("Solo","Only")} ${BANDS[b]}</option>`).join("")}</select></div>`:"";
   return `<div class="ctcat" aria-label="${T("Cómo participas","How you take part")}"><p class="cth">${T("Cómo participas","How you take part")}</p>
    <div class="ctg"><span class="ctl">${T("Categoría","Category")}</span><div class="ctseg" role="radiogroup">${opt("op","so",o.op==="so",T("Mono","Single"))}${opt("op","soa",o.op==="soa",T("Asistido","Assisted"))}${opt("op","multi",o.op==="multi",T("Multi","Multi"))}</div></div>
-   <div class="ctg"><span class="ctl">${T("Potencia","Power")}</span><div class="ctseg" role="radiogroup">${opt("pw","qrp",o.pw==="qrp","QRP")}${opt("pw","lp",o.pw==="lp",T("Baja","Low"))}${opt("pw","hp",o.pw==="hp",T("Alta","High"))}</div></div>
+   <div class="ctg"><span class="ctl">${T("Potencia","Power")}</span><div class="ctseg" role="radiogroup">${opt("pw","qrp",o.pw==="qrp","QRP")}${opt("pw","lp",o.pw==="lp","Low Power")}${opt("pw","hp",o.pw==="hp","High Power")}</div></div>
    ${ms}${bs}</div>`}
 function paint(){const box=document.getElementById("tricks");if(!box||!box.innerHTML)return;let c=null,key="";try{c=CT();key=document.getElementById("contest").value}catch(_){return}if(!c)return;
   const o=get();if((c.modes||[]).length>1){if(!o.md||(o.md!=="mix"&&!c.modes.includes(o.md))){let m="";try{m=MOD()}catch(_){}o.md=c.modes.includes(m)?m:c.modes[0]}}else o.md=(c.modes||[""])[0];

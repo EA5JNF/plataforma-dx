@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.91 — 2026-11-28
+
+- ES: Panel «Sol y propagación» ordenado en el teléfono: índices en tres columnas por temas (Sol; campo magnético; Bz y tormentas), con la etiqueta encima del valor, y fichas de bandas en dos columnas.
+- ES: Potencias con las mismas definiciones en toda la plataforma: QRP hasta 5 W, Low Power hasta 100 W y High Power por encima de 100 W. La sección QRP ya no ofrece 10 W (pasa a 1, 2 y 5 W), la potencia de la otra estación dice su categoría y los trucos de concurso usan los mismos nombres.
+- EN: «Sun and propagation» panel tidied on phones: indices in three columns by topic (Sun; magnetic field; Bz and storms), label above value, and band tiles in two columns.
+- EN: The same power definitions everywhere: QRP up to 5 W, Low Power up to 100 W and High Power above 100 W. The QRP section no longer offers 10 W (now 1, 2 and 5 W), the other station's power shows its category, and the contest tips use the same names.
+
 ## 2.11.90 — 2026-11-28
 
 - ES: Un solo código de colores en toda la plataforma (verde, ámbar y rojo del tema, que se ajustan en claro y en oscuro). El detalle por banda usa colores fijos por tramo (40 o más, 10–39, 1–9), con su leyenda, en vez de un degradado.
