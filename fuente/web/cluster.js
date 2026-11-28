@@ -183,7 +183,9 @@ function recCards(go,dxn){const out=[];
   (dxn||[]).filter(x=>inMy(x.d)&&isAct(lastAge(String(x.d.call||"").split(/[ ,]/)[0]))).forEach(x=>{const d=x.d;let call=String(d.call||"").split(/[ ,]/)[0];let f="",mode="";
     /* 2.11.45: si el aviso solo trae el prefijo (por ejemplo «3B8»), se usa el indicativo completo del spot más reciente
        que empieza por él, con su frecuencia y su modo; sin eso la tarjeta no decía dónde escuchar */
-    let spx=null;if(!/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/i.test(call)){const c0=call.toUpperCase();const cand=(L.spots||[]).filter(z=>z.call&&String(z.call).toUpperCase().startsWith(c0)).sort((a,b)=>String(b.utc||b.t).localeCompare(String(a.utc||a.t)));spx=cand.find(z=>z.band===x.b)||cand[0]||null;if(spx){call=spx.call;if(spx.band!==x.b)x={...x,b:spx.band}}}
+    let spx=null;if(!/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/i.test(call)){const c0=call.toUpperCase();const cand=(L.spots||[]).filter(z=>z.call&&String(z.call).toUpperCase().startsWith(c0)).sort((a,b)=>String(b.utc||b.t).localeCompare(String(a.utc||a.t)));spx=cand.find(z=>z.band===x.b)||cand[0]||null;if(spx){call=spx.call;if(spx.band!==x.b)x={...x,b:spx.band}}
+      /* 2.11.67: sin indicativo completo (ni en el aviso ni en ningún spot) no se recomienda: no se sabe a quién llamar ni en qué modo */
+      else return}
     const q=[].concat(d.qsx||[]).map(z=>String(z).match(/(\d+(?:\.\d+)?)\s*([A-Z0-9]+)?/i)).filter(Boolean).map(m=>({f:+m[1]>1000?+m[1]/1000:+m[1],m:(m[2]||"").toUpperCase()})).filter(z=>inBand(z.f,x.b));
     let my="";try{my=String(MOD()||"").toUpperCase()}catch(e){}const pick=q.find(z=>z.m&&my&&z.m===my)||q[0];
     /* 2.10.19: con «Mi modo» solo se recomienda una frecuencia de tus modos (antes podía salir FT8 con «Mi modo · SSB») */
@@ -719,7 +721,9 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
     const gk=geoKm(TXP,p),az=Math.round(gk.az)%360,km=Math.round(gk.km),lkm=Math.round(gk.lkm),laz=(az+180)%360;
     let bh={p:0,h:0,b:0,lp:false};for(let x=0;x<24;x++){const r=bestAny(t,x);if(r.p>bh.p)bh={...r,h:x}}const n=bestAny(t,lh);
     let nw=false;try{nw=dxNew(d)}catch(e){}const e=callEnt(d.call);const cty=e&&e.name&&String(d.ent||"").toLowerCase()!==e.name.toLowerCase()?` <span class="cty">· ${e2(d.ent)}</span>`:"";
-    const tags=[MOD()==="ssb"&&d.ssb===false?`<span class="tag">${T("fonía sin confirmar","phone unconfirmed")}</span>`:"",d.until?`<span class="sc-b">${T("hasta","until")} ${e2(d.until)}</span>`:""].filter(Boolean);
+    /* 2.11.67: se dice cuando solo se conoce el prefijo o no se han anunciado los modos */
+    const pfx=!dxTok(d.call).some(z=>/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/.test(z));
+    const tags=[pfx?`<span class="tag">${T("indicativo sin anunciar","callsign not announced")}</span>`:"",!(Array.isArray(d.modes)&&d.modes.length)?`<span class="tag">${T("modo sin anunciar","mode not announced")}</span>`:"",MOD()==="ssb"&&d.ssb===false?`<span class="tag">${T("fonía sin confirmar","phone unconfirmed")}</span>`:"",d.until?`<span class="sc-b">${T("hasta","until")} ${e2(d.until)}</span>`:""].filter(Boolean);
     let air="";try{air=(window.ACRACB_dxon?ACRACB_dxon(d):"").replace(/<br>$/,"")}catch(x){}
     let gl="";try{gl=window.ACRACB_grey?ACRACB_grey.short(p).replace(/^(Línea gris común|Shared greyline):?\s*/,""):""}catch(x){}
     const sec=(l,v)=>v?`<dt>${l}</dt><dd>${v}</dd>`:"";

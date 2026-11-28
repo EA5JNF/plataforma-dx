@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.67 — 2026-11-28
+
+- ES: Una DXpedición de la que solo se conoce el prefijo («3B8») ya no se recomienda en «Qué hacer» ni en los avisos con una frecuencia inventada: solo sale si algún spot reciente da su indicativo completo, y entonces con su frecuencia y su modo reales.
+- ES: En DXpediciones, su tarjeta lo dice: «indicativo sin anunciar» y, si tampoco se conocen, «modo sin anunciar».
+- ES: Si el aviso trae varios indicativos, se leen por separado y se prefiere el completo (antes se pegaban en uno).
+- EN: A DXpedition known only by its prefix ("3B8") is no longer recommended in "What to do" or in alerts with a made-up frequency: it only appears if a recent spot gives its full callsign, and then with its real frequency and mode.
+- EN: In DXpeditions, its card says so: "callsign not announced" and, if they are not known either, "mode not announced".
+- EN: If the alert carries several callsigns, they are read separately and the full one is preferred (before, they were joined into one).
+
 ## 2.11.66 — 2026-11-28
 
 - ES: DXpediciones anunciadas solo con el prefijo («3B8»): si el aviso dice el indicativo completo en el comentario («as 3B8/E70A»), se usa ese, y con él sus modos.

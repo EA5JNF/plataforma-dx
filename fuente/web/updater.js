@@ -199,7 +199,9 @@ SRC["NOAA protones"]=async()=>{const j=await J("https://services.swpc.noaa.gov/j
   const r=j.filter(x=>/^>=\s*10 MeV$/i.test(String(x.energy||"").trim())&&num(x.flux)!=null).sort((a,b)=>String(a.time_tag).localeCompare(String(b.time_tag)));return r.length?Math.round(num(r[r.length-1].flux)*100)/100:null};
 /* --- DXpediciones --- */
 SRC["Spothole avisos"]=async()=>{let j=await J("https://spothole.app/api/v1/alerts");if(!Array.isArray(j))j=j.alerts||j.data||[];const today=Date.now(),out=[];
-  for(const a of j){const sig=String(pick(a,"sig","type","source")||"");const call=clean(pick(a,"dx_call","dx_calls","call","callsign")||"");if(!call)continue;
+  for(const a of j){const sig=String(pick(a,"sig","type","source")||"");/* 2.11.67: «dx_calls» puede ser una lista: cada indicativo por separado (antes se pegaban en uno) y se prefiere uno completo */
+    const raw=pick(a,"dx_calls","dx_call","call","callsign");const arr=(Array.isArray(raw)?raw:String(raw||"").split(/[ ,;]+/)).map(x=>clean(x)).filter(Boolean);
+    const call=arr.find(x=>/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/.test(x))||arr[0]||"";if(!call)continue;
     if(sig&&!/dx|ng3k/i.test(sig))continue;const s=ptime(pick(a,"start_time","start")),e=ptime(pick(a,"end_time","end"));if(!e||!s||s>today||e<today)continue;
     /* 2.11.66: si el aviso solo trae el prefijo («3B8») y el comentario dice el indicativo completo («as 3B8/E70A»), se usa ese */
     let c1=call.split(/[ ,]/)[0];const inf=String(pick(a,"comment","dx_name","name")||"");
