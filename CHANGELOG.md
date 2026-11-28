@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.97 — 2026-11-28
+
+- ES: «Mi log» / «Subir log» ya no salta de sitio: lo coloca siempre la línea de la estación (en pantallas anchas, en la línea; en las demás, dentro del desplegable), también al cargar o cambiar el log.
+- EN: «My log» / «Upload log» no longer jumps around: the station line always places it (on wide screens, in the line; otherwise, inside the panel), also when the log is loaded or changed.
+
 ## 2.11.96 — 2026-11-28
 
 - ES: Las DXpediciones de «Qué hacer ahora» tienen también la fila «Señal» (le oirás / te oirá), como el resto de tarjetas.
