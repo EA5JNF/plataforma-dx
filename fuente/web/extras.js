@@ -195,13 +195,13 @@ function nstat(){const hm=t=>new Date(t).toLocaleTimeString(TT("es-ES","en-US"),
   return b.length?`<p class="note nstat">${e2(b.join(" · "))}.</p>`:""}
 function notifUI(){const host=$("alerts");if(!host||ART)return;let w=$("notifw");if(!w){w=document.createElement("div");w.id="notifw";w.className="notifw";host.insertAdjacentElement("beforebegin",w)}
   const msg=NMSG?`<p class="note nmsg">${e2(NMSG)}</p>`:"";
-  if(!canN){w.innerHTML=`<button class="btn" id="notifb" aria-expanded="${NHELP}">${TT("Avisarme con una notificación","Notify me")}</button><span class="note"> ${TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>${NHELP?notifHelp():""}`;
+  if(!canN){w.innerHTML=`<button class="btn" id="notifb" aria-expanded="${NHELP}" title="${TT("Para que te avise aunque estés en otra app o pestaña","So it can alert you even when you are in another app or tab")}">${TT("Avisarme con una notificación","Notify me")}</button>${NHELP?notifHelp():""}`;
     $("notifb").onclick=()=>{NHELP=!NHELP;notifUI()};return}
   const pm=Notification.permission,on=notifOn();
   if(pm==="denied"){w.innerHTML=`<p class="note nhelp">${TT("Notificaciones desactivadas para esta web.","Notifications are off for this site.")} ${deniedHelp()}</p>`;return}
   w.innerHTML=`<button class="btn" id="notifb" aria-pressed="${on}">${on?TT("Notificaciones activadas","Notifications on"):TT("Avisarme con una notificación","Notify me")}</button>`+
     (on?`<button type="button" class="btn" id="notift">${TT("Probar","Test")}</button>`:"")+
-    `<span class="note nscope">${on?TT("Te avisará de lo que te falte, de las DXpediciones y del DX curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ","It will alert you to what you need, DXpeditions and the unusual or far DX you choose below, in your mode and bands. ")+scopeTxt():TT("Para que te avise aunque estés en otra app o pestaña.","So it can alert you even when you are in another app or tab.")}</span>`+
+    `<span class="note nscope">${on?TT("Te avisará de lo que te falte, de las DXpediciones y del DX curioso o lejano que elijas aquí abajo, con tu modo y tus bandas. ","It will alert you to what you need, DXpeditions and the unusual or far DX you choose below, in your mode and bands. ")+scopeTxt():""}</span>`+
     (on?muteRow():"")+(on?nstat():"")+msg;
   const b=$("notifb");if(b)b.onclick=async()=>{NMSG="";if(notifOn()){S.set("acracb_notif","0");notifUI();return}
     if(IOSD&&!STDA){NHELP=true;w.insertAdjacentHTML("beforeend",notifHelp());return}

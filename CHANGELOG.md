@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.61 — 2026-11-28
+
+- ES: Avisos con menos texto: fuera la frase de presentación, la explicación junto al botón de notificaciones (ahora sale al pasar por encima) y la coletilla del modo y las bandas. Una sola línea dice qué entra.
+- ES: Dos interruptores nuevos en «Avisar también de»: «Socios de ACRACB» (spots que comunican los socios desde la plataforma, encendido) y «Activaciones» (POTA, SOTA, WWFF, IOTA, DME y otros programas, apagado). Los dos valen también para estaciones cercanas.
+- ES: Los interruptores se ven aunque no haya ningún aviso.
+- EN: Alerts with less text: the intro sentence, the explanation next to the notifications button (now shown on hover) and the tail of the mode and bands line are gone. A single line says what is included.
+- EN: Two new switches in "Also alert me to": "ACRACB members" (spots members post from the platform, on) and "Activations" (POTA, SOTA, WWFF, IOTA, DME and other programs, off). Both also apply to nearby stations.
+- EN: The switches are visible even when there are no alerts.
+
 ## 2.11.60 — 2026-11-28
 
 - ES: Todas las tarjetas de estaciones tienen la fila «Señal» con sus dos barras, «Le oirás» y «Te oirá». Faltaban en los spots de 2 m y 70 cm, que ahora usan el mismo balance de enlace que da su fiabilidad, y en las tarjetas de DXpediciones, que ahora muestran la señal de ahora en su mejor banda. Cuando no se puede estimar, la fila dice por qué: ninguna de tus antenas cubre esa banda, no se sabe desde dónde transmite o ahora ninguna banda llega.

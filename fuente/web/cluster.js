@@ -556,21 +556,23 @@ const mgrp=(m,f)=>{const x=mlab(m,f);return AMODES.includes(x)?x:(x==="JS8CALL"?
 window.ACRACB_alertCards=()=>{try{alertCards()}catch(e){}};
 function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch(_){}if(!L.alert||!Array.isArray(L.alert.items))return;
   const old=[...box.querySelectorAll(":scope>.sp")];let wrap=box.querySelector(":scope>.alc"),fb=box.querySelector(":scope>.alf");
-  if(!wrap){if(!old.length)return;wrap=document.createElement("div");wrap.className="alc";old[0].before(wrap);old.forEach(o=>o.remove())}
+  /* 2.11.61: aunque no haya avisos, se ven los interruptores: si no, no se podía encender nada hasta que llegara un aviso */
+  if(!wrap){wrap=document.createElement("div");wrap.className="alc";if(old.length){old[0].before(wrap);old.forEach(o=>o.remove())}else box.appendChild(wrap)}
   if(!fb){fb=document.createElement("div");fb.className="alf";wrap.before(fb)}
   const rows=L.alert.items.map(x=>{const sp=(L.spots||[]).find(s=>s.call===x.call)||{};const band=x.band!=null?x.band:sp.band;const mode=x.mode||sp.mode||"";return {x,sp,band,mode,g:mgrp(mode,x.f!=null?x.f:sp.f)}});
   const mc={},bc={};rows.forEach(r=>{mc[r.g]=(mc[r.g]||0)+1;if(r.band!=null)bc[r.band]=(bc[r.band]||0)+1});
   /* se ven siempre todos los modos y todas las bandas de tu estación; los que ahora no tienen avisos salen atenuados */
   const ml=AMODES.slice(),bs=bandsOK(),bl=ORD.filter(b=>bs.has(b));[...AB].forEach(b=>{if(!bs.has(b))AB.delete(b)});
   {const bl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);let hb=null;try{hb=HB()}catch(_){}
-   fb.innerHTML=`<p class="note alfn">${T("Modo y bandas","Mode and bands")}: <b>${e2(CMSTXT())}</b> · <b>${e2(hb!=null?BANDS[hb]:bl2.length?bl2.join(", "):T("todas las bandas","all bands"))}</b>. ${T("Son los mismos de tu estación, el clúster y el mapa: cámbialos en cualquiera de ellos.","Same as your station, the cluster and the map: change them in any of them.")}</p>`}
+   fb.innerHTML=`<p class="note alfn">${T("Modo y bandas","Mode and bands")}: <b>${e2(CMSTXT())}</b> · <b>${e2(hb!=null?BANDS[hb]:bl2.length?bl2.join(", "):T("todas las bandas","all bands"))}</b>.</p>`}
   const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{r.i=i;return r});
-  const kn=`<p class="note alk">${LOG?T("Por orden: entidad nueva para tu log, DXpedición, banda nueva, modo nuevo y, después, lo curioso y lo lejano que elijas aquí. Solo lo que puedes trabajar ahora, como en el clúster «Para ti».","In order: new entity for your log, DXpedition, new band, new mode and then the unusual and far DX you choose here. Only what you can work now, as in the cluster's «For you».") :T("DXpediciones y, después, lo curioso y lo lejano que elijas aquí, que puedes trabajar ahora, como en el clúster «Para ti». Sube tu ADIF y te avisará también de lo que te falta.","DXpeditions and then the unusual and far DX you choose here that you can work now, as in the cluster's «For you». Upload your ADIF to be alerted to what you still need.")}</p>`+alXRow();
+  const kn=`<p class="note alk">${LOG?T("Solo lo que puedes trabajar ahora. Primero lo que te falta en el log, luego DXpediciones y lo que marques abajo.","Only what you can work now. First what your log still needs, then DXpeditions and what you switch on below.")
+    :T("Solo lo que puedes trabajar ahora: DXpediciones y lo que marques abajo. Sube tu ADIF y avisará también de lo que te falta.","Only what you can work now: DXpeditions and what you switch on below. Upload your ADIF to be alerted to what you need too.")}</p>`+alXRow();
   wrap.innerHTML=vis.length?kn+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});
     const tag=alTag(x);
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
     return withHave(card({...PC({call:x.call,band,mode,f:x.f,dx:sp.dx,from:sp.from,c:cTr(x.c||sp.c),t:x.t},a),call:x.call,a,t:x.t,f:x.f,band,mode,tags:[tag].concat(st.pr),by:CSL(String(x.by||"").split(/[ ,]+/).filter(Boolean),", "),xs:st.xs,geo:geoOf(sp.dx||(window.ACRACB_areaPos&&ACRACB_areaPos(x.call)))}),x)}).join("")
-    :kn+`<p class="note">${T("Ningún aviso con este modo y esta banda. Pulsa «Todos» o «Todas» para verlos todos.","No alerts for this mode and band. Tap «All» to see them all.")}</p>`}
+    :kn+(rows.length?`<p class="note">${T("Ningún aviso con este modo y esta banda. Pulsa «Todos» o «Todas» para verlos todos.","No alerts for this mode and band. Tap «All» to see them all.")}</p>`:"")}
 /* 2.4.1: el aviso flotante (arriba, en Ahora) solo enseña los modos y bandas elegidos en Avisos, con las mismas tarjetas */
 /* 2.4.7: un solo criterio para todo lo que avisa (lista, aviso flotante, resumen y notificaciones): el modo y las bandas elegidos en Avisos */
 /* ---------- 2.10.17: avisos DX con criterio único y lógico ----------
@@ -586,7 +588,9 @@ function dxpInfo(call){const k=SK(call);for(const d of (L.dx||[])){if(dxTok(d.ca
    (móvil marítimo o aeronáutico, bases en la Antártida, indicativos especiales) y DX lejano (a 15.000 km o más de tu estación) */
 /* 2.10.44: sin «entidades raras»: salía de la lista Most Wanted de Club Log, cuyas condiciones de uso no están claras */
 const ALXK="acracb_alx",FARKM=15000;
-function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:false,cur:o.cur!==0,far:o.far!==0}}
+/* 2.11.61: dos interruptores más: spots comunicados por socios de ACRACB (encendido) y activaciones de programas
+   como POTA, SOTA, WWFF, IOTA o DME (apagado: son muchas). Los dos valen también para estaciones cercanas */
+function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:false,cur:o.cur!==0,far:o.far!==0,soc:o.soc!==0,act:o.act===1}}
 function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
   if(suf==="MM")return ["Móvil marítimo","Maritime mobile"];if(suf==="AM")return ["Móvil aeronáutico","Aeronautical mobile"];
   {let en=null;try{en=callEnt(c)}catch(_){}if(+dxcc===13||(en&&/^(Antártida|Antarctica)$/i.test(en.name||"")))return ["Base en la Antártida","Antarctic base"]}
@@ -595,15 +599,16 @@ function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),
   return null}
 /* 2.11.5: interruptores claros (encendido o apagado), cada uno con su explicación a la vista */
 function alXRow(){const X=alX(),b=(k,es,en,tl,tle)=>`<button type="button" class="alxb" role="switch" data-alx="${k}" aria-checked="${X[k]}"><span class="alxt"><b>${T(es,en)}</b><small>${e2(T(tl,tle))}</small></span><span class="alxs" aria-hidden="true"></span></button>`;
-  return `<div class="alxr"><div class="alxh">${T("Avisar también de","Also alert me to")}</div>${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}</div>`}
+  return `<div class="alxr"><div class="alxh">${T("Avisar también de","Also alert me to")}</div>${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}${b("soc","Socios de ACRACB","ACRACB members","Spots que comunican los socios desde la plataforma","Spots members post from the platform")}${b("act","Activaciones","Activations","POTA, SOTA, WWFF, IOTA, DME y otros programas","POTA, SOTA, WWFF, IOTA, DME and other programs")}</div>`}
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alx]");if(!b)return;const X=alX(),k=b.dataset.alx;X[k]=!X[k];document.querySelectorAll(`[data-alx="${k}"]`).forEach(e=>e.setAttribute("aria-checked",X[k]));
-  try{localStorage.setItem(ALXK,JSON.stringify({cur:X.cur?1:0,far:X.far?1:0}))}catch(_){}
+  try{localStorage.setItem(ALXK,JSON.stringify({cur:X.cur?1:0,far:X.far?1:0,soc:X.soc?1:0,act:X.act?1:0}))}catch(_){}
   try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}});
 function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st.mhour;
   const H=alHave();
   const best=new Map();
   for(const s of (typeof SPOTS==="function"?SPOTS():(L.spots||[]))){
-    if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}if(K!=="dx"&&K!=="ind")continue;
+    if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}const X0=alX(),isSoc=!!(s.src&&String(s.src).includes("ACRACB")),hasRef=!!String(s.ref||"").trim();
+    if(K!=="dx"&&K!=="ind"&&!((X0.soc&&isSoc)||(X0.act&&hasRef)))continue;
     let e=null,a=null,pp=0;try{e=spotEval(s,lh);a=spotAge(s);pp=e?spotProb(s,e,a).p:0}catch(_){}
     if(!e||a==null||a>30||pp<.1)continue;
     let t=null;try{t=tFor(s)}catch(_){}const dxcc=(t&&t.dxcc)||(+s.dxcc||null);const mg=mgOf(s.mode,s.f),bk=typeof BKEY!=="undefined"?BKEY[s.band]:s.band;
@@ -623,14 +628,16 @@ function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st
     /* 2.10.34: también lo curioso y lo lejano, cada uno con su interruptor */
     if(!rk){const X=alX(),km=e.km||0,cu=X.cur?curOf(s.call,dxcc):null;
       if(cu){rk=1;why=cu[0];whyEn=cu[1];sub="cur"}
-      else if(X.far&&km>=FARKM){rk=1;why="DX lejano · "+km.toLocaleString("es-ES")+" km";whyEn="Far DX · "+km.toLocaleString("en-US")+" km";sub="far"}}
+      else if(X.far&&km>=FARKM){rk=1;why="DX lejano · "+km.toLocaleString("es-ES")+" km";whyEn="Far DX · "+km.toLocaleString("en-US")+" km";sub="far"}
+      else if(X.soc&&isSoc){rk=1;why="Spot de un socio";whyEn="Member's spot";sub="soc"}
+      else if(X.act&&hasRef){const r=String(s.ref).trim().split(/\s+/).slice(0,2).join(" ");rk=1;why="Activación · "+r;whyEn="Activation · "+r;sub="act"}}
     if(!rk)continue;
     const it={call:s.call,f:s.f,band:s.band,mode:s.mode,t:s.t,by:s.by,c:s.c||"",need:sub==="dxp"?"DXpedición":why,why,whyEn,sub,rk,pp,dxp:!!(dp&&!dpDone),dxcc,ek,ck,end:dp&&dp.end||null};
     const k=SK(s.call),o=best.get(k);if(!o||rk>o.rk||(rk===o.rk&&pp>o.pp))best.set(k,it)}
   return [...best.values()].sort((a,b)=>b.rk-a.rk||(b.dxp-a.dxp)||b.pp-a.pp).slice(0,20)}
 window.ACRACB_buildAlerts=()=>{try{return buildAlerts()}catch(e){console.error(e);return null}};
 function alRefresh(){if(!L.alert)L.alert={at:L.spotsUTC||L.updatedUTC||new Date().toISOString(),items:[]};const it=window.ACRACB_buildAlerts();if(it)L.alert.items=it}
-function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":(sub==="rare"||sub==="cur"||sub==="far")?"xr":"xr allog";
+function alTag(x){const sub=x.sub||(/DXped/i.test(String(x.need||""))?"dxp":"rare");const cls=sub==="dxp"?"xs dxpt":sub==="ent"?"xs alnew":sub==="soc"?"xsoc":(sub==="rare"||sub==="cur"||sub==="far"||sub==="act")?"xr":"xr allog";
   const tx=x.why?T(x.why,x.whyEn||x.why):(sub==="dxp"?T("DXpedición","DXpedition"):T("entidad rara","rare entity"));
   return `<span class="xtag ${cls}">${e2(tx)}</span>`+(x.dxp&&sub!=="dxp"?`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`:"")}
 /* 2.10.36: «Ya la tengo» con icono, discreto, y deshacer durante unos segundos */

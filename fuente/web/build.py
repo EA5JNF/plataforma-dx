@@ -364,6 +364,9 @@ import datetime as _dt
 VER = open(os.path.join(W, "VERSION")).read().strip() + " · " + (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=1)).strftime("%d/%m/%Y")
 w = s.replace("Se revisan solo cuando pulsas Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.").replace("Se revisan solo cuando se pulsa Actualizar.", "Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.")
 w = w.replace("DXpediciones activas y entidades raras de tu modo que aparecen en el clúster. Se revisan en cada actualización. Solo te avisan las del modo y las bandas que elijas abajo.", "Lo que falta en tu log, DXpediciones y DX curioso o lejano que puedes trabajar ahora. Se revisan en cada actualización.")
+# 2.11.61: fuera la frase de presentación de Avisos: ya lo dice la línea de arriba de las tarjetas
+w = re.sub(r'<p class="note">DXpediciones activas y entidades raras de tu modo que aparecen en el clúster\. Se revisan solo cuando (?:pulsas|se pulsa) Actualizar\.</p>', '', w)
+w = w.replace('<p class="note">Lo que falta en tu log, DXpediciones y DX curioso o lejano que puedes trabajar ahora. Se revisan en cada actualización.</p>', '')
 import hubbuild
 HUBS_JSON = os.path.join(SP, "ext", "hubs.json")
 if os.path.exists(HUBS_JSON):
