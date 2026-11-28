@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.58 — 2026-11-28
+
+- ES: Todas las tarjetas muestran siempre las dos barras de señal, «Le oirás» y «Te oirá». Antes, cuando las dos coincidían, se juntaban en una sola («Ida y vuelta») y parecía que a esa tarjeta le faltaba una.
+- EN: Every card always shows both signal bars, "You hear" and "Hears you". Before, when both matched, they were merged into one ("Both ways") and that card seemed to be missing one.
+
 ## 2.11.57 — 2026-11-28
 
 - ES: Textos en inglés que aún decían «chance» en vez de «reliability» (Hora a hora, Bandas, Para ti).

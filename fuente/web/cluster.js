@@ -412,9 +412,9 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
     const w=m>=6?T("de sobra","plenty"):m>=0?T("justa","just enough"):T("no basta","not enough");
     return `<span class="sgm ${c}" title="${x.dbm} dBm"><i style="width:${pc}%"></i></span><b class="sgv ${c}">${sTxt(x.s)}</b><span class="sgx" title="${T("para ","for ")}${mn}${x.low?T(` · ruido ${sTxt(x.ns)}`,` · noise ${sTxt(x.ns)}`):""}">${w}</span>`};
   const cl=x=>{const m=x.snr-need;return m>=6?2:m>=0?1:0};
-  const same=g.rx.s===g.tx.s&&cl(g.rx)===cl(g.tx);
-  let h=same?`<span class="sgl"><span class="sgk">${T("Ida y vuelta","Both ways")}</span>${rep(g.rx)}</span>`
-    :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","Hears you")}</span>${rep(g.tx)}</span>`;
+  /* 2.11.58: siempre las dos barras, «Le oirás» y «Te oirá», aunque coincidan: antes se juntaban en una sola («Ida y
+     vuelta») y parecía que a esas tarjetas les faltaba una */
+  let h=`<span class="sgl"><span class="sgk">${T("Le oirás","You hear")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","Hears you")}</span>${rep(g.tx)}</span>`;
   h=`<span class="sgw" title="${T("Mediana del mes según el modelo","Monthly median from the model")}">${h}</span>`;
   /* 2.11.54: señal suficiente con fiabilidad baja no es una contradicción: la banda abre solo algunos días (está al límite
      de la MUF), y cuando abre llega con esa señal. Se dice, para que no parezca que una cosa desmiente a la otra */
