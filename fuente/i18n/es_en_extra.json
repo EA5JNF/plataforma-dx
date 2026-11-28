@@ -726,5 +726,8 @@
  "CQ WW, CQ WPX, ARRL DX e IARU": "CQ WW, CQ WPX, ARRL DX and IARU",
  ", hasta 5 W en todos los modos. ": ", up to 5 W on every mode. ",
  ": hasta 100 W. ": ": up to 100 W. ",
- ": más de 100 W, hasta el máximo de tu licencia.": ": over 100 W, up to your licence maximum."
+ ": más de 100 W, hasta el máximo de tu licencia.": ": over 100 W, up to your licence maximum.",
+ "transmitir con muy poca potencia: hasta 5 W en CW y modos digitales y hasta 10 W PEP en SSB ": "transmitting with very low power: up to 5 W on CW and digital modes and up to 10 W PEP on SSB ",
+ "IARU Región 1": "IARU Region 1",
+ ". En los concursos, hasta 5 W en todos los modos. Es un reto: hace falta buena propagación y paciencia.": ". In contests, up to 5 W on every mode. It is a challenge: it needs good propagation and patience."
 }

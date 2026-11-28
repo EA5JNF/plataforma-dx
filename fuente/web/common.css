@@ -2188,3 +2188,4 @@ html body #dxl{align-items:start!important}html body #dxl>.sc{height:auto!import
 html body div#sw.sw>.chip:last-child .v{font-size:inherit}
 .eztl .ezh{flex:0 0 6.6rem!important}@media (max-width:640px){.eztl .ezh{flex-basis:auto!important}}
 .hmc.hmv{font-weight:600;font-size:.85em}
+.tag.sftag{background:color-mix(in srgb,#3a8dff 18%,transparent)!important;color:color-mix(in srgb,#3a8dff 80%,var(--fg))!important;border:1px solid color-mix(in srgb,#3a8dff 45%,transparent)!important;font-size:.72em;padding:0 6px;border-radius:5px;white-space:nowrap}

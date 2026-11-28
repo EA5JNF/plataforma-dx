@@ -143,6 +143,8 @@ function listRow(o){const strip0=h=>String(h||"").replace(/<[^>]+>/g," ").replac
   const byc=[...String(o.by||"").matchAll(/data-call="([^"]+)"/g)].map(m=>m[1]);const byTx=byc.length?byc[0]+(byc.length>1?` +${byc.length-1}`:""):String(o.by||"").replace(/<[^>]+>/g,"");
   const strip=h=>String(h||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
   /* 2.11.11: sin la etiqueta que repite el país (p. ej. «Móvil marítimo» junto a «móvil marítimo») */
+  /* 2.11.98: lo que dice el sufijo del indicativo (/P, /M, /MM, /AM, /QRP…), en todas las tarjetas y en la lista */
+  {const st_=sufTag(o.call);if(st_&&!(o.tags||[]).some(t=>strip0(t).toLowerCase()===st_[0].toLowerCase()))o=Object.assign({},o,{tags:[`<span class="tag sftag" title="${e2(st_[1])}">${e2(st_[0])}</span>`].concat(o.tags||[])})}
   const ctyL=String(cty||"").toLowerCase();o=Object.assign({},o,{tags:(o.tags||[]).filter(t=>!ctyL||strip0(t).toLowerCase()!==ctyL)});
   const com=(o.tags||[]).join("")+(o.xs?`<span class="l-ct">${o.xs}</span>`:"")+(o.note?`<span class="l-ct">${e2(o.note)}</span>`:"");
   const comT=[strip((o.tags||[]).join(" · ")),strip(o.xs),o.note||""].filter(Boolean).join(" · ");
@@ -608,6 +610,19 @@ const ALXK="acracb_alx",FARKM=15000;
 /* 2.11.61: dos interruptores más: spots comunicados por socios de ACRACB (encendido) y activaciones de programas
    como POTA, SOTA, WWFF, IOTA o DME (apagado: son muchas). Los dos valen también para estaciones cercanas */
 function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:false,cur:o.cur!==0,far:o.far!==0,soc:o.soc!==0,act:o.act===1,ct:o.ct!==0}}
+function sufTag(call){const p=String(call||"").toUpperCase().split("/");if(p.length<2)return null;const core=p.reduce((a,x)=>x.length>a.length?x:a,"");
+  const M={P:[T("Portátil","Portable"),T("Estación portátil (/P): fuera de su domicilio, con equipo y antena de campaña","Portable station (/P): away from home, with field gear")],
+    M:[T("Móvil","Mobile"),T("Estación móvil (/M): desde un vehículo","Mobile station (/M): from a vehicle")],
+    MM:[T("Embarcación","Ship"),T("Móvil marítimo (/MM): desde un barco en aguas internacionales","Maritime mobile (/MM): from a ship at sea")],
+    AM:[T("Aeronave","Aircraft"),T("Móvil aeronáutico (/AM): desde un avión","Aeronautical mobile (/AM): from an aircraft")],
+    QRP:["QRP",T("Transmite con baja potencia (QRP): hasta 5 W en CW y digitales, 10 W PEP en SSB","Low power (QRP): up to 5 W on CW and digital, 10 W PEP on SSB")],
+    QRPP:["QRPp",T("Potencia muy baja (QRPp): 1 W o menos","Very low power (QRPp): 1 W or less")],
+    A:[T("Ubicación alternativa","Alternative location"),T("/A: desde una ubicación distinta de la habitual","/A: from a location other than the usual one")],
+    LH:[T("Faro","Lighthouse"),T("/LH: desde un faro","/LH: from a lighthouse")],
+    B:[T("Baliza","Beacon"),T("/B: baliza automática","/B: automatic beacon")],
+    BCN:[T("Baliza","Beacon"),T("Baliza automática","Automatic beacon")]};
+  for(const x of p){if(x===core)continue;if(M[x])return M[x]}return null}
+window.ACRACB_sufTag=sufTag;
 function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
   if(suf==="MM")return ["Móvil marítimo","Maritime mobile"];if(suf==="AM")return ["Móvil aeronáutico","Aeronautical mobile"];
   {let en=null;try{en=callEnt(c)}catch(_){}if(+dxcc===13||(en&&/^(Antártida|Antarctica)$/i.test(en.name||"")))return ["Base en la Antártida","Antarctic base"]}

@@ -8,7 +8,11 @@ Numeración MAYOR.MENOR.PARCHE:
 ## 2.11.98 — 2026-11-28
 
 - ES: 6 m, 2 m y 70 cm dicen lo mismo en toda la plataforma. En «Ver el detalle por banda» ya no salen con la cuenta de destinos de HF (que en V-UHF daba siempre «—»): «Ahora» muestra el estado de V-UHF (abierta, posible o cerrada) y las otras horas un «·», porque no hay previsión por horas fiable. En Ahora → Bandas, la conclusión de esas tres bandas es también la de V-UHF.
+- ES: Potencias con las definiciones oficiales y según el modo. QRP: hasta 5 W en CW y digitales y hasta 10 W PEP en SSB (IARU Región 1, ARRL y RSGB); en modo concursos, hasta 5 W en todos los modos (CQ WW, WPX, ARRL DX, IARU). Low Power: hasta 100 W. High Power: más de 100 W. El selector de potencia, el análisis de la estación, la sección QRP (1, 5 y 10 W en SSB; 1, 2 y 5 W en CW), los trucos de concurso y «Términos» dicen lo mismo.
+- ES: El sufijo del indicativo se ve en todas las estaciones: Portátil (/P), Móvil (/M), Embarcación (/MM), Aeronave (/AM), QRP, QRPp, Ubicación alternativa (/A), Faro (/LH) y Baliza (/B), con su explicación al pasar el ratón.
 - EN: 6 m, 2 m and 70 cm say the same everywhere. In «See the detail by band» they no longer use the HF destination count (which on V-UHF was always «—»): «Now» shows the V-UHF state (open, possible or closed) and the other hours a «·», as there is no reliable hourly forecast. In Now → Bands, the conclusion for those three bands is also the V-UHF one.
+- EN: Power categories with the official definitions and by mode. QRP: up to 5 W on CW and digital and up to 10 W PEP on SSB (IARU Region 1, ARRL and RSGB); in contest mode, up to 5 W on every mode (CQ WW, WPX, ARRL DX, IARU). Low Power: up to 100 W. High Power: over 100 W. The power selector, the station analysis, the QRP section (1, 5 and 10 W on SSB; 1, 2 and 5 W on CW), the contest tips and «Terms» all say the same.
+- EN: The callsign suffix shows on every station: Portable (/P), Mobile (/M), Ship (/MM), Aircraft (/AM), QRP, QRPp, Alternative location (/A), Lighthouse (/LH) and Beacon (/B), with an explanation on hover.
 
 ## 2.11.97 — 2026-11-28
 

@@ -1023,7 +1023,10 @@ let FLAGS=null;const FLURL={};
 function flagURL(cc){if(!cc)return "";if(FLURL[cc]!==undefined)return FLURL[cc];try{FLAGS=DXDg().f;
   const svg=FLAGS&&FLAGS[cc];FLURL[cc]=svg?URL.createObjectURL(new Blob([svg],{type:"image/svg+xml"})):""}catch(e){FLURL[cc]=""}return FLURL[cc]}
 /* indicativo con su bandera y su país; compact = solo bandera (el país queda en el título) */
-function CS(call){const e=callEnt(call),c=esc(call);if(!e)return `<span class="cs" data-call="${c}">${c}</span>`;if(e.mm)return `<span class="cs" data-call="${c}">${c} <span class="cty">móvil marítimo</span></span>`;
+/* 2.11.98: el sufijo del indicativo (/P, /M, /MM, /QRP…) también donde sale el indicativo suelto */
+function CSX(call){try{const t=window.ACRACB_sufTag&&ACRACB_sufTag(call);return t?` <span class="tag sftag" title="${esc(t[1])}">${esc(t[0])}</span>`:""}catch(e){return ""}}
+function CS(call){return CS0(call).replace(/<\/span>$/,CSX(call)+"</span>")}
+function CS0(call){const e=callEnt(call),c=esc(call);if(!e)return `<span class="cs" data-call="${c}">${c}</span>`;if(e.mm)return `<span class="cs" data-call="${c}">${c} <span class="cty">móvil marítimo</span></span>`;
   const u=flagURL(e.cc),f=u?`<img class="fl" src="${u}" alt="" width="18" height="12">`:"";
   return `<span class="cs" data-call="${c}">${c} ${f}<span class="cty">${esc(e.name)}</span></span>`}
 const CSL=(arr,sep)=>(arr||[]).filter(Boolean).map(x=>CS(x)).join(sep||", ");
@@ -2513,7 +2516,7 @@ const QRPW=()=>st.mode==="contest"?5:(MOD()==="ssb"?10:5);
 const PCAT=w=>w<=QRPW()?"QRP":w<=100?"Low Power":"High Power";
 const PCATL=c=>c==="QRP"?`≤${QRPW()} W${QRPW()===10?" PEP":""}`:c==="Low Power"?"≤100 W":">100 W";
 function eqLabels(){const e=$("eq");if(!e)return;for(const o of e.options){const w=+o.value,c=PCAT(w),t=`${w>=1000?(w/1000).toLocaleString("es-ES")+" kW":w+" W"} · ${c} (${PCATL(c)})`;if(o.textContent!==t)o.textContent=t}
-  const ti=st.mode==="contest"?"Categorías de concurso: QRP hasta 5 W en todos los modos, Low Power hasta 100 W, High Power más de 100 W":"QRP: hasta 5 W en CW y digitales y hasta 10 W PEP en SSB (IARU Región 1). Low Power hasta 100 W, High Power más de 100 W";if(e.title!==ti)e.title=ti}
+  const EN_=window.ACRACB_LANG==="en";const ti=st.mode==="contest"?(EN_?"Contest categories: QRP up to 5 W on every mode, Low Power up to 100 W, High Power over 100 W":"Categorías de concurso: QRP hasta 5 W en todos los modos, Low Power hasta 100 W, High Power más de 100 W"):(EN_?"QRP: up to 5 W on CW and digital and up to 10 W PEP on SSB, IARU Region 1. Low Power up to 100 W, High Power over 100 W":"QRP: hasta 5 W en CW y digitales y hasta 10 W PEP en SSB, IARU Región 1. Low Power hasta 100 W, High Power más de 100 W");if(e.title!==ti)e.title=ti}
 const PWN=()=>{const w=+$("eq").value;try{eqLabels()}catch(e){}return (w>=1000?(w/1000).toLocaleString("es-ES")+" kW":w+" W")+" "+PCAT(w)};
 /* ---------- modo fácil ---------- */
 const SEGF={0:"1.840 y 1.900",1:"3.600 y 3.800",2:"7.060 y 7.200",3:"14.125 y 14.300",4:"18.120 y 18.168",5:"21.200 y 21.450",6:"24.940 y 24.990",7:"28.400 y 29.000"};
