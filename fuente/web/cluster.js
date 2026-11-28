@@ -45,7 +45,10 @@ function progAll(){
   for(const s of (L.spots||[])){const m=String(s.c||"").match(RXA);if(!m)continue;const k=s.call+"|"+m[2].toUpperCase();if(seen.has(k))continue;seen.add(k);
     out.push({call:s.call,prog:m[1].toUpperCase(),ref:m[2].toUpperCase(),f:s.f,band:s.band,mode:s.mode,t:s.t,by:Array.isArray(s.by)?s.by[0]:s.by,dx:s.dx,a:(()=>{try{return spotAge(s)}catch(e){return null}})(),c:""})}
   return out}
-function refUrl(p,r){if(!["POTA","SOTA","WWFF"].includes(p))return "";if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
+/* 2.11.100: enlaces a la ficha de cada referencia cuando el programa la tiene (POTA, SOTA, WWFF y GMA, que incluye
+   castillos, faros y otras referencias); para IOTA y LLOTA, a la web del programa */
+const PROGHOME={IOTA:"https://www.iota-world.org/",LLOTA:"https://llota.app/"};
+function refUrl(p,r){p=String(p||"").toUpperCase();if(PROGHOME[p])return PROGHOME[p];if(p==="GMA")return "https://www.cqgma.org/zinfo.php?ref="+encodeURIComponent(r).replace(/%2F/g,"/");if(!["POTA","SOTA","WWFF"].includes(p))return "";if(p==="POTA")return "https://pota.app/#/park/"+encodeURIComponent(r);
   if(p==="SOTA")return "https://www.sotadata.org.uk/en/summit/"+r.split("/").map(encodeURIComponent).join("/");
   return "https://wwff.co/directory/?showRef="+encodeURIComponent(r)}
 const PNAME={POTA:["parque","park"],SOTA:["cumbre","summit"],WWFF:["reserva","reserve"],IOTA:["isla","island"],LLOTA:["lago","lake"]};
@@ -117,8 +120,13 @@ function detOf(o){const g=o.geo;let rumbo="",dist="",pr="";
     if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
     else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
   return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Fiabilidad","Reliability"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""],[T("Estación","Station"),o.sufx||""]].concat(o.secs||[]).filter(([,v])=>v)}
+/* 2.11.100: las etiquetas de referencia (POTA US-1234, SOTA W7O/WV-099…) se convierten en enlaces a su ficha */
+function linkRef(t){return String(t).replace(/<span class="(xtag[^"]*)"([^>]*)>\s*(POTA|SOTA|WWFF|IOTA|LLOTA|GMA)[ :-]+([A-Z0-9][A-Z0-9/.-]*)\s*<\/span>/gi,(m,cl,at,p,r)=>{const u=refUrl(p,r.toUpperCase());if(!u)return m;const home=!!PROGHOME[String(p).toUpperCase()];
+  return `<a class="${cl}" href="${u}" target="_blank" rel="noopener noreferrer" data-ext title="${home?T("Web del programa","Programme website"):T("Ficha de la referencia","Reference page")}">${e2(String(p).toUpperCase())} ${e2(r.toUpperCase())}</a>`})}
+window.ACRACB_linkRef=linkRef;
 function card(o){
   if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
+  if(o.tags&&o.tags.length)o=Object.assign({},o,{tags:o.tags.map(linkRef)});
   {const st_=sufTag(o.call);if(st_&&!o.sufx)o=Object.assign({},o,{sufx:`<span class="sfx">${e2(st_[1])}</span>`})}
   if(o.call&&document.documentElement.classList.contains("vl"))return listRow(o);
   const h=`<div class="sc-h"><span class="sc-call">${o.call?stBtn(o.call,o.band):""}</span>${o.call||o.a!=null||o.t?ageTag(o.a,o.t):""}</div>`;

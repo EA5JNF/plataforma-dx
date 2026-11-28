@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.100 — 2026-11-28
+
+- ES: Las referencias de programas son enlaces en todas las tarjetas y en la lista: POTA, SOTA y WWFF llevan a la ficha de esa referencia; GMA (que incluye cumbres, castillos, faros y otras), a su ficha en cqgma.org; IOTA y LLOTA, a la web del programa, que no tiene una dirección fija por referencia.
+- EN: Programme references are links on every card and in the list: POTA, SOTA and WWFF open that reference's page; GMA (which includes summits, castles, lighthouses and more) its page on cqgma.org; IOTA and LLOTA the programme website, which has no fixed address per reference.
+
 ## 2.11.99 — 2026-11-28
 
 - ES: El sufijo del indicativo pasa a ser información adicional: en vez de una etiqueta junto al indicativo, una fila «Estación» en la tarjeta, solo cuando la estación lo lleva, y el significado al pasar el ratón donde el indicativo sale suelto. Significados revisados según el uso de las licencias CEPT (T/R 61-01) y administraciones como Ofcom: /P portátil, /M móvil (vehículo o aguas interiores), /MM móvil marítimo (barco en el mar), /MA barco fondeado, /AM móvil aeronáutico, /A dirección alternativa; /QRP, /QRPP, /LH y /B se explican como usos habituales, no oficiales.
