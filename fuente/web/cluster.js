@@ -611,7 +611,10 @@ function alXRow(){const X=alX(),b=(k,es,en,tl,tle)=>`<button type="button" class
   return `<div class="alxr"><div class="alxh">${T("Avisar también de","Also alert me to")}</div>${b("cur","Indicativos curiosos","Unusual calls","Móvil marítimo o aeronáutico, bases en la Antártida e indicativos especiales","Maritime or aeronautical mobile, Antarctic bases and special event calls")}${b("far","DX lejano","Far DX","A 15.000 km o más de tu estación","15,000 km or more from your station")}${b("soc","Socios de ACRACB","ACRACB members","Spots que comunican los socios desde la plataforma","Spots members post from the platform")}${b("act","Activaciones","Activations","POTA, SOTA, WWFF, IOTA, DME y otros programas","POTA, SOTA, WWFF, IOTA, DME and other programs")}</div>`}
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-alx]");if(!b)return;const X=alX(),k=b.dataset.alx;X[k]=!X[k];document.querySelectorAll(`[data-alx="${k}"]`).forEach(e=>e.setAttribute("aria-checked",X[k]));
   try{localStorage.setItem(ALXK,JSON.stringify({cur:X.cur?1:0,far:X.far?1:0,soc:X.soc?1:0,act:X.act?1:0}))}catch(_){}
-  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}});
+  /* 2.11.69: la lista se rehace, pero el interruptor que has tocado se queda en el mismo sitio de la pantalla */
+  const y0=b.getBoundingClientRect().top;
+  try{alertCards()}catch(_){}try{alBar()}catch(_){}try{foldSums()}catch(_){}
+  try{const nb=document.querySelector(`#alerts [data-alx="${k}"]`)||document.querySelector(`[data-alx="${k}"]`);if(nb){const dy=nb.getBoundingClientRect().top-y0;if(Math.abs(dy)>1)window.scrollBy(0,dy);try{nb.focus({preventScroll:true})}catch(_){}}}catch(_){}});
 function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st.mhour;
   const H=alHave();
   const best=new Map();

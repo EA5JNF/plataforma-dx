@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.69 — 2026-11-28
+
+- ES: Avisos: al tocar un interruptor de «Avisar también de», la pantalla ya no salta. La lista de avisos se rehace, pero el interruptor que tocas se queda en el mismo sitio.
+- EN: Alerts: tapping a switch in "Also alert me to" no longer makes the screen jump. The alert list is rebuilt, but the switch you tap stays in the same place.
+
 ## 2.11.68 — 2026-11-28
 
 - ES: Sol → Propagación: las columnas y las tres frases van siempre por orden de hora (ahora y después la 1 h o las 13 h, según cuál llegue antes). Por la tarde, «Mañana» queda a la derecha.
