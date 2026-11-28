@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.90 — 2026-11-28
+
+- ES: Un solo código de colores en toda la plataforma (verde, ámbar y rojo del tema, que se ajustan en claro y en oscuro). El detalle por banda usa colores fijos por tramo (40 o más, 10–39, 1–9), con su leyenda, en vez de un degradado.
+- ES: La ficha V-UHF del panel dice las bandas (por ejemplo, «2 m y 70 cm») y, debajo, el fenómeno («tropo: algo mejor de lo normal»).
+- EN: One colour code across the platform (the theme's green, amber and red, adjusted for light and dark). The detail by band uses fixed colours per range (40 or more, 10–39, 1–9), with a legend, instead of a gradient.
+- EN: The V-UHF tile in the panel names the bands (for example «2 m and 70 cm») and, below, the phenomenon («tropo: somewhat better than usual»).
+
 ## 2.11.89 — 2026-11-28
 
 - ES: Panel «Sol y propagación» ordenado: arriba, las condiciones (Sol: SFI, SSN y llamaradas; campo magnético: Kp, índice A, viento y Bz; y las tormentas G·R·S de NOAA); abajo, lo que abre para ti (HF ahora, esta noche y mañana, y 6 m – 70 cm).
