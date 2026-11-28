@@ -156,6 +156,8 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   const mlr=ml.map(o=>o.t.getBoundingClientRect());const mlHide=[];
   ml.forEach((o,i)=>{const r=mlr[i];if(!r.width)return;if(mk.some(k=>r.left<k.right&&r.right>k.left&&r.top<k.bottom&&r.bottom>k.top)){mlHide.push(o.t);return}mk.push(r)});
   mlHide.forEach(t=>t.style.display="none");
+  /* 2.11.83: las etiquetas no se ponen encima de los marcadores (círculos de destino, tu estación, triángulos de activaciones) */
+  svg.querySelectorAll("circle.mk,circle.tx,path.mkt").forEach(c=>{if(c.style.display==="none")return;const r=c.getBoundingClientRect();if(r.width&&r.width<60)keep.push(r)});
   const all=[...svg.querySelectorAll("text.dxx"),...svg.querySelectorAll("text.spotl")];
   const AF=an=>an==="end"?1:an==="middle"?.5:0;
   const L0=all.map(t=>{const d=t.dataset;if(d.ox===undefined){d.ox=t.getAttribute("x");d.oy=t.getAttribute("y");d.oa=t.getAttribute("text-anchor")||"start"}

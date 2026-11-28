@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.83 — 2026-11-28
+
+- ES: Sol ahora → «Últimas imágenes del Sol»: nuevo desplegable «Cómo leer estas imágenes y qué significan para la radio», con qué se ve en la corona UV (regiones activas y agujeros coronales), en las manchas y en el coronógrafo, y qué consecuencias tiene para las bandas.
+- ES: Ciclo solar → «Cómo se compara con otros ciclos»: la cifra de la derecha ya no se sale de la tarjeta, ni con la letra grande; «1 mes» en singular.
+- ES: Mapa: las etiquetas de los spots ya no se ponen encima de los marcadores de destino, de tu estación ni de las activaciones.
+- EN: Sun now → "Latest images of the Sun": new collapsible "How to read these images and what they mean for radio", with what the UV corona (active regions and coronal holes), the sunspots and the coronagraph show, and what it means for the bands.
+- EN: Solar cycle → "How it compares with other cycles": the figure on the right no longer overflows the card, even with large text; the rise time is now fully in English.
+- EN: Map: spot labels no longer sit on top of destination markers, your station or activation markers.
+
 ## 2.11.82 — 2026-11-28
 
 - ES: Resumen: «Palabras que conviene saber» pasa a llamarse «Términos y expresiones que conviene saber», y su botón del índice, «Términos».

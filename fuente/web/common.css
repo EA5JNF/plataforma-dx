@@ -2021,3 +2021,7 @@ table.qrpg td:first-child{padding-top:.35em}
 @media (max-width:480px){.sline .qsbar{gap:5px!important}.sline .qsbar .qs{padding-left:9px!important;padding-right:7px!important;min-width:0!important}.sline .qsbar .qs .qsc{margin-left:3px!important}.sline>.stbtn{padding-left:9px!important;padding-right:9px!important;min-width:0!important}}
 @media (max-width:480px){.sline .qsbar{gap:4px!important}.sline .qsbar .qs{padding-left:7px!important;padding-right:5px!important;font-size:.9em!important}.sline>.stbtn{padding-left:7px!important;padding-right:7px!important}}
 @media (max-width:370px){.sline .qsbar .qs .qsc{display:none!important}.sline .qsbar .qs{padding-left:8px!important;padding-right:8px!important}}
+/* 2.11.83: comparativa de ciclos: la cifra de la derecha ya no se sale de la tarjeta, ni con la letra grande */
+.cycmp{padding-right:.6em}
+.ccr{grid-template-columns:5em minmax(0,1fr) 3.4em!important}
+.ccr b{white-space:nowrap;font-variant-numeric:tabular-nums}
