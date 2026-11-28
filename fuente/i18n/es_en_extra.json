@@ -710,5 +710,8 @@
  "el resto de Europa 1 punto y otro continente 3. Zona CQ y país cuentan en cada banda. El log se envía en las 48 horas siguientes al final.": "the rest of Europe 1 point and another continent 3. CQ zone and country count on each band. The log must be sent within 48 hours of the end.",
  ": verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon": ": you will see who heard you in the last hour, on which band and how strong, according to the DX clusters, Reverse Beacon",
  "a través de Spothole y HamQTH": "through Spothole and HamQTH",
- "y WSPRnet.": "and WSPRnet."
+ "y WSPRnet.": "and WSPRnet.",
+ "Sin estaciones nuevas · ": "No new stations · ",
+ " concurso": " contest",
+ " en marcha": " running"
 }

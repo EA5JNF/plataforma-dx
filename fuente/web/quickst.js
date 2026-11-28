@@ -34,6 +34,7 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
   /* 2.11.19: el botón de arriba es solo una flecha; el locator está dentro del desplegable */
   const sl=document.querySelector("#stbtn .stl");if(sl&&sl.textContent)sl.textContent="";
   return true}
+window.ACRACB_qsSum=()=>{try{sum()}catch(_){}};
 let RZT=0;addEventListener("resize",()=>{clearTimeout(RZT);RZT=setTimeout(()=>{try{sum()}catch(_){}},200)});
 function bar2(){let b=$i("ssum2");const p=$i("stpanel");if(!b&&p){b=document.createElement("div");b.id="ssum2";b.className="qsbar ssum2";p.prepend(b)}return b}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */

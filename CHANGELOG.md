@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.96 — 2026-11-28
+
+- ES: Las DXpediciones de «Qué hacer ahora» tienen también la fila «Señal» (le oirás / te oirá), como el resto de tarjetas.
+- ES: Avisos: si no hay estaciones nuevas pero sí concursos en marcha, ya no dice «Sin avisos ahora» encima de la tarjeta del concurso, sino «Sin estaciones nuevas · 1 concurso en marcha».
+- ES: DXpediciones: sin repetir el país («Madagascar · Madagascar (Ste. Marie)» pasa a «Madagascar · Ste. Marie»).
+- EN: DXpeditions in «What to do now» also have the «Signal» row (you hear / hears you), like every other card.
+- EN: Alerts: when there are no new stations but contests are running, it no longer says «No alerts now» above the contest card, but «No new stations · 1 contest running».
+- EN: DXpeditions: the country is no longer repeated («Madagascar · Madagascar (Ste. Marie)» becomes «Madagascar · Ste. Marie»).
+
 ## 2.11.95 — 2026-11-28
 
 - ES: Resumen: arriba «Ahora» y «Próximas 12 horas» lado a lado; debajo, «Qué hacer ahora» a todo el ancho, con dos o tres tarjetas por fila según la pantalla. En el móvil: Ahora, Próximas horas y Qué hacer, en ese orden.

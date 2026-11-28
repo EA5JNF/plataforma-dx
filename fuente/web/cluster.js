@@ -207,7 +207,9 @@ function recCards(go,dxn){const out=[];
     const tg=[`<span class="xtag xs dxpt">${T("DXpedición","DXpedition")}</span>`].concat(mguess?[`<span class="tag">${T("modo sin anunciar","mode not announced")}</span>`]:[]);
     let pp=x.p,plp=!!x.lp;try{const mk=Object.keys(MODES).find(z=>String(MODES[z].s).toUpperCase()===String(mode).toUpperCase());const ex=mk?MODES[mk].adj-MD().adj:0;
       const t=tFor(d),lh=localNow();if(ex&&t){const a1=prob(t,lh,x.b,false,ex).p,a2=t.l?prob(t,lh,x.b,true,ex).p:0;plp=a2>a1&&a2>=.05;pp=plp?a2:a1}}catch(_){}
-    out.push(card({call,f,band:x.b,mode,tags:tg,geo:isFinite(d.lon)&&isFinite(d.lat)?geoOf([d.lon,d.lat]):null,p:Math.round(pp*100),lpb:plp,oh:(()=>{try{const t=tFor(d);return t?{t:t.id,b:x.b,call,mode}:null}catch(_){return null}})(),
+    /* 2.11.96: también la fila «Señal» en las DXpediciones de «Qué hacer ahora», como en el resto de tarjetas */
+    let sgD="";try{if(isFinite(d.lon)&&isFinite(d.lat)){const ss={call,band:x.b,mode,f:String(f),dx:[d.lon,d.lat],kind:"dx",from:[]};const e=spotEval(ss,localNow());sgD=sigRow(ss,e,{lp:plp,p:pp})}else sgD=sigWhy({band:x.b},null,{})}catch(_){}
+    out.push(card({call,f,band:x.b,mode,tags:tg,geo:isFinite(d.lon)&&isFinite(d.lat)?geoOf([d.lon,d.lat]):null,p:Math.round(pp*100),lpb:plp,sig:sgD,oh:(()=>{try{const t=tFor(d);return t?{t:t.id,b:x.b,call,mode}:null}catch(_){return null}})(),
       note:[mguess?T(`No se ha anunciado en qué modos trabaja: puede que no esté en ${mode}. Es la frecuencia habitual de ${mode}; confírmala en el clúster.`,`Its modes have not been announced: it may not be on ${mode}. This is the usual ${mode} frequency; check the cluster.`):hab?T("Frecuencia habitual de las DXpediciones en este modo: confírmala en el clúster.","Usual DXpedition frequency for this mode: check the cluster."):"",d.until?T("Activa hasta el "+e2(d.until)+".","Active until "+e2(String(d.until).replace(/\b(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b/g,m=>({ene:"Jan",feb:"Feb",mar:"Mar",abr:"Apr",may:"May",jun:"Jun",jul:"Jul",ago:"Aug",sep:"Sep",oct:"Oct",nov:"Nov",dic:"Dec"})[m]))+"."):""].filter(Boolean).join(" ")}))});
   return out.length?`<div class="alc reccards">${out.join("")}</div>`:""}
 window.ACRACB_recCards=recCards;
@@ -732,7 +734,8 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
   const html=[];L.dx.forEach((d,i)=>{let t=null;try{t=tFor(d)}catch(e){}if(!t||!isFinite(d.lon)||!isFinite(d.lat))return;const p=[d.lon,d.lat];
     const gk=geoKm(TXP,p),az=Math.round(gk.az)%360,km=Math.round(gk.km),lkm=Math.round(gk.lkm),laz=(az+180)%360;
     let bh={p:0,h:0,b:0,lp:false};for(let x=0;x<24;x++){const r=bestAny(t,x);if(r.p>bh.p)bh={...r,h:x}}const n=bestAny(t,lh);
-    let nw=false;try{nw=dxNew(d)}catch(e){}const e=callEnt(d.call);const cty=e&&e.name&&String(d.ent||"").toLowerCase()!==e.name.toLowerCase()?` <span class="cty">· ${e2(d.ent)}</span>`:"";
+    let nw=false;try{nw=dxNew(d)}catch(e){}const e=callEnt(d.call);/* 2.11.96: sin repetir el país («Madagascar · Madagascar (Ste. Marie)» → «Madagascar · Ste. Marie») */
+    const cty=(()=>{if(!(e&&e.name))return "";const en=String(d.ent||""),nm=e.name;if(!en||en.toLowerCase()===nm.toLowerCase())return "";const m=en.match(/^(.*?)\s*\(([^)]+)\)\s*$/);const extra=m&&m[1].toLowerCase()===nm.toLowerCase()?m[2]:en;return ` <span class="cty">· ${e2(extra)}</span>`})();
     /* 2.11.67: se dice cuando solo se conoce el prefijo o no se han anunciado los modos */
     const pfx=!dxTok(d.call).some(z=>/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/.test(z));
     const tags=[pfx?`<span class="tag">${T("indicativo sin anunciar","callsign not announced")}</span>`:"",!(Array.isArray(d.modes)&&d.modes.length)?`<span class="tag">${T("modo sin anunciar","mode not announced")}</span>`:"",MOD()==="ssb"&&d.ssb===false?`<span class="tag">${T("fonía sin confirmar","phone unconfirmed")}</span>`:"",d.until?`<span class="sc-b">${T("hasta","until")} ${e2(d.until)}</span>`:""].filter(Boolean);

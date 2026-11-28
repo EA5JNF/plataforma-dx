@@ -96,7 +96,9 @@ window.ACRACB_goals=function(){if(typeof LOG==="undefined"||!LOG)return "";const
 /* ---------- acceso directo a «Mi log» junto a «Cambiar» ---------- */
 window.ACRACB_openLog=function(){try{go("fichas");selTab("fichas","f_log",true);const d=$("f_log");if(d){d.open=true;setTimeout(()=>d.scrollIntoView({behavior:"smooth",block:"start"}),80)}}catch(e){}};
 function logBtn(){const st=$("stbtn");if(!st)return;let b=$("logbtn");if(!b){b=document.createElement("button");b.id="logbtn";b.type="button";b.className="btn stbtn logbtn";b.onclick=()=>ACRACB_openLog();st.insertAdjacentElement("beforebegin",b)}
-  b.textContent=(typeof LOG!=="undefined"&&LOG)?"Mi log":"Subir log"}
+  const tx=(typeof LOG!=="undefined"&&LOG)?"Mi log":"Subir log";if(b.textContent!==tx)b.textContent=tx;
+  /* 2.11.96: el sitio del botón lo decide siempre la línea de la estación (ancha: en la línea; estrecha: en el desplegable) */
+  try{window.ACRACB_qsSum&&ACRACB_qsSum()}catch(e){}}
 document.addEventListener("click",e=>{const x=e.target.closest("[data-openlog]");if(x){e.preventDefault();ACRACB_openLog()}});
 function hook(){
   try{const r0=refresh;refresh=function(){const v=r0.apply(this,arguments);try{if(typeof renderLog==="function")renderLog()}catch(e){}try{logBtn()}catch(e){}try{longVals()}catch(e){}return v}}catch(e){}
