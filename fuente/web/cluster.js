@@ -402,8 +402,13 @@ function PC(s,a){try{if(s.band==null)return {};const dx=s.dx&&s.dx[0]!=null?s.dx
   return isFinite(r.p)?{p:Math.round(r.p*100),p0:Math.round(r.p0*100),sig:sg,lpb:!!r.lp,oh:{t:e.t.id,b:ss.band,call:ss.call,mode:ss.mode}}:{}}catch(_){return {}}}
 /* 2.10.1: señal prevista en los dos sentidos (le oirás / te oirá) y, si ya anotaste lo que oyes o lo que te oyen,
    la comparación con lo previsto y cómo cambia la probabilidad con tus datos */
-function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null;try{lh=localNow()}catch(_){}if(lh==null)return "";
-  const g=ACRACB_sigEst(e.t,lh,s.band,!!sp.lp);if(!g)return "";const k=(()=>{try{return spotMode(s)}catch(_){return "ssb"}})();
+/* 2.11.60: si no hay estimación de señal, se dice por qué, en vez de dejar la tarjeta sin la fila «Señal» */
+function sigWhy(s,e,sp){const b=s.band;let why=T("Sin estimación de señal para este camino.","No signal estimate for this path.");
+  try{if(!e||!e.t)why=T("No se sabe desde dónde transmite: sin ubicación no se puede estimar la señal.","Its location is unknown: without it the signal cannot be estimated.");
+    else if(b!=null&&typeof antPick==="function"&&!antPick(b,10))why=T(`Ninguna de tus antenas cubre ${BANDS[b]||"esta banda"}.`,`None of your antennas covers ${BANDS[b]||"this band"}.`)}catch(_){}
+  return `<span class="sgnone">${why}</span>`}
+function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return sigWhy(s,e,sp);let lh=null;try{lh=localNow()}catch(_){}if(lh==null)return sigWhy(s,e,sp);
+  const g=ACRACB_sigEst(e.t,lh,s.band,!!sp.lp);if(!g)return sigWhy(s,e,sp);const k=(()=>{try{return spotMode(s)}catch(_){return "ssb"}})();
   /* 2.11.22: la señal se juzga con lo que necesita el modo del spot, con el mismo modelo que da la probabilidad (antes, con
      un umbral fijo de SSB: una señal suficiente para CW o FT8 salía «bajo el ruido» junto a una probabilidad alta) */
   let ex=0;try{ex=(MODES[k]?MODES[k].adj:0)-MD().adj}catch(_){}const need=g.req-ex;
@@ -706,6 +711,7 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
       ${sec(T("Mejor hora","Best time"),`<span class="nw">${hh(bh.h)}:00 ${T("en","on")} <b style="color:${BC[bh.b]}">${BANDS[bh.b]}</b></span> <span class="nw">(${Math.round(bh.p*100)} %${bh.lp?T(", paso largo",", long path"):""})</span>`)}
       ${sec(T("Rumbo","Bearing"),`<span class="nw">${T("corto","short")} ${az}° ${cab(az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${laz}° ${cab(laz)}</span>`)}
       ${sec(T("Distancia","Distance"),`<span class="nw">${T("corto","short")} ${fk(km)} km<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${fk(lkm)} km</span>`)}
+      ${(()=>{/* 2.11.60: como el resto de tarjetas, la señal de ahora (le oirás / te oirá) en su mejor banda */let v="";try{v=n.p>0?sigRow({call:c0,band:n.b,mode:MOD(),dx:[t.lon,t.lat]},{t},{p:n.p,p0:n.p,lp:!!n.lp}):`<span class="sgnone">${T("Ahora ninguna banda llega con tu estación.","No band gets through from your station now.")}</span>`}catch(_){}return sec(T("Señal","Signal")+(n.p>0&&BANDS[n.b]?` <small>${BANDS[n.b]}</small>`:""),v)})()}
       ${sec(T("Línea gris","Greyline"),gl)}${sec("QSX",d.qsx?e2(String(d.qsx).replace(/\s*,\s*/g,", ")):"")}</dl>${!act?"":ACRACB_ohBox({t:t.id,b:n.p>0?n.b:bh.b,call:SK(c0),mode:(()=>{try{return MD().s}catch(_){return ""}})()})}${dxHaveRow(c0)}</div>`})});
   {const on=html.filter(x=>x.act).sort((a,b)=>a.la-b.la),off=html.filter(x=>!x.act);html.length=0;on.forEach(x=>html.push(x.h));if(off.length){html.push(`<p class="dxoffh">${T("Anunciadas, sin spots en la última hora","Announced, no spots in the last hour")}</p>`);off.forEach(x=>html.push(x.h))}}
   const N=8,more=html.length>N+2&&!DXOPEN,nMore=html.slice(N).filter(x=>x.startsWith("<div")).length;

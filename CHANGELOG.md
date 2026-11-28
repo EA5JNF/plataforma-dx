@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.60 — 2026-11-28
+
+- ES: Todas las tarjetas de estaciones tienen la fila «Señal» con sus dos barras, «Le oirás» y «Te oirá». Faltaban en los spots de 2 m y 70 cm, que ahora usan el mismo balance de enlace que da su fiabilidad, y en las tarjetas de DXpediciones, que ahora muestran la señal de ahora en su mejor banda. Cuando no se puede estimar, la fila dice por qué: ninguna de tus antenas cubre esa banda, no se sabe desde dónde transmite o ahora ninguna banda llega.
+- EN: Every station card has the "Signal" row with its two bars, "You hear" and "Hears you". They were missing on 2 m and 70 cm spots, which now use the same link budget as their reliability, and on DXpedition cards, which now show the current signal on their best band. When it cannot be estimated, the row says why: none of your antennas covers that band, its location is unknown, or no band gets through now.
+
 ## 2.11.59 — 2026-11-28
 
 - ES: Cuando el modelo da poca señal pero los spots de ahora suben la fiabilidad (pasa mucho en caminos cortos de 40 m dentro de España), la tarjeta lo dice: la señal es la del modelo, que ahí se queda corto, y lo que se oye indica que el camino está abierto.

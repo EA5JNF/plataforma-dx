@@ -1935,3 +1935,4 @@ html.bigt .sc-d .cs .cty,html.bigt .sc-d .cs{overflow-wrap:normal!important;word
 .patbox .pathd{width:4.5em}
 .patbox .paterr{color:var(--r,#f85149)}
 .patbox .patin::file-selector-button{font:inherit;padding:.35em .8em;border-radius:8px;border:1px solid var(--line,rgba(127,127,127,.4));background:var(--card2,transparent);color:inherit;cursor:pointer;margin-right:.6em}
+.sgnone{opacity:.8;font-size:.92em}
