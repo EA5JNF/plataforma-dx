@@ -246,7 +246,7 @@ function txtSolar(L,now,kpmx){const out=[],h=+madParts(now).hour,fr=h>=7&&h<13?"
   if(p.length)out.push(["Previsión",p.map(x=>x[0].toUpperCase()+x.slice(1)).join(". ")+"."]);return out}
 function txtNear(sp){const nr=sp.filter(s=>s.kind==="near");if(!nr.length)return "Pocas estaciones ibéricas destacadas en esta ronda.";
   const re=/(POTA|SOTA|WWFF|DME|DVGE|IOTA)[^·]*/,rf=nr.filter(s=>re.test(s.c||"")),sel=rf.concat(nr.filter(s=>!rf.includes(s))).slice(0,3);
-  return `${nr.length} spots de EA, CT y alrededores. Destacan `+joinEs(sel.map(s=>{const m=(s.c||"").match(re);return `${s.call} en ${BN[s.band]} ${s.mode||""}`.trim()+(m?` (${m[0].trim()})`:"")}))+"."}
+  return `${nr.length} spots de España peninsular. Destacan `+joinEs(sel.map(s=>{const m=(s.c||"").match(re);return `${s.call} en ${BN[s.band]} ${s.mode||""}`.trim()+(m?` (${m[0].trim()})`:"")}))+"."}
 function txtVhf(sp){const v=sp.filter(s=>s.kind==="vhf"),b6=v.filter(s=>s.band===10),b2=v.filter(s=>s.band>=11);
   if(!v.length)return {tropo:null,src:"clúster",note:"Sin aperturas en 6 m, 2 m ni 70 cm en el clúster ahora mismo."};
   const p=[];if(b6.length)p.push(`6 m abierto (${b6.length} spots de más de 300 km)`);if(b2.length)p.push(`2 m/70 cm con ${b2.length} contactos largos, probable tropo`);return {tropo:null,src:"clúster",note:joinEs(p)+"."}}
@@ -289,7 +289,7 @@ function buildCluster(prev,res,dxcalls){const t0=Date.now(),raw=[],ok=[];for(con
     const far=()=>g.from.filter(p=>p[0]||p[1]).map(p=>distKm(dx,p));
     /* 2.10.29: la referencia DME del comentario manda sobre el prefijo (EA9 desde Ávila es España; EA1 desde Mallorca, Baleares) */
     const dm=String(g.c.join(" ")).match(/\bDME[ :#-]*(\d{5})\b/i),dmp=dm?+dm[1].slice(0,2):null,dmx=dm?(dmp===7?21:(dmp===35||dmp===38)?29:(dmp===51||dmp===52)?32:281):null;
-    if(dmx!=null?dmx===281:NEARDX.has(dxcc))kind="near";
+    if(dmx!=null&&(dxcc==null||[281,21,29,32].includes(+dxcc))?dmx===281:NEARDX.has(dxcc))kind="near";
     else if(g.band>=10){const d=far();if(!d.length||Math.max(...d)<300)continue;kind="vhf"}
     /* 2.10.27: un DX fuera de Europa entra aunque no lo haya anunciado un europeo (antes se descartaba y el clúster de la
        plataforma enseñaba muchos menos DX que los clústeres); si lo oyen en Europa queda marcado (eu) y pesa más en «Para ti» */

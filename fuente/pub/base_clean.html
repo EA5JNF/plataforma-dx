@@ -1529,7 +1529,10 @@ const NEARCC=new Set(["ES","PT","AD","GI","MA"]);
    está en España, y un EA1 desde Mallorca está en Baleares. Provincia INE 07 Baleares, 35 y 38 Canarias, 51 y 52 Ceuta y Melilla. */
 function dmeDx(s){const m=String(s&&s.c||"").match(/\bDME[ :#-]*(\d{5})\b/i);if(!m)return null;const p=+m[1].slice(0,2);return p===7?21:(p===35||p===38)?29:(p===51||p===52)?32:281}
 window.ACRACB_dmeDx=dmeDx;
-function spotKind(s){const d=dmeDx(s);if(d!=null)return d===281?"near":"dx";const e=callEnt(s.call);if(e&&e.dxcc!=null)return +e.dxcc===281?"near":"dx";return s.kind==="near"?"near":"dx"}
+/* 2.11.64: manda el indicativo. Una referencia DME en el comentario solo decide si el indicativo es español (EA, EA6, EA8, EA9)
+   o no se reconoce: antes, un indicativo extranjero con «DME» en el comentario (EZA3JG, mal copiado) salía como cercano */
+function spotKind(s){const d=dmeDx(s),e=callEnt(s.call),dx=e&&e.dxcc!=null?+e.dxcc:null;
+  if(d!=null&&(dx==null||[281,21,29,32].includes(dx)))return d===281?"near":"dx";if(dx!=null)return dx===281?"near":"dx";return s.kind==="near"?"near":"dx"}
 /* 2.8.38: rumbo, distancia y probabilidad de un spot son SIEMPRE desde tu estación hasta la del indicativo.
    Lo que indica que la oigan lejos (camino abierto hacia el que la oye) va aparte, en spotEvalFar. */
 function spotEval(s,lh){if(!s||!s.dx)return null;const t=tFor(s)||nearestT(s.dx,0);if(!t)return null;const a=prob(t,lh,s.band,false),c=prob(t,lh,s.band,true),lp=c.p>a.p&&c.p>=.05;const az=Math.round(brgJS(TXP,s.dx))%360,km=Math.round(distJS(TXP,s.dx));
@@ -2165,7 +2168,7 @@ function foldSums(){try{const pg=st.page,now=localNow();
     const s=sunEvents(TXP);setSum("qth",`Sol ${hm(s.rise)}–${hm(s.set)}`+(L.iono&&L.iono.mufd?` · MUF ${L.iono.mufd} MHz`:"")+(L.essn!=null?` · SSN efectivo ${Math.round(L.essn)}`:""))}
   if(pg==="mapa"){const ly=!st.mapOn?[]:[st.ly.voa&&"Predicción",st.ly.spots&&"Clúster",st.ly.bcn&&"Balizas",st.ly.dxp&&"DXpediciones"].filter(Boolean);const mb=(typeof MBS==="function"&&MBS())||[];
     const ms=$("mapsum");if(ms)ms.textContent=`${ly.length?ly.join(", "):"Nada elegido"} · ${CMSTXT()} · ${mb.length&&mb.length<BI0().length?mb.map(x=>BANDS[x]).join(", "):"todas las bandas"} · ${hh(st.mhour)}:00`}
-  if(pg==="dx"){{const it=(L.alert&&L.alert.items)||[];setSum("al",it.length?`${it.length} aviso${it.length===1?"":"s"}: ${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}`:"Sin avisos ahora")}const nr=SPOTS().filter(s=>spotKind(s)==="near").length;setSum("near",nr?`${nr} spot${nr===1?"":"s"} de EA, CT y alrededores en ${CMSTXT()}`:"Sin spots cercanos ahora");
+  if(pg==="dx"){{const it=(L.alert&&L.alert.items)||[];setSum("al",it.length?`${it.length} aviso${it.length===1?"":"s"}: ${it.slice(0,2).map(x=>x.call+" "+(BANDS[x.band]||"")).join(", ")}`:"Sin avisos ahora")}const nr=SPOTS().filter(s=>spotKind(s)==="near").length;setSum("near",nr?`${nr} spot${nr===1?"":"s"} de España peninsular en ${CMSTXT()}`:"Sin spots cercanos ahora");
     const ds=(L.dx||[]).filter(dxNew).map(d=>{const t=tFor(d);return t?{d,...bestAny(t,now)}:null}).filter(Boolean).sort((a,b)=>b.p-a.p);
     setSum("dxp",ds.length?`${ds.length} activas · mejor ahora: ${ds[0].d.call} en ${BANDS[ds[0].b]} (${Math.round(ds[0].p*100)} %)`:"Ninguna activa ahora")}
   if(pg==="sol"){setSum("space","");setSum("cycle","");const F=L.kpfc;let mx=null;if(F){const all=F.blocks.flat();const nd=Math.round((Date.parse(new Date().toISOString().slice(0,10))-Date.parse(F.base))/864e5),nb=Math.floor(new Date().getUTCHours()/3);const i0=nd*8+nb;const nx=all.slice(Math.max(0,i0),i0+8);if(nx.length)mx=Math.max(...nx)}

@@ -613,7 +613,10 @@ function buildAlerts(){let lh=null;try{lh=localNow()}catch(_){}if(lh==null)lh=st
   const H=alHave();
   const best=new Map();
   for(const s of (typeof SPOTS==="function"?SPOTS():(L.spots||[]))){
-    if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}const X0=alX(),isSoc=!!(s.src&&String(s.src).includes("ACRACB")),hasRef=!!String(s.ref||"").trim();
+    if(s.band==null||s.band>10||(BSEL.size&&!BSEL.has(s.band)))continue;let K="";try{K=spotKind(s)}catch(_){}
+    /* 2.11.65: un indicativo extranjero con una referencia DME española en el comentario está mal copiado: no avisa */
+    try{if(window.ACRACB_dmeDx&&ACRACB_dmeDx(s)!=null){const ce=callEnt(s.call);if(ce&&ce.dxcc!=null&&![281,21,29,32].includes(+ce.dxcc))continue}}catch(_){}
+    const X0=alX(),isSoc=!!(s.src&&String(s.src).includes("ACRACB")),hasRef=!!String(s.ref||"").trim();
     if(K!=="dx"&&K!=="ind"&&!((X0.soc&&isSoc)||(X0.act&&hasRef)))continue;
     let e=null,a=null,pp=0;try{e=spotEval(s,lh);a=spotAge(s);pp=e?spotProb(s,e,a).p:0}catch(_){}
     if(!e||a==null||a>30||pp<.1)continue;

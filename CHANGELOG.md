@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.65 — 2026-11-28
+
+- ES: «Cerca» ya no muestra estaciones lejanas. Manda el indicativo: una referencia DME en el comentario solo decide si el indicativo es español o no se reconoce. Antes, un indicativo extranjero con «DME» en el comentario (como EZA3JG, un EA3JG mal copiado) salía como cercano. Esos spots mal copiados tampoco generan avisos.
+- ES: El título de «Cerca» dice lo que de verdad muestra: España peninsular (Baleares, Canarias, Ceuta y Melilla son entidades DXCC aparte y van en DX).
+- EN: "Nearby" no longer shows distant stations. The callsign decides: a DME reference in the comment only decides when the callsign is Spanish or not recognized. Before, a foreign callsign with "DME" in the comment (such as EZA3JG, a miscopied EA3JG) showed as nearby. Those miscopied spots no longer trigger alerts either.
+- EN: The "Nearby" title says what it really shows: mainland Spain (Balearic, Canary, Ceuta and Melilla are separate DXCC entities and go under DX).
+
 ## 2.11.64 — 2026-11-28
 
 - ES: «En el aire, aunque no puntúen desde España» solo sale con concursos en marcha o que empiezan en los próximos 14 días. Antes seguían saliendo los Sweepstakes ya terminados, con las fechas del año que viene y sin año.

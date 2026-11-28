@@ -86,7 +86,7 @@ const RULES=[
  [/ % en el norte de Europa/g," % in northern Europe"],[/Sin aurora sobre Europa/g,"No aurora over Europe"],
  // estaciones cercanas
  [/[Pp]ocas estaciones ibéricas destacadas( en esta ronda)?\.?/g,"Few notable Iberian stations this round."],
- [/(\d+) spots de EA, CT y alrededores\. Destacan /g,"$1 spots from EA, CT and nearby. Notable: "],
+ [/(\d+) spots de España peninsular\. Destacan /g,"$1 spots from mainland Spain. Notable: "],
  // VHF
  [/Sin aperturas en 6 m, 2 m ni 70 cm en el clúster ahora mismo\./g,"No openings on 6 m, 2 m or 70 cm on the cluster right now."],
  [/ E-Skip en 6 m: /g," 6 m E-skip: "],[/6 m abierto \((\d+) spots de más de 300 km\)/g,"6 m open ($1 spots over 300 km)"],
