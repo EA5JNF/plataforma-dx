@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.62 — 2026-11-28
+
+- ES: La vista compacta ya no esconde funciones ni datos, solo explicaciones: ahora también tiene el índice del Resumen (Ahora, Qué hacer, Próximas horas, Palabras), la franja de valores solares, el informe de fuentes, el botón del log, 6 m, 2 m y 70 cm del Resumen, todas las horas de «Próximas horas», la lista de «Qué hacer», el glosario y la leyenda del mapa.
+- ES: Franja de valores (SFI, SSN, Kp…) más sobria y mucho más baja: una sola línea, cada valor del ancho que necesita, un punto de color para el estado y la cifra en el color del texto. En el móvil, dos columnas.
+- EN: The compact view no longer hides functions or data, only explanations: it now also has the Summary index (Now, What to do, Next hours, Words), the solar values strip, the sources report, the log button, 6 m, 2 m and 70 cm in the Summary, every hour in "Next hours", the "What to do" list, the glossary and the map legend.
+- EN: The values strip (SFI, SSN, Kp…) is more sober and much shorter: a single line, each value as wide as it needs, a colored dot for the state and the figure in the text color. On phones, two columns.
+
 ## 2.11.61 — 2026-11-28
 
 - ES: Avisos con menos texto: fuera la frase de presentación, la explicación junto al botón de notificaciones (ahora sale al pasar por encima) y la coletilla del modo y las bandas. Una sola línea dice qué entra.

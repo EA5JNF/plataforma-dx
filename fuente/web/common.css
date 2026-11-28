@@ -925,7 +925,7 @@ html.vc .sc .ohq{min-height:36px;margin:-6px -4px -6px 0!important}
 html.vc .alc,html.vc .goal,html.vc .reccards{gap:5px;margin:6px 0}
 html.vc .alc,html.vc .goal,html.vc #dxl{row-gap:5px!important}
 html.vc #dxl>.sc{margin-bottom:5px}
-html.vc details.why,html.vc .ezhint,html.vc .srsrc,html.vc .goal-more>summary~.note{display:none!important}
+html.vc details.why:not(.glosw),html.vc .ezhint,html.vc .srsrc,html.vc .goal-more>summary~.note{display:none!important}
 html.vc .card{padding-top:10px;padding-bottom:10px}
 .ohq::after{content:"\00a0›"!important}
 html.vc .sc.ohc{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px}
@@ -963,7 +963,7 @@ html.vc .sc.ohc .sc-cp{order:8}
 html.vc .sc.ohc .ohq{order:9;margin-left:auto!important;min-height:30px;margin-top:-4px!important;margin-bottom:-4px!important;font-size:.78rem!important}
 html.vc .sc.ohc .ohs{display:none}
 html.vc .sc.ohc .xtag,html.vc .sc.ohc .nwb,html.vc .sc.ohc .nsb,html.vc .sc.ohc .agr{font-size:.66rem;padding:1px 6px}
-html.vc .mleg{display:none}
+
 html.vc .alc,html.vc .goal,html.vc .reccards,html.vc #dxl{row-gap:4px!important;gap:4px}
 html.vc .sc.ohc .sc-f>.xtag,html.vc .sc.ohc .sc-f>.dxpt,html.vc .sc.ohc .sc-f>.nwb,html.vc .sc.ohc .sc-f>.nsb,html.vc .sc.ohc .sc-f>.agr,html.vc .sc.ohc .sc-f>.tag{font-size:.6rem!important;padding:1px 6px!important;box-shadow:none!important;letter-spacing:.02em}
 html.vc .seg.clseg button,html.vc .seg.mseg button{min-height:32px!important;padding-top:3px!important;padding-bottom:3px!important;font-size:.82rem}
@@ -1275,12 +1275,13 @@ details.sterr>summary::before{content:"▸";color:var(--accent)}details.sterr[op
 .bandtoast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9999;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.92rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
 .bandtoast.on{opacity:1;transform:translate(-50%,0)}
 /* 2.10.14: vista compacta más ligera en toda la plataforma: solo lo esencial; la completa no cambia */
-html.vc #sw,html.vc #srcrep,html.vc #logbtn,html.vc .eznav,html.vc .ezvh,html.vc #solsum,html.vc #rec ol,html.vc #rec .rec>div>p.note,html.vc .clexp,html.vc .alsub{display:none!important}
+/* 2.11.62: la vista compacta solo quita explicaciones, nunca funciones ni datos */
+html.vc #rec .rec>div>p.note,html.vc .clexp,html.vc .alsub{display:none!important}
 html.vc #updst{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.8rem}
 html.vc .updrow{gap:6px 10px}
 html.vc #ssum{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
 html.vc #st_ahora{margin-top:8px}
-html.vc .eztl details.ezd:nth-of-type(n+4){display:none}
+
 html.vc .ez{padding-top:10px;padding-bottom:10px}
 html.vc .ezd0,html.vc .ezalt{margin-top:4px}
 html.vc .page .card.fold>summary .fsum{font-size:.8rem}
@@ -1616,7 +1617,7 @@ html.vc .sline{padding:6px 8px!important}
 .ssum2{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
 .ssum2 .qsb2{display:contents}
 .ssum2>.logbtn{min-height:32px;padding:2px 11px;font-size:.78rem;border-radius:7px}
-html.vc .ssum2>.logbtn{display:none}
+
 .sline>#stbtn{min-width:0!important;justify-content:center!important}.sline>#stbtn>svg{display:none!important}
 .sline>#stbtn{align-items:center!important;line-height:1!important}.sline>#stbtn>span{margin:-1px!important;padding:0!important}.sline>#stbtn .stl{line-height:1;display:block}
 /* 2.11.10: descansos a medida con las mismas casillas que el ritmo por horas; las horas de pausa, apagadas y con «zz» */
@@ -1936,3 +1937,15 @@ html.bigt .sc-d .cs .cty,html.bigt .sc-d .cs{overflow-wrap:normal!important;word
 .patbox .paterr{color:var(--r,#f85149)}
 .patbox .patin::file-selector-button{font:inherit;padding:.35em .8em;border-radius:8px;border:1px solid var(--line,rgba(127,127,127,.4));background:var(--card2,transparent);color:inherit;cursor:pointer;margin-right:.6em}
 .sgnone{opacity:.8;font-size:.92em}
+
+/* 2.11.62: franja de valores más sobria: una línea fina, cada valor del ancho que necesita, con un punto de color para
+   el estado y la cifra en el color del texto (antes, casillas iguales muy anchas, cifras grandes de colores y barras laterales) */
+html body #sw{display:flex!important;flex-wrap:wrap!important;align-items:stretch!important;gap:0!important;padding:2px 4px!important}
+html body #sw .chip{flex:1 1 auto!important;grid-column:auto!important;flex-direction:row!important;align-items:baseline!important;justify-content:flex-start!important;
+  gap:.45em!important;padding:7px 12px!important;min-width:auto!important;container-type:normal!important;border:0!important;border-right:1px solid var(--line,rgba(127,127,127,.2))!important;background:none!important;box-shadow:none!important}
+html body #sw .chip:last-child{border-right:0!important}
+html body #sw .chip::before{position:static!important;flex:0 0 auto;width:7px!important;height:7px!important;border-radius:50%!important;align-self:center!important;margin-right:.1em}
+html body #sw .chip .k{font-size:.68rem!important;letter-spacing:.08em}
+html body #sw .chip .v{font-family:var(--f-b,inherit)!important;font-size:.98rem!important;font-weight:600!important;color:var(--fg,inherit)!important;font-variant-numeric:tabular-nums;white-space:nowrap!important}
+html body #sw .chip .v small{font-size:.75em!important;font-weight:500!important;opacity:.7}
+@media (max-width:600px){html body #sw{display:grid!important;grid-template-columns:1fr 1fr!important}html body #sw .chip{border-right:0!important;padding:6px 10px!important}html body #sw .chip:last-child{grid-column:1/-1!important}}
