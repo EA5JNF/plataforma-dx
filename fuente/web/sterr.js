@@ -56,7 +56,7 @@ function body(){if(typeof L==="undefined"||!L)return "";const sp=L.space||{};con
   const H=hf();let nowH=12;try{nowH=Math.round(localNow())%24}catch(_){}
   const num=x=>String(x).replace(/\s*(destinos?|destinations?)$/i,"");
   const best=H.reduce((m,r)=>r[4]>(m?m[4]:0)?r:m,null);
-  const hfI=`<p class="st3n st3i">${T("Cuántos destinos puedes trabajar en cada banda con tu antena, tu potencia y tu modo (al menos un 30 % de probabilidad). Sirve para elegir banda ahora y para ver cuáles se abren de noche y cuáles de día.","How many destinations you can work on each band with your antenna, power and mode (at least a 30% chance). Use it to pick a band now and to see which bands open at night and which by day.")}</p>`;
+  const hfI=`<p class="st3n st3i">${T("Cuántos destinos puedes trabajar en cada banda con tu antena, tu potencia y tu modo (al menos un 30 % de fiabilidad). Sirve para elegir banda ahora y para ver cuáles se abren de noche y cuáles de día.","How many destinations you can work on each band with your antenna, power and mode (at least a 30% chance). Use it to pick a band now and to see which bands open at night and which by day.")}</p>`;
   /* 2.11.49: lo que se lee primero son tres frases: la mejor banda ahora, esta noche y mañana, y las otras abiertas;
      la tabla por bandas queda plegada debajo para quien quiera el detalle */
   const lst=a=>{if(a.length<2)return a.join("");const y=T(" y "," and ");return a.slice(0,-1).join(", ")+y+a[a.length-1]};

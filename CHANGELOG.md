@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.54 — 2026-11-28
+
+- ES: «Probabilidad» pasa a llamarse «Fiabilidad» en tarjetas, mapa, balizas, fichas y concursos: es la fiabilidad de VOACAP corregida con lo que se oye, no la probabilidad de completar el QSO. «Cómo se calcula» lo explica en una línea. Las probabilidades que sí lo son (llamaradas, esporádica E) no cambian.
+- ES: «Fuentes de esta actualización» dice el estado de cada fuente: actual (dentro de su plazo normal de renovación), antiguo (se ve el último dato bueno, con su edad) o desconocido (no hay dato y no se rellena con cero). El resumen cuenta cuántas hay de cada.
+- EN: "Probability" is now "Reliability" in cards, map, beacons, country sheets and contests: it is VOACAP reliability corrected with what is being heard, not the chance of completing the QSO. "How it is calculated" explains it in one line. Real probabilities (flares, sporadic E) are unchanged.
+- EN: "Sources for this update" shows each source's state: current (within its normal renewal period), old (the last good data is shown, with its age) or unknown (no data, and it is not filled with zero). The summary counts each.
+- ES: Cuando la señal prevista basta pero la fiabilidad es menor del 50 %, la tarjeta lo explica: es la señal de los días en que el camino abre, y a esa hora abre menos de la mitad de los días.
+- EN: When the predicted signal is enough but reliability is below 50 %, the card explains it: that is the signal on days when the path opens, and at that hour it opens on fewer than half the days.
+
 ## 2.11.53 — 2026-11-23
 
 - ES: Con la letra ampliada desde «Aa», las etiquetas de las tarjetas (Entidad sin confirmar, DXpedición, Socio…) ya no se salen ni se descuadran: si no caben en una línea, pasan a dos dentro de su recuadro. Los nombres de país ya no se parten a mitad de palabra (Chequi-a, Poloni-a).

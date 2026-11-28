@@ -1910,3 +1910,9 @@ html.bigt .sc .nw,html.bigt .sp .nw{overflow-wrap:break-word}
 html.bigt .sc dd,html.bigt .sc-d dd{overflow-wrap:break-word;min-width:0}
 html.bigt .sc-d .cs{white-space:normal}
 html.bigt .sc-d .cs .cty,html.bigt .sc-d .cs{overflow-wrap:normal!important;word-break:normal!important}
+
+/* 2.11.54: estado de cada fuente */
+.srcrep .sst{font-weight:600}.srcrep .sst.act{color:var(--g,#3fb950)}.srcrep .sst.old{color:var(--y,#d29922)}.srcrep .sst.unk{color:var(--r,#f85149)}
+.srcrep .sstsum{font-weight:400;opacity:.8;margin-left:.4em}
+
+.sgnote{display:block;font-size:.8em;opacity:.8;margin-top:.2em;line-height:1.3}

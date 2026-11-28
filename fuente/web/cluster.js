@@ -116,7 +116,7 @@ function detOf(o){const g=o.geo;let rumbo="",dist="",pr="";
   if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
     if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
     else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
-  return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Probabilidad","QSO chance"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""]].concat(o.secs||[]).filter(([,v])=>v)}
+  return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Fiabilidad","Reliability"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""]].concat(o.secs||[]).filter(([,v])=>v)}
 function card(o){
   if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
   if(o.call&&document.documentElement.classList.contains("vl"))return listRow(o);
@@ -416,10 +416,13 @@ function sigRow(s,e,sp){if(!e||!e.t||!window.ACRACB_sigEst)return "";let lh=null
   let h=same?`<span class="sgl"><span class="sgk">${T("Ida y vuelta","Both ways")}</span>${rep(g.rx)}</span>`
     :`<span class="sgl"><span class="sgk">${T("Le oirás","You hear")}</span>${rep(g.rx)}</span><span class="sgl"><span class="sgk">${T("Te oirá","Hears you")}</span>${rep(g.tx)}</span>`;
   h=`<span class="sgw" title="${T("Mediana del mes según el modelo","Monthly median from the model")}">${h}</span>`;
+  /* 2.11.54: señal suficiente con fiabilidad baja no es una contradicción: la banda abre solo algunos días (está al límite
+     de la MUF), y cuando abre llega con esa señal. Se dice, para que no parezca que una cosa desmiente a la otra */
+  try{const pp=sp&&sp.p!=null?sp.p:null;if(pp!=null&&pp<.5&&Math.min(cl(g.rx),cl(g.tx))>=1)h+=`<span class="sgnote">${T(`Esa es la señal de los días en que el camino abre; a esta hora abre menos de la mitad de los días.`,`That is the signal on days when the path opens; at this hour it opens on fewer than half the days.`)}</span>`}catch(_){}
   const call=SK(s.call),o=lastOwn(call,s.band,"rx"),u=lastOwn(call,s.band,"tx");const cmp=[];
   if(o&&o.h&&o.s!=null){const d=o.s-Math.min(g.rx.s,9+60);cmp.push(T(`le oyes a <b>${sTxt(o.s)}</b> y se preveía ${sTxt(g.rx.s)}`,`you hear them at <b>${sTxt(o.s)}</b>; ${sTxt(g.rx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
   if(u&&u.h&&u.s!=null){const d=u.s-g.tx.s;cmp.push(T(`te oye a <b>${sTxt(u.s)}</b> y se preveía ${sTxt(g.tx.s)}`,`they hear you at <b>${sTxt(u.s)}</b>; ${sTxt(g.tx.s)} was forecast`)+(d?` (${d>0?"+":""}${d})`:` (${T("acierto","spot on")})`))}
-  if((o||u)&&sp.p0!=null&&Math.round(sp.p0*100)!==Math.round(sp.p*100))cmp.push(T(`la probabilidad pasa del <b>${Math.round(sp.p0*100)} %</b> que daba el modelo al <b>${Math.round(sp.p*100)} %</b>`,`the chance goes from the model's <b>${Math.round(sp.p0*100)} %</b> to <b>${Math.round(sp.p*100)} %</b>`));
+  if((o||u)&&sp.p0!=null&&Math.round(sp.p0*100)!==Math.round(sp.p*100))cmp.push(T(`la fiabilidad pasa del <b>${Math.round(sp.p0*100)} %</b> que daba el modelo al <b>${Math.round(sp.p*100)} %</b>`,`the chance goes from the model's <b>${Math.round(sp.p0*100)} %</b> to <b>${Math.round(sp.p*100)} %</b>`));
   if(cmp.length)h+=`<div class="sgcmp">${T("Con lo que has anotado","With what you noted")}: ${cmp.join("; ")}.</div>`;
   return h}
 function dxRow(s,e,a){const st=splitTags(s);const tags=[];const sp=spotProb(s,e,a);if(s.nw)tags.push(`<span class="nwb">${T("NUEVO","NEW")}</span>`);if(s.ns>1)tags.push(`<span class="nsb">${T(`en ${s.ns} clústeres`,`on ${s.ns} clusters`)}</span>`);
@@ -497,7 +500,7 @@ function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS
     const sel=CLALL?grp:yours;sel.sort((u,v)=>(v.nw-u.nw)||(v.pp-u.pp));
     const N=document.documentElement.classList.contains("vc")?6:8;
     h+=`<div class="seg clfor" role="group" aria-label="${T("Qué estaciones ver","Which stations to show")}"><button type="button" data-clfor="you" aria-pressed="${!CLALL}">${T("Para ti","For you")} <small>${yours.length}</small></button><button type="button" data-clfor="all" aria-pressed="${CLALL}">${T("Todos","All")} <small>${grp.length}</small></button></div>`;
-    h+=`<p class="note clfn">${CLALL?T("<b>Todos:</b> todas las estaciones del clúster con tus filtros de modo y banda, aunque ahora no te lleguen.","<b>All:</b> every station on the cluster with your mode and band filters, even if it does not reach you now."):T("<b>Para ti:</b> solo las que puedes trabajar ahora: oídas en la última media hora y con al menos un 10 % de probabilidad desde tu estación.","<b>For you:</b> only those you can work now: heard in the last half hour and with at least a 10 % chance from your station.")}</p>`;
+    h+=`<p class="note clfn">${CLALL?T("<b>Todos:</b> todas las estaciones del clúster con tus filtros de modo y banda, aunque ahora no te lleguen.","<b>All:</b> every station on the cluster with your mode and band filters, even if it does not reach you now."):T("<b>Para ti:</b> solo las que puedes trabajar ahora: oídas en la última media hora y con al menos un 10 % de fiabilidad desde tu estación.","<b>For you:</b> only those you can work now: heard in the last half hour and with at least a 10 % chance from your station.")}</p>`;
     /* 2.10.0: las otras frecuencias de la misma estación, en una fila propia «También en», con el mismo aspecto que la
        frecuencia principal (cifra en grande y color de su banda, modo y banda al lado) */
     const alt=g=>g.a.slice(1).map(x=>`<span class="xalt2"><b style="color:${BC[x.s.band]}">${e2(x.s.f)}</b>${x.s.mode?` <span class="xam">${e2(x.s.mode)}</span>`:""} <span class="xab">${BANDS[x.s.band]}</span></span>`);
@@ -698,7 +701,7 @@ function dxCards(){const box=$("dxl");if(!box||!Array.isArray(L.dx)||typeof tFor
     let air="";try{air=(window.ACRACB_dxon?ACRACB_dxon(d):"").replace(/<br>$/,"")}catch(x){}
     let gl="";try{gl=window.ACRACB_grey?ACRACB_grey.short(p).replace(/^(Línea gris común|Shared greyline):?\s*/,""):""}catch(x){}
     const sec=(l,v)=>v?`<dt>${l}</dt><dd>${v}</dd>`:"";
-    const c0=dxTok(d.call)[0]||String(d.call||"");const la=lastAge(c0),act=isAct(la);html.push({act,la,h:`<div class="sc dxc ohc${act?"":" old"}" data-dxi="${i}"><div class="sc-h"><span class="sc-call">${stBtn(c0,n.p>0?n.b:null,nw?"★ ":"✔ ",d.call)}${cty}</span><span class="dxh-r">${ageTag(lastAge(c0),"")}<span class="pill ${cls(n.p)}" title="${T("Probabilidad de QSO para ti ahora en","QSO chance for you now on")} ${BANDS[n.b]||""}">${Math.round(n.p*100)} %${n.p>0&&BANDS[n.b]?" · "+BANDS[n.b]:""}</span></span></div>
+    const c0=dxTok(d.call)[0]||String(d.call||"");const la=lastAge(c0),act=isAct(la);html.push({act,la,h:`<div class="sc dxc ohc${act?"":" old"}" data-dxi="${i}"><div class="sc-h"><span class="sc-call">${stBtn(c0,n.p>0?n.b:null,nw?"★ ":"✔ ",d.call)}${cty}</span><span class="dxh-r">${ageTag(lastAge(c0),"")}<span class="pill ${cls(n.p)}" title="${T("Fiabilidad para ti ahora en","Reliability for you now on")} ${BANDS[n.b]||""}">${Math.round(n.p*100)} %${n.p>0&&BANDS[n.b]?" · "+BANDS[n.b]:""}</span></span></div>
       ${tags.length?`<div class="sc-f">${tags.join("")}</div>`:""}<dl class="sc-d">${sec(T("Actividad","Activity"),air)}
       ${sec(T("Mejor hora","Best time"),`<span class="nw">${hh(bh.h)}:00 ${T("en","on")} <b style="color:${BC[bh.b]}">${BANDS[bh.b]}</b></span> <span class="nw">(${Math.round(bh.p*100)} %${bh.lp?T(", paso largo",", long path"):""})</span>`)}
       ${sec(T("Rumbo","Bearing"),`<span class="nw">${T("corto","short")} ${az}° ${cab(az)}<span class="sc-sep">·</span></span> <span class="nw">${T("largo","long")} ${laz}° ${cab(laz)}</span>`)}

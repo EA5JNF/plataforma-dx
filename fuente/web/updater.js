@@ -348,7 +348,7 @@ async function updateAll(auto,merge){if(BUSY)return;BUSY=true;const t0=merge?LAS
   const run=async(tab,n)=>{if(merge){const r=RES[n];return [n,r?r.v:null]}
     if(PEND[n]){LAST[n]={ok:false,late:true,ms:0,err:"sigue buscando"};return [n,null]}
     const s=Date.now();LAST[n]={ok:false,late:true,wait:true,ms:0,err:"consultando…"};liveSrc();
-    const p=(async()=>{try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"&&n!=="NOAA avisos"),ms:Date.now()-s,note:v&&v.__note||""};RES[n]={v};liveSrc();return v}
+    const p=(async()=>{try{const v=await tab[n]();LAST[n]={ok:v!=null&&!(Array.isArray(v)&&!v.length&&tab===SRC&&n!=="NASA DONKI"&&n!=="NOAA avisos"),ms:Date.now()-s,note:v&&v.__note||""};if(LAST[n].ok)goodSet(n);RES[n]={v};liveSrc();return v}
       catch(e){if(e&&e.nd)LAST[n]={ok:false,nd:true,ms:Date.now()-s,err:e.nd};else LAST[n]={ok:false,ms:Date.now()-s,err:e&&e.name==="AbortError"?"sin respuesta":/^HTTP \d+/.test(e&&e.message||"")?"respondió "+e.message.replace("HTTP ","error "):(e instanceof TypeError?"conexión rechazada":"datos no válidos")};RES[n]={v:null};liveSrc();return null}
       finally{delete PEND[n]}})();
     PEND[n]=p;const r=await Promise.race([p,dl]);
@@ -409,9 +409,23 @@ const hmLocal=t=>new Date(t).toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid
 /* ---------------- interfaz ---------------- */
 function status(t,cl){const e=$("updst");if(!e)return;e.hidden=false;e.className="note "+(cl||"");e.textContent=t}
 function setBtn(on,auto){const b=$("updbtn");if(!b)return;b.hidden=false;b.disabled=on;b.classList.toggle("run",on);const x=b.querySelector(".tx");if(x)x.textContent=on?"Actualizando…":"Actualizar"}
+/* 2.11.54: estado de cada fuente según la edad de su último dato bueno y lo que tarda en caducar:
+   actual, antiguo (se sigue mostrando el último dato bueno, avisando) o desconocido (nunca llegó: no se pone un cero) */
+const GKEY="acracb_srcgood";let GOOD={};try{GOOD=JSON.parse(S.get(GKEY)||"{}")||{}}catch(e){GOOD={}}
+function goodSet(n){GOOD[n]=Date.now();try{S.set(GKEY,JSON.stringify(GOOD))}catch(e){}}
+const EXPM=n=>/ciclo|manchas|SILSO|27 días/.test(n)?2880:/flujo|WWV|3 días|Potsdam/.test(n)?720:/Kp|escalas|avisos|regiones|DONKI/.test(n)?180:/Hp30|Spothole avisos/.test(n)?60:30;
+const TL=(a,b)=>window.ACRACB_LANG==="en"?b:a;
+/* sin dato propio en este aparato, el que se ve es el que trae la plataforma al publicarse: su edad es la de ese dato */
+const BOOTT=(()=>{try{return Date.parse(L.updatedUTC)||null}catch(e){return null}})();
+function srcAge(n){const g=GOOD[n]||BOOTT;return g?(Date.now()-g)/6e4:null}
+function srcState(n){const v=LAST[n];const a=srcAge(n);if(v&&v.ok&&!v.cached)return "act";if(a==null)return "unk";return a<=EXPM(n)?"act":"old"}
+const agoTxt=a=>{const EN=window.ACRACB_LANG==="en";a=Math.round(a);return a<1?(EN?"just now":"ahora mismo"):a<60?(EN?a+" min ago":"hace "+a+" min"):a<2880?(EN?Math.round(a/60)+" h ago":"hace "+Math.round(a/60)+" h"):(EN?Math.round(a/1440)+" days ago":"hace "+Math.round(a/1440)+" días")};
+window.ACRACB_srcState=()=>Object.keys(LAST).map(n=>({n,st:srcState(n),age:srcAge(n),exp:EXPM(n)}));
 function renderSrc(){let d=$("srcrep");const st=$("updst");if(!st)return;if(!d){d=document.createElement("details");d.id="srcrep";d.className="mdet srcrep";st.insertAdjacentElement("afterend",d)}
   const e=Object.entries(LAST);if(!e.length){d.hidden=true;return}d.hidden=false;
-  d.innerHTML=`<summary>Fuentes de esta actualización</summary><div class="srcg">${e.sort((a,b)=>(b[1].ok-a[1].ok)||(!!b[1].nd-!!a[1].nd)||a[0].localeCompare(b[0],"es")).map(([n,v])=>`<span class="srci ${v.ok?"ok":v.nd||v.late?"nd":"ko"}"${v.nd?' title="La fuente responde, pero ahora no tiene datos útiles para tu zona"':""}>${v.ok?"✓":v.late?"…":v.nd?"–":"✕"} ${n}<small>${v.ok?(v.cached?"dato reciente guardado":(v.ms/1000).toFixed(1).replace(".",",")+" s")+(v.note?" · "+v.note:""):v.err||"sin datos"}</small></span>`).join("")}</div><p class="note">Las marcadas con ✕ no dejan que una página las lea directamente o no respondieron: se mantiene su último dato bueno. Las marcadas con – responden, pero ahora no tienen datos para tu zona.</p>`}
+  const sts=e.map(([k])=>srcState(k)),nA=sts.filter(x=>x==="act").length,nO=sts.filter(x=>x==="old").length,nU=sts.filter(x=>x==="unk").length;
+  const stT=k=>{const st=srcState(k),a=srcAge(k);return st==="act"?`<b class="sst act">${TL("actual","current")}</b>`+(LAST[k].ok&&!LAST[k].cached?"":` · ${TL("dato de","data from")} ${agoTxt(a)}`):st==="old"?`<b class="sst old">${TL("antiguo","old")}</b> · ${TL("último dato bueno","last good data")} ${agoTxt(a)}`:`<b class="sst unk">${TL("desconocido","unknown")}</b> · ${TL("sin ningún dato","no data at all")}`};
+  d.innerHTML=`<summary>Fuentes de esta actualización <span class="sstsum">${nA} ${TL("actuales","current")}${nO?` · ${nO} ${TL("antiguas","old")}`:""}${nU?` · ${nU} ${TL("desconocidas","unknown")}`:""}</span></summary><div class="srcg">${e.sort((a,b)=>(b[1].ok-a[1].ok)||(!!b[1].nd-!!a[1].nd)||a[0].localeCompare(b[0],"es")).map(([n,v])=>`<span class="srci ${v.ok?"ok":v.nd||v.late?"nd":"ko"}"${v.nd?' title="La fuente responde, pero ahora no tiene datos útiles para tu zona"':""}>${v.ok?"✓":v.late?"…":v.nd?"–":"✕"} ${n}<small>${stT(n)} · ${v.ok?(v.cached?"dato reciente guardado":(v.ms/1000).toFixed(1).replace(".",",")+" s")+(v.note?" · "+v.note:""):v.err||"sin datos"}</small></span>`).join("")}</div><p class="note">Las marcadas con ✕ no dejan que una página las lea directamente o no respondieron: se mantiene su último dato bueno. Las marcadas con – responden, pero ahora no tienen datos para tu zona. ${TL("<b>Actual</b>: el dato está dentro de su plazo normal de renovación. <b>Antiguo</b>: se ve el último dato bueno, pero ese plazo ya pasó. <b>Desconocido</b>: no hay ningún dato, y no se rellena con un cero.","<b>Current</b>: the data is within its normal renewal period. <b>Old</b>: the last good data is shown, but that period has passed. <b>Unknown</b>: there is no data at all, and it is not filled with a zero.")}</p>`}
 function boot(){const b=$("updbtn");if(!b)return;b.hidden=false;b.disabled=false;b.onclick=()=>updateAll(false);const c=$("updcl");if(c)c.hidden=true;
   try{const c2=JSON.parse(S.get(KEY)||"null",SAFE);if(c2&&c2.updatedUTC&&(!L.updatedUTC||c2.updatedUTC>L.updatedUTC)){(c2.spots||[]).forEach(q=>{const pe=ent(q.call);if(pe&&q.dx&&!posOK(q.dx,pe)){q.dx=areaPos(q.call,pe)||q.dx;q.dxp=false}});const al=c2.alert;delete c2.alert;applyLive(c2);if(al){L.alert=al;renderAlerts()}}}catch(e){}
   const age=(Date.now()-(Date.parse(L.updatedUTC)||Date.now()))/6e4;
