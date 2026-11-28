@@ -1974,3 +1974,13 @@ html body #sw .chip .v small{font-size:.75em!important;font-weight:500!important
 .vx1 .vxm i.on{background:#c9721f}.vx2 .vxm i.on{background:#c9921f}.vx3 .vxm i.on{background:#2e9d5b}
 .vxt{font-size:.82em;font-weight:600;line-height:1.25}
 .vx0 .vxt,.vxn .vxt{color:var(--muted);font-weight:400}.vx1 .vxt{color:#c9721f}.vx2 .vxt{color:#c9921f}.vx3 .vxt{color:#2e9d5b}
+
+/* 2.11.71: «Qué puedes hacer con poca potencia»: todas las casillas con la misma estructura y alineadas arriba:
+   el número en su pastilla y debajo el destino más fácil; columnas de igual ancho */
+table.qrpg{table-layout:fixed;width:100%}
+table.qrpg th:first-child,table.qrpg td:first-child{width:4.2em}
+table.qrpg td,table.qrpg th{vertical-align:top!important;text-align:left}
+table.qrpg td:first-child{padding-top:.35em}
+.qc{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.qc small{line-height:1.3;color:var(--muted);font-size:.78rem}
+.qc0{color:var(--muted);opacity:.6;display:inline-block;min-width:2.2em;text-align:center;padding:.1em 0}

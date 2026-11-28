@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.72 — 2026-11-28
+
+- ES: Países y log → QRP: la tabla de bandas y modos queda alineada. Todas las casillas tienen la misma forma (el número arriba y el destino más fácil debajo), van alineadas arriba y las columnas tienen el mismo ancho. «—» cuando no hay nada al alcance; la explicación está una sola vez, debajo.
+- EN: Countries and log → QRP: the bands and modes table is aligned. Every cell has the same shape (the number on top and the easiest destination below), they are top-aligned and the columns have equal width. "—" when nothing is in reach; the explanation is given once, below.
+
 ## 2.11.70 — 2026-11-28
 
 - ES: Sol → «VHF y superiores»: la tropo de 2 m y 70 cm se calcula también aquí (antes pedía abrir V-UHF). Mientras llega la previsión dice «calculando…» y, si no llega, «sin datos ahora».
