@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.87 — 2026-11-28
+
+- ES: «Ver el detalle por banda» enseña todas las bandas del modo, también 6 m, 2 m y 70 cm; si alguna no existe en ese modo (30 m en fonía), lo dice debajo.
+- EN: «See the detail by band» shows every band of the mode, including 6 m, 2 m and 70 cm; if a band does not exist in that mode (30 m on phone), a note says so.
+
 ## 2.11.86 — 2026-11-28
 
 - ES: Línea de la estación según el ancho: en el móvil, modo, banda, potencia y la flecha (el locator pasa al desplegable); en pantallas anchas se suman la antena y, desde 1280 px, la altitud y el entorno, que dejan de repetirse en el desplegable.
