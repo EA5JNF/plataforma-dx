@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.80 — 2026-11-28
+
+- ES: Menos texto, fase 3 (Países y log → QRP): de tres explicaciones que decían lo mismo («Cómo se lee», «Cada casilla» y la nota final) queda una sola línea debajo de la tabla. Arriba sigue «Lo mejor ahora», con cuánto pierdes respecto a tu potencia.
+- EN: Less text, phase 3 (Countries and log → QRP): of three explanations that said the same thing ("How to read it", "Each cell" and the final note), a single line remains below the table. "Best right now" stays on top, with how much you lose compared with your power.
+
 ## 2.11.79 — 2026-11-28
 
 - ES: Menos texto, fase 2 (Ahora).
