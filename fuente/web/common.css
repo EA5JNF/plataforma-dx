@@ -1924,3 +1924,14 @@ html.bigt .sc-d .cs .cty,html.bigt .sc-d .cs{overflow-wrap:normal!important;word
 #accbox .acch{font-size:.8em;opacity:.75;text-transform:uppercase;letter-spacing:.04em}
 #accbox .accr{padding:.25em 0;border-top:1px solid var(--line,rgba(127,127,127,.25));font-variant-numeric:tabular-nums}
 #accbox .acc-few{opacity:.8}
+
+/* 2.11.56: patrón de antena importado */
+.patbox .patf{display:flex;gap:.5em;align-items:center;flex-wrap:wrap;margin:.4em 0}
+.patbox .patn{min-width:12em}
+.patbox .patt{display:grid;gap:2px;margin:.5em 0;max-width:30rem}
+.patbox .patr{display:grid;grid-template-columns:5em 1fr;gap:.6em;padding:.2em 0;border-top:1px solid var(--line,rgba(127,127,127,.25));font-variant-numeric:tabular-nums}
+.patbox .path{font-size:.8em;opacity:.75;border-top:0}
+.patbox .patc{display:flex;flex-direction:column;gap:.35em;margin:.5em 0}
+.patbox .pathd{width:4.5em}
+.patbox .paterr{color:var(--r,#f85149)}
+.patbox .patin::file-selector-button{font:inherit;padding:.35em .8em;border-radius:8px;border:1px solid var(--line,rgba(127,127,127,.4));background:var(--card2,transparent);color:inherit;cursor:pointer;margin-right:.6em}

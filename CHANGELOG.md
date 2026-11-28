@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.56 — 2026-11-28
+
+- ES: Puedes importar el patrón real de tu antena en «Ajustes finos de tu estación»: la salida de NEC-2 (4nec2, xnec2c…) o una tabla CSV con frecuencia, azimut, elevación y ganancia en dBi. Se usa en cada banda con la frecuencia del patrón más cercana, al ángulo de salida que da VOACAP. Puede ser giratoria (apunta a cada destino) o fija, con el rumbo al que apunta, y entonces cuenta el rumbo real de cada destino. Se elige en «Tipo de antena» y se guarda solo en este aparato.
+- ES: «Acierto» prueba también por el intermediario de la plataforma si WSPR.live no responde directamente.
+- EN: You can import your antenna's real pattern in "Fine settings for your station": NEC-2 output (4nec2, xnec2c…) or a CSV table with frequency, azimuth, elevation and gain in dBi. On each band it uses the nearest pattern frequency, at the take-off angle VOACAP gives. It can be rotatable (points at each destination) or fixed, with the bearing it points to, and then each destination's real bearing counts. It is chosen in "Antenna type" and stored only on this device.
+- EN: "Accuracy" also tries the platform's relay if WSPR.live does not respond directly.
+
 ## 2.11.55 — 2026-11-28
 
 - ES: Nueva pestaña «Acierto» en Cómo funciona: mide si la fiabilidad del modelo acierta con datos reales de WSPR (wspr.live, gratuito y sin registro). Compara la previsión mensual de VOACAP con tu estación con lo que oyeron los receptores WSPR a menos de 400 km de ti durante los últimos 3 días, solo en las horas en que escuchaban. Da la puntuación de Brier frente a la climatología, una tabla de calibración y el resultado por banda, con el número de casos.

@@ -12,8 +12,11 @@
   const CK="acracb_calib1",DAYS=3,NEAR=400,FAR=1500,THR=6;
   const WB={1:0,3:1,5:8,7:2,10:9,14:3,18:4,21:5,24:6,28:7};
   const nf=(x,d)=>{const s=(+x).toFixed(d);return window.ACRACB_LANG==="en"?s:s.replace(".",",")};
-  async function q(sql){const c=new AbortController(),tm=setTimeout(()=>c.abort(),45000);
-    try{const r=await fetch("https://db1.wspr.live/?query="+encodeURIComponent(sql+" FORMAT TSV"),{signal:c.signal});if(!r.ok)throw new Error("HTTP "+r.status);return (await r.text()).trim().split("\n").filter(Boolean).map(l=>l.split("\t"))}finally{clearTimeout(tm)}}
+  /* directo; si falla, por el intermediario de la plataforma (el mismo que ya usa la fuente WSPR.live) */
+  async function get(u){const c=new AbortController(),tm=setTimeout(()=>c.abort(),45000);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error("HTTP "+r.status);return await r.text()}finally{clearTimeout(tm)}}
+  async function q(sql){const u="https://db1.wspr.live/?query="+encodeURIComponent(sql+" FORMAT TSV");let t;
+    try{t=await get(u)}catch(e){t=await get("https://acracb-dx.ea5jnf.workers.dev/?u="+encodeURIComponent(u))}
+    return t.trim().split("\n").filter(Boolean).map(l=>l.split("\t"))}
   function nearestT(lat,lon,ts){let best=null,bd=1e9;for(const t of ts){const dl=t.lat-lat,dn=((t.lon-lon+540)%360-180)*Math.cos(lat*Math.PI/180),d=dl*dl+dn*dn;if(d<bd){bd=d;best=t}}return best}
   async function run(){
     const P=TXP,lat=P[1],lon=P[0];
