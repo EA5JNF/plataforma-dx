@@ -232,6 +232,12 @@ function wire(box,parts){box.querySelectorAll("details.vpart").forEach(d=>d.addE
 function visible(){const d=document.getElementById("f_vhf");return d&&typeof st!=="undefined"&&st.page==="ahora"&&!d.hidden&&d.open}
 function tick(){if(document.visibilityState!=="visible")return;const vis=visible();if(vis||AL.size){if(vis&&OPEN.has("tro")&&(!TRO||Date.now()-TRO.at>3*36e5)&&!troBusy)troFetch();if(vis&&OPEN.has("ms"))msFetch();render()}}
 window.ACRACB_vuhf={render,state,moonAt,emeLoss,troFetch};
+/* 2.11.94: las tres tarjetas de 6 m, 2 m y 70 cm alineadas: la cabecera de las tres tiene la misma altura, así el detalle
+   empieza a la misma altura en todas (solo cuando van en columnas) */
+function eqVHF(){const v=document.getElementById("vhfo");if(!v)return;const ss=[...v.querySelectorAll(".sxl>.sxr>summary")];ss.forEach(x=>x.style.minHeight="");
+  if(innerWidth<760||ss.length<2)return;const tops=new Set(ss.map(x=>Math.round(x.getBoundingClientRect().top)));if(tops.size>1)return;const mh=Math.max(...ss.map(x=>x.offsetHeight));ss.forEach(x=>x.style.minHeight=mh+"px")}
+(function(){let t=0;const go=()=>{clearTimeout(t);t=setTimeout(eqVHF,60)};addEventListener("resize",go);document.addEventListener("toggle",e=>{if(e.target&&e.target.closest&&e.target.closest("#vhfo"))go()},true);
+  const hook=()=>{const v=document.getElementById("vhfo");if(!v)return setTimeout(hook,500);new MutationObserver(go).observe(v,{childList:true,subtree:true});go()};hook()})();
 function boot(){if(!document.getElementById("vhfo"))return setTimeout(boot,500);render();setInterval(tick,60000);document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest('[data-t="f_vhf"],.ptabs button'))setTimeout(()=>{if(visible()){if(OPEN.has("tro")&&!TRO)troFetch();render()}},80)},true)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();

@@ -2160,3 +2160,5 @@ details.sterr .sthvu i{max-width:200px;overflow:hidden;text-overflow:ellipsis}de
 }
 @media (max-width:600px){html body div#sw.sw>.chip{padding-left:22px!important}html body div#sw.sw>.chip::before{position:absolute!important;left:9px!important;top:12px!important;margin:0!important}}
 @media (min-width:641px){details.sterr .sth-chips{flex:1 1 auto}details.sterr .sthc{flex:1 1 0;max-width:240px}details.sterr .sthvu{flex-grow:1.6;max-width:320px}}
+.qsbar #logbtn.qslog{padding:2px 10px!important;margin:0!important;font:inherit;font-size:.9rem;min-height:0;height:auto;align-self:stretch}
+@media (min-width:760px){#vhfo .sxl{align-items:start}#vhfo .sxr>summary{align-content:start}}

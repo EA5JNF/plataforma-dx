@@ -688,5 +688,20 @@
  "Tormentas": "Storms",
  "5 W · QRP (≤5 W)": "5 W · QRP (≤5 W)",
  "100 W · Low Power (≤100 W)": "100 W · Low Power (≤100 W)",
- "1 kW · High Power (DXpedición o concursero)": "1 kW · High Power (DXpedition or contester)"
+ "1 kW · High Power (DXpedición o concursero)": "1 kW · High Power (DXpedition or contester)",
+ "Lo que ves es siempre el resultado de tu estación: la antena, la potencia, la altura y el entorno que eliges arriba. VOACAP calcula cada camino una sola vez con una antena de referencia fija": "What you see is always the result for your station: the antenna, power, height and surroundings you choose above. VOACAP calculates each path once with a fixed reference antenna",
+ "un monopolo λ/4, la referencia más sencilla de modelar": "a λ/4 monopole, the simplest reference to model",
+ "y la plataforma lo pasa a tu estación con física, no con estimaciones: a cada camino le suma la diferencia de potencia y la diferencia de ganancia entre tu antena y la de referencia al ángulo de salida que da VOACAP para ese camino, banda y hora, con el reflejo del suelo según la altura de la antena y el entorno. La antena de referencia no influye en el resultado: con otra referencia saldría lo mismo. Ganancias de las antenas: SteppIR de 3 elementos": "and the platform converts it to your station with physics, not guesses: to each path it adds the power difference and the gain difference between your antenna and the reference at the take-off angle VOACAP gives for that path, band and hour, with the ground reflection for the antenna height and surroundings. The reference antenna does not change the result: another reference would give the same. Antenna gains: 3-element SteppIR",
+ ", Hex Beam": ", Hex Beam",
+ "1,15 dBi": "1.15 dBi",
+ "2,15 dBi": "2.15 dBi",
+ ". Puedes elegir varias: en cada banda se usa la que más gana. Las directivas se suponen giradas hacia cada destino. Monobanda y enfasadas de concurso: Yagi de 2 y 3 elementos en 40 m": ". You can choose several: on each band the one with the most gain is used. Beams are assumed to be turned towards each destination. Contest monobanders and phased arrays: 2 and 3-element Yagis on 40 m",
+ "unos 6,2 y 7,8 dBi": "about 6.2 and 7.8 dBi",
+ ", dos Yagis apiladas de 20 a 10 m": ", two stacked Yagis from 20 to 10 m",
+ "unos 2,8 dB más que una sola": "about 2.8 dB more than one",
+ ", dos verticales enfasadas": ", two phased verticals",
+ "unos 3 dB más que una vertical": "about 3 dB more than one vertical",
+ "y 4-square en 40, 80 y 160 m": "and 4-square on 40, 80 and 160 m",
+ "unos 5,5 dB más": "about 5.5 dB more",
+ ", siempre hacia el destino.": ", always towards the destination."
 }

@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.94 — 2026-11-28
+
+- ES: Cómo funciona → Antenas: explica que lo que ves es siempre el resultado de tu estación (antena, potencia, altura y entorno) y que la antena de referencia de VOACAP es solo un paso interno del cálculo, que no cambia el resultado. También traducido al inglés lo que faltaba de esa sección.
+- ES: En pantallas anchas, «Mi log» (o «Subir log») también en la línea de la estación, sin abrir el desplegable.
+- ES: Las tarjetas de 6 m, 2 m y 70 cm quedan alineadas: el detalle empieza a la misma altura en las tres.
+- EN: How it works → Antennas: explains that what you see is always the result for your station (antenna, power, height and surroundings) and that VOACAP's reference antenna is only an internal step that does not change the result. The rest of that section is now translated too.
+- EN: On wide screens, «My log» (or «Upload log») also on the station line, without opening the panel.
+- EN: The 6 m, 2 m and 70 cm cards are aligned: the detail starts at the same height in all three.
+
 ## 2.11.93 — 2026-11-28
 
 - ES: La línea de estado cuenta lo mismo que «Fuentes de esta actualización»: cuántas fuentes tienen datos al día (respondan en esta vuelta o hace poco, dentro de su ritmo de renovación), en vez de solo las que contestaron en los primeros segundos.

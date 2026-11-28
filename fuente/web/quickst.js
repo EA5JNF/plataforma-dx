@@ -26,13 +26,15 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
   /* 2.11.86: según el ancho: en el móvil, modo, banda y potencia (el locator pasa al desplegable); en pantallas anchas
      se suman la antena y, si cabe, la altitud y el entorno, que entonces dejan de repetirse en el desplegable */
   const html=`${loc?seg("locin",loc,"qloc"):""}${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}${seg("antsel",an,"qw1")}${al?seg("altin",(al.value||"0")+" m","qw2"):""}${gl?seg("gnd",gl,"qw2"):""}`;
-  if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
+  if(e.dataset.qh!==html){const lb0=$i("logbtn"),keep=lb0&&e.contains(lb0);if(keep)lb0.remove();e.innerHTML=html;e.dataset.qh=html;if(keep)e.appendChild(lb0)}
   const e2b=bar2();if(e2b){const h2=`${loc?seg("locin",loc,"qlocm"):""}${seg("antsel",an,"qn1")}${al?seg("altin",(al.value||"0")+" m","qn2"):""}${gl?seg("gnd",gl,"qn2"):""}`;
     let w=e2b.querySelector(".qsb2");if(!w){w=document.createElement("span");w.className="qsb2";e2b.prepend(w)}if(w.dataset.qh!==h2){w.innerHTML=h2;w.dataset.qh=h2}
-    const lb=$i("logbtn");if(lb&&lb.parentElement!==e2b)e2b.appendChild(lb)}
+    /* 2.11.94: en pantallas anchas, «Mi log» también en la línea principal (antes solo dentro del desplegable) */
+    const lb=$i("logbtn"),wide=innerWidth>=1280,dst=wide?e:e2b;if(lb){lb.classList.toggle("qslog",wide);if(lb.parentElement!==dst)dst.appendChild(lb)}}
   /* 2.11.19: el botón de arriba es solo una flecha; el locator está dentro del desplegable */
   const sl=document.querySelector("#stbtn .stl");if(sl&&sl.textContent)sl.textContent="";
   return true}
+let RZT=0;addEventListener("resize",()=>{clearTimeout(RZT);RZT=setTimeout(()=>{try{sum()}catch(_){}},200)});
 function bar2(){let b=$i("ssum2");const p=$i("stpanel");if(!b&&p){b=document.createElement("div");b.id="ssum2";b.className="qsbar ssum2";p.prepend(b)}return b}
 /* el resumen de la base se sustituye por el tocable, con los mismos datos */
 function hook(){if(typeof renderSum!=="function"||!$i("ssum"))return setTimeout(hook,300);
