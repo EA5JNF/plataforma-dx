@@ -39,3 +39,7 @@
   document.addEventListener("change",ev=>{if(ev.target&&ev.target.id==="modesel"){OV={};setTimeout(after,0)}},true);
   window.ACRACB_cmsScope=()=>({scope:scope(),ov:JSON.parse(JSON.stringify(OV)),cms:CMS()});
 })();
+
+/* 2.11.76: el locator de tu estación, a la izquierda del reloj, como dato principal (en todas las vistas) */
+(function(){const f=()=>{const b=document.getElementById("ckq"),l=document.getElementById("loc");if(!b||!l)return;const v=String(l.value||"").toUpperCase().slice(0,6);if(b.textContent!==v)b.textContent=v||"—"};
+  f();setInterval(f,2000);document.addEventListener("change",()=>setTimeout(f,50),true)})();

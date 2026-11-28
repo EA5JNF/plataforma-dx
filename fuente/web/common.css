@@ -1993,3 +1993,7 @@ table.qrpg td:first-child{padding-top:.35em}
 .alxd>summary.alxh::before{content:"▸";color:var(--accent);margin-right:.1em}.alxd[open]>summary.alxh::before{content:"▾"}
 .alxd .alxn{font-family:inherit;text-transform:none;letter-spacing:0;font-size:.85em;color:var(--muted);font-weight:400}
 .alxd{display:block!important}.alxd .alxg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:6px;margin-top:8px}
+
+/* 2.11.76: locator en el reloj */
+.clock .ckloc b{color:var(--accent)}
+

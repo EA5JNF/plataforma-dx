@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.76 — 2026-11-28
+
+- ES: Cabecera: tu locator sale a la izquierda del reloj, como primer dato (Locator · UTC · Local · Altura del sol), en todas las vistas y tamaños de pantalla. Se actualiza en cuanto lo cambias.
+- EN: Header: your locator appears to the left of the clock, as the first item (Locator · UTC · Local · Sun elevation), in every view and screen size. It updates as soon as you change it.
+
 ## 2.11.75 — 2026-11-28
 
 - ES: La plataforma ya no se pasa sola a modo concursos ni cambia tu modo (SSB, CW…) cuando empieza un concurso: al entrar se queda lo último que elegiste. Para usar el concurso, pulsa «Participar» en el aviso. Si ya se había cambiado sola (por ejemplo a CW con el CQ WW CW), vuelve una vez a tu modo anterior y a modo DX.
