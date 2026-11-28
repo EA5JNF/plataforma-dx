@@ -10,8 +10,8 @@ const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 const $i=id=>document.getElementById(id);
 /* 2.11.3: cada pieza es un botón que abre un menú propio, igual en iPhone, iPad, Android y ordenador. Antes había un
    selector invisible encima del texto: en Safari a veces no se abría o se quedaba marcado, y la raya de debajo se veía rota */
-function seg(id,label){const s=$i(id);if(!s)return e2(label);
-  return `<button type="button" class="qs" data-qs="${id}" aria-haspopup="listbox" aria-expanded="false" aria-label="${e2((s.getAttribute("aria-label")||"")+": "+label)}">${e2(label)}<span class="qsc" aria-hidden="true"></span></button>`}
+function seg(id,label,cl){const s=$i(id);if(!s)return e2(label);
+  return `<button type="button" class="qs${cl?" "+cl:""}" data-qs="${id}" aria-haspopup="listbox" aria-expanded="false" aria-label="${e2((s.getAttribute("aria-label")||"")+": "+label)}">${e2(label)}<span class="qsc" aria-hidden="true"></span></button>`}
 function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw="",an="";
   try{loc=String($i("loc").value||"").slice(0,6);md=MD().s;h=HB();const p=PWN().split(" ");pw=p[0]+" "+p[1];an=ANTL()}catch(_){return false}
   /* 2.11.4: sin puntos entre piezas (los botones ya se separan) ni «Concursos» al final, que ya lo dice el botón de modo */
@@ -23,9 +23,11 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
      en la misma caja lo que casi nunca se toca: locator, antena, altitud, entorno, tu log y lo demás */
   e.classList.add("qsbar");
   /* 2.11.81: el locator, a la izquierda del todo, como dato principal; ya no se repite dentro del desplegable */
-  const html=`${loc?seg("locin",loc):""}${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}`;
+  /* 2.11.86: según el ancho: en el móvil, modo, banda y potencia (el locator pasa al desplegable); en pantallas anchas
+     se suman la antena y, si cabe, la altitud y el entorno, que entonces dejan de repetirse en el desplegable */
+  const html=`${loc?seg("locin",loc,"qloc"):""}${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}${seg("antsel",an,"qw1")}${al?seg("altin",(al.value||"0")+" m","qw2"):""}${gl?seg("gnd",gl,"qw2"):""}`;
   if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
-  const e2b=bar2();if(e2b){const h2=`${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
+  const e2b=bar2();if(e2b){const h2=`${loc?seg("locin",loc,"qlocm"):""}${seg("antsel",an,"qn1")}${al?seg("altin",(al.value||"0")+" m","qn2"):""}${gl?seg("gnd",gl,"qn2"):""}`;
     let w=e2b.querySelector(".qsb2");if(!w){w=document.createElement("span");w.className="qsb2";e2b.prepend(w)}if(w.dataset.qh!==h2){w.innerHTML=h2;w.dataset.qh=h2}
     const lb=$i("logbtn");if(lb&&lb.parentElement!==e2b)e2b.appendChild(lb)}
   /* 2.11.19: el botón de arriba es solo una flecha; el locator está dentro del desplegable */

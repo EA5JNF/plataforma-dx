@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.86 — 2026-11-28
+
+- ES: Línea de la estación según el ancho: en el móvil, modo, banda, potencia y la flecha (el locator pasa al desplegable); en pantallas anchas se suman la antena y, desde 1280 px, la altitud y el entorno, que dejan de repetirse en el desplegable.
+- ES: Barra «Sol y propagación»: las fichas empiezan junto al título, de izquierda a derecha, con la misma altura y tres líneas alineadas (etiqueta, valor y detalle); esta noche y mañana también dicen cuántos destinos.
+- EN: Station line by screen width: on phones, mode, band, power and the arrow (the locator moves into the panel); on wide screens the antenna is added and, from 1280 px, altitude and surroundings, which are no longer repeated in the panel.
+- EN: «Sun and propagation» bar: the tiles start next to the title, left to right, with the same height and three aligned lines (label, value and detail); tonight and tomorrow also show how many destinations.
+
 ## 2.11.85 — 2026-11-28
 
 - ES: Barra «Sol y propagación» rediseñada para invitar a abrirla: dice para qué sirve, enseña ya la mejor banda de ahora, de esta noche y de mañana, el estado del Sol, y tiene un botón «Ver previsión».

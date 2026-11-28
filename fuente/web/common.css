@@ -2108,3 +2108,14 @@ html.vc .ez.eznow .eznb{font-size:2.1rem}html.vc .ez.eznow .eznk{padding:6px 0;m
 .vtile.vtal{--lvk:var(--accent)}
 .vuhf>details.vpart[open]{margin-top:10px;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
 .vtile.vtal{--lvk:color-mix(in srgb,var(--muted) 45%,transparent)}.vtile.vtal .vts{color:var(--fg)}
+/* 2.11.86: la línea de la estación se adapta al ancho */
+.qsbar .qs.qw1,.qsbar .qs.qw2,.qsbar .qs.qlocm{display:none}
+@media (min-width:980px){.qsbar .qs.qw1{display:inline-flex}.qsbar .qs.qn1{display:none}}
+@media (min-width:1280px){.qsbar .qs.qw2{display:inline-flex}.qsbar .qs.qn2{display:none}}
+@media (max-width:640px){.qsbar .qs.qloc{display:none}.qsbar .qs.qlocm{display:inline-flex}}
+details.sterr .sth-main{flex:0 1 auto;margin-right:10px}details.sterr .sth-chips{flex:0 1 auto}details.sterr .sthc{justify-content:flex-start}
+/* 2.11.86: fichas de la barra iguales: tres líneas alineadas (etiqueta, valor, detalle) y la misma altura */
+details.sterr .sth-chips{align-items:stretch}
+details.sterr .sthc{justify-content:flex-start;min-width:96px}
+@media (max-width:640px){details.sterr .sthsol{flex-direction:column;align-items:flex-start;justify-content:flex-start}details.sterr .sthsol{grid-column:auto}details.sterr .sth-chips{grid-template-columns:repeat(4,minmax(0,1fr))}details.sterr .sthc{min-width:0}details.sterr .sthc b{font-size:.92rem}}
+@media (max-width:400px){details.sterr .sth-chips{grid-template-columns:repeat(2,minmax(0,1fr))}}
