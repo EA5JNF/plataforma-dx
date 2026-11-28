@@ -52,7 +52,10 @@ function head(){if(typeof L==="undefined"||!L)return `<span class="sth-main"><sp
   const chip=(lab,top,hr)=>top?`<span class="sthc"><small>${lab}</small><b style="color:${BC[top[5]]}">${top[0]}</b><i>${hr}</i></span>`:`<span class="sthc sthc0"><small>${lab}</small><b>${T("cerrado","closed")}</b><i>${hr}</i></span>`;
   let now=momTop(H,4),nn=now?now[4]:null;try{const e=easyAt(localNow());if(e&&now&&now[5]===e.b)nn=e.ts.length}catch(_){}
   const S=storms(),a=[];if(S.g)a.push("G"+S.g);if(S.r)a.push("R"+S.r);if(S.s)a.push("S"+S.s);const kp=L.kp!=null?+L.kp:null;
-  const sol=`<span class="sthc sthsol ${a.length?"sth-bad":"sth-ok"}"><small>${T("Sol","Sun")}</small><b>${a.length?T("tormenta","storm")+" "+a.join(" "):T("sin tormentas","no storms")}</b><i>G${S.g==null?"–":S.g} · R${S.r==null?"–":S.r} · S${S.s==null?"–":S.s}</i></span>`;
+  /* 2.11.89: abajo solo lo que abre para ti: HF ahora, esta noche y mañana, y V-UHF; el Sol y las tormentas van en la tira de arriba */
+  const vv=vhf(),VL={g:3,y:2,o:1,r:0,n:-1},vb=vv.slice().sort((a,b)=>(VL[b[1][0]]||0)-(VL[a[1][0]]||0))[0];
+  const vop=vb&&(vb[1][0]==="g"||vb[1][0]==="y");
+  const sol=`<span class="sthc sthvu${vop?"":" sthc0"}"><small>6 m – 70 cm</small><b${vop?` class="st-${vb[1][0]}"`:""}>${vop?e2(vb[0].replace(/\s*\(.*\)$/,"")):T("nada especial","nothing special")}</b><i>${vop?e2(vb[1][1]):T("aperturas cerradas","no openings")}</i></span>`;
   const load=!H.length||!H.some(r=>r[4]||r[6]||r[7])||(!now&&window.ACRACB_hubLoading&&ACRACB_hubLoading());
   const chips=load?`<span class="sthc sthc0"><small>HF</small><b>${T("calculando…","calculating…")}</b><i>&nbsp;</i></span>`:chip(T("Ahora","Now"),now,T(`${nowH} h`,`${nowH}:00`))+momOrder(nowH).map(m=>chip(m.sh,momTop(H,m.i),m.hr)).join("");
   return `<span class="sth-main"><span class="sth-t">${T("Sol y propagación","Sun and propagation")}</span><span class="sth-q">${T("Qué bandas abren ahora, esta noche y mañana con tu equipo","Which bands open now, tonight and tomorrow with your station")}</span></span><span class="sth-chips">${chips}${sol}</span><span class="sth-go"><span class="sth-o">${T("Ver previsión","See forecast")}</span><span class="sth-c">${T("Cerrar","Close")}</span></span>`}

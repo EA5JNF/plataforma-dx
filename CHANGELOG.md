@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.89 — 2026-11-28
+
+- ES: Panel «Sol y propagación» ordenado: arriba, las condiciones (Sol: SFI, SSN y llamaradas; campo magnético: Kp, índice A, viento y Bz; y las tormentas G·R·S de NOAA); abajo, lo que abre para ti (HF ahora, esta noche y mañana, y 6 m – 70 cm).
+- ES: El botón «Ver previsión» se lee bien también en el tema claro.
+- EN: «Sun and propagation» panel reorganised: on top, the conditions (Sun: SFI, SSN and flares; magnetic field: Kp, A index, wind and Bz; and the NOAA G·R·S storm scales); below, what opens for you (HF now, tonight and tomorrow, and 6 m – 70 cm).
+- EN: The «See forecast» button is readable in the light theme too.
+
 ## 2.11.88 — 2026-11-28
 
 - ES: La tira de índices (SFI, SSN, Kp, índice A, viento, Bz y llamaradas) y la barra «Sol y propagación» forman un solo panel: los índices arriba y las bandas debajo. La barra ya no repite SFI ni Kp.

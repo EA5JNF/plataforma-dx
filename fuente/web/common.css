@@ -2124,3 +2124,7 @@ details.sterr .sthc{justify-content:flex-start;min-width:96px}
 html body #sw:has(+#st_ahora){border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-bottom:0!important;border-left:4px solid var(--accent)!important;margin-bottom:0!important;background:var(--panel2)!important}
 html body #sw+#st_ahora{margin-top:0!important;border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
 html body #sw+#st_ahora{margin-top:calc(-1 * var(--swgap,12px))!important}
+details.sterr .sth-go{color:var(--bg)}html[data-theme="light"] details.sterr .sth-go{color:#fff}html[data-theme="light"] details.sterr[open] .sth-go{color:var(--accent)}
+details.sterr .sthvu i{max-width:200px;overflow:hidden;text-overflow:ellipsis}details.sterr .sthvu b.st-y{color:#d6a10a}
+@media (max-width:600px){html body #sw{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}html body #sw .chip:nth-child(3){grid-column:1/-1!important}html body #sw .chip{min-width:0;overflow:hidden}}
+@media (max-width:360px){html body #sw .chip{padding:6px 6px!important;gap:4px!important}html body #sw .chip .k{flex:none}}
