@@ -310,7 +310,7 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   const T2=(es,en)=>window.ACRACB_LANG==="en"?en:es;
   /* 2.10.0: índice del Resumen: salta a cada parte sin recorrer todo con el dedo */
   function nav(){const fe=document.getElementById("f_easy"),easy=document.getElementById("easy");if(!fe||!easy)return;let n=fe.querySelector(".eznav");
-    const parts=[[".ezcol1>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg .eztl",T2("Próximas horas","Next hours")],[".ezg .ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Palabras","Words")]];
+    const parts=[[".ezcol1>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg .eztl",T2("Próximas horas","Next hours")],[".ezg .ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Términos","Terms")]];
     const ok=parts.filter(([q])=>{const x=fe.querySelector(q);return x&&!x.hidden&&getComputedStyle(x).display!=="none"});const sig=ok.map(x=>x[0]).join();
     if(n&&n.dataset.sig===sig)return;if(!n){n=document.createElement("nav");n.className="eznav";n.setAttribute("aria-label",T2("Partes del Resumen","Summary sections"));easy.insertAdjacentElement("beforebegin",n)}
     n.dataset.sig=sig;n.innerHTML=ok.map(([q,t])=>`<button type="button" data-ezq="${q}">${t}</button>`).join("");

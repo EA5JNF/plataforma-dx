@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.82 — 2026-11-28
+
+- ES: Resumen: «Palabras que conviene saber» pasa a llamarse «Términos y expresiones que conviene saber», y su botón del índice, «Términos».
+- EN: Summary: "Words worth knowing" is now "Terms and expressions worth knowing", and its index button, "Terms".
+
 ## 2.11.81 — 2026-11-28
 
 - ES: Avisos con menos texto: fuera «Último aviso (hora)», «Sin novedades» (ya lo dice el título) y la línea de modo y bandas; queda una sola frase que dice qué entra y en qué modo.

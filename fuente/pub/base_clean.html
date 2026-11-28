@@ -2546,7 +2546,7 @@ function renderEasyS(now,full){const e0=easyAt(now);let best=null,night=null;
   const dx=L.dx.filter(dxNew).map(d=>{const t=tFor(d);return t?{d,t,...bestAny(t,now)}:null}).filter(x=>x&&x.p>=.3).sort((a,b)=>b.p-a.p).slice(0,2);
   $("easy").innerHTML=`<div class="ezg">${easyCard("Ahora · "+hh(now)+":00",now,e0)}${full?(best?easyCard("Mejor hora próxima · "+hh(best.h)+":00",best.h,best.e):"")+(night&&(!best||night.h!==best.h)?easyCard("Noche o amanecer · "+hh(night.h)+":00",night.h,night.e):""):`<div class="ez"><div class="ezt">Próximas horas</div><p class="note">Calculando…</p></div>`}</div>`+
    (dx.length?`<div class="ez ezdx"><div class="ezt">Estaciones raras en el aire</div>${dx.map(x=>`<p><b>${CS(x.d.call)}</b> · ${BANDS[x.b]}${x.d.qsx?" · "+esc(x.d.qsx):""} · ${dirTxt(x.lp?x.t.laz:x.t.az)}</p>`).join("")}</div>`:"")+
-   `<details class="why"><summary>Palabras que conviene saber</summary><div class="ez ezg2" id="glos"></div></details>`}
+   `<details class="why"><summary>Términos y expresiones que conviene saber</summary><div class="ez ezg2" id="glos"></div></details>`}
 /* ---------- glosario que va cambiando ---------- */
 const GLOS=[["Banda","el «canal grande» de la radio (40 m, 20 m, 15 m…). 160 y 80 m dan el DX de noche; 40 m sirve de día a corta distancia y de noche para el DX; las altas (15, 12, 10), de día."],
  ["Pile-up","muchas estaciones llamando a la vez a una estación rara. Hay que esperar el turno y decir el indicativo una sola vez."],
