@@ -220,7 +220,9 @@ const shPos=s=>{const src=String(pick(s,"dx_location_source")||"").toUpperCase()
 const cmtPos=c=>{c=String(c||"").toUpperCase();let m=c.match(/\b[A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?\s*(?:<[A-Z0-9]{0,4}>|<>|>|-)\s*([A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?)\b/);
   if(!m)m=c.match(/\b(?:LOC|QTH|GRID|QRA)[ :=]*([A-R]{2}\d{2}(?:[A-X]{2}(?:\d{2}(?:[A-X]{2})?)?)?)\b/);return m?gridLL(m[1]):null};
 const SP={};
-SP["Spothole"]=async()=>{let j=await req("https://spothole.app/api/v1/spots?max_age=3600","json",10000);if(!Array.isArray(j))j=j.spots||j.data||[];
+/* 2.11.85: en los fines de semana de concurso grande (CQ WW…) la última hora de Spothole pasa de 6 MB y se descartaba
+   entera («datos no válidos»); ahora, si no cabe o llega cortada, se pide una ventana más corta (20 y luego 10 minutos) */
+SP["Spothole"]=async()=>{let j=null,le=null;for(const ma of [3600,1200,600]){try{j=await req("https://spothole.app/api/v1/spots?max_age="+ma,"json",10000);break}catch(e){le=e;if(e&&e.name==="AbortError")break}}if(j==null)throw le||new Error("sin datos");if(!Array.isArray(j))j=j.spots||j.data||[];
   /* 2.10.44: solo spots de clústeres, RBN y programas de activación; los de PSK Reporter no (sus condiciones de uso no están claras) */
   j=j.filter(s=>!/PSK/i.test(String(s&&s.source||"")));
   return j.map(s=>{const src=String(s.source||"");const refs=s.sig_refs?[].concat(s.sig_refs).map(x=>typeof x==="string"?x:(x&&x.id)||"").join(" "):"";

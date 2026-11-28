@@ -5,6 +5,25 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.85 — 2026-11-28
+
+- ES: Barra «Sol y propagación» rediseñada para invitar a abrirla: dice para qué sirve, enseña ya la mejor banda de ahora, de esta noche y de mañana, el estado del Sol, y tiene un botón «Ver previsión».
+- ES: Tarjeta «Ahora» del Resumen: la banda en grande con su calidad y sus destinos, los datos en una rejilla (con quién, fiabilidad, rumbo) y las otras bandas abiertas como barras.
+- ES: «HF para tu estación»: tres fichas (ahora, esta noche, mañana) en vez de tres frases.
+- ES: V-UHF: 6 m, 2 m y 70 cm como tarjetas en pantallas anchas; las fichas del panel hacen de pestañas y abren su detalle debajo (antes, siete desplegables apilados); en inglés, las frecuencias ya no salen con «y».
+- ES: Imágenes del Sol: cada explicación debajo de su imagen, con su título aparte y aire entre bloques.
+- ES: Concursos: añadidos el Nacional de Fonía (Radio Club Sevilla, 2.º fin de semana de enero) y el Nacional de Sufijos (URE Granada, 4.º fin de semana de enero); el filtro «URE» pasa a «España».
+- ES: Spothole: en fines de semana de concurso grande la última hora pasaba de 6 MB y se descartaba; ahora se pide una ventana más corta. GloTEC: si falla, se pide por el intermediario y se prueba el mapa anterior.
+- ES: Seguridad: la plataforma no aparece en buscadores, y publicar un spot puede pedir la clave del club (se escribe una vez por dispositivo; el intermediario 8.3 la exige solo si el club la configura).
+- EN: «Sun and propagation» bar redesigned to invite opening it: it says what it is for, already shows the best band now, tonight and tomorrow and the Sun status, and has a «See forecast» button.
+- EN: «Now» card in the Summary: the band in large type with its quality and destinations, the facts in a grid (who, reliability, bearing) and the other open bands as bars.
+- EN: «HF for your station»: three tiles (now, tonight, tomorrow) instead of three sentences.
+- EN: V-UHF: 6 m, 2 m and 70 cm as cards on wide screens; the panel tiles act as tabs and open their detail below (before, seven stacked collapsibles); in English the frequencies no longer show «y».
+- EN: Sun images: each explanation under its image, with its own title and space between blocks.
+- EN: Contests: added the Spanish National Phone (Radio Club Sevilla, 2nd weekend of January) and National Suffix (URE Granada, 4th weekend of January) contests; the «URE» filter becomes «Spain».
+- EN: Spothole: on big contest weekends the last hour exceeded 6 MB and was discarded; now a shorter window is requested. GloTEC: if it fails, it is fetched through the relay and the previous map is tried.
+- EN: Security: the platform is hidden from search engines, and posting a spot can ask for the club key (typed once per device; relay 8.3 requires it only if the club sets it).
+
 ## 2.11.84 — 2026-11-28
 
 - ES: Ahora → Bandas: también 2 m y 70 cm, con su fiabilidad (la del balance troposférico, como en V-UHF), sus spots de la última hora y la conclusión.

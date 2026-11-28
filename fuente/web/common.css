@@ -2033,3 +2033,78 @@ table.qrpg td:first-child{padding-top:.35em}
 .swhow>p+p{margin-top:1em}
 #sunnow .swim+.swhow+.note,#sunnow .swhow+.note{margin-top:14px}
 .swhow{padding:10px 18px 12px!important;box-sizing:border-box}
+/* 2.11.85: «Cómo leer estas imágenes»: cada explicación debajo de su imagen, con su título en una línea propia y aire entre bloques
+   (antes «details.mdet p» ganaba en especificidad y dejaba los párrafos a 6 px) */
+details.swhow{max-width:calc(3*300px + 2*12px);padding:12px 16px 14px!important}
+details.swhow>summary{margin-bottom:10px}
+.swhg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
+.swhg>p{margin:0!important;line-height:1.55}
+.swhg>p>b:first-child{display:block;margin-bottom:4px;color:var(--fg)}
+@media (max-width:760px){.swhg{grid-template-columns:1fr;gap:16px}}
+.swim+details.swhow{margin-top:20px}
+#sunnow details.swhow+.note{max-width:calc(3*300px + 2*12px);margin-top:16px}
+/* 2.11.85: barra «Sol y propagación» que invita a abrirla: qué ofrece, la mejor banda de ahora, esta noche y mañana, y un botón */
+section.page>details.sterr{padding:0;border-left-width:4px;background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 14%,var(--panel2)) 0%,var(--panel2) 55%);overflow:hidden}
+details.sterr>summary{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px 16px}
+details.sterr>summary::before{display:none}
+details.sterr .sth-main{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 220px}
+details.sterr .sth-t{font:700 1.12rem var(--f-d,inherit);letter-spacing:.01em;color:var(--fg)}
+details.sterr .sth-q{font-size:.86rem;font-weight:400;color:var(--muted);line-height:1.35}
+details.sterr .sth-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+details.sterr .sthc{display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:74px;padding:5px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);line-height:1.2}
+details.sterr .sthc small{font:500 .66rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+details.sterr .sthc b{font:700 1.02rem var(--f-d,inherit);white-space:nowrap}
+details.sterr .sthc i{font-style:normal;font-size:.74rem;color:var(--muted);white-space:nowrap}
+details.sterr .sthc0 b{color:var(--muted)}
+details.sterr .sthsol.sth-ok b{color:var(--good,#3fb950)}details.sterr .sthsol.sth-bad{border-color:color-mix(in srgb,#f85149 55%,var(--line))}details.sterr .sthsol.sth-bad b{color:#f85149}
+details.sterr .sth-go{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--accent);color:#111;font-weight:700;font-size:.88rem;white-space:nowrap}
+details.sterr .sth-go::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+details.sterr[open] .sth-go{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}details.sterr[open] .sth-go::after{transform:rotate(-135deg) translate(-2px,0)}
+details.sterr .sth-c,details.sterr[open] .sth-o{display:none}details.sterr[open] .sth-c{display:inline}
+details.sterr>summary:hover .sth-go{filter:brightness(1.08)}
+details.sterr>.stb{padding:0 16px 12px}
+@media (max-width:640px){details.sterr>summary{gap:10px;padding:11px 12px}details.sterr .sth-chips{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}details.sterr .sthsol{grid-column:1/-1;flex-direction:row;align-items:baseline;justify-content:space-between}details.sterr .sthc{min-width:0;padding:5px 8px}details.sterr .sth-go{margin-left:0;width:100%;justify-content:center}}
+html.vc details.sterr .sth-q{display:none}
+#st_ahora{padding:0!important;background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 14%,var(--panel2)) 0%,var(--panel2) 55%)!important;overflow:hidden}
+/* 2.11.85: «HF para tu estación»: tres fichas (ahora, esta noche, mañana) en vez de tres frases */
+.hfsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:6px 0 10px}
+.hft{display:flex;flex-direction:column;gap:2px;padding:9px 10px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);min-width:0}
+.hft:first-child{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.hftl{display:flex;justify-content:space-between;gap:6px;font:600 .66rem var(--f-m,monospace);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hftl small{font:inherit;letter-spacing:0;text-transform:none;opacity:.85;white-space:nowrap}
+.hftb{font:700 1.55rem/1.1 var(--f-d,inherit);margin-top:2px}
+.hft0 .hftb{font-size:1.05rem;color:var(--muted)}
+.hftn{font-size:.82rem;color:var(--fg)}
+.hfto{font-size:.76rem;color:var(--muted);line-height:1.3}
+@media (max-width:380px){.hfsum{gap:6px}.hft{padding:8px 7px}.hftl{flex-direction:column;gap:0}.hftb{font-size:1.3rem}}
+/* 2.11.85: tarjeta «Ahora» del Resumen */
+.ez.eznow .eznh{display:flex;align-items:center;gap:14px;margin:6px 0 10px}
+.ez.eznow .eznb{font:700 2.6rem/1 var(--f-d,inherit);letter-spacing:-.01em}
+.ez.eznow .eznq{display:flex;flex-direction:column;gap:3px;line-height:1.2}
+.ez.eznow .eznw{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:1.02rem}
+.ez.eznow .eznn{color:var(--muted);font-size:.92rem}.ez.eznow .eznn b{color:var(--fg);font-size:1.05rem}
+.ez.eznow .eznk{display:grid;grid-template-columns:max-content 1fr;gap:5px 14px;margin:0 0 10px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:.95rem}
+.ez.eznow .eznk dt{font:600 .68rem var(--f-m,monospace);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);align-self:center}
+.ez.eznow .eznk dd{margin:0;min-width:0}
+.ez .ezab{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px}
+.ez .ezbr{display:grid;grid-template-columns:3.2em 1fr 2.6em;align-items:center;gap:10px;font-size:.95rem}
+.ez .ezbt{height:8px;border-radius:5px;background:color-mix(in srgb,var(--fg) 8%,transparent);overflow:hidden}
+.ez .ezbt i{display:block;height:100%;border-radius:5px;opacity:.85}
+.ez .ezbn{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+html.vc .ez.eznow .eznb{font-size:2.1rem}html.vc .ez.eznow .eznk{padding:6px 0;margin-bottom:6px}
+.eznow .ezq{display:inline-block;width:.6em;height:.6em;border-radius:50%;flex:none}.eznow .ezq.q3{background:#22c55e}.eznow .ezq.q2{background:#a3d930}.eznow .ezq.q1{background:#eab308}
+.ez.eznow .eznk dt{align-self:baseline}
+.hftl{flex-direction:column;gap:1px}.hftl small{opacity:.8}
+/* 2.11.85: V-UHF: 6 m, 2 m y 70 cm como tres tarjetas en pantallas anchas; fichas del panel como pestañas */
+@media (min-width:760px){#vhfo .sxl{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+ #vhfo .sxr{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0 12px}
+ #vhfo .sxr>summary{padding:11px 0 10px}}
+#vhfo .sxr.lv-g{border-left:4px solid #22c55e}#vhfo .sxr.lv-y{border-left:4px solid #eab308}
+#f_vhf[open]>summary .fsum{display:none}
+.vtiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))!important}
+.vtile{cursor:pointer;transition:border-color .15s,background .15s}
+.vtile:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.vtile.vsel{background:color-mix(in srgb,var(--accent) 12%,var(--panel2));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.vtile.vtal{--lvk:var(--accent)}
+.vuhf>details.vpart[open]{margin-top:10px;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.vtile.vtal{--lvk:color-mix(in srgb,var(--muted) 45%,transparent)}.vtile.vtal .vts{color:var(--fg)}

@@ -12,11 +12,14 @@ const BASE="https://services.swpc.noaa.gov";
 let G=null,busy=false,err="";
 try{const c=JSON.parse(localStorage.getItem("acracb_glotec")||"null");if(c&&Date.now()-c.at<15*6e4)G=c}catch(e){}
 const me=()=>(typeof TXP!=="undefined"&&TXP)||[-0.67,38.63];
+const PX="https://acracb-dx.ea5jnf.workers.dev/?u=";
+/* 2.11.85: si NOAA no deja leerlo directamente o tarda, se pide por el intermediario del club; y si el último mapa falla, el anterior */
+async function get2(u,max){try{return await get(u,max)}catch(e){return await get(PX+encodeURIComponent(u),max)}}
 async function get(u,max){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);try{const r=await fetch(u,{signal:ac.signal,credentials:"omit",referrerPolicy:"no-referrer"});if(!r.ok)throw new Error("HTTP "+r.status);const t=await r.text();if(t.length>max)throw new Error("size");return JSON.parse(t)}finally{clearTimeout(tm)}}
 async function load(){if(busy)return;busy=true;err="";render();try{
-  const idx=await get(BASE+"/products/glotec/geojson_2d_urt.json",3e6);if(!Array.isArray(idx)||!idx.length)throw new Error("vacío");
-  const last=idx.filter(x=>x&&x.url&&x.time_tag).sort((a,b)=>Date.parse(b.time_tag)-Date.parse(a.time_tag))[0];if(!last||!/^\/products\/glotec\//.test(last.url))throw new Error("url");
-  const gj=await get(BASE+last.url,8e6);const P=me();let best=null,bd=1e9;
+  const idx=await get2(BASE+"/products/glotec/geojson_2d_urt.json",8e6);if(!Array.isArray(idx)||!idx.length)throw new Error("vacío");
+  const cand=idx.filter(x=>x&&x.url&&x.time_tag&&/^\/products\/glotec\//.test(x.url)).sort((a,b)=>Date.parse(b.time_tag)-Date.parse(a.time_tag)).slice(0,3);if(!cand.length)throw new Error("url");
+  let gj=null,last=null;for(const c of cand){try{gj=await get2(BASE+c.url,8e6);last=c;break}catch(_){}}if(!gj)throw new Error("mapa");const P=me();let best=null,bd=1e9;
   for(const f of gj.features||[]){const c=f.geometry&&f.geometry.coordinates,p=f.properties;if(!c||!p)continue;let dl=Math.abs(c[0]-P[0]);if(dl>180)dl=360-dl;const d=dl*Math.cos(P[1]*Math.PI/180)**2+Math.abs(c[1]-P[1])*2;if(d<bd){bd=d;best={c,p}}}
   if(!best)throw new Error("sin punto");const p=best.p;
   G={at:Date.now(),t:Date.parse(last.time_tag),pt:best.c,tec:+p.tec,an:+p.anomaly,hm:+p.hmF2,nm:+p.NmF2};localStorage.setItem("acracb_glotec",JSON.stringify(G))}

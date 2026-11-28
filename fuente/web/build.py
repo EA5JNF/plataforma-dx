@@ -107,8 +107,16 @@ function ezGo(h,b,id){try{st.mhour=+h;const mh=$("mh");if(mh)mh.value=st.mhour;s
 document.addEventListener("click",ev=>{const t=ev.target.closest&&ev.target.closest(".ezdest,.ezmapb");if(!t)return;ev.preventDefault();ezGo(t.dataset.ezh,t.dataset.ezb,t.dataset.ezt||null)});
 function ezVHF(){return [10,11,12].map(b=>{const [lv,t]=vhfStatus(b);return `<span class="ezv"><b style="color:${BC[b]}">${BANDS[b]}</b> <span class="lv-${lv}" style="background:none;border:0;padding:0">${t}</span></span>`}).join("")}
 function renderEasyS(now,full){const e0=easyAt(now);
-  let card=easyCard("Ahora · "+hh(now)+":00",now,e0);if(e0)card=card.replace(/(<p class="ezbig">[\s\S]*?)<\/p>/,`$1 · ${e0.ts.length} <span>destinos</span></p>`);const alt=e0?ezAlt(now,e0.b):[];
-  let extra=(alt.length?`<p class="ezalt"><span class="ezl">También abiertas</span> ${alt.map(([b,n])=>`<span class="ezc"><b style="color:${BC[b]}">${BANDS[b]}</b> ${n} <span>destinos</span></span>`).join("")}</p>`:"")+`<div class="ezvh"><span class="ezl">6 m, 2 m y 70 cm</span>${ezVHF()}</div>`;
+  /* 2.11.85: tarjeta «Ahora» rediseñada: la banda en grande con su calidad y sus destinos, los datos en una rejilla
+     (con quién, fiabilidad, rumbo) y las otras bandas abiertas como barras comparables, en vez de líneas de texto sueltas */
+  let card=easyCard("Ahora · "+hh(now)+":00",now,e0);const alt=e0?ezAlt(now,e0.b):[];
+  if(e0){const top=e0.ts.slice(0,8),lp=top[0].lp,az=lp?top[0].t.laz:top[0].t.az,p=top[0].p,omni=!ANTS().some(id=>ANT[id]&&ANT[id].bands.includes(e0.b)&&DIRA.has(id));
+    const q=p>=.7?"q3":p>=.5?"q2":"q1",why=(card.match(/<details class="why">[\s\S]*<\/details>/)||[""])[0];
+    card=`<div class="ez eznow"><div class="ezt">Ahora · ${hh(now)}:00</div>
+     <div class="eznh"><b class="eznb" style="color:${BC[e0.b]}">${BANDS[e0.b]}</b><span class="eznq"><span class="eznw ${q}"><i class="ezq ${q}" aria-hidden="true"></i>${ezWord(p)}</span><span class="eznn"><b>${e0.ts.length}</b> <span>destinos</span></span></span></div>
+     <dl class="eznk"><dt>Con quién</dt><dd>${top.slice(0,3).map(x=>esc(x.t.name.split(" (")[0])).join(", ")}</dd><dt>Fiabilidad</dt><dd><b>${Math.round(p*100)} %</b></dd><dt>${omni?"Rumbo":"Apunta a"}</dt><dd><b>${dirTxt(az)}</b>${lp?" (camino largo)":""}</dd></dl>${why}</div>`}
+  const mxn=Math.max(1,e0?e0.ts.length:0,...alt.map(x=>x[1]));
+  let extra=(alt.length?`<div class="ezalt ezab"><span class="ezl">Otras bandas abiertas</span>${alt.slice().sort((x,y)=>y[1]-x[1]).map(([b,n])=>`<div class="ezbr"><b style="color:${BC[b]}">${BANDS[b]}</b><span class="ezbt"><i style="width:${Math.max(4,Math.round(n/mxn*100))}%;background:${BC[b]}"></i></span><span class="ezbn">${n}</span></div>`).join("")}</div>`:"")+`<div class="ezvh"><span class="ezl">6 m, 2 m y 70 cm</span>${ezVHF()}</div>`;
   if(e0){const n=ezCount(e0.ts,e0.b);extra=`<details class="ezd ezd0"><summary class="ezsm">${n?`En el clúster: ${n} ${n===1?"estación":"estaciones"} de estos destinos`:"En el clúster: nadie de estos destinos ahora"}</summary>${ezList(e0.ts,now,e0.b)}</details>`+extra}
   card=card.includes('<details class="why">')?card.replace('<details class="why">',extra+'<details class="why">'):card.replace(/<\/div>$/,extra+"</div>");
   let tl="";

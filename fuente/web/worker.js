@@ -1,4 +1,4 @@
-// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8.2
+// ACRACB - Plataforma DX · intermediario de datos (Cloudflare Worker) · versión 8.3
 import { connect } from "cloudflare:sockets";
 // Dos funciones, separadas:
 //  1) Recepción: lee las webs públicas de la lista PERMITIDAS y se las pasa a la plataforma (solo GET, ver abajo).
@@ -111,6 +111,9 @@ async function spot(request, origen, env, ctx) {
   if (!origen || origen === "null" || !ORIGENES.includes(origen)) return json({ status: "origen no permitido" }, 403, origen);
   if (+(request.headers.get("Content-Length") || 0) > 1024) return json({ status: "demasiado largo" }, 413, origen);
   let d; try { d = JSON.parse((await request.text()).slice(0, 1024)); } catch (e) { return json({ status: "datos no válidos" }, 400, origen); }
+  // 8.3: si existe el secreto CLAVE_CLUB (Cloudflare → el Worker → Settings → Variables and Secrets), solo publica quien
+  // envía esa clave. Sin el secreto, todo sigue como antes. La clave nunca va en este archivo ni en el repositorio.
+  if (env && env.CLAVE_CLUB && await huella(String(d.club || "")) !== await huella(String(env.CLAVE_CLUB))) return json({ status: "clave del club no válida" }, 401, origen);
   const de = String(d.de_call || "").trim().toUpperCase(), dx = String(d.dx_call || "").trim().toUpperCase();
   const f = Math.round(parseFloat(d.frequency) * 10) / 10, info = String(d.info || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 30);
   if (!INDICATIVO.test(de) || !INDICATIVO.test(dx) || de === dx) return json({ status: "indicativo no válido" }, 400, origen);

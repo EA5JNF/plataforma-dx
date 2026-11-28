@@ -7,7 +7,7 @@
 "use strict";
 const T=(a,b)=>window.ACRACB_LANG==="en"?b:a,$=id=>document.getElementById(id);
 const RELAY="https://acracb-dx.ea5jnf.workers.dev",WEB="https://www.dxsummit.fi/";
-const KCALL="acracb_mycall",KLAST="acracb_spotlast",KMINE="acracb_myspots2";
+const KCLUB="acracb_clubkey",KCALL="acracb_mycall",KLAST="acracb_spotlast",KMINE="acracb_myspots2";
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const CALL=/^(?=.{3,15}$)([A-Z0-9]{1,4}\/)?[A-Z0-9]{1,3}[0-9][A-Z0-9]{0,4}[A-Z](\/[A-Z0-9]{1,4})?$/;
 const get=k=>{try{return localStorage.getItem(k)||""}catch(_){return ""}},put=(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}};
@@ -69,9 +69,10 @@ async function retirar(id){const a=mineAll(),m=a.find(x=>x.id===id);if(!m)return
   saveMine(a.filter(x=>x.id!==id));REC=REC.filter(x=>x.id!==id);recOK=true;putMine();showMine();msg(T(`Retirado: <b>${esc(m.dx)}</b> ya no sale en el clúster de la plataforma.`,`Removed: <b>${esc(m.dx)}</b> no longer shows on the platform cluster.`),"ok")}
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-ret]");if(b){e.preventDefault();retirar(b.dataset.ret)}});
 
-async function send(s){const b=$("spgo");b.disabled=true;msg(T("Publicando…","Posting…"));put(KCALL,s.de);
+/* 2.11.85: clave del club para publicar (la pide el intermediario si el club la ha puesto); se escribe una vez y queda en este dispositivo */
+async function send(s){const b=$("spgo");{const k=$("spk");if(k&&k.value.trim())put(KCLUB,k.value.trim())}b.disabled=true;msg(T("Publicando…","Posting…"));put(KCALL,s.de);
   let r=null,j=null;
-  try{r=await fetch(RELAY+"/spot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info}),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});try{j=await r.json()}catch(_){}}catch(_){}
+  try{r=await fetch(RELAY+"/spot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({de_call:s.de,dx_call:s.dx,frequency:s.f.toFixed(1),info:s.info,club:get(KCLUB)}),cache:"no-store",credentials:"omit",referrerPolicy:"no-referrer"});try{j=await r.json()}catch(_){}}catch(_){}
   b.disabled=false;
   if(r&&r.ok&&j&&j.status==="ok"&&j.spot){put(KLAST,JSON.stringify({dx:s.dx,f:s.f,at:Date.now()}));$("spconf").hidden=true;
     const m=Object.assign({},j.spot,{clave:j.clave});const a=mineAll();a.push(m);saveMine(a);putMine();showMine();
@@ -79,6 +80,7 @@ async function send(s){const b=$("spgo");b.disabled=true;msg(T("Publicando…","
     msg(T(`Publicado: <b>${esc(s.dx)}</b> en ${s.f.toFixed(1)} kHz ya está en el clúster de la plataforma. Los demás socios lo verán en unos segundos.`,`Posted: <b>${esc(s.dx)}</b> on ${s.f.toFixed(1)} kHz is now on the platform cluster. Other members will see it within seconds.`)
       +(hay?`<small class="spno">${T("También se envía a otros clústeres de la red; su estado sale abajo.","It is also sent to other clusters on the network; their status is shown below.")}</small>`:""),"ok");return}
   if(r&&r.status===409&&j&&j.spot){msg(T(`Ese spot ya está publicado: <b>${esc(j.spot.dx)}</b> en ${(+j.spot.f).toFixed(1)} kHz, por ${esc(j.spot.de)} a las ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`,`That spot is already posted: <b>${esc(j.spot.dx)}</b> on ${(+j.spot.f).toFixed(1)} kHz, by ${esc(j.spot.de)} at ${new Date(j.spot.ts).toISOString().slice(11,16)} UTC.`),"warn");return}
+  if(r&&r.status===401){put(KCLUB,"");const l=$("spkl");if(l){l.hidden=false;const k=$("spk");if(k){k.value="";k.focus()}}msg(T("Para publicar hace falta la clave del club. Escríbela arriba y vuelve a revisar y publicar. Si no la tienes, pídesela al club.","Posting needs the club key. Type it above, then review and post again. If you do not have it, ask the club."),"warn");return}
   if(r&&r.status===429){msg(T("Espera medio minuto entre un spot y el siguiente.","Wait half a minute between spots."),"warn");return}
   if(r&&r.status===400&&j&&j.status){msg(T(`No se ha publicado: ${esc(j.status)}.`,`Not posted: ${esc(j.status)}.`),"warn");return}
   msg(T("No se ha podido publicar en el clúster de la plataforma ahora mismo. ","It could not be posted to the platform cluster right now. ")+manual(s),"warn")}
@@ -90,6 +92,7 @@ function dlg(){let d=$("spdlg");if(d)return d;d=document.createElement("dialog")
       <label><span>DX</span><input id="spdx" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="15"></label>
       <label><span>${T("Frecuencia (kHz)","Frequency (kHz)")}</span><input id="spf" inputmode="decimal" autocomplete="off" maxlength="10" placeholder="14025.0"></label>
       <label><span>${T("Comentario","Comment")}</span><input id="spi" autocomplete="off" maxlength="30" placeholder="CQ, 59, up 2…"></label>
+      <label id="spkl"${get(KCLUB)?" hidden":""}><span>${T("Clave del club","Club key")}</span><input id="spk" type="password" autocomplete="off" maxlength="64" placeholder="${T("la que te dio el club","the one the club gave you")}"></label>
     </div>
     <div id="spconf" class="spconf" hidden></div>
     <div class="spbtn"><button type="button" class="btn primary" id="sprev">${T("Revisar","Review")}</button></div>
