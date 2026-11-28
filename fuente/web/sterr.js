@@ -50,7 +50,15 @@ function body(){if(typeof L==="undefined"||!L)return "";const sp=L.space||{};con
     row(T("Ruido geomagnético","Geomagnetic noise"),nzM(kp),["n",T("orientativo, según el Kp","a guide, from Kp")])];
   /* 2.10.19: cada fenómeno de VHF con una línea que explica qué es, como el resto del panel */
   const VQ=[T("nubes ionizadas a 100 km: saltos de 500 a 2.000 km","ionised clouds at 100 km: hops of 500 to 2,000 km"),T("lo mismo en 2 m: rara y corta, de 1.000 a 2.200 km","the same on 2 m: rare and brief, 1,000 to 2,200 km"),T("rebote en la aurora: señal ronca, apuntando al norte","reflection off the aurora: raspy signal, aim north"),T("inversión de temperatura: cientos de km o más","temperature inversion: hundreds of km or more"),T("rebote en estelas de meteoros, en ráfagas de segundos","bounce off meteor trails, in bursts of seconds"),T("QSO rebotando en la Luna: hace falta la Luna alta","QSO off the Moon: needs the Moon high")];
-  const V=vhf().map(([k,m],i)=>`<div class="st3r"><span class="st3k">${k}</span><b class="st3v st3vt st-${m[0]}">${m[1]}</b>${VQ[i]?`<span class="st3m">${VQ[i]}</span>`:""}</div>`).join("");
+/* 2.11.70: cada fenómeno con un medidor de tres pasos (nada · posible · bueno) y la palabra en gris si no hay nada:
+     «cerrada» no es una alarma, es lo normal. Lo que está abierto o es posible sube arriba. La tropo se calcula aquí
+     también (antes había que abrir V-UHF): se pide la previsión a Open-Meteo una vez y se rehace el panel al llegar */
+  try{const vs=window.ACRACB_vuhf&&ACRACB_vuhf.state();if(vs&&vs.tro&&vs.tro.l==="n"&&!window.__stTro){window.__stTro=1;Promise.resolve(ACRACB_vuhf.troFetch()).catch(()=>{}).then(()=>{window.__stTroDone=1;try{ACRACB_stPlace()}catch(_){}})}}catch(_){}
+  const VLV={g:3,y:2,o:1,r:0,n:-1};
+  const V=vhf().map(([k,m],i)=>({k,m,q:VQ[i],lv:VLV[m[0]]!=null?VLV[m[0]]:0,i})).sort((a,b)=>(b.lv-a.lv)||(a.i-b.i)).map(({k,m,q,lv})=>{
+    const txt=m[0]==="n"?(window.__stTroDone?T("sin datos ahora","no data now"):T("calculando…","calculating…")):m[1];
+    const seg=[1,2,3].map(n=>`<i class="${lv>=n?"on":""}"></i>`).join("");
+    return `<div class="vxr vx${lv<0?"n":lv}"><div class="vxk"><b>${k}</b>${q?`<small>${q}</small>`:""}</div><div class="vxv"><span class="vxm" aria-hidden="true">${seg}</span><span class="vxt">${txt}</span></div></div>`}).join("");
   /* 2.11.47: «HF para tu estación» más clara: para qué sirve en una línea, columnas con nombre (ahora, de día, de noche)
      y la mejor banda de ahora marcada, para comparar de un vistazo qué bandas abren de día y cuáles de noche */
   const H=hf();let nowH=12;try{nowH=Math.round(localNow())%24}catch(_){}

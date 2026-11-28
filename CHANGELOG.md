@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.70 — 2026-11-28
+
+- ES: Sol → «VHF y superiores»: la tropo de 2 m y 70 cm se calcula también aquí (antes pedía abrir V-UHF). Mientras llega la previsión dice «calculando…» y, si no llega, «sin datos ahora».
+- ES: Cada fenómeno lleva un medidor de tres pasos (nada · posible · bueno) y su estado en una palabra. Lo que no está abierto va en gris, porque es lo normal y no una alarma, y lo que está abierto o es posible sube arriba.
+- EN: Sun → "VHF and up": 2 m and 70 cm tropo is now calculated here as well (before, it asked you to open V-UHF). While the forecast arrives it says "calculating…" and, if it does not arrive, "no data now".
+- EN: Each phenomenon has a three-step meter (nothing · possible · good) and its state in one word. What is not open is shown in grey, because it is normal and not an alarm, and what is open or possible moves to the top.
+
 ## 2.11.69 — 2026-11-28
 
 - ES: Avisos: al tocar un interruptor de «Avisar también de», la pantalla ya no salta. La lista de avisos se rehace, pero el interruptor que tocas se queda en el mismo sitio.
