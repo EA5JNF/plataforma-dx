@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.99 — 2026-11-28
+
+- ES: El sufijo del indicativo pasa a ser información adicional: en vez de una etiqueta junto al indicativo, una fila «Estación» en la tarjeta, solo cuando la estación lo lleva, y el significado al pasar el ratón donde el indicativo sale suelto. Significados revisados según el uso de las licencias CEPT (T/R 61-01) y administraciones como Ofcom: /P portátil, /M móvil (vehículo o aguas interiores), /MM móvil marítimo (barco en el mar), /MA barco fondeado, /AM móvil aeronáutico, /A dirección alternativa; /QRP, /QRPP, /LH y /B se explican como usos habituales, no oficiales.
+- EN: The callsign suffix becomes additional information: instead of a tag next to the call, a «Station» row in the card, only when the station uses one, and the meaning on hover where the call appears on its own. Meanings reviewed against CEPT licence usage (T/R 61-01) and administrations such as Ofcom: /P portable, /M mobile (vehicle or inland waters), /MM maritime mobile (ship at sea), /MA maritime anchored, /AM aeronautical mobile, /A alternative address; /QRP, /QRPP, /LH and /B are described as common, unofficial uses.
+
 ## 2.11.98 — 2026-11-28
 
 - ES: 6 m, 2 m y 70 cm dicen lo mismo en toda la plataforma. En «Ver el detalle por banda» ya no salen con la cuenta de destinos de HF (que en V-UHF daba siempre «—»): «Ahora» muestra el estado de V-UHF (abierta, posible o cerrada) y las otras horas un «·», porque no hay previsión por horas fiable. En Ahora → Bandas, la conclusión de esas tres bandas es también la de V-UHF.

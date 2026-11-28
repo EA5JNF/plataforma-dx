@@ -1023,9 +1023,8 @@ let FLAGS=null;const FLURL={};
 function flagURL(cc){if(!cc)return "";if(FLURL[cc]!==undefined)return FLURL[cc];try{FLAGS=DXDg().f;
   const svg=FLAGS&&FLAGS[cc];FLURL[cc]=svg?URL.createObjectURL(new Blob([svg],{type:"image/svg+xml"})):""}catch(e){FLURL[cc]=""}return FLURL[cc]}
 /* indicativo con su bandera y su país; compact = solo bandera (el país queda en el título) */
-/* 2.11.98: el sufijo del indicativo (/P, /M, /MM, /QRP…) también donde sale el indicativo suelto */
-function CSX(call){try{const t=window.ACRACB_sufTag&&ACRACB_sufTag(call);return t?` <span class="tag sftag" title="${esc(t[1])}">${esc(t[0])}</span>`:""}catch(e){return ""}}
-function CS(call){return CS0(call).replace(/<\/span>$/,CSX(call)+"</span>")}
+/* 2.11.99: donde sale el indicativo suelto, el significado del sufijo va solo al pasar el ratón (información adicional) */
+function CS(call){let h=CS0(call);try{const t=window.ACRACB_sufTag&&ACRACB_sufTag(call);if(t)h=h.replace('<span class="cs"','<span class="cs" title="'+esc(t[1])+'"')}catch(e){}return h}
 function CS0(call){const e=callEnt(call),c=esc(call);if(!e)return `<span class="cs" data-call="${c}">${c}</span>`;if(e.mm)return `<span class="cs" data-call="${c}">${c} <span class="cty">móvil marítimo</span></span>`;
   const u=flagURL(e.cc),f=u?`<img class="fl" src="${u}" alt="" width="18" height="12">`:"";
   return `<span class="cs" data-call="${c}">${c} ${f}<span class="cty">${esc(e.name)}</span></span>`}

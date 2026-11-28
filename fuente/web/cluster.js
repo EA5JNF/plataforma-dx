@@ -116,9 +116,10 @@ function detOf(o){const g=o.geo;let rumbo="",dist="",pr="";
   if(o.p!=null){pr=`<b>${o.p} %</b>${o.lpb?T(" por el camino largo"," via the long path"):""}`;
     if(o.p0!=null&&o.p-o.p0>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo sube lo que oyen ahora caminos parecidos al tuyo.`,`Model: ${o.p0} %. Raised by what similar paths hear now.`)}</span>`;
     else if(o.p0!=null&&o.p0-o.p>=10)pr+=`<span class="note sgn">${T(`Modelo: ${o.p0} %. Lo baja lo que se oye ahora o lo que has anotado.`,`Model: ${o.p0} %. Lowered by what is heard now or what you noted.`)}</span>`}
-  return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Fiabilidad","Reliability"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""]].concat(o.secs||[]).filter(([,v])=>v)}
+  return [[o.byLbl||T("Le oyen","Heard by"),o.by],["Split / QSL",o.xs],[T("Rumbo","Bearing"),rumbo],[T("Distancia","Distance"),dist],[T("Fiabilidad","Reliability"),pr],[T("Señal","Signal"),o.sig||""],[T("Nota","Note"),o.note||""],[T("Estación","Station"),o.sufx||""]].concat(o.secs||[]).filter(([,v])=>v)}
 function card(o){
   if(o.call&&o.a==null&&!o.t)o=Object.assign({},o,{a:lastAge(o.call)});
+  {const st_=sufTag(o.call);if(st_&&!o.sufx)o=Object.assign({},o,{sufx:`<span class="sfx">${e2(st_[1])}</span>`})}
   if(o.call&&document.documentElement.classList.contains("vl"))return listRow(o);
   const h=`<div class="sc-h"><span class="sc-call">${o.call?stBtn(o.call,o.band):""}</span>${o.call||o.a!=null||o.t?ageTag(o.a,o.t):""}</div>`;
   const fl=[o.f?`<b class="sc-fq" style="color:${BC[o.band]||"inherit"}">${e2(o.f)}</b>`:"",o.mode?mb(o.mode):"",o.band!=null&&BANDS[o.band]?`<span class="sc-b"${o.f?"":` style="color:${BC[o.band]};font-weight:600"`}>${BANDS[o.band]}</span>`:""].concat(o.tags||[]).concat(o.geo?[`<span class="sc-cp">${o.geo.az}° ${cab(o.geo.az)}</span>`]:[]).concat(o.p!=null?[`<span class="sc-cp"><b>${o.p} %</b></span>`]:[]).filter(Boolean);
@@ -143,8 +144,8 @@ function listRow(o){const strip0=h=>String(h||"").replace(/<[^>]+>/g," ").replac
   const byc=[...String(o.by||"").matchAll(/data-call="([^"]+)"/g)].map(m=>m[1]);const byTx=byc.length?byc[0]+(byc.length>1?` +${byc.length-1}`:""):String(o.by||"").replace(/<[^>]+>/g,"");
   const strip=h=>String(h||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
   /* 2.11.11: sin la etiqueta que repite el país (p. ej. «Móvil marítimo» junto a «móvil marítimo») */
-  /* 2.11.98: lo que dice el sufijo del indicativo (/P, /M, /MM, /AM, /QRP…), en todas las tarjetas y en la lista */
-  {const st_=sufTag(o.call);if(st_&&!(o.tags||[]).some(t=>strip0(t).toLowerCase()===st_[0].toLowerCase()))o=Object.assign({},o,{tags:[`<span class="tag sftag" title="${e2(st_[1])}">${e2(st_[0])}</span>`].concat(o.tags||[])})}
+  /* 2.11.99: lo que dice el sufijo del indicativo (/P, /M, /MM…), como información adicional en una fila «Estación», solo si lo lleva */
+  {const st_=sufTag(o.call);if(st_)o=Object.assign({},o,{sufx:`<span class="sfx">${e2(st_[1])}</span>`})}
   const ctyL=String(cty||"").toLowerCase();o=Object.assign({},o,{tags:(o.tags||[]).filter(t=>!ctyL||strip0(t).toLowerCase()!==ctyL)});
   const com=(o.tags||[]).join("")+(o.xs?`<span class="l-ct">${o.xs}</span>`:"")+(o.note?`<span class="l-ct">${e2(o.note)}</span>`:"");
   const comT=[strip((o.tags||[]).join(" · ")),strip(o.xs),o.note||""].filter(Boolean).join(" · ");
@@ -610,17 +611,21 @@ const ALXK="acracb_alx",FARKM=15000;
 /* 2.11.61: dos interruptores más: spots comunicados por socios de ACRACB (encendido) y activaciones de programas
    como POTA, SOTA, WWFF, IOTA o DME (apagado: son muchas). Los dos valen también para estaciones cercanas */
 function alX(){let o={};try{o=JSON.parse(localStorage.getItem(ALXK)||"{}")||{}}catch(_){}return {rare:false,cur:o.cur!==0,far:o.far!==0,soc:o.soc!==0,act:o.act===1,ct:o.ct!==0}}
+/* 2.11.99: significados según el uso habitual de los sufijos (licencias CEPT/T-R 61-01 y administraciones como Ofcom):
+   /P portátil, /M móvil (vehículo, también en aguas interiores), /MM móvil marítimo (barco en el mar), /MA barco fondeado,
+   /AM móvil aeronáutico, /A dirección alternativa. /QRP, /QRPP, /LH y /B no son oficiales, pero se usan mucho */
 function sufTag(call){const p=String(call||"").toUpperCase().split("/");if(p.length<2)return null;const core=p.reduce((a,x)=>x.length>a.length?x:a,"");
-  const M={P:[T("Portátil","Portable"),T("Estación portátil (/P): fuera de su domicilio, con equipo y antena de campaña","Portable station (/P): away from home, with field gear")],
-    M:[T("Móvil","Mobile"),T("Estación móvil (/M): desde un vehículo","Mobile station (/M): from a vehicle")],
-    MM:[T("Embarcación","Ship"),T("Móvil marítimo (/MM): desde un barco en aguas internacionales","Maritime mobile (/MM): from a ship at sea")],
-    AM:[T("Aeronave","Aircraft"),T("Móvil aeronáutico (/AM): desde un avión","Aeronautical mobile (/AM): from an aircraft")],
-    QRP:["QRP",T("Transmite con baja potencia (QRP): hasta 5 W en CW y digitales, 10 W PEP en SSB","Low power (QRP): up to 5 W on CW and digital, 10 W PEP on SSB")],
-    QRPP:["QRPp",T("Potencia muy baja (QRPp): 1 W o menos","Very low power (QRPp): 1 W or less")],
-    A:[T("Ubicación alternativa","Alternative location"),T("/A: desde una ubicación distinta de la habitual","/A: from a location other than the usual one")],
-    LH:[T("Faro","Lighthouse"),T("/LH: desde un faro","/LH: from a lighthouse")],
-    B:[T("Baliza","Beacon"),T("/B: baliza automática","/B: automatic beacon")],
-    BCN:[T("Baliza","Beacon"),T("Baliza automática","Automatic beacon")]};
+  const M={P:["/P",T("Portátil (/P): opera fuera de su domicilio, con una instalación temporal","Portable (/P): operating away from home with a temporary setup")],
+    M:["/M",T("Móvil (/M): desde un vehículo (también desde un barco en aguas interiores)","Mobile (/M): from a vehicle (also a boat on inland waters)")],
+    MM:["/MM",T("Móvil marítimo (/MM): a bordo de un barco en el mar","Maritime mobile (/MM): on board a ship at sea")],
+    MA:["/MA",T("Barco fondeado (/MA): a bordo de un barco anclado","Maritime anchored (/MA): on board an anchored vessel")],
+    AM:["/AM",T("Móvil aeronáutico (/AM): a bordo de una aeronave","Aeronautical mobile (/AM): on board an aircraft")],
+    A:["/A",T("Dirección alternativa (/A): desde un segundo domicilio fijo","Alternative address (/A): from a second fixed location")],
+    QRP:["/QRP",T("Indica que transmite con baja potencia (QRP)","Says it is transmitting with low power (QRP)")],
+    QRPP:["/QRPP",T("Indica potencia muy baja (QRPp), normalmente 1 W o menos","Says very low power (QRPp), usually 1 W or less")],
+    LH:["/LH",T("Desde un faro (uso habitual en actividades de faros)","From a lighthouse (common in lighthouse activities)")],
+    B:["/B",T("Baliza: transmisor automático","Beacon: automatic transmitter")],
+    BCN:["/BCN",T("Baliza: transmisor automático","Beacon: automatic transmitter")]};
   for(const x of p){if(x===core)continue;if(M[x])return M[x]}return null}
 window.ACRACB_sufTag=sufTag;
 function curOf(call,dxcc){const c=String(call||"").toUpperCase(),p=c.split("/"),suf=p.length>1?p[p.length-1]:"";
