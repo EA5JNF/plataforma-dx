@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.93 — 2026-11-28
+
+- ES: La línea de estado cuenta lo mismo que «Fuentes de esta actualización»: cuántas fuentes tienen datos al día (respondan en esta vuelta o hace poco, dentro de su ritmo de renovación), en vez de solo las que contestaron en los primeros segundos.
+- EN: The status line now counts the same as «Sources of this update»: how many sources have up-to-date data (answering this round or recently, within their renewal period), instead of only those that answered in the first seconds.
+
 ## 2.11.92 — 2026-11-28
 
 - ES: Una sola verdad en V-UHF: la ficha del panel principal usa la misma función que las líneas de 6 m, 2 m y 70 cm de Ahora → V-UHF y de Bandas. Si los spots muestran una apertura (E esporádica, tropo o 6 m a larga distancia), el panel de aperturas especiales y «VHF y superiores» lo dicen también, aunque la previsión no la esperase. Se añade la fila «6 m a larga distancia (TEP y F2)».
