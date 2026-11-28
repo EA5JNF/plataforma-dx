@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.59 — 2026-11-28
+
+- ES: Cuando el modelo da poca señal pero los spots de ahora suben la fiabilidad (pasa mucho en caminos cortos de 40 m dentro de España), la tarjeta lo dice: la señal es la del modelo, que ahí se queda corto, y lo que se oye indica que el camino está abierto.
+- ES: Las pruebas del motor ya no tienen en cuenta el equilibrio con los clústeres de la hora actual, que cambia con cada spot.
+- EN: When the model gives a weak signal but current spots raise the reliability (common on short 40 m paths within Spain), the card says so: the signal is the model's, which falls short there, and what is being heard shows the path is open.
+- EN: Engine tests no longer include the cluster balance for the current hour, which changes with every spot.
+
 ## 2.11.58 — 2026-11-28
 
 - ES: Todas las tarjetas muestran siempre las dos barras de señal, «Le oirás» y «Te oirá». Antes, cuando las dos coincidían, se juntaban en una sola («Ida y vuelta») y parecía que a esa tarjeta le faltaba una.
