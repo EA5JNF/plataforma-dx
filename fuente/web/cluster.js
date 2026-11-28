@@ -581,7 +581,7 @@ function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch
   const ctc=(()=>{try{if(!alX().ct)return "";const EN=window.ACRACB_LANG==="en",hm=d=>{const x=new Date(+d-6e4),L=EN?"en-GB":"es-ES",o={timeZone:"Europe/Madrid"};return x.toLocaleDateString(L,{...o,weekday:"long"})+" "+x.toLocaleTimeString(L,{...o,hour:"2-digit",minute:"2-digit",hourCycle:"h23"})};
     const a=(window.ACRACB_ctNow?ACRACB_ctNow():[]).map(x=>({n:x.c[0],m:x.c[1],en:x.en,plan:!!x.plan,who:""})).concat(window.ACRACB_ctForNow?ACRACB_ctForNow().map(x=>({n:x.n,m:"",en:x.en,plan:false,who:x.who})):[]);
     if(!a.length)return "";
-    return `<div class="alct">${a.map(x=>`<div class="sc alctc"><div class="sc-h"><span class="sc-call"><span class="xtag xs dxpt">${T("Concurso","Contest")}</span> <b>${e2(x.n)}</b>${x.m?` <span class="xtag xr">${e2(x.m)}</span>`:""}</span></div><p class="note">${T("Termina el","Ends")} ${e2(hm(x.en))}${x.who?` · ${e2(x.who)}`:""}. ${x.plan?`<a href="#" data-ctgo="1">${T("Ver la estrategia","See the strategy")}</a>`:""}</p></div>`).join("")}</div>`}catch(_){return ""}})();
+    return `<div class="alct">${a.map(x=>`<div class="sc alctc" role="link" tabindex="0" data-ctcal="${e2(x.n)}" title="${T("Ver en el calendario de concursos","See it in the contest calendar")}"><div class="sc-h"><span class="sc-call"><span class="xtag xs dxpt">${T("Concurso","Contest")}</span> <b>${e2(x.n)}</b>${x.m?` <span class="xtag xr">${e2(x.m)}</span>`:""}</span></div><p class="note">${T("Termina el","Ends")} ${e2(hm(x.en))}${x.who?` · ${e2(x.who)}`:""}. <span class="alctl">${T("Ver en el calendario","See in the calendar")} ›</span>${x.plan?` · <a href="#" data-ctgo="1">${T("Ver la estrategia","See the strategy")}</a>`:""}</p></div>`).join("")}</div>`}catch(_){return ""}})();
   wrap.innerHTML=vis.length?kn+ctc+vis.map(({x,sp,band,mode})=>{const st=splitTags({c:cTr(x.c||sp.c||"")});
     const tag=alTag(x);
     let a=null;try{a=spotAge({t:x.t})}catch(e){}
@@ -908,4 +908,10 @@ try{new MutationObserver(ms=>{if(!SCOPEN.size)return;for(const m of ms)for(const
 /* 2.11.8: «Ver N estaciones más» en los destinos despliega las que faltan */
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-ezmore]");if(!b)return;e.preventDefault();e.stopPropagation();const r=b.previousElementSibling;if(r&&r.classList.contains("ezrest"))r.hidden=false;b.remove()});
 
-document.addEventListener("click",ev=>{const a=ev.target.closest&&ev.target.closest("[data-ctgo]");if(!a)return;ev.preventDefault();try{go("concursos")}catch(_){}});
+document.addEventListener("click",ev=>{const a=ev.target.closest&&ev.target.closest("[data-ctgo]");if(a){ev.preventDefault();ev.stopPropagation();try{go("concursos");selTab("concursos","c_live",true)}catch(_){}return}
+  /* 2.11.77: tocar la tarjeta del concurso (en cualquier vista) lleva al calendario y marca ese concurso */
+  const c=ev.target.closest&&ev.target.closest("[data-ctcal]");if(!c)return;ev.preventDefault();const n=c.dataset.ctcal;
+  try{go("concursos");selTab("concursos","f_ccal",true)}catch(_){}
+  setTimeout(()=>{try{const f=document.getElementById("f_ccal");if(f)f.open=true;const rows=[...(f||document).querySelectorAll("tr,li,.ccr,.calr,div")].filter(r=>r.children.length&&r.textContent.includes(n)&&r.textContent.length<400);
+    const r=rows.sort((x,y)=>x.textContent.length-y.textContent.length)[0];if(r){document.querySelectorAll(".ctcalhl").forEach(z=>z.classList.remove("ctcalhl"));r.classList.add("ctcalhl");r.scrollIntoView({block:"center",behavior:"smooth"})}}catch(_){}},400)});
+document.addEventListener("keydown",ev=>{if(ev.key==="Enter"&&ev.target&&ev.target.dataset&&ev.target.dataset.ctcal)ev.target.click()});

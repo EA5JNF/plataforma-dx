@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.77 — 2026-11-28
+
+- ES: Avisos: la tarjeta de un concurso en marcha se toca entera, en cualquier vista, y lleva a Concursos → Calendario con ese concurso marcado. «Ver la estrategia» sigue disponible cuando la plataforma tiene su plan.
+- EN: Alerts: the card of a running contest can be tapped anywhere, in any view, and takes you to Contests → Calendar with that contest highlighted. "See the strategy" is still there when the platform has its plan.
+
 ## 2.11.76 — 2026-11-28
 
 - ES: Cabecera: tu locator sale a la izquierda del reloj, como primer dato (Locator · UTC · Local · Altura del sol), en todas las vistas y tamaños de pantalla. Se actualiza en cuanto lo cambias.

@@ -1997,3 +1997,8 @@ table.qrpg td:first-child{padding-top:.35em}
 /* 2.11.76: locator en el reloj */
 .clock .ckloc b{color:var(--accent)}
 
+
+/* 2.11.77: la tarjeta del concurso se toca entera */
+.alctc{cursor:pointer}.alctc:hover{border-color:var(--accent)}
+.alctl{color:var(--accent);font-weight:600}
+.ctcalhl{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;background:color-mix(in srgb,var(--accent) 10%,transparent)}
