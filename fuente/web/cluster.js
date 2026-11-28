@@ -573,10 +573,11 @@ function alertCards(){const box=$("alerts");if(!box)return;try{alRefresh()}catch
   /* se ven siempre todos los modos y todas las bandas de tu estación; los que ahora no tienen avisos salen atenuados */
   const ml=AMODES.slice(),bs=bandsOK(),bl=ORD.filter(b=>bs.has(b));[...AB].forEach(b=>{if(!bs.has(b))AB.delete(b)});
   {const bl2=ORD.filter(b=>BSEL.has(b)).map(b=>BANDS[b]);let hb=null;try{hb=HB()}catch(_){}
-   fb.innerHTML=`<p class="note alfn">${T("Modo y bandas","Mode and bands")}: <b>${e2(CMSTXT())}</b> · <b>${e2(hb!=null?BANDS[hb]:bl2.length?bl2.join(", "):T("todas las bandas","all bands"))}</b>.</p>`}
+   /* 2.11.81: sin la línea de modo y bandas (ya están en la barra de arriba); van dentro de la frase de abajo */
+   fb.innerHTML="";window.__alMB=`${e2(CMSTXT())}${hb!=null?" · "+e2(BANDS[hb]):bl2.length?" · "+e2(bl2.join(", ")):""}`}
   const vis=rows.filter(r=>(!AM.size||AM.has(r.g))&&(!AB.size||(r.band!=null&&AB.has(r.band)))).map((r,i)=>{r.i=i;return r});
-  const kn=`<p class="note alk">${LOG?T("Solo lo que puedes trabajar ahora. Primero lo que te falta en el log, luego DXpediciones y lo que marques abajo.","Only what you can work now. First what your log still needs, then DXpeditions and what you switch on below.")
-    :T("Solo lo que puedes trabajar ahora: DXpediciones y lo que marques abajo. Sube tu ADIF y avisará también de lo que te falta.","Only what you can work now: DXpeditions and what you switch on below. Upload your ADIF to be alerted to what you need too.")}</p>`+alXRow();
+  const kn=`<p class="note alk">${LOG?T(`Lo que puedes trabajar ahora en ${window.__alMB||""}: primero lo que te falta en el log, luego DXpediciones y lo que marques abajo.`,`What you can work now on ${window.__alMB||""}: first what your log needs, then DXpeditions and what you switch on below.`)
+    :T(`Lo que puedes trabajar ahora en ${window.__alMB||""}: DXpediciones y lo que marques abajo.`,`What you can work now on ${window.__alMB||""}: DXpeditions and what you switch on below.`)}</p>`+alXRow();
   /* 2.11.74: «Concursos en marcha»: una tarjeta por concurso en el aire, con cuándo termina; los extranjeros, con quién puntúa */
   const ctc=(()=>{try{if(!alX().ct)return "";const EN=window.ACRACB_LANG==="en",hm=d=>{const x=new Date(+d-6e4),L=EN?"en-GB":"es-ES",o={timeZone:"Europe/Madrid"};return x.toLocaleDateString(L,{...o,weekday:"long"})+" "+x.toLocaleTimeString(L,{...o,hour:"2-digit",minute:"2-digit",hourCycle:"h23"})};
     const a=(window.ACRACB_ctNow?ACRACB_ctNow():[]).map(x=>({n:x.c[0],m:x.c[1],en:x.en,plan:!!x.plan,who:""})).concat(window.ACRACB_ctForNow?ACRACB_ctForNow().map(x=>({n:x.n,m:"",en:x.en,plan:false,who:x.who})):[]);

@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.81 — 2026-11-28
+
+- ES: Avisos con menos texto: fuera «Último aviso (hora)», «Sin novedades» (ya lo dice el título) y la línea de modo y bandas; queda una sola frase que dice qué entra y en qué modo.
+- ES: Tu locator está en la barra de ajustes, a la izquierda del todo, antes del modo, la banda y la potencia, en todas las vistas. Al tocarlo se cambia ahí mismo. Ya no se repite dentro del desplegable ni junto al reloj. En el móvil, todo cabe en una sola fila, también en pantallas de 360 px.
+- EN: Alerts with less text: "Latest alert (time)", "Nothing new" (the title already says it) and the mode and bands line are gone; a single sentence says what is included and in which mode.
+- EN: Your locator is in the settings bar, at the far left, before mode, band and power, in every view. Tap it to change it right there. It is no longer repeated inside the panel or next to the clock. On phones everything fits in one row, also on 360 px screens.
+
 ## 2.11.80 — 2026-11-28
 
 - ES: Menos texto, fase 3 (Países y log → QRP): de tres explicaciones que decían lo mismo («Cómo se lee», «Cada casilla» y la nota final) queda una sola línea debajo de la tabla. Arriba sigue «Lo mejor ahora», con cuánto pierdes respecto a tu potencia.

@@ -2017,3 +2017,7 @@ table.qrpg td:first-child{padding-top:.35em}
 .vtile.lv-r{border-left-color:color-mix(in srgb,var(--muted) 45%,transparent)!important}.vtile.lv-r .vts{color:var(--muted)!important;font-weight:500}
 .sxr.lv-n .lvp{color:var(--muted)}
 .metd>summary{cursor:pointer}.metd>p{margin:.4em 0 0}
+/* 2.11.81: en el móvil, locator, modo, banda, potencia y la flecha caben en una sola fila */
+@media (max-width:480px){.sline .qsbar{gap:5px!important}.sline .qsbar .qs{padding-left:9px!important;padding-right:7px!important;min-width:0!important}.sline .qsbar .qs .qsc{margin-left:3px!important}.sline>.stbtn{padding-left:9px!important;padding-right:9px!important;min-width:0!important}}
+@media (max-width:480px){.sline .qsbar{gap:4px!important}.sline .qsbar .qs{padding-left:7px!important;padding-right:5px!important;font-size:.9em!important}.sline>.stbtn{padding-left:7px!important;padding-right:7px!important}}
+@media (max-width:370px){.sline .qsbar .qs .qsc{display:none!important}.sline .qsbar .qs{padding-left:8px!important;padding-right:8px!important}}

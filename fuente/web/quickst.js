@@ -22,9 +22,10 @@ function sum(){const e=$i("ssum");if(!e)return false;let loc="",md="",h=null,pw=
   /* 2.11.9: a la vista solo lo que se cambia a menudo (modo, banda y potencia) y el botón con tu locator, que despliega
      en la misma caja lo que casi nunca se toca: locator, antena, altitud, entorno, tu log y lo demás */
   e.classList.add("qsbar");
-  const html=`${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}`;
+  /* 2.11.81: el locator, a la izquierda del todo, como dato principal; ya no se repite dentro del desplegable */
+  const html=`${loc?seg("locin",loc):""}${seg("modesel",md)}${seg("bandsel",h!=null?BANDS[h]:(nar?T("Todas","All"):T("Todas las bandas","All bands")))}${seg("eq",pw)}`;
   if(e.dataset.qh!==html){e.innerHTML=html;e.dataset.qh=html}
-  const e2b=bar2();if(e2b){const h2=`${seg("locin",loc)}${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
+  const e2b=bar2();if(e2b){const h2=`${seg("antsel",an)}${al?seg("altin",(al.value||"0")+" m"):""}${gl?seg("gnd",gl):""}`;
     let w=e2b.querySelector(".qsb2");if(!w){w=document.createElement("span");w.className="qsb2";e2b.prepend(w)}if(w.dataset.qh!==h2){w.innerHTML=h2;w.dataset.qh=h2}
     const lb=$i("logbtn");if(lb&&lb.parentElement!==e2b)e2b.appendChild(lb)}
   /* 2.11.19: el botón de arriba es solo una flecha; el locator está dentro del desplegable */
