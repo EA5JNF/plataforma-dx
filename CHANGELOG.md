@@ -5,6 +5,17 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.78 — 2026-11-28
+
+- ES: Menos texto, primera fase.
+  - Satélites: se ven los 6 próximos pases y el resto con «Ver más». Cada tarjeta dice cuándo, cómo de alto y hacia dónde; subida, bajada, nota, Doppler y cómo hacer el QSO, al tocar «Frecuencias y cómo trabajarlo». De unas 5.900 palabras a unas 260.
+  - Sol → Previsión: los temas (Kp, Bz, viento, flujo, llamaradas…) son una lista de una línea con su estado. Solo lo regular o desfavorable enseña su consecuencia práctica; el resto, al tocar. Fuera los resúmenes repetidos de otras secciones. De unas 1.100 palabras a unas 270.
+  - Concursos → Calendario: los próximos 3 meses, y el resto del año con un botón. De unas 900 palabras a unas 300.
+- EN: Less text, first phase.
+  - Satellites: the next 6 passes are shown, the rest with "Show more". Each card says when, how high and which way; uplink, downlink, note, Doppler and how to make the QSO, by tapping "Frequencies and how to work it". From about 5,900 words to about 260.
+  - Sun → Forecast: the topics (Kp, Bz, wind, flux, flares…) are a one-line list with their state. Only fair or unfavorable ones show their practical consequence; the rest, on tap. Summaries repeated from other sections are gone. From about 1,100 words to about 270.
+  - Contests → Calendar: the next 3 months, and the rest of the year with a button. From about 900 words to about 300.
+
 ## 2.11.77 — 2026-11-28
 
 - ES: Avisos: la tarjeta de un concurso en marcha se toca entera, en cualquier vista, y lleva a Concursos → Calendario con ese concurso marcado. «Ver la estrategia» sigue disponible cuando la plataforma tiene su plan.
