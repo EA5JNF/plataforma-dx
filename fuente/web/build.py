@@ -125,7 +125,7 @@ function renderEasyS(now,full){const e0=easyAt(now);
   let tl="";
   if(full){const rows=[];for(let x=now+1;x<=now+12;x++){const h=x%24,e=easyAt(h),b=e?e.b:-1,last=rows[rows.length-1];if(last&&last.b===b){last.to=h;if(e&&e.sc>last.sc){last.sc=e.sc;last.e=e}}else rows.push({from:h,to:h,b,e,sc:e?e.sc:0})}
     const best=rows.reduce((a,r)=>r.sc>(a?a.sc:0)?r:a,null);
-    tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas <span class="ezth">hora local</span></div>${rows.map(r=>{const span=hh(r.from)+"–"+hh((r.to+1)%24);
+    tl=`<div class="ez eztl"><div class="ezt">Próximas 12 horas <span class="ezth">hora local</span></div>${rows.map(r=>{const span=hh(r.from)+":00–"+hh((r.to+1)%24)+":00";
       if(!r.e)return `<div class="ezr"><span class="ezh">${span}</span><span class="ezb ezb0">—</span><span class="ezx"><span class="ezn">Bandas tranquilas</span><span class="ezw">Buen momento para escuchar</span></span></div>`;
       const top=r.e.ts.slice(0,3).map(x=>esc(x.t.name.split(" (")[0])).join(", "),p=r.e.ts[0].p,q=p>=.7?"q3":p>=.5?"q2":"q1";
       return `<details class="ezd${r===best?" ezbest":""}"><summary class="ezr"><span class="ezh">${span}</span><span class="ezb" style="color:${BC[r.b]}">${BANDS[r.b]}</span><span class="ezx"><span class="ezn"><i class="ezq ${q}" aria-hidden="true"></i><b>${r.e.ts.length} <span>destinos</span></b>${r===best?' <span class="ezm">la mejor</span>':""}</span><span class="ezw">${ezWord(p)} · ${top}</span></span></summary>${r.from===(now+1)%24?ezList(r.e.ts,r.from,r.b):ezFut(r.e.ts,r.from,r.b)}</details>`}).join("")}</div>`}

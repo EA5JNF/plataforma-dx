@@ -5,6 +5,19 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.95 — 2026-11-28
+
+- ES: Resumen: arriba «Ahora» y «Próximas 12 horas» lado a lado; debajo, «Qué hacer ahora» a todo el ancho, con dos o tres tarjetas por fila según la pantalla. En el móvil: Ahora, Próximas horas y Qué hacer, en ese orden.
+- ES: Arreglado: al abrir «Frecuencias y cómo trabajarlo» en un satélite, las demás tarjetas se estiraban como si se hubieran abierto también. Ahora solo crece la que abres (lo mismo en DXpediciones, clúster y recomendaciones).
+- ES: Las horas, siempre en formato de 24 horas con minutos (19:00, 01:00, 13:00; «Próximas 12 horas»: 20:00–00:00), para que no parezcan un contador.
+- ES: La tira de índices ya no deja «Tormentas» sola en una segunda fila: en pantallas medianas, dos filas de cuatro con la etiqueta encima del valor; en anchas, una sola fila. Todas las cifras con el mismo tamaño.
+- ES: Traducidos al inglés los textos que aún salían en español (¿Me oyen?, consejos del CQ WW y cotejo de fuentes).
+- EN: Summary: «Now» and «Next 12 hours» side by side on top; below, «What to do now» across the full width, with two or three cards per row depending on the screen. On phones: Now, Next hours and What to do, in that order.
+- EN: Fixed: opening «Frequencies and how to work it» on a satellite stretched the other cards as if they had opened too. Now only the one you open grows (same in DXpeditions, cluster and suggestions).
+- EN: Times always in 24-hour format with minutes (19:00, 01:00, 13:00; «Next 12 hours»: 20:00–00:00), so they do not look like a counter.
+- EN: The index strip no longer leaves «Storms» alone on a second row: on medium screens, two rows of four with the label above the value; on wide screens, a single row. All figures the same size.
+- EN: Translated the texts that still showed in Spanish (Do they hear me?, CQ WW tips and source cross-check).
+
 ## 2.11.94 — 2026-11-28
 
 - ES: Cómo funciona → Antenas: explica que lo que ves es siempre el resultado de tu estación (antena, potencia, altura y entorno) y que la antena de referencia de VOACAP es solo un paso interno del cálculo, que no cambia el resultado. También traducido al inglés lo que faltaba de esa sección.

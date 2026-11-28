@@ -294,9 +294,12 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
     const hero=[...g.querySelectorAll(":scope>.ez")].find(x=>!x.classList.contains("eztl")&&!x.classList.contains("ezdx")&&x!==W)||a.querySelector(".ez:not(.ezrec)");
     const tl=g.querySelector(":scope>.eztl")||b.querySelector(".eztl"),dx=g.querySelector(":scope>.ezdx")||b.querySelector(".ezdx");
     const rest=[...g.querySelectorAll(":scope>.ez")].filter(x=>x!==hero&&x!==W&&x!==tl&&x!==dx);
-    [hero,W].filter(Boolean).forEach((x,i)=>{if(a.children[i]!==x)a.insertBefore(x,a.children[i]||null)});
+    /* 2.11.95: arriba, «Ahora» y «Próximas 12 horas» lado a lado; debajo, «Qué hacer ahora» a todo el ancho
+       (en el móvil: Ahora, Próximas horas y Qué hacer, en ese orden) */
+    [hero].filter(Boolean).forEach((x,i)=>{if(a.children[i]!==x)a.insertBefore(x,a.children[i]||null)});
     [tl,dx,...rest].filter(Boolean).forEach((x,i)=>{if(b.children[i]!==x)b.insertBefore(x,b.children[i]||null)});
     if(a.parentNode!==g||g.firstElementChild!==a)g.insertBefore(a,g.firstChild);if(b.parentNode!==g||a.nextElementSibling!==b)a.insertAdjacentElement("afterend",b);
+    if(W&&(W.parentNode!==g||b.nextElementSibling!==W))b.insertAdjacentElement("afterend",W);
     g.classList.add("ez2c")}
   /* renderSide escribe en #rec justo después de rehacer el Resumen: se recoloca en el acto, sin esperar al observador */
   window.ACRACB_recEl=()=>W?W.querySelector("#rec"):null;
@@ -304,12 +307,15 @@ window.ACRACB_afterDraw=window.ACRACB_afterDraw||[];
   /* 2.10.0: «Qué hacer ahora» enseña la primera recomendación y el resto con «Ver más», para no alargar el Resumen */
   let ALL=false;
   function trim(){if(!W)return;const cs=[...W.querySelectorAll("#rec .sc")];let b=W.querySelector(".recmore");
-    if(cs.length<=1){if(b)b.remove();return}
-    cs.forEach((c,i)=>{c.hidden=!ALL&&i>0});W.classList.toggle("recall",ALL);
+    /* 2.11.95: a todo el ancho caben varias tarjetas por fila: se enseñan tantas como columnas (1, 2 o 3) */
+    const N=innerWidth>=1800?3:innerWidth>=1100?2:1;
+    if(cs.length<=N){if(b)b.remove();cs.forEach(c=>c.hidden=false);return}
+    cs.forEach((c,i)=>{c.hidden=!ALL&&i>=N});W.classList.toggle("recall",ALL);
     if(!b){b=document.createElement("button");b.type="button";b.className="btn llmore recmore";b.addEventListener("click",()=>{ALL=!ALL;trim()})}
     const last=cs[cs.length-1];if(b.previousElementSibling!==last)last.insertAdjacentElement("afterend",b);
-    b.textContent=ALL?T2("Ver menos","Show less"):T2(`Ver ${cs.length-1} recomendaciones más`,`Show ${cs.length-1} more suggestions`)}
+    b.textContent=ALL?T2("Ver menos","Show less"):(m=>T2(`Ver ${m} ${m===1?"recomendación más":"recomendaciones más"}`,`Show ${m} more ${m===1?"suggestion":"suggestions"}`))(cs.length-N)}
   const T2=(es,en)=>window.ACRACB_LANG==="en"?en:es;
+  {let rt=0;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{try{trim()}catch(_){}},200)})}
   /* 2.10.0: índice del Resumen: salta a cada parte sin recorrer todo con el dedo */
   function nav(){const fe=document.getElementById("f_easy"),easy=document.getElementById("easy");if(!fe||!easy)return;let n=fe.querySelector(".eznav");
     const parts=[[".ezcol1>.ez:first-child",T2("Ahora","Now")],["#recw",T2("Qué hacer","What to do")],[".ezg .eztl",T2("Próximas horas","Next hours")],[".ezg .ezdx",T2("Raras en el aire","Rare on air")],["#solsum",T2("El Sol","The Sun")],["details.glosw",T2("Términos","Terms")]];

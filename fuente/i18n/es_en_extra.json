@@ -703,5 +703,12 @@
  "unos 3 dB más que una vertical": "about 3 dB more than one vertical",
  "y 4-square en 40, 80 y 160 m": "and 4-square on 40, 80 and 160 m",
  "unos 5,5 dB más": "about 5.5 dB more",
- ", siempre hacia el destino.": ", always towards the destination."
+ ", siempre hacia el destino.": ", always towards the destination.",
+ "varias fuentes independientes": "several independent sources",
+ "Desde EA: otra estación de España 0 puntos, aunque sí cuenta como multiplicador": "From EA: another Spanish station 0 points, though it does count as a multiplier",
+ "el resto de Europa 1 punto y otro continente 3. Zona CQ y país cuentan otra vez en cada banda. El log se envía en las 48 horas siguientes al final.": "the rest of Europe 1 point and another continent 3. CQ zone and country count again on each band. The log must be sent within 48 hours of the end.",
+ "el resto de Europa 1 punto y otro continente 3. Zona CQ y país cuentan en cada banda. El log se envía en las 48 horas siguientes al final.": "the rest of Europe 1 point and another continent 3. CQ zone and country count on each band. The log must be sent within 48 hours of the end.",
+ ": verás quién te ha oído en la última hora, en qué banda y con qué señal, según los clústeres DX, Reverse Beacon": ": you will see who heard you in the last hour, on which band and how strong, according to the DX clusters, Reverse Beacon",
+ "a través de Spothole y HamQTH": "through Spothole and HamQTH",
+ "y WSPRnet.": "and WSPRnet."
 }
