@@ -1,7 +1,7 @@
 /* ---- ACRACB 2.10.22: concurso en marcha ----
    Con el calendario de concursos de la plataforma (CAL) se mira si ahora mismo hay uno en marcha, a la hora exacta de sus bases.
    - Arriba, en todas las secciones, un aviso: cuál es, hasta cuándo y su modo.
-   - Si la plataforma tiene sus reglas (CONTESTS), se pone sola en modo concursos con ese concurso, como si fueras a participar:
+   - Si la plataforma tiene sus reglas (CONTESTS), el aviso ofrece «Participar»: solo entonces pasa a modo concursos con ese concurso (desde 2.11.75 ya no lo hace sola):
      bandas del concurso, puntos, multiplicadores, estrategia en directo, pausas… Si vuelves a modo DX, se respeta hasta el siguiente.
    - Al terminar, si lo había activado ella, vuelve sola a modo DX.
    - Con las notificaciones activadas, avisa una vez por concurso. */
@@ -13,7 +13,7 @@ const e2=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const DOFF={vie:-1,"sáb":0,dom:1,fri:-1,sat:0,sun:1};
 /* ventana exacta: primera hora y su día, última hora y su día («12:00 sáb – 12:00 dom», «12:00–22:59 sáb y 05:00–11:59 dom»…) */
-function win(c,sat){const tx=String(c[4]||"");const tk=[];const re=/(\d{1,2}):(\d{2})|\b(vie|sáb|dom)\b/g;let m;while((m=re.exec(tx)))tk.push(m[1]!=null?{t:+m[1]*60+ +m[2]}:{d:DOFF[m[3]]});
+function win(c,sat){const tx=String(c[4]||"");const tk=[];/* 2.11.75: también con los días en inglés (la versión inglesa traduce «sáb» y «dom»: antes el final salía un día antes) */const re=/(\d{1,2}):(\d{2})|(vie|sáb|dom|fri|sat|sun)/gi;let m;while((m=re.exec(tx)))tk.push(m[1]!=null?{t:+m[1]*60+ +m[2]}:{d:DOFF[m[3].toLowerCase()]});
   const times=tk.map((x,i)=>[x,i]).filter(([x])=>x.t!=null);if(!times.length)return null;
   const dayAfter=i=>{for(let j=i+1;j<tk.length;j++)if(tk[j].d!=null)return tk[j].d;for(let j=i-1;j>=0;j--)if(tk[j].d!=null)return tk[j].d;return 0};
   const [f,fi]=times[0],[l,li]=times[times.length-1];const base=Date.UTC(sat.getUTCFullYear(),sat.getUTCMonth(),sat.getUTCDate());
@@ -43,7 +43,9 @@ function draw(){const L0=list();let b=document.getElementById("ctnowbn");const x
   /* al terminar el concurso que se activó solo, vuelta a modo DX */
   const au=LS.get("acracb_ctauto");if(au&&!L0.some(y=>y.key===au)){LS.set("acracb_ctauto",null);try{if(st.mode==="contest"){restoreMode();setMode("dx",true);refresh()}}catch(e){}}
   if(!x){if(b)b.remove();renderCt(null);return}
-  if(x.plan&&!inIt(x)&&LS.get("acracb_ctdecl")!==x.key&&LS.get("acracb_ctauto")!==x.key){join(x,false);return}
+  /* 2.11.75: ya no se pasa sola a modo concursos ni cambia tu modo (SSB, CW…): se queda lo último que elegiste.
+     Para usar el concurso, «Participar» en el aviso. Si antes se había cambiado sola, se deshace una vez */
+  if(LS.get("acracb_ctauto")&&!LS.get("acracb_ctmig75")){LS.set("acracb_ctmig75","1");LS.set("acracb_ctauto",null);LS.set("acracb_ctdecl",x.key);try{restoreMode();if(st.mode==="contest"){setMode("dx",true);refresh()}}catch(e){}}
   /* 2.10.34: se puede cerrar como los demás avisos; no vuelve hasta el siguiente concurso y no cambia el modo */
   if(LS.get("acracb_ctclose")===x.key){if(b)b.remove();renderCt(x);return}
   if(!b){b=document.createElement("div");b.id="ctnowbn";b.className="ctnowbn";b.setAttribute("role","status");const ref=document.getElementById("albar")||document.querySelector(".updrow");if(!ref)return;ref.insertAdjacentElement("beforebegin",b)}
@@ -66,7 +68,7 @@ document.addEventListener("click",ev=>{const t=ev.target;if(!t.closest)return;co
   if(t.closest("[data-ctclose]")){LS.set("acracb_ctclose",x.key);draw();return}
   if(t.closest("[data-ctgo]")){try{go("concursos");selTab("concursos","c_live",true)}catch(e){}return}
   /* pasar a modo DX a mano durante el concurso cuenta como «no participo» */
-  const mb=t.closest('.modes button[data-m="dx"]');if(mb&&x.plan){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);setTimeout(draw,50)}
+  const mb=t.closest('.modes button[data-m="dx"]');if(mb&&x.plan){LS.set("acracb_ctdecl",x.key);LS.set("acracb_ctauto",null);try{restoreMode()}catch(e){}setTimeout(draw,50)}
   const mc=t.closest('.modes button[data-m="contest"]');if(mc){LS.set("acracb_ctdecl",null);setTimeout(draw,50)}},true);
 /* 2.10.37: se envía por el mismo camino que el resto (service worker): «new Notification» no funciona en el iPhone, el iPad
    ni Android, y la marca de «ya avisado» solo se guarda si la notificación ha salido de verdad */

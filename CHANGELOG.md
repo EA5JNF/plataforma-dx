@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.75 — 2026-11-28
+
+- ES: La plataforma ya no se pasa sola a modo concursos ni cambia tu modo (SSB, CW…) cuando empieza un concurso: al entrar se queda lo último que elegiste. Para usar el concurso, pulsa «Participar» en el aviso. Si ya se había cambiado sola (por ejemplo a CW con el CQ WW CW), vuelve una vez a tu modo anterior y a modo DX.
+- ES: Avisos: «Avisar también de» es un desplegable, cerrado de entrada, que dice cuántos interruptores hay encendidos; se queda abierto mientras lo usas.
+- ES: En inglés, el final de los concursos salía un día antes (el domingo en vez del lunes): ya se leen bien los días de sus horarios.
+- EN: The platform no longer switches to contest mode or changes your mode (SSB, CW…) by itself when a contest starts: on opening it keeps your last choice. To use the contest, tap "Take part" in the notice. If it had already switched by itself (for example to CW for CQ WW CW), it goes back once to your previous mode and to DX mode.
+- EN: Alerts: "Also alert me to" is a collapsible, closed by default, that says how many switches are on; it stays open while you use it.
+- EN: In English, contests ended one day early (Sunday instead of Monday): the days in their schedules are now read correctly.
+
 ## 2.11.74 — 2026-11-28
 
 - ES: Avisos: nuevo interruptor «Concursos en marcha» (encendido). Con él, Avisos enseña una tarjeta por cada concurso que está en el aire, con su modo, cuándo termina y un enlace a su estrategia; también los extranjeros que no puntúan desde España, diciendo quién participa.

@@ -1986,3 +1986,10 @@ table.qrpg td:first-child{padding-top:.35em}
 .qc0{color:var(--muted);opacity:.6;display:inline-block;min-width:2.2em;text-align:center;padding:.1em 0}
 
 .alct{display:grid;gap:8px;margin:8px 0}.alctc .note{margin:.3em 0 0}
+
+/* 2.11.75: «Avisar también de» desplegable */
+.alxd>summary.alxh{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:.6em;flex-wrap:wrap}
+.alxd>summary.alxh::-webkit-details-marker{display:none}
+.alxd>summary.alxh::before{content:"▸";color:var(--accent);margin-right:.1em}.alxd[open]>summary.alxh::before{content:"▾"}
+.alxd .alxn{font-family:inherit;text-transform:none;letter-spacing:0;font-size:.85em;color:var(--muted);font-weight:400}
+.alxd{display:block!important}.alxd .alxg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:6px;margin-top:8px}
