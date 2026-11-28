@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.55 — 2026-11-28
+
+- ES: Nueva pestaña «Acierto» en Cómo funciona: mide si la fiabilidad del modelo acierta con datos reales de WSPR (wspr.live, gratuito y sin registro). Compara la previsión mensual de VOACAP con tu estación con lo que oyeron los receptores WSPR a menos de 400 km de ti durante los últimos 3 días, solo en las horas en que escuchaban. Da la puntuación de Brier frente a la climatología, una tabla de calibración y el resultado por banda, con el número de casos.
+- ES: Antes de cada publicación se comprueba el motor: 20 fórmulas contra valores de referencia externos (geodesia WGS84, ruido, S-meter, fiabilidad, espacio libre) y 484 resultados de VOACAP con tu estación, sin las correcciones del día, que deben coincidir con los de la publicación anterior del mismo día. Si algo cambia sin querer, no se publica.
+- EN: New "Accuracy" tab in How it works: it measures whether the model's reliability is right with real WSPR data (wspr.live, free and without registration). It compares the monthly VOACAP forecast for your station with what WSPR receivers within 400 km of you heard over the last 3 days, only in the hours when they were listening. It gives the Brier score against climatology, a calibration table and the result by band, with the number of cases.
+- EN: Before each release the engine is checked: 20 formulas against external reference values (WGS84 geodesy, noise, S-meter, reliability, free space) and 484 VOACAP results for your station, without the day's corrections, which must match the previous release of the same day. If something changes by mistake, it is not released.
+
 ## 2.11.54 — 2026-11-28
 
 - ES: «Probabilidad» pasa a llamarse «Fiabilidad» en tarjetas, mapa, balizas, fichas y concursos: es la fiabilidad de VOACAP corregida con lo que se oye, no la probabilidad de completar el QSO. «Cómo se calcula» lo explica en una línea. Las probabilidades que sí lo son (llamaradas, esporádica E) no cambian.

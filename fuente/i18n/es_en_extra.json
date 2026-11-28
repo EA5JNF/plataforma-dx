@@ -624,5 +624,11 @@
  ": el dato es de dentro de su plazo normal de renovación. ": ": the data is within its normal renewal period. ",
  ": se ve el último dato bueno, pero ya ha pasado ese plazo. ": ": the last good data is shown, but that period has passed. ",
  ": nunca llegó un dato y no se rellena con cero.": ": no data has ever arrived, and it is not filled with zero.",
- "ahora mismo": "just now"
+ "ahora mismo": "just now",
+ "Acierto": "Accuracy",
+ "Acierto de la previsión": "Forecast accuracy",
+ "La fiabilidad del modelo comparada con lo que se oyó de verdad en WSPR": "The model's reliability compared with what was actually heard on WSPR",
+ "Mide si la fiabilidad acierta con datos reales. WSPR dice qué estaciones transmitieron cada hora y quién las oyó. Se toman las zonas a más de 1.500 km que transmitieron en cada banda y se mira si algún receptor WSPR a menos de 400 km de ti las oyó, solo en las horas en que esos receptores estaban escuchando. La previsión es la de VOACAP con tu estación como receptor y la potencia de esos transmisores, sin las correcciones del día. La puntuación de Brier mide el error: cuanto más baja, mejor. Se compara con la climatología, que es acertar siempre con la media de cada banda.": "It checks whether the reliability is right, with real data. WSPR tells which stations transmitted each hour and who heard them. Areas more than 1,500 km away that transmitted on each band are taken, and it checks whether any WSPR receiver within 400 km of you heard them, only in the hours when those receivers were listening. The forecast is VOACAP with your station as the receiver and the power of those transmitters, without the day's corrections. The Brier score measures the error: the lower, the better. It is compared with climatology, which always guesses each band's average.",
+ "Son receptores cercanos, no tu estación, y WSPR usa poca potencia y un modo muy sensible: sirve para ver si el modelo sigue a la propagación, no para garantizar un QSO.": "These are nearby receivers, not your station, and WSPR uses low power and a very sensitive mode: it shows whether the model follows propagation, not a guaranteed QSO.",
+ "Medir con los últimos 3 días de WSPR": "Measure with the last 3 days of WSPR"
 }
