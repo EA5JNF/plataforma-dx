@@ -407,9 +407,11 @@ async function updateAll(auto,merge){if(BUSY)return;BUSY=true;const t0=merge?LAS
   delete N.mwm;try{applyLive(N)}catch(e){console.error(e)}delete L.mwm;let items2=null;try{items2=window.ACRACB_buildAlerts?ACRACB_buildAlerts():null}catch(e){}L.alert={at:iso(t0),items:items2||items};try{renderAlerts()}catch(e){}
   S.set(KEY,JSON.stringify(Object.assign({},N,{alert:L.alert})));
   const late=Object.values(LAST).filter(x=>x.late).length;
+  /* 2.11.93: la línea de estado cuenta lo mismo que «Fuentes de esta actualización»: fuentes con datos al día (respondan ahora o hace poco, dentro de su ritmo de renovación) */
+  let nAct=okn;try{nAct=Object.keys(LAST).filter(n=>srcState(n)==="act").length}catch(_){}
   {const EN=window.ACRACB_LANG==="en",hm=hmLocal(merge?Date.now():t0);
-   status(EN?`${merge?"Completed with the slow sources":auto?"Automatic update":"Updated"} at ${hm}${merge?"":` in ${secs.replace(",",".")} s`} · ${okn} of ${tot} sources responded${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} new)`:" · cluster not responding"}${late?` · ${late} slow ${late===1?"source is still searching: it will be added when it arrives":"sources are still searching: they will be added when they arrive"}`:""}`
-     :`${merge?"Completado con las fuentes lentas":auto?"Actualización automática":"Actualizado"} a las ${hm}${merge?"":` en ${secs} s`} · ${okn} de ${tot} fuentes respondieron${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} nuevos)`:" · clúster sin respuesta"}${late?` · ${late} ${late===1?"fuente lenta sigue buscando: se añadirá al llegar":"fuentes lentas siguen buscando: se añadirán al llegar"}`:""}`,okn?"updst-ok":"updst-err")}
+   status(EN?`${merge?"Completed with the slow sources":auto?"Automatic update":"Updated"} at ${hm}${merge?"":` in ${secs.replace(",",".")} s`} · ${nAct} of ${tot} sources up to date${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} new)`:" · cluster not responding"}${late?` · ${late} slow ${late===1?"source is still searching: it will be added when it arrives":"sources are still searching: they will be added when they arrive"}`:""}`
+     :`${merge?"Completado con las fuentes lentas":auto?"Actualización automática":"Actualizado"} a las ${hm}${merge?"":` en ${secs} s`} · ${nAct} de ${tot} fuentes al día${cl.ok.length?` · ${cl.spots.length} spots (${cl.spotsNew} nuevos)`:" · clúster sin respuesta"}${late?` · ${late} ${late===1?"fuente lenta sigue buscando: se añadirá al llegar":"fuentes lentas siguen buscando: se añadirán al llegar"}`:""}`,okn?"updst-ok":"updst-err")}
   renderSrc();setBtn(false);BUSY=false;if(!merge)sched();lateMerge()}
 const hmLocal=t=>new Date(t).toLocaleTimeString("es-ES",{timeZone:"Europe/Madrid",hour:"2-digit",minute:"2-digit"});
 

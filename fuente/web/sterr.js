@@ -25,14 +25,15 @@ function lvN(n){return n>=40?["g",T(`${n} destinos`,`${n} destinations`)]:n>=10?
 /* 2.11.86: hf(true) da todas las bandas del modo, también 6 m, 2 m y 70 cm, para el detalle por banda */
 function hf(all){const out=[];try{let now=12;try{now=localNow()}catch(_){}const bs=(all?BI0().filter(b=>b<=12):BI().filter(b=>b<10)).sort((a,b)=>MHZ[a]-MHZ[b]);
   for(const b of bs)out.push([BANDS[b],lvN(bandN(b,now)),lvN(bandN(b,13)),lvN(bandN(b,1)),bandN(b,now),b,bandN(b,13),bandN(b,1)])}catch(e){}return out}
-function vhf(){try{const s=window.ACRACB_vuhf&&ACRACB_vuhf.state();if(!s)return [];const es6=s.es.cl.find(([b,c])=>b==="6"&&c.you),es2=s.es.cl.find(([b,c])=>b==="2"&&c.you);
+function vhf(){try{const s=window.ACRACB_vuhf&&ACRACB_vuhf.state();if(!s)return [];const es6=s.es.cl.find(([b,c])=>b==="6"&&c.you)||(s.es.obsB||[]).includes("6 m"),es2=s.es.cl.find(([b,c])=>b==="2"&&c.you)||(s.es.obsB||[]).includes("2 m");
   const L3=(l,o,n,c)=>l==="g"?["g",o]:l==="y"?["y",n]:["r",c];
   return [[T("Esporádica E 6 m","Sporadic E 6 m"),es6?["g",T("abierta","open")]:s.es.cl.some(([b])=>b==="6")?["y",T("en Europa, lejos de ti","in Europe, away from you")]:["r",T("cerrada","closed")]],
    [T("Esporádica E 2 m","Sporadic E 2 m"),es2?["g",T("abierta","open")]:s.es.cl.some(([b])=>b==="2")?["y",T("en Europa, lejos de ti","in Europe, away from you")]:["r",T("cerrada","closed")]],
    [T("Aurora","Aurora"),L3(s.au.l,T("posible: apunta al norte","possible: aim north"),T("podría llegar","could come"),T("no ahora","not now"))],
    [T("Tropo (2 m y 70 cm)","Tropo (2 m and 70 cm)"),s.tro.l==="n"?["n",T("ábrela en V-UHF para calcularla","open it in V-UHF to calculate")]:L3(s.tro.l,T("conductos: llega lejos","ducts: reaches far"),T("algo mejor de lo normal","somewhat better than usual"),T("normal","normal"))],
    [T("Meteoros","Meteors"),L3(s.ms.l,T("buen momento","good time"),T("posible","possible"),T("poca actividad","little activity"))],
-   [T("Rebote lunar","Moonbounce"),L3(s.eme.l,T("Luna alta","Moon high"),T("Luna baja","Moon low"),T("Luna bajo el horizonte","Moon below horizon"))]]}catch(e){return []}}
+   [T("Rebote lunar","Moonbounce"),L3(s.eme.l,T("Luna alta","Moon high"),T("Luna baja","Moon low"),T("Luna bajo el horizonte","Moon below horizon"))],
+   [T("6 m a larga distancia (TEP y F2)","6 m long distance (TEP and F2)"),s.tep.obs?[s.tep.l,s.tep.l==="g"?T("abierta: hay spots","open: spots now"):T("posible","possible")]:L3(s.tep.l,T("abierta","open"),T("posible","possible"),T("no ahora","not now"))]]}catch(e){return []}}
 function storms(){const sp=L.space||{};const kp=L.kp!=null?+L.kp:null;
   const g=kp==null?null:kp>=9?5:kp>=8?4:kp>=7?3:kp>=6?2:kp>=5?1:0;
   const xm=String(sp.xray||"").match(/^([ABCMX])\s*([\d.]+)/);let r=null;if(xm){const v=+xm[2];r=xm[1]==="X"?(v>=20?5:v>=10?4:3):xm[1]==="M"?(v>=5?2:1):0}
@@ -54,10 +55,13 @@ function head(){if(typeof L==="undefined"||!L)return `<span class="sth-main"><sp
   const S=storms(),a=[];if(S.g)a.push("G"+S.g);if(S.r)a.push("R"+S.r);if(S.s)a.push("S"+S.s);const kp=L.kp!=null?+L.kp:null;
   /* 2.11.89: abajo solo lo que abre para ti: HF ahora, esta noche y mañana, y V-UHF; el Sol y las tormentas van en la tira de arriba */
   /* 2.11.90: la ficha dice qué bandas (6 m, 2 m, 70 cm) y, debajo, por qué fenómeno */
-  const VB=[["6 m",T("esporádica E","sporadic E")],["2 m",T("esporádica E","sporadic E")],[T("6 y 2 m","6 and 2 m"),T("aurora","aurora")],[T("2 m y 70 cm","2 m and 70 cm"),"tropo"],[T("6 y 2 m","6 and 2 m"),T("meteoros","meteors")],[T("2 m y 70 cm","2 m and 70 cm"),T("rebote lunar","moonbounce")]];
-  const vv=vhf().map((x,i)=>[x,i]),VL={g:3,y:2,o:1,r:0,n:-1},vbi=vv.slice().sort((a,b)=>(VL[b[0][1][0]]||0)-(VL[a[0][1][0]]||0))[0],vb=vbi&&vbi[0];
-  const vop=vb&&(vb[1][0]==="g"||vb[1][0]==="y"),vn=vbi&&VB[vbi[1]];
-  const sol=`<span class="sthc sthvu${vop?"":" sthc0"}"><small>V-UHF</small><b${vop?` class="st-${vb[1][0]}"`:""}>${vop&&vn?vn[0]:T("cerrado","closed")}</b><i>${vop&&vn?e2(vn[1]+": "+vb[1][1]):T("6 m, 2 m y 70 cm sin aperturas","6 m, 2 m and 70 cm: no openings")}</i></span>`;
+  /* 2.11.92: la ficha V-UHF dice exactamente lo mismo que las líneas de 6 m, 2 m y 70 cm de Ahora → V-UHF y de Bandas
+     (misma función, vhfStatus): primero lo abierto; si no hay nada abierto, lo posible; si no, cerrado */
+  let VS=[];try{VS=[10,11,12].map(b=>[b,vhfStatus(b)]).filter(x=>x[1])}catch(_){}
+  const pickL=VS.some(x=>x[1][0]==="g")?"g":VS.some(x=>x[1][0]==="y")?"y":null,sel=pickL?VS.filter(x=>x[1][0]===pickL):[];
+  const bn=sel.map(x=>BANDS[x[0]]),bl=bn.length>1?bn.slice(0,-1).join(", ")+T(" y "," and ")+bn[bn.length-1]:bn[0]||"";
+  const sub=sel.length===1?String(sel[0][1][1]):pickL==="g"?T(`${sel.length} bandas abiertas`,`${sel.length} bands open`):T(`${sel.length} bandas posibles`,`${sel.length} bands possible`);
+  const sol=`<span class="sthc sthvu${pickL?"":" sthc0"}"><small>V-UHF</small><b${pickL?` class="st-${pickL}"`:""}>${pickL?bl:T("cerrado","closed")}</b><i>${pickL?e2(sub):T("6 m, 2 m y 70 cm sin aperturas","6 m, 2 m and 70 cm: no openings")}</i></span>`;
   const load=!H.length||!H.some(r=>r[4]||r[6]||r[7])||(!now&&window.ACRACB_hubLoading&&ACRACB_hubLoading());
   const chips=load?`<span class="sthc sthc0"><small>HF</small><b>${T("calculando…","calculating…")}</b><i>&nbsp;</i></span>`:chip(T("Ahora","Now"),now,T(`${nowH} h`,`${nowH}:00`))+momOrder(nowH).map(m=>chip(m.sh,momTop(H,m.i),m.hr)).join("");
   return `<span class="sth-main"><span class="sth-t">${T("Sol y propagación","Sun and propagation")}</span><span class="sth-q">${T("Qué bandas abren ahora, esta noche y mañana con tu equipo","Which bands open now, tonight and tomorrow with your station")}</span></span><span class="sth-chips">${chips}${sol}</span><span class="sth-go"><span class="sth-o">${T("Ver previsión","See forecast")}</span><span class="sth-c">${T("Cerrar","Close")}</span></span>`}
@@ -69,7 +73,7 @@ function body(){if(typeof L==="undefined"||!L)return "";const sp=L.space||{};con
     row(T("Rayos X","X-rays"),e2(sp.xray||"—"),xrM(sp.xray)),row(T("Viento solar","Solar wind"),L.wind!=null?nf(L.wind,0)+" km/s":"—",wM(L.wind)),row("Bz",L.bz!=null?nf(L.bz,1)+" nT":"—",bzM(L.bz)),(()=>{const io=L.iono;if(!io||io.fof2==null)return "";const mu=io.mufd!=null?+io.mufd:null;return row(T("Ionosonda","Ionosonde")+(io.station?` <small>${e2(String(io.station).replace(/\s*\(.*\)$/,""))}</small>`:""),"foF2 "+nf(io.fof2,1)+" MHz"+(mu!=null?" · MUF "+nf(mu,1)+" MHz":""),[mu==null?"n":mu>=28?"g":mu>=14?"y":"r",mu==null?T("medida real de la ionosfera","real measurement of the ionosphere"):T(`medida real: a 3.000 km rebota hasta ${nf(mu,0)} MHz`,`real measurement: up to ${nf(mu,0)} MHz bounces at 3,000 km`)])})(),
     row(T("Ruido geomagnético","Geomagnetic noise"),nzM(kp),["n",T("orientativo, según el Kp","a guide, from Kp")])];
   /* 2.10.19: cada fenómeno de VHF con una línea que explica qué es, como el resto del panel */
-  const VQ=[T("nubes ionizadas a 100 km: saltos de 500 a 2.000 km","ionised clouds at 100 km: hops of 500 to 2,000 km"),T("lo mismo en 2 m: rara y corta, de 1.000 a 2.200 km","the same on 2 m: rare and brief, 1,000 to 2,200 km"),T("rebote en la aurora: señal ronca, apuntando al norte","reflection off the aurora: raspy signal, aim north"),T("inversión de temperatura: cientos de km o más","temperature inversion: hundreds of km or more"),T("rebote en estelas de meteoros, en ráfagas de segundos","bounce off meteor trails, in bursts of seconds"),T("QSO rebotando en la Luna: hace falta la Luna alta","QSO off the Moon: needs the Moon high")];
+  const VQ=[T("nubes ionizadas a 100 km: saltos de 500 a 2.000 km","ionised clouds at 100 km: hops of 500 to 2,000 km"),T("lo mismo en 2 m: rara y corta, de 1.000 a 2.200 km","the same on 2 m: rare and brief, 1,000 to 2,200 km"),T("rebote en la aurora: señal ronca, apuntando al norte","reflection off the aurora: raspy signal, aim north"),T("inversión de temperatura: cientos de km o más","temperature inversion: hundreds of km or more"),T("rebote en estelas de meteoros, en ráfagas de segundos","bounce off meteor trails, in bursts of seconds"),T("QSO rebotando en la Luna: hace falta la Luna alta","QSO off the Moon: needs the Moon high"),T("transecuatorial o capa F2: miles de km, sobre todo hacia el sur","transequatorial or F2: thousands of km, mostly southwards")];
 /* 2.11.70: cada fenómeno con un medidor de tres pasos (nada · posible · bueno) y la palabra en gris si no hay nada:
      «cerrada» no es una alarma, es lo normal. Lo que está abierto o es posible sube arriba. La tropo se calcula aquí
      también (antes había que abrir V-UHF): se pide la previsión a Open-Meteo una vez y se rehace el panel al llegar */

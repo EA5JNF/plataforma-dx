@@ -200,7 +200,14 @@ function checkAlerts(st){if(!AL.size||!(window.ACRACB_notifOn&&ACRACB_notifOn())
 
 /* ---------- pintar ---------- */
 let OPEN=new Set();try{OPEN=new Set(JSON.parse(S.get("acracb_vuhfopen")||"[]"))}catch(e){}if(OPEN.size>1)OPEN=new Set([[...OPEN][0]]);
-function state(){return {es:esState(),tro:troState(),au:auState(),tep:tepState(),ms:msState(),eme:emeState()}}
+/* 2.11.92: el panel dice lo mismo que las líneas de 6 m, 2 m y 70 cm: si los spots muestran una apertura (E esporádica,
+   tropo o 6 m a larga distancia), la ficha de ese fenómeno lo refleja aunque la previsión no la esperase */
+function obsUp(S){const R={g:2,y:1};const up=(k,l,t)=>{const o=S[k];if(!o)return;if((R[l]||0)>(R[o.l]||0)){o.l=l;o.t=t;o.obs=1}};
+  try{if(typeof vhfStatus!=="function")return S;[[10,"6 m"],[11,"2 m"],[12,"70 cm"]].forEach(([b,n])=>{const v=vhfStatus(b);if(!v)return;const lv=v[0],tx=String(v[1]||"");
+    if(/E esporádica/i.test(tx)&&!/Temporada/i.test(tx)){up("es",lv,T(`Spots de esporádica E en ${n} ahora`,`Sporadic E spots on ${n} now`));if(lv==="g")(S.es.obsB=S.es.obsB||[]).push(n)}
+    else if(/tropo/i.test(tx))up("tro",lv,T(`${n}: ${lv==="g"?"spots por tropo ahora":"tropo favorable"}`,`${n}: ${lv==="g"?"tropo spots now":"tropo favourable"}`));
+    else if(b===10&&/larga distancia|F2/i.test(tx))up("tep",lv,T("Spots de 6 m a larga distancia ahora","Long-distance 6 m spots now"))})}catch(e){}return S}
+function state(){return obsUp({es:esState(),tro:troState(),au:auState(),tep:tepState(),ms:msState(),eme:emeState()})}
 function render(){const v=document.getElementById("vhfo");if(!v)return;let box=document.getElementById("vuhf");
   if(!box){box=document.createElement("div");box.id="vuhf";box.className="vuhf";const f=document.getElementById("f_vhf");const sum=f&&f.querySelector(":scope>summary");if(sum)sum.insertAdjacentElement("afterend",box);else v.parentNode.insertBefore(box,v)}
   /* 2.10.7: primero el estado de 6 m, 2 m y 70 cm, luego la nota de meteoros y después el panel */

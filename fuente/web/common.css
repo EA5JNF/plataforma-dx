@@ -2159,3 +2159,4 @@ details.sterr .sthvu i{max-width:200px;overflow:hidden;text-overflow:ellipsis}de
  details.sterr .sthvu i{white-space:normal;max-width:none;line-height:1.25}
 }
 @media (max-width:600px){html body div#sw.sw>.chip{padding-left:22px!important}html body div#sw.sw>.chip::before{position:absolute!important;left:9px!important;top:12px!important;margin:0!important}}
+@media (min-width:641px){details.sterr .sth-chips{flex:1 1 auto}details.sterr .sthc{flex:1 1 0;max-width:240px}details.sterr .sthvu{flex-grow:1.6;max-width:320px}}

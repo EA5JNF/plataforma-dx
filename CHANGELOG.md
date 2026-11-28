@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.92 — 2026-11-28
+
+- ES: Una sola verdad en V-UHF: la ficha del panel principal usa la misma función que las líneas de 6 m, 2 m y 70 cm de Ahora → V-UHF y de Bandas. Si los spots muestran una apertura (E esporádica, tropo o 6 m a larga distancia), el panel de aperturas especiales y «VHF y superiores» lo dicen también, aunque la previsión no la esperase. Se añade la fila «6 m a larga distancia (TEP y F2)».
+- ES: Las fichas de bandas del panel principal ocupan el ancho disponible, sin hueco hasta el botón.
+- ES: Fuera la clave del club: publicar spots vuelve a ser libre para todos (intermediario 8.4).
+- EN: One source of truth for V-UHF: the main panel tile uses the same function as the 6 m, 2 m and 70 cm lines in Now → V-UHF and Bands. If spots show an opening (sporadic E, tropo or long-distance 6 m), the special openings panel and «VHF and up» say so too, even if the forecast did not expect it. New row «6 m long distance (TEP and F2)».
+- EN: The band tiles in the main panel use the available width, with no gap before the button.
+- EN: Club key removed: posting spots is open to everyone again (relay 8.4).
+
 ## 2.11.91 — 2026-11-28
 
 - ES: Panel «Sol y propagación» ordenado en el teléfono: índices en tres columnas por temas (Sol; campo magnético; Bz y tormentas), con la etiqueta encima del valor, y fichas de bandas en dos columnas.
