@@ -1843,7 +1843,8 @@ function vhfStatus(b){const mo=new Date().getUTCMonth(),es=ESMES[mo],sp=vhfSpots
   if(b===11&&es>=.8)return ["y","Posible E esporádica",`Sin spots a distancia ahora, pero en ${MESES[mo]} la E esporádica a veces llega a 2 m (pocos días al año). Alcance normal con tu estación en ${MD().s}: unos ${fk(R)} km.`,"Si 6 m está muy abierto a menos de 1.000 km, vigila 2 m: puede abrir también."];
   return ["r","Sin apertura a distancia",`No hay spots de ${nm} a más de ${lim} km${tro!=null?" y la previsión de tropo es baja ("+tro+"/10)":""}. Con tu estación en ${MD().s}, el alcance normal por dispersión troposférica es de unos ${fk(R)} km.`,`Contactos locales y regionales${MD().s==="FM"?" en simplex o por repetidor":""}. Subir la antena, usar una directiva o pasar a CW o FT8 alarga ese alcance.`]}
 function renderVHF(){const el=$("vhfo");if(!el)return;
-  el.innerHTML=[10,11,12].map(b=>{const [lv,t,a,pr]=vhfStatus(b);return `<div class="note lv-${lv}"><div class="lvh"><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b><span class="lvp">${LVN[lv]}</span></div><span class="prac">${pr}</span><details class="why"><summary>Detalle</summary><p>${a}</p></details></div>`}).join("")}
+  /* 2.11.79: una línea por banda con su estado, como Sol → Previsión; cerrada en gris (en VHF es lo normal); qué hacer y el detalle, al tocar */
+  el.innerHTML=`<div class="sxl">`+[10,11,12].map(b=>{const [lv,t,a,pr]=vhfStatus(b);const q=lv==="r"?"n":lv;return `<details class="sxr lv-${q}"><summary><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}</b><span class="lvp">${lv==="r"?"Cerrada":LVN[lv]}</span>${lv!=="r"&&pr?`<span class="sxp">${pr}</span>`:""}</summary>${lv==="r"&&pr?`<p>${pr}</p>`:""}<p class="note">${a}</p></details>`}).join("")+`</div>`}
 function easyVHF(){const r=[10,11,12].map(b=>{const [lv,t]=vhfStatus(b);return `<p><b style="color:${BC[b]}">${BANDS[b]}</b>: <span class="lv-${lv}" style="background:none;border:0;padding:0">${t}</span>.</p>`}).join("");
   return `<div class="ez"><div class="ezt">6 m, 2 m y 70 cm ahora</div>${r}</div>`}
 
@@ -2314,7 +2315,7 @@ function renderTL(){const g=++TL2G,el=$("tl");if(!el)return;const now=localNow()
       <ul class="tlseg">${seg.map(s=>`<li><span class="tlh2">${hh(s.s)}–${hh(s.e%24)} h</span>${s.b!=null?`<b style="color:${BC[s.b]}">${BANDS[s.b]}</b>`:`<span class="note">sin aperturas</span>`}</li>`).join("")}</ul></div>`;
     el.innerHTML=T+H+`<div class="hmleg"><span>${C?"Multiplicadores":"Destinos DX"} abiertos (≥30 %):</span><i class="c0"></i>ninguno<i class="c1"></i>&lt;15 %<i class="c2"></i>15–30<i class="c3"></i>30–50<i class="c4"></i>50–70<i class="c5"></i>&gt;70 %<span class="sep"></span><i class="dn dn-d"></i>día<i class="dn dn-g"></i>línea gris<i class="dn dn-n"></i>noche</div>`;
     const th=$("tlh");if(th)th.innerHTML="";
-    const sn=$("sun");if(sn)sn.innerHTML=`<span>Salida del sol <b>${hm(se.rise)}</b></span><span>Mediodía <b>${hm(se.noon)}</b></span><span>Puesta <b>${hm(se.set)}</b></span><span class="note">Horas locales. Toca una hora para verla en el mapa y en el resto de la plataforma.</span>`;
+    const sn=$("sun");if(sn)sn.innerHTML=`<span>Salida del sol <b>${hm(se.rise)}</b></span><span>Mediodía <b>${hm(se.noon)}</b></span><span>Puesta <b>${hm(se.set)}</b></span>`;
     el.querySelectorAll("[data-h]").forEach(c=>c.onclick=()=>{st.mhour=+c.dataset.h;const m=$("mh");if(m)m.value=st.mhour;refresh()});
     try{foldSums()}catch(e){}};
   const t0=performance.now();while(x<24&&performance.now()-t0<30)hour();if(x>=24)return fin();

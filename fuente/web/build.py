@@ -129,7 +129,7 @@ R('<button data-pg="mapa">Mapa</button><button data-pg="dx">DX</button>','<butto
 R('const dxNow=L.dx.filter(dxNew).map(','const dxNow=L.dx.filter(dxNew).filter(d=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(d.call||"").split(/[ ,]/)[0])}catch(_){return true}}).map(')
 R('setSum("dxp",ds.length?`${ds.length} activas · mejor ahora: ${ds[0].d.call} en ${BANDS[ds[0].b]} (${Math.round(ds[0].p*100)} %)`:"Ninguna activa ahora")','{const da=ds.filter(x=>{try{return !window.ACRACB_isAct||ACRACB_isAct(String(x.d.call||"").split(/[ ,]/)[0])}catch(_){return true}});setSum("dxp",ds.length?`${ds.length} anunciadas · `+(da.length?`${da.length} con spots en la última hora · mejor ahora: ${da[0].d.call} en ${BANDS[da[0].b]} (${Math.round(da[0].p*100)} %)`:"ninguna con spots en la última hora"):"Ninguna activa ahora")}')
 # 2.8.18: la etiqueta de nivel va antes del título para que flote arriba a la derecha, a la misma altura en todas las tarjetas
-R('class="lvh"><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b><span class="lvp">${LVN[lv]}</span></div>','class="lvh"><span class="lvp">${LVN[lv]}</span><b><span style="color:${BC[b]}">●</span> ${BANDS[b]}: ${t}.</b></div>')
+# 2.11.79: V-UHF ya no usa esas tarjetas
 # 2.11.78: la Previsión ya no usa esas tarjetas (ahora es una lista); la sustitución ya no hace falta
 # 2.8.19: el mapa ya no se abre en blanco. Valores iniciales: nombres, noche, modo de tu estación (SSB), todas las bandas,
 # clúster y camino corto y largo; lo demás apagado (predicción, caminos, saltos, balizas, DXpediciones, ISS y satélites).

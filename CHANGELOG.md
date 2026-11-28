@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.79 — 2026-11-28
+
+- ES: Menos texto, fase 2 (Ahora).
+  - Hora a hora: la explicación de arriba queda en una línea («Busca el verde…»); lo demás ya estaba en la leyenda y en «Cómo se lee esta tabla». Fuera la nota repetida de horas locales.
+  - V-UHF: 6 m, 2 m y 70 cm son una lista de una línea con su estado, como Sol → Previsión; «Cerrada» va en gris porque en VHF es lo normal, y qué hacer y el detalle salen al tocar. La dispersión meteórica, en una línea con la próxima lluvia; cómo trabajarla, al tocar. En el panel de aperturas especiales, «no ahora» en gris.
+- EN: Less text, phase 2 (Now).
+  - Hour by hour: the explanation on top is one line ("Look for green…"); the rest was already in the legend and in "How to read this table". The repeated local-time note is gone.
+  - V-UHF: 6 m, 2 m and 70 cm are a one-line list with their state, like Sun → Forecast; "Closed" is grey because on VHF it is normal, and what to do and the detail appear on tap. Meteor scatter, in one line with the next shower; how to work it, on tap. In the special openings panel, "not now" in grey.
+
 ## 2.11.78 — 2026-11-28
 
 - ES: Menos texto, primera fase.

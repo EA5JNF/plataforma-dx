@@ -2013,3 +2013,7 @@ table.qrpg td:first-child{padding-top:.35em}
 .sxr>p{margin:0 0 8px 1.1em;font-size:.92em}
 .sxr .lvp{font-size:.72rem}
 .sxf{margin-top:10px}
+/* 2.11.79: en el panel de aperturas especiales, «no ahora» en gris: es lo normal, no una alarma */
+.vtile.lv-r{border-left-color:color-mix(in srgb,var(--muted) 45%,transparent)!important}.vtile.lv-r .vts{color:var(--muted)!important;font-weight:500}
+.sxr.lv-n .lvp{color:var(--muted)}
+.metd>summary{cursor:pointer}.metd>p{margin:.4em 0 0}
