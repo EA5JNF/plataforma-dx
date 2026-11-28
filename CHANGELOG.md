@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.88 — 2026-11-28
+
+- ES: La tira de índices (SFI, SSN, Kp, índice A, viento, Bz y llamaradas) y la barra «Sol y propagación» forman un solo panel: los índices arriba y las bandas debajo. La barra ya no repite SFI ni Kp.
+- ES: En la vista plegada ya no se habla de destinos: cada ficha dice la banda y su hora, y la del Sol, los niveles de tormenta G, R y S.
+- EN: The index strip (SFI, SSN, Kp, A index, wind, Bz and flares) and the «Sun and propagation» bar are now one panel: indices on top, bands below. The bar no longer repeats SFI and Kp.
+- EN: The collapsed view no longer mentions destinations: each tile shows the band and its hour, and the Sun tile shows the G, R and S storm levels.
+
 ## 2.11.87 — 2026-11-28
 
 - ES: «Ver el detalle por banda» enseña todas las bandas del modo, también 6 m, 2 m y 70 cm; si alguna no existe en ese modo (30 m en fonía), lo dice debajo.

@@ -2119,3 +2119,8 @@ details.sterr .sth-chips{align-items:stretch}
 details.sterr .sthc{justify-content:flex-start;min-width:96px}
 @media (max-width:640px){details.sterr .sthsol{flex-direction:column;align-items:flex-start;justify-content:flex-start}details.sterr .sthsol{grid-column:auto}details.sterr .sth-chips{grid-template-columns:repeat(4,minmax(0,1fr))}details.sterr .sthc{min-width:0}details.sterr .sthc b{font-size:.92rem}}
 @media (max-width:400px){details.sterr .sth-chips{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* 2.11.88: la tira de índices (SFI, SSN, Kp…) y la barra «Sol y propagación» son un solo panel: los índices arriba,
+   las bandas y el botón debajo; la barra ya no repite SFI ni Kp */
+html body #sw:has(+#st_ahora){border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-bottom:0!important;border-left:4px solid var(--accent)!important;margin-bottom:0!important;background:var(--panel2)!important}
+html body #sw+#st_ahora{margin-top:0!important;border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
+html body #sw+#st_ahora{margin-top:calc(-1 * var(--swgap,12px))!important}
