@@ -26,7 +26,8 @@ window.ACRACB_ctNow=list;
 const XB=()=>`<button type="button" class="ctx" data-ctclose aria-label="${T("Cerrar aviso del concurso","Close contest notice")}" title="${T("Cerrar","Close")}">×</button>`;
 const hm=d=>d.toLocaleTimeString(EN()?"en-US":"es-ES",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Madrid"});
 const utc=d=>d.toISOString().slice(11,16);
-function whenEnd(d){const now=new Date(),same=d.toDateString()===now.toDateString(),tom=new Date(+now+864e5).toDateString()===d.toDateString();
+/* 2.11.64: la hora real del final (23:59 UTC), no el minuto siguiente redondeado */
+function whenEnd(d){d=new Date(+d-6e4);const now=new Date(),same=d.toDateString()===now.toDateString(),tom=new Date(+now+864e5).toDateString()===d.toDateString();
   const day=same?T("hoy","today"):tom?T("mañana","tomorrow"):d.toLocaleDateString(EN()?"en-US":"es-ES",{weekday:"long",timeZone:"Europe/Madrid"});
   return T(`termina ${day} a las ${hm(d)} (${utc(d)} UTC)`,`ends ${day} at ${hm(d)} (${utc(d)} UTC)`)}
 function inIt(x){try{return st.mode==="contest"&&$("contest")&&$("contest").value===x.plan}catch(e){return false}}

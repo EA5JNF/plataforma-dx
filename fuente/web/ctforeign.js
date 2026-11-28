@@ -27,7 +27,10 @@ const MEANS=()=>T("Oirás muchas estaciones de EE. UU. y Canadá llamando «CQ S
   "You will hear many US and Canadian stations calling “CQ Sweepstakes” or “CQ SS”. A QSO with you does not count in their contest and many will not answer stations from abroad, but if one does, it counts for DXCC, states and your awards.");
 function card(){const sec=document.querySelector('section[data-pg="concursos"]');if(!sec)return false;let c=$("ctfor");
   if(!c){c=document.createElement("div");c.id="ctfor";c.className="card ctfor";const a=$("cnone");if(a&&a.parentNode===sec)a.after(c);else sec.prepend(c)}
-  const rows=LIST.map(x=>({x,s:next(x)})).filter(r=>r.s).sort((p,q)=>p.s.a-q.s.a);
+  /* 2.11.64: solo los que están en marcha o empiezan en los próximos 14 días; si no hay ninguno, la tarjeta no sale
+     (antes salían ya terminados, con las fechas del año siguiente y sin año) */
+  const rows=LIST.map(x=>({x,s:next(x)})).filter(r=>r.s&&(live(r.s)||r.s.a.getTime()-Date.now()<=14*864e5)).sort((p,q)=>p.s.a-q.s.a);
+  c.hidden=!rows.length;if(!rows.length){c.innerHTML="";return true}
   c.innerHTML=`<h2>${T("En el aire, aunque no puntúen desde España","On the air, though they do not score from Spain")}</h2>
     <p class="note">${T("Concursos nacionales de otros países: llenan las bandas, pero desde España no se puede participar. Horas en hora española.","National contests of other countries: they fill the bands, but you cannot take part from Spain. Times in Spanish local time.")}</p>`+
     rows.map(({x,s})=>`<div class="ctfr${live(s)?" on":""}"><p><b>${x.n}</b>${live(s)?` <span class="xtag xr">${T("AHORA","NOW")}</span>`:""}<br>

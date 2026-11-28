@@ -5,6 +5,15 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.64 — 2026-11-28
+
+- ES: «En el aire, aunque no puntúen desde España» solo sale con concursos en marcha o que empiezan en los próximos 14 días. Antes seguían saliendo los Sweepstakes ya terminados, con las fechas del año que viene y sin año.
+- ES: CQ WW DX (CW y SSB): reglas completas desde EA, comprobadas en las bases de 2026: otra estación de España 0 puntos aunque cuenta como multiplicador, resto de Europa 1 y otro continente 3; y el log se envía en las 48 horas siguientes al final, la novedad de 2026.
+- ES: El aviso de concurso en marcha dice la hora real del final (00:59, 23:59 UTC) en vez del minuto siguiente redondeado.
+- EN: "On the air, though they do not score from Spain" only appears with contests running or starting within 14 days. Before, the finished Sweepstakes still showed, with next year's dates and no year.
+- EN: CQ WW DX (CW and SSB): full rules from EA, checked against the 2026 rules: another Spanish station 0 points though it counts as a multiplier, the rest of Europe 1 and another continent 3; and the log must be sent within 48 hours of the end, new in 2026.
+- EN: The running-contest notice shows the real end time (00:59, 23:59 UTC) instead of the rounded next minute.
+
 ## 2.11.63 — 2026-11-28
 
 - ES: Mapa: en «Clúster» se puede dejar el mapa sin ningún spot. Pulsar «Todos» cuando ya está todo marcado, o quitar el último tipo, lo vacía; pulsar «Todos» otra vez o cualquier tipo vuelve a mostrarlos. Solo afecta al mapa: la lista del clúster sigue igual.
