@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.84 — 2026-11-28
+
+- ES: Ahora → Bandas: también 2 m y 70 cm, con su fiabilidad (la del balance troposférico, como en V-UHF), sus spots de la última hora y la conclusión.
+- ES: Imágenes del Sol: más aire entre el pie de cada imagen, la explicación desplegable (con margen a los lados y entre párrafos) y los créditos.
+- EN: Now → Bands: 2 m and 70 cm as well, with their reliability (from the tropospheric link budget, as in V-UHF), their spots in the last hour and the conclusion.
+- EN: Sun images: more space between each image caption, the collapsible explanation (with side margins and space between paragraphs) and the credits.
+
 ## 2.11.83 — 2026-11-28
 
 - ES: Sol ahora → «Últimas imágenes del Sol»: nuevo desplegable «Cómo leer estas imágenes y qué significan para la radio», con qué se ve en la corona UV (regiones activas y agujeros coronales), en las manchas y en el coronógrafo, y qué consecuencias tiene para las bandas.

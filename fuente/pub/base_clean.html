@@ -2130,7 +2130,7 @@ function renderCotejo(){const el=$("cotejo");if(!el)return;const R=cotejoRows();
 /* ---------- contraste: modelo vs lo que se oye en el clúster y en WSPR ---------- */
 function renderContrast(){const el=$("contra");if(!el)return;const lh=localNow(),se=sunEvents(TXP),day=se.rise!=null&&se.set!=null?(lh>=se.rise&&lh<se.set):lh>=8&&lh<18;
   const now=Date.now();const ref=Date.parse([L.spotsChecked,L.spotsUTC,L.updatedUTC].filter(Boolean).sort().pop()||"")||now;
-  const rows=BI0().filter(b=>b<=10).map(b=>{let mx=0;for(const t of TG().filter(inMode)){const a=prob(t,lh,b,false).p,c=t.l?prob(t,lh,b,true).p:0;if(a>mx)mx=a;if(c>mx)mx=c}
+  /* 2.11.84: también 2 m y 70 cm (su fiabilidad es la del balance troposférico, como en V-UHF) */const rows=BI0().filter(b=>b<=12).map(b=>{let mx=0;for(const t of TG().filter(inMode)){const a=prob(t,lh,b,false).p,c=t.l?prob(t,lh,b,true).p:0;if(a>mx)mx=a;if(c>mx)mx=c}
     const m=mx>=.3?2:mx>=.1?1:0;const h=null;
     const sp=(L.spots||[]).filter(s=>s.band===b&&(s.kind==="dx"||s.kind==="ind"||s.kind==="vhf")).filter(s=>{const a=spotAge(s);return a==null||a<=60}).length;const c=sp>=3?2:sp>=1?1:0;
     const wn=wsprN(b),w=wn==null?null:wn>=20?2:wn>=3?1:0;

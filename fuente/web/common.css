@@ -2025,3 +2025,11 @@ table.qrpg td:first-child{padding-top:.35em}
 .cycmp{padding-right:.6em}
 .ccr{grid-template-columns:5em minmax(0,1fr) 3.4em!important}
 .ccr b{white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 2.11.84: imágenes del Sol con aire entre el pie de cada imagen, la explicación y los créditos */
+.swim figcaption{display:flex;flex-direction:column;gap:4px;margin-top:8px;line-height:1.4}
+.swim figcaption small{margin-top:2px}
+.swhow{margin:18px 0 14px}
+.swhow>p{margin:.7em 0;line-height:1.5}
+.swhow>p+p{margin-top:1em}
+#sunnow .swim+.swhow+.note,#sunnow .swhow+.note{margin-top:14px}
+.swhow{padding:10px 18px 12px!important;box-sizing:border-box}
