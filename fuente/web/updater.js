@@ -201,7 +201,10 @@ SRC["NOAA protones"]=async()=>{const j=await J("https://services.swpc.noaa.gov/j
 SRC["Spothole avisos"]=async()=>{let j=await J("https://spothole.app/api/v1/alerts");if(!Array.isArray(j))j=j.alerts||j.data||[];const today=Date.now(),out=[];
   for(const a of j){const sig=String(pick(a,"sig","type","source")||"");const call=clean(pick(a,"dx_call","dx_calls","call","callsign")||"");if(!call)continue;
     if(sig&&!/dx|ng3k/i.test(sig))continue;const s=ptime(pick(a,"start_time","start")),e=ptime(pick(a,"end_time","end"));if(!e||!s||s>today||e<today)continue;
-    out.push({call:call.split(/[ ,]/)[0],start:iso(s).slice(0,10),end:iso(e).slice(0,10),info:String(pick(a,"comment","dx_name","name")||""),qsl:""})}
+    /* 2.11.66: si el aviso solo trae el prefijo («3B8») y el comentario dice el indicativo completo («as 3B8/E70A»), se usa ese */
+    let c1=call.split(/[ ,]/)[0];const inf=String(pick(a,"comment","dx_name","name")||"");
+    if(!/\d[A-Z]{1,4}(\/[A-Z0-9]+)?$/.test(c1)){const esc=c1.replace(/[^A-Z0-9]/g,"");const mm=inf.toUpperCase().match(new RegExp("\\b("+esc+"\\/[A-Z0-9]{3,}|[A-Z0-9]{3,}\\/"+esc+"|"+esc+"[A-Z0-9]*\\d?[A-Z]{1,4})\\b"));if(mm&&mm[1]!==esc)c1=mm[1]}
+    out.push({call:c1,start:iso(s).slice(0,10),end:iso(e).slice(0,10),info:inf,qsl:""})}
   return out};
 /* --- Clústeres --- */
 /* 2.4.1: locator (4 o 6 caracteres) a [longitud, latitud] del centro de la cuadrícula */

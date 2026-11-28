@@ -5,6 +5,13 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.66 — 2026-11-28
+
+- ES: DXpediciones anunciadas solo con el prefijo («3B8»): si el aviso dice el indicativo completo en el comentario («as 3B8/E70A»), se usa ese, y con él sus modos.
+- ES: Si una DXpedición no ha anunciado en qué modos trabaja, su tarjeta lleva «modo sin anunciar» y avisa de que la frecuencia es la habitual de tu modo, no una confirmada: puede que no esté en ese modo.
+- EN: DXpeditions announced with the prefix only ("3B8"): if the alert gives the full callsign in the comment ("as 3B8/E70A"), that one is used, and with it its modes.
+- EN: If a DXpedition has not announced its modes, its card shows "mode not announced" and warns that the frequency is the usual one for your mode, not a confirmed one: it may not be on that mode.
+
 ## 2.11.65 — 2026-11-28
 
 - ES: «Cerca» ya no muestra estaciones lejanas. Manda el indicativo: una referencia DME en el comentario solo decide si el indicativo es español o no se reconoce. Antes, un indicativo extranjero con «DME» en el comentario (como EZA3JG, un EA3JG mal copiado) salía como cercano. Esos spots mal copiados tampoco generan avisos.
