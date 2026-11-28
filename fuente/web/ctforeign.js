@@ -41,6 +41,7 @@ function banner(){const s=document.getElementById("srch");const on=LIST.map(x=>(
   if(!on){if(b)b.remove();return}
   if(!s)return;if(!b){b=document.createElement("p");b.id="ctforb";b.className="note ctforb";s.after(b)}
   b.innerHTML=`<b>${T("En el aire ahora:","On the air now:")}</b> ${on.x.n} (${T(on.x.who[0],on.x.who[1]).replace(/^Solo/,"solo").replace(/^Only/,"only")}), ${T("hasta el","until")} ${fmt(on.s.b)}. ${MEANS()}`}
+window.ACRACB_ctForNow=()=>LIST.map(x=>({x,s:next(x)})).filter(r=>live(r.s)).map(r=>({n:r.x.n,en:r.s.b,who:T(r.x.who[0],r.x.who[1])}));
 function go(){try{card()}catch(_){}try{banner()}catch(_){}}
 let n=0;(function w(){go();if(!(document.getElementById("ctfor")&&(document.getElementById("srch")||n>40))&&++n<80)setTimeout(w,300)})();
 setInterval(go,6e4);setInterval(()=>{if(!document.getElementById("ctforb")){try{banner()}catch(_){}}},2000);document.addEventListener("ACRACB:lang",go);

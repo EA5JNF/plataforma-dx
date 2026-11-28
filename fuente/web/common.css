@@ -1984,3 +1984,5 @@ table.qrpg td:first-child{padding-top:.35em}
 .qc{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
 .qc small{line-height:1.3;color:var(--muted);font-size:.78rem}
 .qc0{color:var(--muted);opacity:.6;display:inline-block;min-width:2.2em;text-align:center;padding:.1em 0}
+
+.alct{display:grid;gap:8px;margin:8px 0}.alctc .note{margin:.3em 0 0}

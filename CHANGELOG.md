@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.74 — 2026-11-28
+
+- ES: Avisos: nuevo interruptor «Concursos en marcha» (encendido). Con él, Avisos enseña una tarjeta por cada concurso que está en el aire, con su modo, cuándo termina y un enlace a su estrategia; también los extranjeros que no puntúan desde España, diciendo quién participa.
+- EN: Alerts: new "Contests running" switch (on). With it, Alerts shows a card for each contest on the air, with its mode, when it ends and a link to its strategy; also foreign contests that do not score from Spain, saying who takes part.
+
 ## 2.11.73 — 2026-11-28
 
 - ES: Antenas nuevas para el cálculo, en un grupo «Monobanda y enfasadas (concursos)»: Yagis apiladas 2×5 el. de 20 a 10 m, Yagi monobanda de 2 y 3 elementos para 40 m, 2 verticales enfasadas (160, 80 o 40 m) y 4-square de 40, 80 y 160 m. Y tres combinaciones: estación de concurso (Yagis apiladas + 2 el. 40 m + 4-square 80 y 160 m), monobandas (Yagi 5 el. + 2 el. 40 m + dipolos 80 y 160 m) y directiva 3 el. + 4-square en 40, 80 y 160 m. «Cómo se calcula» explica sus ganancias.
