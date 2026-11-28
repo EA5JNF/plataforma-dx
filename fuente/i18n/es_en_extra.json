@@ -713,5 +713,18 @@
  "y WSPRnet.": "and WSPRnet.",
  "Sin estaciones nuevas · ": "No new stations · ",
  " concurso": " contest",
- " en marcha": " running"
+ " en marcha": " running",
+ "Posible": "Possible",
+ "Categorías de concurso: QRP hasta 5 W en todos los modos, Low Power hasta 100 W, High Power más de 100 W": "Contest categories: QRP up to 5 W on every mode, Low Power up to 100 W, High Power over 100 W",
+ "QRP: hasta 5 W en CW y digitales y hasta 10 W PEP en SSB (IARU Región 1). Low Power hasta 100 W, High Power más de 100 W": "QRP: up to 5 W on CW and digital and up to 10 W PEP on SSB (IARU Region 1). Low Power up to 100 W, High Power over 100 W",
+ "transmitir con muy poca potencia: hasta 5 W en CW y modos digitales y hasta 10 W PEP en SSB (IARU Región 1). En los concursos, hasta 5 W en todos los modos. Es un reto: hace falta buena propagación y paciencia.": "transmitting with very low power: up to 5 W on CW and digital modes and up to 10 W PEP on SSB (IARU Region 1). In contests, up to 5 W on every mode. It is a challenge: it needs good propagation and patience.",
+ "en concursos, la categoría de hasta 100 W de salida.": "in contests, the category up to 100 W output.",
+ "en concursos, más de 100 W de salida, hasta el máximo de la licencia.": "in contests, over 100 W output, up to the licence maximum.",
+ ": hasta 5 W en CW y modos digitales y hasta 10 W PEP en SSB ": ": up to 5 W on CW and digital modes and up to 10 W PEP on SSB ",
+ "IARU Región 1, ARRL y RSGB": "IARU Region 1, ARRL and RSGB",
+ "; en los concursos ": "; in contests ",
+ "CQ WW, CQ WPX, ARRL DX e IARU": "CQ WW, CQ WPX, ARRL DX and IARU",
+ ", hasta 5 W en todos los modos. ": ", up to 5 W on every mode. ",
+ ": hasta 100 W. ": ": up to 100 W. ",
+ ": más de 100 W, hasta el máximo de tu licencia.": ": over 100 W, up to your licence maximum."
 }

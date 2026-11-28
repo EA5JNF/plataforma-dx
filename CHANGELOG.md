@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.98 — 2026-11-28
+
+- ES: 6 m, 2 m y 70 cm dicen lo mismo en toda la plataforma. En «Ver el detalle por banda» ya no salen con la cuenta de destinos de HF (que en V-UHF daba siempre «—»): «Ahora» muestra el estado de V-UHF (abierta, posible o cerrada) y las otras horas un «·», porque no hay previsión por horas fiable. En Ahora → Bandas, la conclusión de esas tres bandas es también la de V-UHF.
+- EN: 6 m, 2 m and 70 cm say the same everywhere. In «See the detail by band» they no longer use the HF destination count (which on V-UHF was always «—»): «Now» shows the V-UHF state (open, possible or closed) and the other hours a «·», as there is no reliable hourly forecast. In Now → Bands, the conclusion for those three bands is also the V-UHF one.
+
 ## 2.11.97 — 2026-11-28
 
 - ES: «Mi log» / «Subir log» ya no salta de sitio: lo coloca siempre la línea de la estación (en pantallas anchas, en la línea; en las demás, dentro del desplegable), también al cargar o cambiar el log.
