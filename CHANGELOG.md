@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.63 — 2026-11-28
+
+- ES: Mapa: en «Clúster» se puede dejar el mapa sin ningún spot. Pulsar «Todos» cuando ya está todo marcado, o quitar el último tipo, lo vacía; pulsar «Todos» otra vez o cualquier tipo vuelve a mostrarlos. Solo afecta al mapa: la lista del clúster sigue igual.
+- EN: Map: in "Cluster" you can leave the map with no spots. Tapping "All" when everything is already selected, or removing the last type, empties it; tapping "All" again or any type shows them again. It only affects the map: the cluster list stays the same.
+
 ## 2.11.62 — 2026-11-28
 
 - ES: La vista compacta ya no esconde funciones ni datos, solo explicaciones: ahora también tiene el índice del Resumen (Ahora, Qué hacer, Próximas horas, Palabras), la franja de valores solares, el informe de fuentes, el botón del log, 6 m, 2 m y 70 cm del Resumen, todas las horas de «Próximas horas», la lista de «Qué hacer», el glosario y la leyenda del mapa.

@@ -450,13 +450,16 @@ document.addEventListener("click",ev=>{const f=ev.target.closest&&ev.target.clos
 function actKeys(){const k=L.acts||[];if(actKeys.c&&actKeys.c[0]===k&&actKeys.c[1]===k.length)return actKeys.c[2];const m=new Set(k.map(o=>SK(o.call)+"|"+o.band));actKeys.c=[k,k.length,m];return m}
 function isActSpot(s){return actKeys().has(SK(s.call)+"|"+s.band)||RXA.test(String(s.c||""))}
 /* lo que el mapa dibuja: lo mismo que el clúster, con las mismas categorías (DX y activaciones con posición) */
-function mapSpots(){const ty=TYPES;const out=[];
+/* 2.11.63: en el mapa se puede dejar el clúster sin nada (pulsando «Todos» cuando ya está todo, o quitando el último):
+   solo afecta al mapa, la lista del clúster sigue igual */
+let MAPNONE=false;
+function mapSpots(){if(MAPNONE)return [];const ty=TYPES;const out=[];
   if(ty.has("dx"))SPOTS().forEach(s=>{if(!isActSpot(s))out.push(s)});
   let bs=null;try{bs=CMBANDS()}catch(_){}
   progAll().forEach(o=>{const c=catOf(o);if(!ty.has(c)||!o.dx||o.band==null||(bs&&!bs.has(o.band))||!modeOK(o)||(o.a!=null&&o.a>60))return;
     out.push({call:o.call,f:o.f,band:o.band,mode:o.mode,t:o.t,utc:o.utc,by:o.by?[o.by]:[],from:[],dx:o.dx,dxcc:o.dxcc,kind:"dx",c:(o.prog+" "+o.ref+(o.c?" · "+o.c:"")),act:{prog:o.prog,ref:o.ref,cat:c}})});
   return out}
-let MSC=null;window.ACRACB_mapSpots=()=>{const k=[L.updatedUTC,L.actsUTC,(L.spots||[]).length,(L.acts||[]).length,[...TYPES].join(),CMS().join(),(()=>{try{return [...CMBANDS()].join()}catch(_){return ""}})()].join("|");if(MSC&&MSC[0]===k)return MSC[1];const v=mapSpots();MSC=[k,v];return v};
+let MSC=null;window.ACRACB_mapSpots=()=>{const k=[MAPNONE?1:0,L.updatedUTC,L.actsUTC,(L.spots||[]).length,(L.acts||[]).length,[...TYPES].join(),CMS().join(),(()=>{try{return [...CMBANDS()].join()}catch(_){return ""}})()].join("|");if(MSC&&MSC[0]===k)return MSC[1];const v=mapSpots();MSC=[k,v];return v};
 window.ACRACB_cat={types:()=>new Set(TYPES),label:CATN,list:()=>["dx"].concat(PROGS)};
 function catChanged(){MSC=null;try{if(typeof st!=="undefined"&&st.page==="mapa")drawMap()}catch(_){}try{mapCat()}catch(_){}try{document.dispatchEvent(new Event("acracb:cat"))}catch(_){}}
 /* selector en el mapa, el mismo que en el clúster */
@@ -464,11 +467,14 @@ function mapCat(){const sw=document.getElementById("mapsw");if(!sw)return;const 
   if(!r){r=document.createElement("div");r.className="mrow";r.id="mcatrow";row0.insertAdjacentElement("afterend",r)}
   const on=typeof st!=="undefined"&&st.mapOn&&st.ly&&st.ly.spots;r.hidden=!on;if(!on)return;
   const ms=window.ACRACB_mapSpots(),cnt={};ms.forEach(s=>{const c=s.act?s.act.cat:"dx";cnt[c]=(cnt[c]||0)+1});const ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));
-  const h=`<div class="mrt">${T("Clúster","Cluster")}</div><div class="seg" role="group" aria-label="${T("Qué spots ver","Which spots to show")}"><button type="button" data-mct="*" aria-pressed="${all}">${T("Todos","All")}</button>${ALL.map(k=>`<button type="button" data-mct="${k}" aria-pressed="${TYPES.has(k)&&!all}">${CATN(k)}${cnt[k]?` <small>${cnt[k]}</small>`:""}</button>`).join("")}</div>`;
+  const h=`<div class="mrt">${T("Clúster","Cluster")}</div><div class="seg" role="group" aria-label="${T("Qué spots ver","Which spots to show")}"><button type="button" data-mct="*" aria-pressed="${all&&!MAPNONE}">${T("Todos","All")}</button>${ALL.map(k=>`<button type="button" data-mct="${k}" aria-pressed="${!MAPNONE&&TYPES.has(k)&&!all}">${CATN(k)}${cnt[k]?` <small>${cnt[k]}</small>`:""}</button>`).join("")}</div>`;
   if(r.innerHTML!==h)r.innerHTML=h}
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-mct]");if(!b)return;const k=b.dataset.mct,ALL=["dx"].concat(PROGS),all=ALL.every(x=>TYPES.has(x));
-  if(k==="*")ALL.forEach(x=>TYPES.add(x));else if(all){TYPES.clear();TYPES.add(k)}else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size)ALL.forEach(x=>TYPES.add(x))}
-  S.set("acracb_cltypes",JSON.stringify([...TYPES]));b.parentElement.querySelectorAll("[data-mct]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.mct==="*"?ALL.every(y=>TYPES.has(y)):(TYPES.has(x.dataset.mct)&&!ALL.every(y=>TYPES.has(y))))));
+  if(k==="*"){if(all&&!MAPNONE)MAPNONE=true;else{MAPNONE=false;ALL.forEach(x=>TYPES.add(x))}}
+  else if(MAPNONE){MAPNONE=false;TYPES.clear();TYPES.add(k)}
+  else if(all){TYPES.clear();TYPES.add(k)}
+  else{if(TYPES.has(k))TYPES.delete(k);else TYPES.add(k);if(!TYPES.size){ALL.forEach(x=>TYPES.add(x));MAPNONE=true}}
+  S.set("acracb_cltypes",JSON.stringify([...TYPES]));{const a2=ALL.every(y=>TYPES.has(y));b.parentElement.querySelectorAll("[data-mct]").forEach(x=>x.setAttribute("aria-pressed",String(!MAPNONE&&(x.dataset.mct==="*"?a2:(TYPES.has(x.dataset.mct)&&!a2)))))}
   MSC=null;try{render()}catch(_){}catChanged()});
 (window.ACRACB_afterDraw=window.ACRACB_afterDraw||[]).push(()=>{try{mapCat()}catch(_){}});
 function render(lh){if(lh!=null)LH=lh;const box=$("spots");if(!box||typeof SPOTS!=="function")return;if(LH==null)LH=st.mhour;
