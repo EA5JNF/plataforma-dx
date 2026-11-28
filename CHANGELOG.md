@@ -5,6 +5,11 @@ Numeración MAYOR.MENOR.PARCHE:
 - **MENOR** (1.1.0): una función nueva o una sección nueva.
 - **PARCHE** (1.0.1): correcciones, ajustes de formato, de seguridad o de fuentes de datos.
 
+## 2.11.73 — 2026-11-28
+
+- ES: Antenas nuevas para el cálculo, en un grupo «Monobanda y enfasadas (concursos)»: Yagis apiladas 2×5 el. de 20 a 10 m, Yagi monobanda de 2 y 3 elementos para 40 m, 2 verticales enfasadas (160, 80 o 40 m) y 4-square de 40, 80 y 160 m. Y tres combinaciones: estación de concurso (Yagis apiladas + 2 el. 40 m + 4-square 80 y 160 m), monobandas (Yagi 5 el. + 2 el. 40 m + dipolos 80 y 160 m) y directiva 3 el. + 4-square en 40, 80 y 160 m. «Cómo se calcula» explica sus ganancias.
+- EN: New antennas for the calculation, in a "Monoband and phased arrays (contests)" group: stacked 2×5-el. Yagis from 20 to 10 m, 2- and 3-element monoband Yagis for 40 m, 2 phased verticals (160, 80 or 40 m) and 4-squares for 40, 80 and 160 m. And three combinations: contest station (stacked Yagis + 2-el. 40 m + 4-square 80 and 160 m), monobanders (5-el. Yagi + 2-el. 40 m + 80 and 160 m dipoles) and 3-el. beam + 4-squares on 40, 80 and 160 m. "How it is calculated" explains their gains.
+
 ## 2.11.72 — 2026-11-28
 
 - ES: Países y log → QRP: la tabla de bandas y modos queda alineada. Todas las casillas tienen la misma forma (el número arriba y el destino más fácil debajo), van alineadas arriba y las columnas tienen el mismo ancho. «—» cuando no hay nada al alcance; la explicación está una sola vez, debajo.
